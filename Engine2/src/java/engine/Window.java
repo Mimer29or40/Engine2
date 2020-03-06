@@ -14,7 +14,7 @@ import java.util.Objects;
 import static engine.Engine.*;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window
@@ -268,7 +268,7 @@ public class Window
     public void swap()
     {
         glfwSwapBuffers(this.glfwWindow);
-        // glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT);
         this.update = false;
     }
     

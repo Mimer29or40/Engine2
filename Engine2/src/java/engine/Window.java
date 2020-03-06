@@ -45,7 +45,6 @@ public class Window
     
     public Window(Mouse mouse, Keyboard keyboard)
     {
-        // TODO - Minimum window size
         Window.LOGGER.debug("Window Creation Started");
         
         screenSize().mul(pixelSize(), this.windowSize);
@@ -77,6 +76,8 @@ public class Window
         Window.LOGGER.trace("GLFW: Creating Window");
         
         this.glfwWindow = glfwCreateWindow(this.windowSize.x, this.windowSize.y, "", NULL, NULL);
+        
+        glfwSetWindowSizeLimits(this.glfwWindow, screenWidth(), screenHeight(), GLFW_DONT_CARE, GLFW_DONT_CARE);
         
         if (this.glfwWindow == NULL) throw new RuntimeException("Failed to create the GLFW window");
         

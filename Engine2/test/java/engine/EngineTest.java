@@ -3,6 +3,8 @@ package engine;
 import engine.color.Color;
 import engine.util.Logger;
 
+import static engine.util.Util.map;
+
 public class EngineTest extends Engine
 {
     Logger logger = new Logger();
@@ -10,9 +12,10 @@ public class EngineTest extends Engine
     @Override
     protected void setup()
     {
-        logger.info("TEST1");
-        logger.info("TEST2", 1);
+        // logger.info("TEST1");
+        // logger.info("TEST2", 1);
         size(100, 100);
+        vsync(false);
     }
     
     @Override
@@ -22,6 +25,7 @@ public class EngineTest extends Engine
         
         Engine.renderer.clear(Color.RED);
         Engine.renderer.stroke(255);
+        Engine.renderer.weight(map(mouse().x(), 0, screenHeight(), 1, 10));
         // logger.info(mouse().pos().toString());
         
         Engine.renderer.point(mouse().x(), mouse().y());

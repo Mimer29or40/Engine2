@@ -2,11 +2,9 @@ package engine.render;
 
 import engine.color.Color;
 import engine.color.Colorc;
-import org.joml.Matrix4d;
-import org.joml.Vector2dc;
-import org.joml.Vector2fc;
-import org.joml.Vector2ic;
+import org.joml.*;
 
+import java.lang.Math;
 import java.util.Stack;
 
 public class Renderer
@@ -20,7 +18,8 @@ public class Renderer
     private static final double      DEFAULT_TEXT_SIZE    = 8;
     private static final TextAlign   DEFAULT_TEXT_ALIGN   = TextAlign.TOP_LEFT;
     
-    protected static final Color CLEAR = new Color();
+    protected static final Color    CLEAR  = new Color();
+    protected static final Vector4d VECTOR = new Vector4d();
     
     public static Renderer getRenderer(Texture target)
     {
@@ -65,170 +64,75 @@ public class Renderer
         this.target = target;
     }
     
-    public Colorc fill()
-    {
-        return this.fill;
-    }
+    public Colorc fill()                                       { return this.fill; }
     
-    public void fill(Number r, Number g, Number b, Number a)
-    {
-        this.fill.set(r, g, b, a);
-    }
+    public void fill(Number r, Number g, Number b, Number a)   { this.fill.set(r, g, b, a); }
     
-    public void fill(Number r, Number g, Number b)
-    {
-        this.fill.set(r, g, b);
-    }
+    public void fill(Number r, Number g, Number b)             { this.fill.set(r, g, b); }
     
-    public void fill(Number grey, Number a)
-    {
-        this.fill.set(grey, a);
-    }
+    public void fill(Number grey, Number a)                    { this.fill.set(grey, a); }
     
-    public void fill(Number grey)
-    {
-        this.fill.set(grey);
-    }
+    public void fill(Number grey)                              { this.fill.set(grey); }
     
-    public void fill(Colorc fill)
-    {
-        this.fill.set(fill);
-    }
+    public void fill(Colorc fill)                              { this.fill.set(fill); }
     
-    public Colorc stroke()
-    {
-        return this.stroke;
-    }
+    public void noFill()                                       { this.fill.a(0); }
     
-    public void stroke(Number r, Number g, Number b, Number a)
-    {
-        this.stroke.set(r, g, b, a);
-    }
+    public Colorc stroke()                                     { return this.stroke; }
     
-    public void stroke(Number r, Number g, Number b)
-    {
-        this.stroke.set(r, g, b);
-    }
+    public void stroke(Number r, Number g, Number b, Number a) { this.stroke.set(r, g, b, a); }
     
-    public void stroke(Number grey, Number a)
-    {
-        this.stroke.set(grey, a);
-    }
+    public void stroke(Number r, Number g, Number b)           { this.stroke.set(r, g, b); }
     
-    public void stroke(Number grey)
-    {
-        this.stroke.set(grey);
-    }
+    public void stroke(Number grey, Number a)                  { this.stroke.set(grey, a); }
     
-    public void stroke(Colorc stroke)
-    {
-        this.stroke.set(stroke);
-    }
+    public void stroke(Number grey)                            { this.stroke.set(grey); }
     
-    public double weight()
-    {
-        return this.weight;
-    }
+    public void stroke(Colorc stroke)                          { this.stroke.set(stroke); }
     
-    public void weight(double weight)
-    {
-        this.weight = Math.max(1, weight);
-    }
+    public void noStroke()                                     { this.stroke.a(0); }
     
-    public RectMode rectMode()
-    {
-        return this.rectMode;
-    }
+    public double weight()                                     { return this.weight; }
     
-    public void rectMode(RectMode rectMode)
-    {
-        this.rectMode = rectMode;
-    }
+    public void weight(double weight)                          { this.weight = Math.max(1, weight); }
     
-    public EllipseMode ellipseMode()
-    {
-        return this.ellipseMode;
-    }
+    public RectMode rectMode()                                 { return this.rectMode; }
     
-    public void ellipseMode(EllipseMode ellipseMode)
-    {
-        this.ellipseMode = ellipseMode;
-    }
+    public void rectMode(RectMode rectMode)                    { this.rectMode = rectMode; }
     
-    public ArcMode arcMode()
-    {
-        return this.arcMode;
-    }
+    public EllipseMode ellipseMode()                           { return this.ellipseMode; }
     
-    public void arcMode(ArcMode arcMode)
-    {
-        this.arcMode = arcMode;
-    }
+    public void ellipseMode(EllipseMode ellipseMode)           { this.ellipseMode = ellipseMode; }
     
-    public double textSize()
-    {
-        return this.textSize;
-    }
+    public ArcMode arcMode()                                   { return this.arcMode; }
     
-    public void textSize(double textSize)
-    {
-        this.textSize = Math.max(1, textSize);
-    }
+    public void arcMode(ArcMode arcMode)                       { this.arcMode = arcMode; }
     
-    public TextAlign textAlign()
-    {
-        return this.textAlign;
-    }
+    public double textSize()                                   { return this.textSize; }
     
-    public void textAlign(TextAlign textAlign)
-    {
-        this.textAlign = textAlign;
-    }
+    public void textSize(double textSize)                      { this.textSize = Math.max(1, textSize); }
     
-    public void translate(double x, double y)
-    {
-        this.viewMatrix.translate(x, y, 0);
-    }
+    public TextAlign textAlign()                               { return this.textAlign; }
     
-    public void translate(Vector2ic vector)
-    {
-        translate(vector.x(), vector.y());
-    }
+    public void textAlign(TextAlign textAlign)                 { this.textAlign = textAlign; }
     
-    public void translate(Vector2fc vector)
-    {
-        translate(vector.x(), vector.y());
-    }
+    public void translate(double x, double y)                  { this.viewMatrix.translate(x, y, 0); }
     
-    public void translate(Vector2dc vector)
-    {
-        translate(vector.x(), vector.y());
-    }
+    public void translate(Vector2ic vector)                    { translate(vector.x(), vector.y()); }
     
-    public void rotate(double angle)
-    {
-        this.viewMatrix.rotate(angle, 0, 0, 1);
-    }
+    public void translate(Vector2fc vector)                    { translate(vector.x(), vector.y()); }
     
-    public void scale(double x, double y)
-    {
-        this.viewMatrix.scale(x, y, 1);
-    }
+    public void translate(Vector2dc vector)                    { translate(vector.x(), vector.y()); }
     
-    public void scale(Vector2ic vector)
-    {
-        scale(vector.x(), vector.y());
-    }
+    public void rotate(double angle)                           { this.viewMatrix.rotate(angle, 0, 0, 1); }
     
-    public void scale(Vector2fc vector)
-    {
-        scale(vector.x(), vector.y());
-    }
+    public void scale(double x, double y)                      { this.viewMatrix.scale(x, y, 1); }
     
-    public void scale(Vector2dc vector)
-    {
-        scale(vector.x(), vector.y());
-    }
+    public void scale(Vector2ic vector)                        { scale(vector.x(), vector.y()); }
+    
+    public void scale(Vector2fc vector)                        { scale(vector.x(), vector.y()); }
+    
+    public void scale(Vector2dc vector)                        { scale(vector.x(), vector.y()); }
     
     public void begin()
     {
@@ -259,6 +163,7 @@ public class Renderer
         this.viewMatrix.identity();
     }
     
+    // TODO - Abstract
     public void finish()
     {
         this.target.upload();
@@ -278,13 +183,35 @@ public class Renderer
     
     public void clear()                                       { clear(Color.BACKGROUND_GREY); }
     
-    public void clear(Colorc clear) // TODO - Abstract
+    // TODO - Abstract
+    public void clear(Colorc clear)
     {
         this.target.clear(clear);
     }
     
     public void point(double x, double y)
     {
-        this.target.setPixel((int) x, (int) y, this.stroke);
+        if (this.stroke.a() > 0)
+        {
+            Renderer.VECTOR.set(x, y, 0, 1);
+            this.viewMatrix.transform(Renderer.VECTOR);
+            int posX = (int) Renderer.VECTOR.x, posY = (int) Renderer.VECTOR.y;
+            
+            if (this.weight == 1)
+            {
+                this.target.setPixel(posX, posY, this.stroke);
+            }
+            else
+            {
+                int min = (int) Math.floor(this.weight / 2), max = (int) Math.ceil(this.weight / 2);
+                for (int j = -min; j <= max; j++)
+                {
+                    for (int i = -min; i <= max; i++)
+                    {
+                        this.target.setPixel(posX + i, posY + j, this.stroke);
+                    }
+                }
+            }
+        }
     }
 }

@@ -1,9 +1,8 @@
 package engine.input;
 
-import engine.event.Events;
 import engine.event.*;
-import org.joml.Vector2i;
-import org.joml.Vector2ic;
+import org.joml.Vector2d;
+import org.joml.Vector2dc;
 
 import static engine.Engine.screenHeight;
 import static engine.Engine.screenWidth;
@@ -23,61 +22,61 @@ public class Mouse extends Device<Mouse.Button>
     
     private boolean entered, newEntered;
     
-    private final Vector2i pos       = new Vector2i();
-    private final Vector2i newPos    = new Vector2i();
-    private final Vector2i rel       = new Vector2i();
-    private final Vector2i scroll    = new Vector2i();
-    private final Vector2i newScroll = new Vector2i();
+    private final Vector2d pos       = new Vector2d();
+    private final Vector2d newPos    = new Vector2d();
+    private final Vector2d rel       = new Vector2d();
+    private final Vector2d scroll    = new Vector2d();
+    private final Vector2d newScroll = new Vector2d();
     
     private       Button   drag;
-    private final Vector2i dragPos = new Vector2i();
+    private final Vector2d dragPos = new Vector2d();
     
     public boolean entered()
     {
         return this.entered;
     }
     
-    public Vector2ic pos()
+    public Vector2dc pos()
     {
         return this.pos;
     }
     
-    public int x()
+    public double x()
     {
         return this.pos.x;
     }
     
-    public int y()
+    public double y()
     {
         return this.pos.y;
     }
     
-    public Vector2ic rel()
+    public Vector2dc rel()
     {
         return this.rel;
     }
     
-    public int relX()
+    public double relX()
     {
         return this.rel.x;
     }
     
-    public int relY()
+    public double relY()
     {
         return this.rel.y;
     }
     
-    public Vector2ic scroll()
+    public Vector2dc scroll()
     {
         return this.scroll;
     }
     
-    public int scrollX()
+    public double scrollX()
     {
         return this.scroll.x;
     }
     
-    public int scrollY()
+    public double scrollY()
     {
         return this.scroll.y;
     }
@@ -120,7 +119,7 @@ public class Mouse extends Device<Mouse.Button>
         if (input.down)
         {
             Events.post(EventMouseButtonDown.class, input, this.pos);
-        
+    
             input.click.set(this.pos);
             if (this.drag == null)
             {
@@ -131,10 +130,10 @@ public class Mouse extends Device<Mouse.Button>
         if (input.up)
         {
             Events.post(EventMouseButtonUp.class, input, this.pos);
-        
+    
             boolean inClickRange  = Math.abs(this.pos.x - input.click.x) < 2 && Math.abs(this.pos.y - input.click.y) < 2;
             boolean inDClickRange = Math.abs(this.pos.x - input.dClick.x) < 2 && Math.abs(this.pos.y - input.dClick.y) < 2;
-        
+    
             if (inDClickRange && time - input.pressTime < 500_000_000)
             {
                 Events.post(EventMouseButtonClicked.class, input, this.pos, true);
@@ -150,7 +149,7 @@ public class Mouse extends Device<Mouse.Button>
         if (input.held)
         {
             Events.post(EventMouseButtonHeld.class, input, this.pos);
-        
+    
             if (this.drag == input && (this.rel.x != 0 || this.rel.y != 0))
             {
                 Events.post(EventMouseButtonDragged.class, input, this.dragPos, this.pos, this.rel);
@@ -166,23 +165,23 @@ public class Mouse extends Device<Mouse.Button>
     
     public void positionCallback(double x, double y)
     {
-        this.newPos.set(Math.max(0, Math.min((int) x, screenWidth() - 1)), Math.max(0, Math.min((int) y, screenHeight() - 1)));
+        this.newPos.set(Math.max(0, Math.min(x, screenWidth() - 1)), Math.max(0, Math.min(y, screenHeight() - 1)));
     }
     
     public void scrollCallback(double x, double y)
     {
-        this.newScroll.add((int) x, (int) y);
+        this.newScroll.add(x, y);
     }
     
     public void captureCallback(boolean captured)
     {
-        if (captured) this.newPos.set(this.pos.set(screenWidth() / 2, screenHeight() / 2));
+        if (captured) this.newPos.set(this.pos.set(screenWidth() / 2.0, screenHeight() / 2.0));
     }
     
     public class Button extends Device.Input
     {
-        private final Vector2i click  = new Vector2i();
-        private final Vector2i dClick = new Vector2i();
+        private final Vector2d click  = new Vector2d();
+        private final Vector2d dClick = new Vector2d();
         
         private Button(String name, int reference)
         {

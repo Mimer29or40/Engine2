@@ -23,6 +23,7 @@ import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.HashMap;
 
+import static engine.util.Util.getCurrentDateTimeString;
 import static engine.util.Util.println;
 import static org.lwjgl.opengl.GL43.*;
 import static org.lwjgl.stb.STBImageWrite.stbi_write_png;
@@ -251,29 +252,7 @@ public class Engine
                                 
                                 if (Engine.screenshot != null)
                                 {
-                                    if (!Engine.screenshot.endsWith(".png")) Engine.screenshot += ".png";
-                                    
-                                    int w = Engine.window.windowWidth();
-                                    int h = Engine.window.windowHeight();
-                                    int c = 4;
-                                    
-                                    int stride = w * c;
-                                    
-                                    ByteBuffer buf = BufferUtils.createByteBuffer(w * h * c);
-                                    glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, buf);
-                                    
-                                    byte[] tmp1 = new byte[stride], tmp2 = new byte[stride];
-                                    for (int i = 0, n = h >> 1, col1, col2; i < n; i++)
-                                    {
-                                        col1 = i * stride;
-                                        col2 = (h - i - 1) * stride;
-                                        buf.get(col1, tmp1);
-                                        buf.get(col2, tmp2);
-                                        buf.put(col1, tmp2);
-                                        buf.put(col2, tmp1);
-                                    }
-                                    
-                                    if (!stbi_write_png(Engine.screenshot, w, h, c, buf, stride)) Engine.LOGGER.error("Could not take screen shot");
+                                    screenShotNow(Engine.screenshot);
                                     
                                     Engine.screenshot = null;
                                 }
@@ -403,7 +382,36 @@ public class Engine
     
     public static void printFrameData(String parent) { if (Engine.PROFILER.enabled) Engine.printFrame = parent; }
     
-    public static void screenShot(String path)       { Engine.screenshot = path; }
+    public static void screenShot()                  { screenShot(null); }
+    
+    public static void screenShot(String path)       { Engine.screenshot = path == null || path.equals("") ? "screenshot - " + getCurrentDateTimeString() : path; }
+    
+    public static void screenShotNow(String path)
+    {
+        if (!path.endsWith(".png")) path += ".png";
+        
+        int w = Engine.window.windowWidth();
+        int h = Engine.window.windowHeight();
+        int c = 4;
+        
+        int stride = w * c;
+        
+        ByteBuffer buf = BufferUtils.createByteBuffer(w * h * c);
+        glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, buf);
+        
+        byte[] tmp1 = new byte[stride], tmp2 = new byte[stride];
+        for (int i = 0, n = h >> 1, col1, col2; i < n; i++)
+        {
+            col1 = i * stride;
+            col2 = (h - i - 1) * stride;
+            buf.get(col1, tmp1);
+            buf.get(col2, tmp2);
+            buf.put(col1, tmp2);
+            buf.put(col2, tmp1);
+        }
+        
+        if (!stbi_write_png(path, w, h, c, buf, stride)) Engine.LOGGER.error("Could not take screen shot");
+    }
     
     // ---------------------
     // -- Random Instance --

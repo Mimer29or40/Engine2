@@ -4,11 +4,23 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.regex.Pattern;
 
 public class Util
 {
+    private static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("uuuu-MMM-dd HH.mm.ss.SSS");
+    private static final DateTimeFormatter timeFormat     = DateTimeFormatter.ofPattern("HH.mm.ss.SSS");
+    private static final DateTimeFormatter dateFormat     = DateTimeFormatter.ofPattern("uuuu-MMM-dd");
+    
+    public static String getCurrentDateTimeString() { return LocalDateTime.now().format(dateTimeFormat); }
+    
+    public static String getCurrentTimeString()     { return LocalDateTime.now().toLocalTime().format(timeFormat); }
+    
+    public static String getCurrentDateString()     { return LocalDateTime.now().toLocalDate().format(dateFormat); }
+    
     private static final Pattern fsPattern = Pattern.compile("%(\\d+\\$)?([-#+ 0,(<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])"); // Taken from java.lang.Formatter
     
     public static void print(Object object) { System.out.print(object); }

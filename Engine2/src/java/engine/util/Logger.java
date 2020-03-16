@@ -1,16 +1,13 @@
 package engine.util;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.util.Date;
 import java.util.regex.Pattern;
+
+import static engine.util.Util.getCurrentTimeString;
 
 @SuppressWarnings("unused")
 public class Logger
 {
-    private static final DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss:SSS");
-    private static final Pattern    fsPattern  = Pattern.compile("%(\\d+\\$)?([-#+ 0,(<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])"); // Taken from java.lang.Formatter
+    private static final Pattern fsPattern = Pattern.compile("%(\\d+\\$)?([-#+ 0,(<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])"); // Taken from java.lang.Formatter
     
     private static Level level = Level.INFO;
     
@@ -37,16 +34,15 @@ public class Logger
     {
         if (level.compareTo(Logger.level) <= 0)
         {
-            String date   = Logger.dateFormat.format(Date.from(Instant.now()));
             String thread = Thread.currentThread().getName();
             String line;
             if (this.className.equals(""))
             {
-                line = String.format("[%s] [%s/%s]: %s", date, thread, level, message);
+                line = String.format("[%s] [%s/%s]: %s", getCurrentTimeString(), thread, level, message);
             }
             else
             {
-                line = String.format("[%s] [%s/%s] [%s]: %s", date, thread, level, this.className, message);
+                line = String.format("[%s] [%s/%s] [%s]: %s", getCurrentTimeString(), thread, level, this.className, message);
             }
             System.out.println(line);
         }

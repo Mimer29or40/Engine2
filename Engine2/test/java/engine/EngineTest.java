@@ -1,11 +1,7 @@
 package engine;
 
 import engine.color.Color;
-import engine.event.Event;
-import engine.event.Events;
 import engine.util.Logger;
-
-import static engine.util.Util.println;
 
 public class EngineTest extends Engine
 {
@@ -31,6 +27,7 @@ public class EngineTest extends Engine
         Engine.renderer.point(mouse().x(), mouse().y());
         
         if (keyboard().SPACE.down()) screenShot("screenshot" + frameCount());
+        if (keyboard().S.down()) screenShot();
         if (keyboard().F.down()) fullscreen(!fullscreen());
         if (keyboard().V.down()) vsync(!vsync());
     }

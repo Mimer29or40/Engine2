@@ -2,5 +2,5 @@ package engine.render;
 
 public enum EllipseMode
 {
-    RADIUS, CENTER, CORNER, CORNERS
+    CENTER, RADIUS, CORNER, CORNERS
 }

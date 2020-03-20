@@ -80,10 +80,10 @@ public class Window
         glfwSetWindowSizeLimits(this.glfwWindow, screenWidth(), screenHeight(), GLFW_DONT_CARE, GLFW_DONT_CARE);
         
         if (this.glfwWindow == NULL) throw new RuntimeException("Failed to create the GLFW window");
-        
+    
         this.windowPos.x = (this.monitorSize.x - this.windowSize.x) >> 1;
         this.windowPos.y = (this.monitorSize.y - this.windowSize.y) >> 1;
-        glfwSetWindowPos(this.glfwWindow, this.windowSize.x, this.windowSize.y);
+        glfwSetWindowPos(this.glfwWindow, this.windowPos.x, this.windowPos.y);
         
         Window.LOGGER.trace("GLFW: Event Handling");
         
@@ -244,12 +244,12 @@ public class Window
         if (this.update)
         {
             double aspect = (double) (screenWidth() * pixelWidth()) / (double) (screenHeight() * pixelHeight());
-
+    
             this.viewSize.set(this.windowSize.x, (int) (this.windowSize.x / aspect));
             if (this.viewSize.y > this.windowSize.y) this.viewSize.set((int) (this.windowSize.y * aspect), this.windowSize.y);
-
+    
             this.viewPos.set((this.windowSize.x - this.viewSize.x) >> 1, (this.windowSize.y - this.viewSize.y) >> 1);
-
+    
             glViewport(this.viewPos.x, this.viewPos.y, this.viewSize.x, this.viewSize.y);
         }
         return this.update;

@@ -611,25 +611,27 @@ public class Engine
     
     public static void fullscreen(boolean fullscreen) { Engine.window.fullscreen(fullscreen); }
     
-    public static boolean vsync()                     { return Engine.window.vsync(); }
+    public static boolean vsync()           { return Engine.window.vsync(); }
     
-    public static void vsync(boolean vsync)           { Engine.window.vsync(vsync); }
+    public static void vsync(boolean vsync) { Engine.window.vsync(vsync); }
     
-    public static Vector2ic viewPos()                 { return Engine.window.viewPos(); }
+    public static Vector2ic viewPos()       { return Engine.window.viewPos(); }
     
-    public static int viewX()                         { return Engine.window.viewX(); }
+    public static int viewX()               { return Engine.window.viewX(); }
     
-    public static int viewY()                         { return Engine.window.viewY(); }
+    public static int viewY()               { return Engine.window.viewY(); }
     
-    public static Vector2ic viewSize()                { return Engine.window.viewSize(); }
+    public static Vector2ic viewSize()      { return Engine.window.viewSize(); }
     
-    public static int viewW()                         { return Engine.window.viewW(); }
+    public static int viewW()               { return Engine.window.viewW(); }
     
-    public static int viewH()                         { return Engine.window.viewH(); }
+    public static int viewH()               { return Engine.window.viewH(); }
     
     // -----------------------
     // -- Renderer Instance --
     // -----------------------
+    
+    public static Renderer renderer() { return Engine.renderer; }
     
     // --------------------
     // -- Instance Stuff --

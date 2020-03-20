@@ -3,17 +3,35 @@ package engine.util;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
-public class Tuple<A, B, C>
+public class Tuple<A, B, C> implements ITuple<A, B, C>
 {
-    public final A a;
-    public final B b;
-    public final C c;
+    public A a;
+    public B b;
+    public C c;
     
     public Tuple(A a, B b, C c)
     {
         this.a = a;
         this.b = b;
         this.c = c;
+    }
+    
+    @Override
+    public A getA()
+    {
+        return this.a;
+    }
+    
+    @Override
+    public B getB()
+    {
+        return this.b;
+    }
+    
+    @Override
+    public C getC()
+    {
+        return this.c;
     }
     
     @Override

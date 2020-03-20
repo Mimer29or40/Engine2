@@ -1,12 +1,12 @@
 package engine.util;
 
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class Util
@@ -136,18 +136,108 @@ public class Util
     
     public static Path getPath(String filePath)
     {
-        URL file = Util.class.getClassLoader().getResource(filePath);
-        if (file != null)
+        try
         {
-            try
-            {
-                return Paths.get(file.toURI());
-            }
-            catch (URISyntaxException ignored)
-            {
-            
-            }
+            return Paths.get(Objects.requireNonNull(Util.class.getClassLoader().getResource(filePath)).toURI());
         }
+        catch (URISyntaxException | NullPointerException ignored) { }
         return Paths.get(filePath);
     }
+    
+    public static double getDecimal(double value)
+    {
+        return value - (int) value;
+    }
+    
+    public static boolean isEven(int value)
+    {
+        return (value & 1) == 0;
+    }
+    
+    public static boolean isOdd(int value)
+    {
+        return (value & 1) == 1;
+    }
+    
+    public static boolean isEven(double value)
+    {
+        return ((int) Math.floor(value) & 1) == 0;
+    }
+    
+    public static boolean isOdd(double value)
+    {
+        return ((int) Math.floor(value) & 1) == 1;
+    }
+    
+    public static int min(int[] array)
+    {
+        int min = Integer.MAX_VALUE;
+        for (int x : array) min = Math.min(min, x);
+        return min;
+    }
+    
+    public static long min(long[] array)
+    {
+        long min = Long.MAX_VALUE;
+        for (long x : array) min = Math.min(min, x);
+        return min;
+    }
+    
+    public static float min(float[] array)
+    {
+        float min = Float.MAX_VALUE;
+        for (float x : array) min = Math.min(min, x);
+        return min;
+    }
+    
+    public static double min(double[] array)
+    {
+        double min = Double.MAX_VALUE;
+        for (double x : array) min = Math.min(min, x);
+        return min;
+    }
+    
+    public static int max(int[] array)
+    {
+        int max = Integer.MIN_VALUE;
+        for (int x : array) max = Math.max(max, x);
+        return max;
+    }
+    
+    public static long max(long[] array)
+    {
+        long max = Long.MIN_VALUE;
+        for (long x : array) max = Math.max(max, x);
+        return max;
+    }
+    
+    public static float max(float[] array)
+    {
+        float max = Float.MIN_VALUE;
+        for (float x : array) max = Math.max(max, x);
+        return max;
+    }
+    
+    public static double max(double[] array)
+    {
+        double max = Double.MIN_VALUE;
+        for (double x : array) max = Math.max(max, x);
+        return max;
+    }
+    
+    public static int minFrom(int... values)       { return min(values); }
+    
+    public static long minFrom(long... values)     { return min(values); }
+    
+    public static float minFrom(float... values)   { return min(values); }
+    
+    public static double minFrom(double... values) { return min(values); }
+    
+    public static int maxFrom(int... values)       { return max(values); }
+    
+    public static long maxFrom(long... values)     { return max(values); }
+    
+    public static float maxFrom(float... values)   { return max(values); }
+    
+    public static double maxFrom(double... values) { return max(values); }
 }

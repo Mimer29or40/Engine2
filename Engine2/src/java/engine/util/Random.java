@@ -72,22 +72,22 @@ public class Random extends java.util.Random
         return nextDouble(-1, 1);
     }
     
-    public int nextIndex(int[] array)
+    public int nextIndex(int... array)
     {
         return array[nextInt(array.length)];
     }
     
-    public long nextIndex(long[] array)
+    public long nextIndex(long... array)
     {
         return array[nextInt(array.length)];
     }
     
-    public float nextIndex(float[] array)
+    public float nextIndex(float... array)
     {
         return array[nextInt(array.length)];
     }
     
-    public double nextIndex(double[] array)
+    public double nextIndex(double... array)
     {
         return array[nextInt(array.length)];
     }
@@ -106,26 +106,6 @@ public class Random extends java.util.Random
             index--;
         }
         return null;
-    }
-    
-    public int choose(int... options)
-    {
-        return nextIndex(options);
-    }
-    
-    public long choose(long... options)
-    {
-        return nextIndex(options);
-    }
-    
-    public float choose(float... options)
-    {
-        return nextIndex(options);
-    }
-    
-    public double choose(double... options)
-    {
-        return nextIndex(options);
     }
     
     public Vector2i nextVector2i()

@@ -453,25 +453,17 @@ public class Engine
     
     public static double nextGaussian()                                           { return Engine.random.nextGaussian(); }
     
-    public static int nextIndex(int[] array)                                      { return Engine.random.nextIndex(array); }
+    public static int nextIndex(int... array)       { return Engine.random.nextIndex(array); }
     
-    public static long nextIndex(long[] array)                                    { return Engine.random.nextIndex(array); }
+    public static long nextIndex(long... array)     { return Engine.random.nextIndex(array); }
     
-    public static float nextIndex(float[] array)                                  { return Engine.random.nextIndex(array); }
+    public static float nextIndex(float... array)   { return Engine.random.nextIndex(array); }
     
-    public static double nextIndex(double[] array)                                { return Engine.random.nextIndex(array); }
+    public static double nextIndex(double... array) { return Engine.random.nextIndex(array); }
     
     public static <T> T nextIndex(T[] array)                                      { return Engine.random.nextIndex(array); }
     
     public static <T> T nextIndex(Collection<T> collection)                       { return Engine.random.nextIndex(collection); }
-    
-    public static int choose(int... options)                                      { return Engine.random.choose(options); }
-    
-    public static long choose(long... options)                                    { return Engine.random.choose(options); }
-    
-    public static float choose(float... options)                                  { return Engine.random.choose(options); }
-    
-    public static double choose(double... options)                                { return Engine.random.choose(options); }
     
     public static Vector2i nextVector2i()                                         { return Engine.random.nextVector2i(); }
     

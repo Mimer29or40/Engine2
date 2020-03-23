@@ -27,24 +27,22 @@ public class EngineTest extends Engine
         // logger.info(mouse().pos().toString());
     
         // renderer().weight(10);
-        // renderer().line(screenWidth() / 2.0, screenHeight() / 2.0, mouse().pos());
         // renderer().stroke(Color.RED);
+        // renderer().line(screenWidth() / 2.0, screenHeight() / 2.0, mouse().pos());
         // renderer().point(mouse().pos());
     
         // renderer().bezier(0,0, mouse().pos(), screenWidth() - 1, screenHeight() - 1);
     
-        double[] cords;
-        // cords = new double[] {mouse().x(), mouse().y(), 99, 50, 75, 50, 50, 25, 25, 50, 0, 50};
-        // cords = new double[] {mouse().x(), mouse().y(), 99, 25, 99, 99, 0, 99, 0, 25};
-        cords = new double[] {0, 25, 10, 0, 30, 50, 30, 0, 40, 25, 50, 0, 50, 50, 70, 0, 80, 25, 99, 99, mouse().x(), mouse().y()};
-        // cords = new double[] {0, 25, 10, 0, 30, 50, 30, 0, 40, 25, 50, 0, 50, 50, 70, 0, 80, 25, 99, 99, 0, 99};
+        // renderer().stroke(255, 0, 0, 100);
+        // renderer().weight(3);
+        // renderer().fill(255);
+        // renderer().polygon(mouse().pos(), 99, 75, 75, 75, 50, 25, 25, 75, 0, 75);
+        // // renderer().polygon(mouse().pos(), 99, 25, 99, 99, 0, 99, 0, 25);
+        // // renderer().polygon(0, 25, 10, 0, 30, 50, 30, 0, 40, 25, 50, 0, 50, 50, 70, 0, 80, 25, 99, 99, mouse().pos());
     
-        renderer().fill(255);
-        renderer().fillPolygon(cords);
-    
-        renderer().stroke(255, 0, 0, 100);
-        renderer().weight(1);
-        renderer().drawPolygon(cords);
+        renderer().scale(1, 0.5);
+        renderer().noStroke();
+        renderer().circle(mouse().pos(), 30);
     
         if (keyboard().SPACE.down()) screenShot("screenshot" + frameCount());
         if (keyboard().S.down()) screenShot();

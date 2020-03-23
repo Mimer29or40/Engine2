@@ -155,49 +155,69 @@ public class SoftwareRenderer extends Renderer
     }
     
     @Override
-    public void drawEllipse(double x, double y, double w, double h)
+    public void drawTriangle(double x1, double y1, double x2, double y2, double x3, double y3)
     {
-    
+        drawPolygon(new double[] {x1, y1, x2, y2, x3, y3});
     }
     
     @Override
-    public void fillEllipse(double x, double y, double w, double h)
+    public void fillTriangle(double x1, double y1, double x2, double y2, double x3, double y3)
     {
-    
+        fillPolygon(new double[] {x1, y1, x2, y2, x3, y3});
     }
     
     @Override
-    public void drawCircle(double x, double y, double r)
+    public void drawSquare(double x, double y, double w)
     {
-    
+        drawPolygon(new double[] {x, y, x + w, y, x + w, y + w, x, y + w});
     }
     
     @Override
-    public void fillCircle(double x, double y, double r)
+    public void fillSquare(double x, double y, double w)
     {
-    
+        fillPolygon(new double[] {x, y, x + w, y, x + w, y + w, x, y + w});
     }
     
     @Override
-    public void drawPolygon(double[] coordinates)
+    public void drawRect(double x, double y, double w, double h)
     {
-        int n = coordinates.length;
-        
-        if ((n & 1) == 1) throw new RuntimeException("Invalid coordinates. Must be an even number");
-        if (n < 6) throw new RuntimeException("Invalid coordinates. Must have at least 3 coordinates");
-        
+        drawPolygon(new double[] {x, y, x + w, y, x + w, y + h, x, y + h});
+    }
+    
+    @Override
+    public void fillRect(double x, double y, double w, double h)
+    {
+        fillPolygon(new double[] {x, y, x + w, y, x + w, y + h, x, y + h});
+    }
+    
+    @Override
+    public void drawQuad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
+    {
+        drawPolygon(new double[] {x1, y1, x2, y2, x3, y3, x4, y4});
+    }
+    
+    @Override
+    public void fillQuad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
+    {
+        fillPolygon(new double[] {x1, y1, x2, y2, x3, y3, x4, y4});
+    }
+    
+    @Override
+    public void drawPolygon(double[] points)
+    {
+        int n = points.length;
         int x1, y1, x2, y2;
         
-        PairD coord = transform(coordinates[n - 2], coordinates[n - 1]);
-        x1 = (int) coord.a();
-        y1 = (int) coord.b();
+        PairD pt = transform(points[n - 2], points[n - 1]);
+        x1 = (int) pt.a();
+        y1 = (int) pt.b();
         for (int i = 0; i < n; i += 2)
         {
-            coord = transform(coordinates[i], coordinates[i + 1]);
-            x2    = (int) coord.a();
-            y2    = (int) coord.b();
+            pt = transform(points[i], points[i + 1]);
+            x2 = (int) pt.a();
+            y2 = (int) pt.b();
             
-            lineImpl(x1, y1, x2, y2, 1, LINE_OVERLAP_NONE);
+            lineImpl(x1, y1, x2, y2, (int) this.weight, LINE_OVERLAP_NONE);
             
             x1 = x2;
             y1 = y2;
@@ -206,22 +226,19 @@ public class SoftwareRenderer extends Renderer
     }
     
     @Override
-    public void fillPolygon(double[] coordinates)
+    public void fillPolygon(double[] points)
     {
-        int n = coordinates.length;
-        
-        if ((n & 1) == 1) throw new RuntimeException("Invalid coordinates. Must be an even number");
-        if (n < 6) throw new RuntimeException("Invalid coordinates. Must have at least 3 coordinates");
+        int n = points.length;
         
         int minX, maxX, minY, maxY;
         int x1, y1, x2, y2;
         
-        PairD cord = transform(coordinates[n - 2], coordinates[n - 1]);
+        PairD cord = transform(points[n - 2], points[n - 1]);
         minX = maxX = x1 = (int) cord.a();
         minY = maxY = y1 = (int) cord.b();
         for (int i = 0; i < n; i += 2)
         {
-            cord = transform(coordinates[i], coordinates[i + 1]);
+            cord = transform(points[i], points[i + 1]);
             x2   = (int) cord.a();
             y2   = (int) cord.b();
             minX = Math.min(minX, x2);
@@ -234,7 +251,8 @@ public class SoftwareRenderer extends Renderer
         }
         
         HashMap<Integer, PairI> xMap = new HashMap<>(), yMap = new HashMap<>();
-        PairI                   xPair, yPair;
+        
+        PairI xPair, yPair;
         for (PairI point : SoftwareRenderer.POINTS)
         {
             int x = point.a, y = point.b;
@@ -258,97 +276,30 @@ public class SoftwareRenderer extends Renderer
             }
         }
         pointsImpl(this.fill);
-        
-        // ArrayList<Edge> edgeTable  = new ArrayList<>();
-        // ArrayList<Edge> activeList = new ArrayList<>();
-        //
-        // int minX, maxX, minY, maxY;
-        // int x1, y1, x2, y2;
-        //
-        // PairD cord = transform(coordinates[n - 2], coordinates[n - 1]);
-        // minX = maxX = x1 = (int) cord.a();
-        // minY = maxY = y1 = (int) cord.b();
-        // for (int i = 0; i < n; i += 2)
-        // {
-        //     cord = transform(coordinates[i], coordinates[i + 1]);
-        //     x2   = (int) cord.a();
-        //     y2   = (int) cord.b();
-        //     minX = Math.min(minX, x2);
-        //     maxX = Math.max(maxX, x2);
-        //     minY = Math.min(minY, y2);
-        //     maxY = Math.max(maxY, y2);
-        //     if (y1 != y2) edgeTable.add(new Edge(x1, y1, x2, y2));
-        //     x1 = x2;
-        //     y1 = y2;
-        // }
-        // int scanLine = minY;
-        // if (edgeTable.size() == 0) lineImpl(minX, scanLine, maxX, scanLine, 1, LINE_OVERLAP_NONE);
-        // edgeTable.sort(Comparator.comparingInt(o -> o.yMin));
-        //
-        // while (edgeTable.size() > 0)
-        // {
-        //     for (Edge edge : edgeTable) if (edge.yMin == scanLine) activeList.add(edge);
-        //     for (Edge edge : activeList)
-        //     {
-        //         while (edge.y < scanLine)
-        //         {
-        //             int e2 = edge.sum << 1;
-        //             if (e2 <= edge.dx)
-        //             {
-        //                 edge.y++;
-        //                 edge.sum += edge.dx;
-        //             }
-        //             if (e2 >= -edge.dy)
-        //             {
-        //                 edge.x += edge.sign;
-        //                 edge.sum -= edge.dy;
-        //             }
-        //             if (edge.x == edge.xMax && edge.y == edge.yMax) break;
-        //         }
-        //     }
-        //     activeList.sort((o1, o2) -> {
-        //         if (o1.x < o2.x) return -1;
-        //         if (o1.x > o2.x) return 1;
-        //         if (o1.sign < o2.sign) return -1;
-        //         if (o1.sign > o2.sign) return 1;
-        //         if (o1.slope < o2.slope) return -1;
-        //         if (o1.slope > o2.slope) return 1;
-        //         return Integer.compare(o1.xMax, o2.xMax);
-        //     });
-        //
-        //     minX = Integer.MAX_VALUE;
-        //     minY = Integer.MAX_VALUE;
-        //     maxY = Integer.MIN_VALUE;
-        //     for (Edge edge : activeList)
-        //     {
-        //         int x = minXBresenham(edge);
-        //         if (minX == Integer.MIN_VALUE || (edge.yMin < minY && minX == x))
-        //         {
-        //             minX = x;
-        //             minY = edge.yMin;
-        //             maxY = edge.yMax;
-        //         }
-        //         else if (maxY != edge.yMin)
-        //         {
-        //             x = maxXBresenham(edge);
-        //             lineImpl(minX, scanLine, x, scanLine, 1, LINE_OVERLAP_NONE);
-        //             minX = Integer.MIN_VALUE;
-        //         }
-        //     }
-        //
-        //     scanLine++;
-        //     for (int i = 0; i < activeList.size(); i++)
-        //     {
-        //         Edge edge = activeList.get(i);
-        //         if (edge.yMax < scanLine)
-        //         {
-        //             activeList.remove(edge);
-        //             edgeTable.remove(edge);
-        //             i--;
-        //         }
-        //     }
-        // }
-        // pointsImpl(this.fill);
+    }
+    
+    @Override
+    public void drawCircle(double x, double y, double r)
+    {
+        drawPolygon(getCirclePoints(x, y, r, r));
+    }
+    
+    @Override
+    public void fillCircle(double x, double y, double r)
+    {
+        fillPolygon(getCirclePoints(x, y, r, r));
+    }
+    
+    @Override
+    public void drawEllipse(double x, double y, double rx, double ry)
+    {
+        drawPolygon(getCirclePoints(x, y, rx, ry));
+    }
+    
+    @Override
+    public void fillEllipse(double x, double y, double rx, double ry)
+    {
+        fillPolygon(getCirclePoints(x, y, rx, ry));
     }
     
     private void pointImpl(int x, int y, Colorc color)
@@ -371,21 +322,21 @@ public class SoftwareRenderer extends Renderer
     
     private void lineImpl(int x1, int y1, int x2, int y2, int thickness, int aOverlap)
     {
-        if (y1 > y2)
-        {
-            int temp = y2;
-            y2   = y1;
-            y1   = temp;
-            temp = x2;
-            x2   = x1;
-            x1   = temp;
-        }
-        
-        int dx = Math.abs(x2 - x1), sx = x1 < x2 ? 1 : -1;
-        int dy = Math.abs(y2 - y1), sy = y1 < y2 ? 1 : -1;
-        
+        // if (y1 > y2)
+        // {
+        //     int temp = y2;
+        //     y2   = y1;
+        //     y1   = temp;
+        //     temp = x2;
+        //     x2   = x1;
+        //     x1   = temp;
+        // }
+    
         if (thickness == 1)
         {
+            int dx = Math.abs(x2 - x1), sx = x1 < x2 ? 1 : -1;
+            int dy = Math.abs(y2 - y1), sy = y1 < y2 ? 1 : -1;
+        
             if (dx == 0)
             {
                 while (true)
@@ -444,8 +395,11 @@ public class SoftwareRenderer extends Renderer
         }
         else
         {
+            int dx = Math.abs(y2 - y1), sx = x1 < x2 ? 1 : -1;
+            int dy = Math.abs(x2 - x1), sy = y1 < y2 ? 1 : -1;
+        
             int halfWidth = thickness >> 1;
-            
+        
             if (sx < 0 == sy < 0)
             {
                 if (dx >= dy)
@@ -470,10 +424,10 @@ public class SoftwareRenderer extends Renderer
                     sy        = -sy;
                 }
             }
-            
+            // int ox = x1, oy = y1, adx, ady;
             int i, err, e2, overlap, c;
             err = dx - dy;
-            for (i = halfWidth; i > 0; i--)
+            for (i = 0; i < halfWidth; i++)
             {
                 e2 = err << 1;
                 if (e2 >= -dy)
@@ -488,6 +442,13 @@ public class SoftwareRenderer extends Renderer
                     y1 -= sy;
                     y2 -= sy;
                 }
+                // adx = Math.abs(x1 - ox);
+                // ady = Math.abs(y1 - oy);
+                // if (adx * adx + ady * ady > halfWidth * halfWidth)
+                // {
+                //     halfWidth = i;
+                //     break;
+                // }
             }
             lineImpl(x1, y1, x2, y2, 1, LINE_OVERLAP_NONE);
             err = dx - dy;
@@ -510,7 +471,7 @@ public class SoftwareRenderer extends Renderer
                     y2 += sy;
                     c++;
                 }
-                if (c == 2) overlap = LINE_OVERLAP_MAJOR;
+                if (c == 2) overlap = LINE_OVERLAP_MAJOR | LINE_OVERLAP_MINOR;
                 lineImpl(x1, y1, x2, y2, 1, overlap);
             }
         }
@@ -522,58 +483,17 @@ public class SoftwareRenderer extends Renderer
         return new PairD(SoftwareRenderer.VECTOR.x, SoftwareRenderer.VECTOR.y);
     }
     
-    private static class Edge
+    private double[] getCirclePoints(double x, double y, double rx, double ry)
     {
-        int xMin, yMin, xMax, yMax, x, y, sign, dx, dy, sum, slope;
-        
-        public Edge(int x1, int y1, int x2, int y2)
+        int      RESOLUTION = 16;
+        double   TWO_PI     = 2.0 * Math.PI;
+        double[] points     = new double[RESOLUTION * 2];
+        for (int i = 0; i < RESOLUTION; i++)
         {
-            boolean maxPoint = y2 >= y1;
-            this.xMin  = this.x = !maxPoint ? x2 : x1;
-            this.yMin  = this.y = !maxPoint ? y2 : y1;
-            this.xMax  = maxPoint ? x2 : x1;
-            this.yMax  = maxPoint ? y2 : y1;
-            this.sign  = Integer.signum(this.xMax - this.xMin);
-            this.dy    = Math.abs(y2 - y1);
-            this.dx    = Math.abs(x2 - x1);
-            this.sum   = this.dx - this.dy;
-            this.slope = this.dx != 0 ? this.dy * 1000 / this.dx : Integer.MAX_VALUE;
+            double angle = TWO_PI * (double) i / (double) RESOLUTION;
+            points[(2 * i)]     = x + Math.cos(angle) * rx;
+            points[(2 * i) + 1] = y + Math.sin(angle) * ry;
         }
-    }
-    
-    private int minXBresenham(Edge edge)
-    {
-        int tempX   = edge.x;
-        int tempSum = edge.sum;
-        while (true)
-        {
-            int e2 = tempSum << 1;
-            if (e2 <= edge.dx) return tempX;
-            if (e2 >= -edge.dy)
-            {
-                if (tempX + edge.sign > tempX) return tempX;
-                tempX += edge.sign;
-                tempSum -= edge.dy;
-            }
-            if (tempX == edge.xMax && edge.y == edge.yMax) return tempX;
-        }
-    }
-    
-    private int maxXBresenham(Edge edge)
-    {
-        int tempX   = edge.x;
-        int tempSum = edge.sum;
-        while (true)
-        {
-            int e2 = tempSum << 1;
-            if (e2 <= edge.dx) return tempX;
-            if (e2 >= -edge.dy)
-            {
-                if (tempX + edge.sign < tempX) return tempX;
-                tempX += edge.sign;
-                tempSum -= edge.dy;
-            }
-            if (tempX == edge.xMax && edge.y == edge.yMax) return tempX;
-        }
+        return points;
     }
 }

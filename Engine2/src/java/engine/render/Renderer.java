@@ -31,7 +31,7 @@ public abstract class Renderer
     
     protected Texture target;
     
-    protected boolean blend = false;
+    protected boolean enableBlend = false;
     
     protected final Color        fill  = new Color(Renderer.DEFAULT_FILL);
     protected final Stack<Color> fills = new Stack<>();
@@ -60,16 +60,16 @@ public abstract class Renderer
     protected final Matrix4d        viewMatrix   = new Matrix4d();
     protected final Stack<Matrix4d> viewMatrices = new Stack<>();
     
-    private static int[] pixels;
+    private static int[] pixels; // TODO - Get and Set Pixels
     
     protected Renderer(Texture target)
     {
         this.target = target;
     }
     
-    public boolean blend()           { return this.blend; }
+    public boolean enableBlend()                 { return this.enableBlend; }
     
-    public void blend(boolean blend) { this.blend = blend; }
+    public void enableBlend(boolean enableBlend) { this.enableBlend = enableBlend; }
     
     // ----------------
     // -- Properties --
@@ -227,7 +227,7 @@ public abstract class Renderer
     
     public void clear()                                       { clear(Color.BACKGROUND_GREY); }
     
-    public abstract void clear(Colorc clear);
+    public abstract void clear(Colorc color);
     
     // TODO - Have methods that handle 3D coordinates
     
@@ -618,351 +618,375 @@ public abstract class Renderer
         if (this.stroke.a() > 0) drawQuad(x1, y1, x2, y2, x3, y3, x4, y4);
     }
     
-    public void quad(Vector2ic p1, Vector2ic p2, Vector2ic p3, Vector2ic p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, Vector2ic p2, Vector2ic p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, Vector2ic p2, Vector2fc p3, Vector2fc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, Vector2ic p2, Vector2fc p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, Vector2ic p2, Vector2dc p3, Vector2dc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, Vector2ic p2, Vector2dc p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, Vector2fc p2, Vector2ic p3, Vector2ic p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, Vector2fc p2, Vector2ic p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, Vector2fc p2, Vector2dc p3, Vector2dc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, Vector2fc p2, Vector2dc p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, Vector2dc p2, Vector2ic p3, Vector2ic p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, Vector2dc p2, Vector2ic p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, Vector2dc p2, Vector2fc p3, Vector2fc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, Vector2dc p2, Vector2fc p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, Vector2dc p2, Vector2dc p3, Vector2dc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, Vector2dc p2, Vector2dc p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2fc p1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2fc p1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2dc p1, Vector2dc p2, Vector2dc p3, Vector2dc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2dc p1, Vector2dc p2, Vector2dc p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2ic p2, Vector2ic p3, Vector2ic p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2ic p2, Vector2ic p3, Vector2ic p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2ic p2, Vector2ic p3, Vector2fc p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2ic p2, Vector2ic p3, Vector2fc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2ic p2, Vector2ic p3, Vector2dc p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2ic p2, Vector2ic p3, Vector2dc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2ic p2, Vector2fc p3, Vector2ic p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2ic p2, Vector2fc p3, Vector2ic p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2ic p2, Vector2fc p3, Vector2fc p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2ic p2, Vector2fc p3, Vector2fc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2ic p2, Vector2fc p3, Vector2dc p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2ic p2, Vector2fc p3, Vector2dc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2ic p2, Vector2dc p3, Vector2ic p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2ic p2, Vector2dc p3, Vector2ic p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2ic p2, Vector2dc p3, Vector2fc p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2ic p2, Vector2dc p3, Vector2fc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2ic p2, Vector2dc p3, Vector2dc p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2ic p2, Vector2dc p3, Vector2dc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2fc p2, Vector2ic p3, Vector2ic p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2fc p2, Vector2ic p3, Vector2ic p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2fc p2, Vector2ic p3, Vector2fc p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2fc p2, Vector2ic p3, Vector2fc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2fc p2, Vector2ic p3, Vector2dc p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2fc p2, Vector2ic p3, Vector2dc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2fc p2, Vector2fc p3, Vector2ic p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2fc p2, Vector2fc p3, Vector2ic p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2fc p2, Vector2fc p3, Vector2fc p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2fc p2, Vector2fc p3, Vector2dc p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2fc p2, Vector2fc p3, Vector2dc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2fc p2, Vector2dc p3, Vector2ic p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2fc p2, Vector2dc p3, Vector2ic p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2fc p2, Vector2dc p3, Vector2fc p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2fc p2, Vector2dc p3, Vector2fc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2fc p2, Vector2dc p3, Vector2dc p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2fc p2, Vector2dc p3, Vector2dc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2dc p2, Vector2ic p3, Vector2ic p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2dc p2, Vector2ic p3, Vector2ic p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2dc p2, Vector2ic p3, Vector2fc p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2dc p2, Vector2ic p3, Vector2fc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2dc p2, Vector2ic p3, Vector2dc p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2dc p2, Vector2ic p3, Vector2dc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2dc p2, Vector2fc p3, Vector2ic p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2dc p2, Vector2fc p3, Vector2ic p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2dc p2, Vector2fc p3, Vector2fc p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2dc p2, Vector2fc p3, Vector2fc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2dc p2, Vector2fc p3, Vector2dc p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2dc p2, Vector2fc p3, Vector2dc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2dc p2, Vector2dc p3, Vector2ic p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2dc p2, Vector2dc p3, Vector2ic p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2dc p2, Vector2dc p3, Vector2fc p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2dc p2, Vector2dc p3, Vector2fc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2dc p2, Vector2dc p3, Vector2dc p4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2dc p2, Vector2dc p3, Vector2dc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, double x2, double y2, Vector2ic p3, Vector2ic p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, double x2, double y2, Vector2ic p3, Vector2ic p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, double x2, double y2, Vector2ic p3, Vector2fc p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, double x2, double y2, Vector2ic p3, Vector2fc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, double x2, double y2, Vector2ic p3, Vector2dc p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, double x2, double y2, Vector2ic p3, Vector2dc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, double x2, double y2, Vector2fc p3, Vector2ic p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, double x2, double y2, Vector2fc p3, Vector2ic p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, double x2, double y2, Vector2fc p3, Vector2fc p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, double x2, double y2, Vector2fc p3, Vector2fc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, double x2, double y2, Vector2fc p3, Vector2dc p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, double x2, double y2, Vector2fc p3, Vector2dc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, double x2, double y2, Vector2dc p3, Vector2ic p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, double x2, double y2, Vector2dc p3, Vector2ic p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, double x2, double y2, Vector2dc p3, Vector2fc p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, double x2, double y2, Vector2dc p3, Vector2fc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, double x2, double y2, Vector2dc p3, Vector2dc p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, double x2, double y2, Vector2dc p3, Vector2dc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2fc p1, double x2, double y2, Vector2ic p3, Vector2ic p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2fc p1, double x2, double y2, Vector2ic p3, Vector2ic p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2fc p1, double x2, double y2, Vector2ic p3, Vector2fc p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2fc p1, double x2, double y2, Vector2ic p3, Vector2fc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2fc p1, double x2, double y2, Vector2ic p3, Vector2dc p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2fc p1, double x2, double y2, Vector2ic p3, Vector2dc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2fc p1, double x2, double y2, Vector2fc p3, Vector2ic p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2fc p1, double x2, double y2, Vector2fc p3, Vector2ic p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2fc p1, double x2, double y2, Vector2fc p3, Vector2fc p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2fc p1, double x2, double y2, Vector2fc p3, Vector2fc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2fc p1, double x2, double y2, Vector2fc p3, Vector2dc p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2fc p1, double x2, double y2, Vector2fc p3, Vector2dc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2fc p1, double x2, double y2, Vector2dc p3, Vector2ic p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2fc p1, double x2, double y2, Vector2dc p3, Vector2ic p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2fc p1, double x2, double y2, Vector2dc p3, Vector2fc p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2fc p1, double x2, double y2, Vector2dc p3, Vector2fc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2fc p1, double x2, double y2, Vector2dc p3, Vector2dc p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2fc p1, double x2, double y2, Vector2dc p3, Vector2dc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2dc p1, double x2, double y2, Vector2ic p3, Vector2ic p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2dc p1, double x2, double y2, Vector2ic p3, Vector2ic p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2dc p1, double x2, double y2, Vector2ic p3, Vector2fc p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2dc p1, double x2, double y2, Vector2ic p3, Vector2fc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2dc p1, double x2, double y2, Vector2ic p3, Vector2dc p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2dc p1, double x2, double y2, Vector2ic p3, Vector2dc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2dc p1, double x2, double y2, Vector2fc p3, Vector2ic p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2dc p1, double x2, double y2, Vector2fc p3, Vector2ic p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2dc p1, double x2, double y2, Vector2fc p3, Vector2fc p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2dc p1, double x2, double y2, Vector2fc p3, Vector2fc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2dc p1, double x2, double y2, Vector2fc p3, Vector2dc p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2dc p1, double x2, double y2, Vector2fc p3, Vector2dc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2dc p1, double x2, double y2, Vector2dc p3, Vector2ic p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2dc p1, double x2, double y2, Vector2dc p3, Vector2ic p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2dc p1, double x2, double y2, Vector2dc p3, Vector2fc p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2dc p1, double x2, double y2, Vector2dc p3, Vector2fc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2dc p1, double x2, double y2, Vector2dc p3, Vector2dc p4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(Vector2dc p1, double x2, double y2, Vector2dc p3, Vector2dc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, Vector2ic p2, double x3, double y3, Vector2ic p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, Vector2ic p2, double x3, double y3, Vector2ic p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, Vector2ic p2, double x3, double y3, Vector2fc p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, Vector2ic p2, double x3, double y3, Vector2fc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, Vector2ic p2, double x3, double y3, Vector2dc p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, Vector2ic p2, double x3, double y3, Vector2dc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, Vector2fc p2, double x3, double y3, Vector2ic p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, Vector2fc p2, double x3, double y3, Vector2ic p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, Vector2fc p2, double x3, double y3, Vector2fc p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, Vector2fc p2, double x3, double y3, Vector2fc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, Vector2fc p2, double x3, double y3, Vector2dc p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, Vector2fc p2, double x3, double y3, Vector2dc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, Vector2dc p2, double x3, double y3, Vector2ic p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, Vector2dc p2, double x3, double y3, Vector2ic p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, Vector2dc p2, double x3, double y3, Vector2fc p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, Vector2dc p2, double x3, double y3, Vector2fc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, Vector2dc p2, double x3, double y3, Vector2dc p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, Vector2dc p2, double x3, double y3, Vector2dc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2fc p1, Vector2ic p2, double x3, double y3, Vector2ic p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2fc p1, Vector2ic p2, double x3, double y3, Vector2ic p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2fc p1, Vector2ic p2, double x3, double y3, Vector2fc p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2fc p1, Vector2ic p2, double x3, double y3, Vector2fc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2fc p1, Vector2ic p2, double x3, double y3, Vector2dc p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2fc p1, Vector2ic p2, double x3, double y3, Vector2dc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2fc p1, Vector2fc p2, double x3, double y3, Vector2ic p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2fc p1, Vector2fc p2, double x3, double y3, Vector2ic p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2fc p1, Vector2fc p2, double x3, double y3, Vector2fc p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2fc p1, Vector2fc p2, double x3, double y3, Vector2fc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2fc p1, Vector2fc p2, double x3, double y3, Vector2dc p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2fc p1, Vector2fc p2, double x3, double y3, Vector2dc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2fc p1, Vector2dc p2, double x3, double y3, Vector2ic p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2fc p1, Vector2dc p2, double x3, double y3, Vector2ic p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2fc p1, Vector2dc p2, double x3, double y3, Vector2fc p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2fc p1, Vector2dc p2, double x3, double y3, Vector2fc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2fc p1, Vector2dc p2, double x3, double y3, Vector2dc p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2fc p1, Vector2dc p2, double x3, double y3, Vector2dc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2dc p1, Vector2ic p2, double x3, double y3, Vector2ic p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2dc p1, Vector2ic p2, double x3, double y3, Vector2ic p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2dc p1, Vector2ic p2, double x3, double y3, Vector2fc p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2dc p1, Vector2ic p2, double x3, double y3, Vector2fc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2dc p1, Vector2ic p2, double x3, double y3, Vector2dc p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2dc p1, Vector2ic p2, double x3, double y3, Vector2dc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2dc p1, Vector2fc p2, double x3, double y3, Vector2ic p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2dc p1, Vector2fc p2, double x3, double y3, Vector2ic p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2dc p1, Vector2fc p2, double x3, double y3, Vector2fc p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2dc p1, Vector2fc p2, double x3, double y3, Vector2fc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2dc p1, Vector2fc p2, double x3, double y3, Vector2dc p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2dc p1, Vector2fc p2, double x3, double y3, Vector2dc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2dc p1, Vector2dc p2, double x3, double y3, Vector2ic p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2dc p1, Vector2dc p2, double x3, double y3, Vector2ic p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2dc p1, Vector2dc p2, double x3, double y3, Vector2fc p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2dc p1, Vector2dc p2, double x3, double y3, Vector2fc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2dc p1, Vector2dc p2, double x3, double y3, Vector2dc p4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2dc p1, Vector2dc p2, double x3, double y3, Vector2dc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, Vector2ic p2, Vector2ic p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2ic p1, Vector2ic p2, Vector2ic p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2ic p1, Vector2ic p2, Vector2fc p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2ic p1, Vector2ic p2, Vector2fc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2ic p1, Vector2ic p2, Vector2dc p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2ic p1, Vector2ic p2, Vector2dc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2ic p1, Vector2fc p2, Vector2ic p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2ic p1, Vector2fc p2, Vector2ic p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2ic p1, Vector2fc p2, Vector2fc p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2ic p1, Vector2fc p2, Vector2fc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2ic p1, Vector2fc p2, Vector2dc p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2ic p1, Vector2fc p2, Vector2dc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2ic p1, Vector2dc p2, Vector2ic p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2ic p1, Vector2dc p2, Vector2ic p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2ic p1, Vector2dc p2, Vector2fc p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2ic p1, Vector2dc p2, Vector2fc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2ic p1, Vector2dc p2, Vector2dc p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2ic p1, Vector2dc p2, Vector2dc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2fc p1, Vector2ic p2, Vector2ic p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2fc p1, Vector2ic p2, Vector2ic p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2fc p1, Vector2ic p2, Vector2fc p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2fc p1, Vector2ic p2, Vector2fc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2fc p1, Vector2ic p2, Vector2dc p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2fc p1, Vector2ic p2, Vector2dc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2fc p1, Vector2fc p2, Vector2ic p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2fc p1, Vector2fc p2, Vector2ic p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2fc p1, Vector2fc p2, Vector2fc p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2fc p1, Vector2fc p2, Vector2fc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2fc p1, Vector2fc p2, Vector2dc p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2fc p1, Vector2fc p2, Vector2dc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2fc p1, Vector2dc p2, Vector2ic p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2fc p1, Vector2dc p2, Vector2ic p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2fc p1, Vector2dc p2, Vector2fc p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2fc p1, Vector2dc p2, Vector2fc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2fc p1, Vector2dc p2, Vector2dc p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2fc p1, Vector2dc p2, Vector2dc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2dc p1, Vector2ic p2, Vector2ic p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2dc p1, Vector2ic p2, Vector2ic p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2dc p1, Vector2ic p2, Vector2fc p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2dc p1, Vector2ic p2, Vector2fc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2dc p1, Vector2ic p2, Vector2dc p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2dc p1, Vector2ic p2, Vector2dc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2dc p1, Vector2fc p2, Vector2ic p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2dc p1, Vector2fc p2, Vector2ic p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2dc p1, Vector2fc p2, Vector2fc p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2dc p1, Vector2fc p2, Vector2fc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2dc p1, Vector2fc p2, Vector2dc p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2dc p1, Vector2fc p2, Vector2dc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2dc p1, Vector2dc p2, Vector2ic p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2dc p1, Vector2dc p2, Vector2ic p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2dc p1, Vector2dc p2, Vector2fc p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2dc p1, Vector2dc p2, Vector2fc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2dc p1, Vector2dc p2, Vector2dc p3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2dc p1, Vector2dc p2, Vector2dc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(double x1, double y1, double x2, double y2, Vector2ic p3, Vector2ic p4) { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, double x2, double y2, Vector2ic p3, Vector2ic p4)         { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, double x2, double y2, Vector2ic p3, Vector2fc p4) { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, double x2, double y2, Vector2ic p3, Vector2fc p4)         { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, double x2, double y2, Vector2ic p3, Vector2dc p4) { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, double x2, double y2, Vector2ic p3, Vector2dc p4)         { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, double x2, double y2, Vector2fc p3, Vector2ic p4) { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, double x2, double y2, Vector2fc p3, Vector2ic p4)         { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, double x2, double y2, Vector2fc p3, Vector2fc p4) { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, double x2, double y2, Vector2fc p3, Vector2fc p4)         { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, double x2, double y2, Vector2fc p3, Vector2dc p4) { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, double x2, double y2, Vector2fc p3, Vector2dc p4)         { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, double x2, double y2, Vector2dc p3, Vector2ic p4) { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, double x2, double y2, Vector2dc p3, Vector2ic p4)         { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, double x2, double y2, Vector2dc p3, Vector2fc p4) { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, double x2, double y2, Vector2dc p3, Vector2fc p4)         { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, double x2, double y2, Vector2dc p3, Vector2dc p4) { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void quad(double x1, double y1, double x2, double y2, Vector2dc p3, Vector2dc p4)         { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2ic p2, double x3, double y3, Vector2ic p4) { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2ic p2, double x3, double y3, Vector2ic p4)         { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2ic p2, double x3, double y3, Vector2fc p4) { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2ic p2, double x3, double y3, Vector2fc p4)         { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2ic p2, double x3, double y3, Vector2dc p4) { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2ic p2, double x3, double y3, Vector2dc p4)         { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2fc p2, double x3, double y3, Vector2ic p4) { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2fc p2, double x3, double y3, Vector2ic p4)         { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2fc p2, double x3, double y3, Vector2fc p4) { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2fc p2, double x3, double y3, Vector2fc p4)         { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2fc p2, double x3, double y3, Vector2dc p4) { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2fc p2, double x3, double y3, Vector2dc p4)         { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2dc p2, double x3, double y3, Vector2ic p4) { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2dc p2, double x3, double y3, Vector2ic p4)         { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2dc p2, double x3, double y3, Vector2fc p4) { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2dc p2, double x3, double y3, Vector2fc p4)         { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2dc p2, double x3, double y3, Vector2dc p4) { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void quad(double x1, double y1, Vector2dc p2, double x3, double y3, Vector2dc p4)         { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
     
-    public void quad(double x1, double y1, Vector2ic p2, Vector2ic p3, double x4, double y4) { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(double x1, double y1, Vector2ic p2, Vector2ic p3, double x4, double y4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(double x1, double y1, Vector2ic p2, Vector2fc p3, double x4, double y4) { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(double x1, double y1, Vector2ic p2, Vector2fc p3, double x4, double y4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(double x1, double y1, Vector2ic p2, Vector2dc p3, double x4, double y4) { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(double x1, double y1, Vector2ic p2, Vector2dc p3, double x4, double y4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(double x1, double y1, Vector2fc p2, Vector2ic p3, double x4, double y4) { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(double x1, double y1, Vector2fc p2, Vector2ic p3, double x4, double y4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(double x1, double y1, Vector2fc p2, Vector2fc p3, double x4, double y4) { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(double x1, double y1, Vector2fc p2, Vector2fc p3, double x4, double y4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(double x1, double y1, Vector2fc p2, Vector2dc p3, double x4, double y4) { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(double x1, double y1, Vector2fc p2, Vector2dc p3, double x4, double y4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(double x1, double y1, Vector2dc p2, Vector2ic p3, double x4, double y4) { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(double x1, double y1, Vector2dc p2, Vector2ic p3, double x4, double y4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(double x1, double y1, Vector2dc p2, Vector2fc p3, double x4, double y4) { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(double x1, double y1, Vector2dc p2, Vector2fc p3, double x4, double y4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(double x1, double y1, Vector2dc p2, Vector2dc p3, double x4, double y4) { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void quad(double x1, double y1, Vector2dc p2, Vector2dc p3, double x4, double y4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2ic p1, double x2, double y2, double x3, double y3, Vector2ic p4) { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, double x2, double y2, double x3, double y3, Vector2ic p4)         { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, double x2, double y2, double x3, double y3, Vector2fc p4) { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, double x2, double y2, double x3, double y3, Vector2fc p4)         { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, double x2, double y2, double x3, double y3, Vector2dc p4) { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2ic p1, double x2, double y2, double x3, double y3, Vector2dc p4)         { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2fc p1, double x2, double y2, double x3, double y3, Vector2ic p4) { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2fc p1, double x2, double y2, double x3, double y3, Vector2ic p4)         { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2fc p1, double x2, double y2, double x3, double y3, Vector2fc p4) { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2fc p1, double x2, double y2, double x3, double y3, Vector2fc p4)         { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2fc p1, double x2, double y2, double x3, double y3, Vector2dc p4) { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2fc p1, double x2, double y2, double x3, double y3, Vector2dc p4)         { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2dc p1, double x2, double y2, double x3, double y3, Vector2ic p4) { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2dc p1, double x2, double y2, double x3, double y3, Vector2ic p4)         { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2dc p1, double x2, double y2, double x3, double y3, Vector2fc p4) { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2dc p1, double x2, double y2, double x3, double y3, Vector2fc p4)         { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2dc p1, double x2, double y2, double x3, double y3, Vector2dc p4) { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
+    public void quad(Vector2dc p1, double x2, double y2, double x3, double y3, Vector2dc p4)         { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
     
-    public void quad(Vector2ic p1, double x2, double y2, Vector2ic p3, double x4, double y4) { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2ic p1, double x2, double y2, Vector2ic p3, double x4, double y4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2ic p1, double x2, double y2, Vector2fc p3, double x4, double y4) { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2ic p1, double x2, double y2, Vector2fc p3, double x4, double y4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2ic p1, double x2, double y2, Vector2dc p3, double x4, double y4) { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2ic p1, double x2, double y2, Vector2dc p3, double x4, double y4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2fc p1, double x2, double y2, Vector2ic p3, double x4, double y4) { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2fc p1, double x2, double y2, Vector2ic p3, double x4, double y4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2fc p1, double x2, double y2, Vector2fc p3, double x4, double y4) { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2fc p1, double x2, double y2, Vector2fc p3, double x4, double y4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2fc p1, double x2, double y2, Vector2dc p3, double x4, double y4) { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2fc p1, double x2, double y2, Vector2dc p3, double x4, double y4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2dc p1, double x2, double y2, Vector2ic p3, double x4, double y4) { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2dc p1, double x2, double y2, Vector2ic p3, double x4, double y4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2dc p1, double x2, double y2, Vector2fc p3, double x4, double y4) { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2dc p1, double x2, double y2, Vector2fc p3, double x4, double y4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2dc p1, double x2, double y2, Vector2dc p3, double x4, double y4) { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
+    public void quad(Vector2dc p1, double x2, double y2, Vector2dc p3, double x4, double y4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
     
-    public void quad(Vector2ic p1, Vector2ic p2, double x3, double y3, double x4, double y4) { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
+    public void quad(Vector2ic p1, Vector2ic p2, double x3, double y3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
     
-    public void quad(Vector2ic p1, Vector2fc p2, double x3, double y3, double x4, double y4) { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
+    public void quad(Vector2ic p1, Vector2fc p2, double x3, double y3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
     
-    public void quad(Vector2ic p1, Vector2dc p2, double x3, double y3, double x4, double y4) { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
+    public void quad(Vector2ic p1, Vector2dc p2, double x3, double y3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
     
-    public void quad(Vector2fc p1, Vector2ic p2, double x3, double y3, double x4, double y4) { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
+    public void quad(Vector2fc p1, Vector2ic p2, double x3, double y3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
     
-    public void quad(Vector2fc p1, Vector2fc p2, double x3, double y3, double x4, double y4) { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
+    public void quad(Vector2fc p1, Vector2fc p2, double x3, double y3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
     
-    public void quad(Vector2fc p1, Vector2dc p2, double x3, double y3, double x4, double y4) { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
+    public void quad(Vector2fc p1, Vector2dc p2, double x3, double y3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
     
-    public void quad(Vector2dc p1, Vector2ic p2, double x3, double y3, double x4, double y4) { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
+    public void quad(Vector2dc p1, Vector2ic p2, double x3, double y3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
     
-    public void quad(Vector2dc p1, Vector2fc p2, double x3, double y3, double x4, double y4) { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
+    public void quad(Vector2dc p1, Vector2fc p2, double x3, double y3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
     
-    public void quad(Vector2dc p1, Vector2dc p2, double x3, double y3, double x4, double y4) { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
+    public void quad(Vector2dc p1, Vector2dc p2, double x3, double y3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
+    
+    public void quad(double x1, double y1, double x2, double y2, double x3, double y3, Vector2ic p4) { quad(x1, y1, x2, y2, x3, y3, p4.x(), p4.y()); }
+    
+    public void quad(double x1, double y1, double x2, double y2, double x3, double y3, Vector2fc p4) { quad(x1, y1, x2, y2, x3, y3, p4.x(), p4.y()); }
+    
+    public void quad(double x1, double y1, double x2, double y2, double x3, double y3, Vector2dc p4) { quad(x1, y1, x2, y2, x3, y3, p4.x(), p4.y()); }
+    
+    public void quad(double x1, double y1, double x2, double y2, Vector2ic p3, double x4, double y4) { quad(x1, y1, x2, y2, p3.x(), p3.y(), x4, y4); }
+    
+    public void quad(double x1, double y1, double x2, double y2, Vector2fc p3, double x4, double y4) { quad(x1, y1, x2, y2, p3.x(), p3.y(), x4, y4); }
+    
+    public void quad(double x1, double y1, double x2, double y2, Vector2dc p3, double x4, double y4) { quad(x1, y1, x2, y2, p3.x(), p3.y(), x4, y4); }
+    
+    public void quad(double x1, double y1, Vector2ic p2, double x3, double y3, double x4, double y4) { quad(x1, y1, p2.x(), p2.y(), x3, y3, x4, y4); }
+    
+    public void quad(double x1, double y1, Vector2fc p2, double x3, double y3, double x4, double y4) { quad(x1, y1, p2.x(), p2.y(), x3, y3, x4, y4); }
+    
+    public void quad(double x1, double y1, Vector2dc p2, double x3, double y3, double x4, double y4) { quad(x1, y1, p2.x(), p2.y(), x3, y3, x4, y4); }
+    
+    public void quad(Vector2ic p1, double x2, double y2, double x3, double y3, double x4, double y4) { quad(p1.x(), p1.y(), x2, y2, x3, y3, x4, y4); }
+    
+    public void quad(Vector2fc p1, double x2, double y2, double x3, double y3, double x4, double y4) { quad(p1.x(), p1.y(), x2, y2, x3, y3, x4, y4); }
+    
+    public void quad(Vector2dc p1, double x2, double y2, double x3, double y3, double x4, double y4) { quad(p1.x(), p1.y(), x2, y2, x3, y3, x4, y4); }
     
     // ---------------------
     // -- Polygon Methods --
@@ -1130,4 +1154,10 @@ public abstract class Renderer
     public void ellipse(double a, double b, Vector2fc cd) { ellipse(a, b, cd.x(), cd.y()); }
     
     public void ellipse(double a, double b, Vector2dc cd) { ellipse(a, b, cd.x(), cd.y()); }
+    
+    // ---------------------
+    // -- Texture Methods --
+    // ---------------------
+    
+    // TODO - Texture Methods
 }

@@ -6,10 +6,7 @@ import engine.color.Colorc;
 import engine.event.Events;
 import engine.input.Keyboard;
 import engine.input.Mouse;
-import engine.render.Renderer;
-import engine.render.Shader;
-import engine.render.Texture;
-import engine.render.VertexArray;
+import engine.render.*;
 import engine.util.Logger;
 import engine.util.Profiler;
 import engine.util.Random;
@@ -453,13 +450,13 @@ public class Engine
     
     public static double nextGaussian()                                           { return Engine.random.nextGaussian(); }
     
-    public static int nextIndex(int... array)       { return Engine.random.nextIndex(array); }
+    public static int nextIndex(int... array)                                     { return Engine.random.nextIndex(array); }
     
-    public static long nextIndex(long... array)     { return Engine.random.nextIndex(array); }
+    public static long nextIndex(long... array)                                   { return Engine.random.nextIndex(array); }
     
-    public static float nextIndex(float... array)   { return Engine.random.nextIndex(array); }
+    public static float nextIndex(float... array)                                 { return Engine.random.nextIndex(array); }
     
-    public static double nextIndex(double... array) { return Engine.random.nextIndex(array); }
+    public static double nextIndex(double... array)                               { return Engine.random.nextIndex(array); }
     
     public static <T> T nextIndex(T[] array)                                      { return Engine.random.nextIndex(array); }
     
@@ -603,27 +600,919 @@ public class Engine
     
     public static void fullscreen(boolean fullscreen) { Engine.window.fullscreen(fullscreen); }
     
-    public static boolean vsync()           { return Engine.window.vsync(); }
+    public static boolean vsync()                     { return Engine.window.vsync(); }
     
-    public static void vsync(boolean vsync) { Engine.window.vsync(vsync); }
+    public static void vsync(boolean vsync)           { Engine.window.vsync(vsync); }
     
-    public static Vector2ic viewPos()       { return Engine.window.viewPos(); }
+    public static Vector2ic viewPos()                 { return Engine.window.viewPos(); }
     
-    public static int viewX()               { return Engine.window.viewX(); }
+    public static int viewX()                         { return Engine.window.viewX(); }
     
-    public static int viewY()               { return Engine.window.viewY(); }
+    public static int viewY()                         { return Engine.window.viewY(); }
     
-    public static Vector2ic viewSize()      { return Engine.window.viewSize(); }
+    public static Vector2ic viewSize()                { return Engine.window.viewSize(); }
     
-    public static int viewW()               { return Engine.window.viewW(); }
+    public static int viewW()                         { return Engine.window.viewW(); }
     
-    public static int viewH()               { return Engine.window.viewH(); }
+    public static int viewH()                         { return Engine.window.viewH(); }
     
     // -----------------------
     // -- Renderer Instance --
     // -----------------------
     
-    public static Renderer renderer() { return Engine.renderer; }
+    public static boolean enableBlend()                               { return Engine.renderer.enableBlend(); }
+    
+    public static void enableBlend(boolean enableBlend)               { Engine.renderer.enableBlend(enableBlend); }
+    
+    public static Colorc fill()                                       { return Engine.renderer.fill(); }
+    
+    public static void fill(Number r, Number g, Number b, Number a)   { Engine.renderer.fill(r, g, b, a); }
+    
+    public static void fill(Number r, Number g, Number b)             { Engine.renderer.fill(r, g, b); }
+    
+    public static void fill(Number grey, Number a)                    { Engine.renderer.fill(grey, a); }
+    
+    public static void fill(Number grey)                              { Engine.renderer.fill(grey); }
+    
+    public static void fill(Colorc fill)                              { Engine.renderer.fill(fill); }
+    
+    public static void noFill()                                       { Engine.renderer.noFill(); }
+    
+    public static Colorc stroke()                                     { return Engine.renderer.stroke(); }
+    
+    public static void stroke(Number r, Number g, Number b, Number a) { Engine.renderer.stroke(r, g, b, a); }
+    
+    public static void stroke(Number r, Number g, Number b)           { Engine.renderer.stroke(r, g, b); }
+    
+    public static void stroke(Number grey, Number a)                  { Engine.renderer.stroke(grey, a); }
+    
+    public static void stroke(Number grey)                            { Engine.renderer.stroke(grey); }
+    
+    public static void stroke(Colorc stroke)                          { Engine.renderer.stroke(stroke); }
+    
+    public static void noStroke()                                     { Engine.renderer.noStroke(); }
+    
+    public static double weight()                                     { return Engine.renderer.weight(); }
+    
+    public static void weight(double weight)                          { Engine.renderer.weight(weight); }
+    
+    public static RectMode rectMode()                                 { return Engine.renderer.rectMode(); }
+    
+    public static void rectMode(RectMode rectMode)                    { Engine.renderer.rectMode(rectMode); }
+    
+    public static EllipseMode ellipseMode()                           { return Engine.renderer.ellipseMode(); }
+    
+    public static void ellipseMode(EllipseMode ellipseMode)           { Engine.renderer.ellipseMode(ellipseMode); }
+    
+    public static ArcMode arcMode()                                   { return Engine.renderer.arcMode(); }
+    
+    public static void arcMode(ArcMode arcMode)                       { Engine.renderer.arcMode(arcMode); }
+    
+    public static double textSize()                                   { return Engine.renderer.textSize(); }
+    
+    public static void textSize(double textSize)                      { Engine.renderer.textSize(textSize); }
+    
+    public static TextAlign textAlign()                               { return Engine.renderer.textAlign(); }
+    
+    public static void textAlign(TextAlign textAlign)                 { Engine.renderer.textAlign(textAlign); }
+    
+    public static void identity()                                     { Engine.renderer.identity(); }
+    
+    public static void translate(double x, double y)                  { Engine.renderer.translate(x, y); }
+    
+    public static void translate(Vector2ic vector)                    { Engine.renderer.translate(vector); }
+    
+    public static void translate(Vector2fc vector)                    { Engine.renderer.translate(vector); }
+    
+    public static void translate(Vector2dc vector)                    { Engine.renderer.translate(vector); }
+    
+    public static void rotate(double angle)                           { Engine.renderer.rotate(angle); }
+    
+    public static void scale(double x, double y)                      { Engine.renderer.scale(x, y); }
+    
+    public static void scale(Vector2ic vector)                        { Engine.renderer.scale(vector); }
+    
+    public static void scale(Vector2fc vector)                        { Engine.renderer.scale(vector); }
+    
+    public static void scale(Vector2dc vector)                        { Engine.renderer.scale(vector); }
+    
+    public static void begin()                                        { Engine.renderer.begin(); }
+    
+    public static void finish()                                       { Engine.renderer.finish(); }
+    
+    public static void push()                                         { Engine.renderer.push(); }
+    
+    public static void pop()                                          { Engine.renderer.pop(); }
+    
+    public static void clear(Number r, Number g, Number b, Number a)  { Engine.renderer.clear(r, g, b, a); }
+    
+    public static void clear(Number r, Number g, Number b)            { Engine.renderer.clear(r, g, b); }
+    
+    public static void clear(Number grey, Number a)                   { Engine.renderer.clear(grey, a); }
+    
+    public static void clear(Number grey)                             { Engine.renderer.clear(grey); }
+    
+    public static void clear()                                        { Engine.renderer.clear(); }
+    
+    public static void clear(Colorc color)                            { Engine.renderer.clear(color); }
+    
+    public static void drawPoint(double x, double y)
+    {
+        Engine.renderer.drawPoint(x, y);
+    }
+    
+    public static void point(double x, double y)
+    {
+        Engine.renderer.point(x, y);
+    }
+    
+    public static void point(Vector2ic p) { Engine.renderer.point(p); }
+    
+    public static void point(Vector2fc p) { Engine.renderer.point(p); }
+    
+    public static void point(Vector2dc p) { Engine.renderer.point(p); }
+    
+    public static void drawLine(double x1, double y1, double x2, double y2)
+    {
+        Engine.renderer.drawLine(x1, y1, x2, y2);
+    }
+    
+    public static void line(double x1, double y1, double x2, double y2)
+    {
+        Engine.renderer.line(x1, y1, x2, y2);
+    }
+    
+    public static void line(Vector2ic p1, Vector2ic p2)         { Engine.renderer.line(p1, p2); }
+    
+    public static void line(Vector2ic p1, Vector2fc p2)         { Engine.renderer.line(p1, p2); }
+    
+    public static void line(Vector2ic p1, Vector2dc p2)         { Engine.renderer.line(p1, p2); }
+    
+    public static void line(Vector2fc p1, Vector2ic p2)         { Engine.renderer.line(p1, p2); }
+    
+    public static void line(Vector2fc p1, Vector2fc p2)         { Engine.renderer.line(p1, p2); }
+    
+    public static void line(Vector2fc p1, Vector2dc p2)         { Engine.renderer.line(p1, p2); }
+    
+    public static void line(Vector2dc p1, Vector2ic p2)         { Engine.renderer.line(p1, p2); }
+    
+    public static void line(Vector2dc p1, Vector2fc p2)         { Engine.renderer.line(p1, p2); }
+    
+    public static void line(Vector2dc p1, Vector2dc p2)         { Engine.renderer.line(p1, p2); }
+    
+    public static void line(Vector2ic p1, double x2, double y2) { Engine.renderer.line(p1, x2, y2); }
+    
+    public static void line(Vector2fc p1, double x2, double y2) { Engine.renderer.line(p1, x2, y2); }
+    
+    public static void line(Vector2dc p1, double x2, double y2) { Engine.renderer.line(p1, x2, y2); }
+    
+    public static void line(double x1, double y1, Vector2ic p2) { Engine.renderer.line(x1, y1, p2); }
+    
+    public static void line(double x1, double y1, Vector2fc p2) { Engine.renderer.line(x1, y1, p2); }
+    
+    public static void line(double x1, double y1, Vector2dc p2) { Engine.renderer.line(x1, y1, p2); }
+    
+    public static void drawBezier(double x1, double y1, double x2, double y2, double x3, double y3)
+    {
+        Engine.renderer.drawBezier(x1, y1, x2, y2, x3, y3);
+    }
+    
+    public static void bezier(double x1, double y1, double x2, double y2, double x3, double y3)
+    {
+        Engine.renderer.bezier(x1, y1, x2, y2, x3, y3);
+    }
+    
+    public static void bezier(Vector2ic p1, Vector2ic p2, Vector2ic p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2ic p1, Vector2ic p2, Vector2fc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2ic p1, Vector2ic p2, Vector2dc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2ic p1, Vector2fc p2, Vector2ic p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2ic p1, Vector2fc p2, Vector2fc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2ic p1, Vector2fc p2, Vector2dc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2ic p1, Vector2dc p2, Vector2ic p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2ic p1, Vector2dc p2, Vector2fc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2ic p1, Vector2dc p2, Vector2dc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2fc p1, Vector2fc p2, Vector2fc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2dc p1, Vector2dc p2, Vector2dc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(double x1, double y1, Vector2ic p2, Vector2ic p3)         { Engine.renderer.bezier(x1, y1, p2, p3); }
+    
+    public static void bezier(double x1, double y1, Vector2ic p2, Vector2fc p3)         { Engine.renderer.bezier(x1, y1, p2, p3); }
+    
+    public static void bezier(double x1, double y1, Vector2ic p2, Vector2dc p3)         { Engine.renderer.bezier(x1, y1, p2, p3); }
+    
+    public static void bezier(double x1, double y1, Vector2fc p2, Vector2ic p3)         { Engine.renderer.bezier(x1, y1, p2, p3); }
+    
+    public static void bezier(double x1, double y1, Vector2fc p2, Vector2fc p3)         { Engine.renderer.bezier(x1, y1, p2, p3); }
+    
+    public static void bezier(double x1, double y1, Vector2fc p2, Vector2dc p3)         { Engine.renderer.bezier(x1, y1, p2, p3); }
+    
+    public static void bezier(double x1, double y1, Vector2dc p2, Vector2ic p3)         { Engine.renderer.bezier(x1, y1, p2, p3); }
+    
+    public static void bezier(double x1, double y1, Vector2dc p2, Vector2fc p3)         { Engine.renderer.bezier(x1, y1, p2, p3); }
+    
+    public static void bezier(double x1, double y1, Vector2dc p2, Vector2dc p3)         { Engine.renderer.bezier(x1, y1, p2, p3); }
+    
+    public static void bezier(Vector2ic p1, double x2, double y2, Vector2ic p3)         { Engine.renderer.bezier(p1, x2, y2, p3); }
+    
+    public static void bezier(Vector2ic p1, double x2, double y2, Vector2fc p3)         { Engine.renderer.bezier(p1, x2, y2, p3); }
+    
+    public static void bezier(Vector2ic p1, double x2, double y2, Vector2dc p3)         { Engine.renderer.bezier(p1, x2, y2, p3); }
+    
+    public static void bezier(Vector2fc p1, double x2, double y2, Vector2ic p3)         { Engine.renderer.bezier(p1, x2, y2, p3); }
+    
+    public static void bezier(Vector2fc p1, double x2, double y2, Vector2fc p3)         { Engine.renderer.bezier(p1, x2, y2, p3); }
+    
+    public static void bezier(Vector2fc p1, double x2, double y2, Vector2dc p3)         { Engine.renderer.bezier(p1, x2, y2, p3); }
+    
+    public static void bezier(Vector2dc p1, double x2, double y2, Vector2ic p3)         { Engine.renderer.bezier(p1, x2, y2, p3); }
+    
+    public static void bezier(Vector2dc p1, double x2, double y2, Vector2fc p3)         { Engine.renderer.bezier(p1, x2, y2, p3); }
+    
+    public static void bezier(Vector2dc p1, double x2, double y2, Vector2dc p3)         { Engine.renderer.bezier(p1, x2, y2, p3); }
+    
+    public static void bezier(Vector2ic p1, Vector2ic p2, double x3, double y3)         { Engine.renderer.bezier(p1, p2, x3, y3); }
+    
+    public static void bezier(Vector2ic p1, Vector2fc p2, double x3, double y3)         { Engine.renderer.bezier(p1, p2, x3, y3); }
+    
+    public static void bezier(Vector2ic p1, Vector2dc p2, double x3, double y3)         { Engine.renderer.bezier(p1, p2, x3, y3); }
+    
+    public static void bezier(Vector2fc p1, Vector2ic p2, double x3, double y3)         { Engine.renderer.bezier(p1, p2, x3, y3); }
+    
+    public static void bezier(Vector2fc p1, Vector2fc p2, double x3, double y3)         { Engine.renderer.bezier(p1, p2, x3, y3); }
+    
+    public static void bezier(Vector2fc p1, Vector2dc p2, double x3, double y3)         { Engine.renderer.bezier(p1, p2, x3, y3); }
+    
+    public static void bezier(Vector2dc p1, Vector2ic p2, double x3, double y3)         { Engine.renderer.bezier(p1, p2, x3, y3); }
+    
+    public static void bezier(Vector2dc p1, Vector2fc p2, double x3, double y3)         { Engine.renderer.bezier(p1, p2, x3, y3); }
+    
+    public static void bezier(Vector2dc p1, Vector2dc p2, double x3, double y3)         { Engine.renderer.bezier(p1, p2, x3, y3); }
+    
+    public static void bezier(double x1, double y1, double x2, double y2, Vector2ic p3) { Engine.renderer.bezier(x1, y1, x2, y2, p3); }
+    
+    public static void bezier(double x1, double y1, double x2, double y2, Vector2fc p3) { Engine.renderer.bezier(x1, y1, x2, y2, p3); }
+    
+    public static void bezier(double x1, double y1, double x2, double y2, Vector2dc p3) { Engine.renderer.bezier(x1, y1, x2, y2, p3); }
+    
+    public static void bezier(Vector2ic p1, double x2, double y2, double x3, double y3) { Engine.renderer.bezier(p1, x2, y2, x3, y3); }
+    
+    public static void bezier(Vector2fc p1, double x2, double y2, double x3, double y3) { Engine.renderer.bezier(p1, x2, y2, x3, y3); }
+    
+    public static void bezier(Vector2dc p1, double x2, double y2, double x3, double y3) { Engine.renderer.bezier(p1, x2, y2, x3, y3); }
+    
+    public static void bezier(double x1, double y1, Vector2ic p2, double x3, double y3) { Engine.renderer.bezier(x1, y1, p2, x3, y3); }
+    
+    public static void bezier(double x1, double y1, Vector2fc p2, double x3, double y3) { Engine.renderer.bezier(x1, y1, p2, x3, y3); }
+    
+    public static void bezier(double x1, double y1, Vector2dc p2, double x3, double y3) { Engine.renderer.bezier(x1, y1, p2, x3, y3); }
+    
+    public static void drawTriangle(double x1, double y1, double x2, double y2, double x3, double y3)
+    {
+        Engine.renderer.drawTriangle(x1, y1, x2, y2, x3, y3);
+    }
+    
+    public static void fillTriangle(double x1, double y1, double x2, double y2, double x3, double y3)
+    {
+        Engine.renderer.fillTriangle(x1, y1, x2, y2, x3, y3);
+    }
+    
+    public static void triangle(double x1, double y1, double x2, double y2, double x3, double y3)
+    {
+        Engine.renderer.triangle(x1, y1, x2, y2, x3, y3);
+    }
+    
+    public static void triangle(Vector2ic p1, Vector2ic p2, Vector2ic p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2ic p1, Vector2ic p2, Vector2fc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2ic p1, Vector2ic p2, Vector2dc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2ic p1, Vector2fc p2, Vector2ic p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2ic p1, Vector2fc p2, Vector2fc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2ic p1, Vector2fc p2, Vector2dc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2ic p1, Vector2dc p2, Vector2ic p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2ic p1, Vector2dc p2, Vector2fc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2ic p1, Vector2dc p2, Vector2dc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2fc p1, Vector2fc p2, Vector2fc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2dc p1, Vector2dc p2, Vector2dc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(double x1, double y1, Vector2ic p2, Vector2ic p3)         { Engine.renderer.triangle(x1, y1, p2, p3); }
+    
+    public static void triangle(double x1, double y1, Vector2ic p2, Vector2fc p3)         { Engine.renderer.triangle(x1, y1, p2, p3); }
+    
+    public static void triangle(double x1, double y1, Vector2ic p2, Vector2dc p3)         { Engine.renderer.triangle(x1, y1, p2, p3); }
+    
+    public static void triangle(double x1, double y1, Vector2fc p2, Vector2ic p3)         { Engine.renderer.triangle(x1, y1, p2, p3); }
+    
+    public static void triangle(double x1, double y1, Vector2fc p2, Vector2fc p3)         { Engine.renderer.triangle(x1, y1, p2, p3); }
+    
+    public static void triangle(double x1, double y1, Vector2fc p2, Vector2dc p3)         { Engine.renderer.triangle(x1, y1, p2, p3); }
+    
+    public static void triangle(double x1, double y1, Vector2dc p2, Vector2ic p3)         { Engine.renderer.triangle(x1, y1, p2, p3); }
+    
+    public static void triangle(double x1, double y1, Vector2dc p2, Vector2fc p3)         { Engine.renderer.triangle(x1, y1, p2, p3); }
+    
+    public static void triangle(double x1, double y1, Vector2dc p2, Vector2dc p3)         { Engine.renderer.triangle(x1, y1, p2, p3); }
+    
+    public static void triangle(Vector2ic p1, double x2, double y2, Vector2ic p3)         { Engine.renderer.triangle(p1, x2, y2, p3); }
+    
+    public static void triangle(Vector2ic p1, double x2, double y2, Vector2fc p3)         { Engine.renderer.triangle(p1, x2, y2, p3); }
+    
+    public static void triangle(Vector2ic p1, double x2, double y2, Vector2dc p3)         { Engine.renderer.triangle(p1, x2, y2, p3); }
+    
+    public static void triangle(Vector2fc p1, double x2, double y2, Vector2ic p3)         { Engine.renderer.triangle(p1, x2, y2, p3); }
+    
+    public static void triangle(Vector2fc p1, double x2, double y2, Vector2fc p3)         { Engine.renderer.triangle(p1, x2, y2, p3); }
+    
+    public static void triangle(Vector2fc p1, double x2, double y2, Vector2dc p3)         { Engine.renderer.triangle(p1, x2, y2, p3); }
+    
+    public static void triangle(Vector2dc p1, double x2, double y2, Vector2ic p3)         { Engine.renderer.triangle(p1, x2, y2, p3); }
+    
+    public static void triangle(Vector2dc p1, double x2, double y2, Vector2fc p3)         { Engine.renderer.triangle(p1, x2, y2, p3); }
+    
+    public static void triangle(Vector2dc p1, double x2, double y2, Vector2dc p3)         { Engine.renderer.triangle(p1, x2, y2, p3); }
+    
+    public static void triangle(Vector2ic p1, Vector2ic p2, double x3, double y3)         { Engine.renderer.triangle(p1, p2, x3, y3); }
+    
+    public static void triangle(Vector2ic p1, Vector2fc p2, double x3, double y3)         { Engine.renderer.triangle(p1, p2, x3, y3); }
+    
+    public static void triangle(Vector2ic p1, Vector2dc p2, double x3, double y3)         { Engine.renderer.triangle(p1, p2, x3, y3); }
+    
+    public static void triangle(Vector2fc p1, Vector2ic p2, double x3, double y3)         { Engine.renderer.triangle(p1, p2, x3, y3); }
+    
+    public static void triangle(Vector2fc p1, Vector2fc p2, double x3, double y3)         { Engine.renderer.triangle(p1, p2, x3, y3); }
+    
+    public static void triangle(Vector2fc p1, Vector2dc p2, double x3, double y3)         { Engine.renderer.triangle(p1, p2, x3, y3); }
+    
+    public static void triangle(Vector2dc p1, Vector2ic p2, double x3, double y3)         { Engine.renderer.triangle(p1, p2, x3, y3); }
+    
+    public static void triangle(Vector2dc p1, Vector2fc p2, double x3, double y3)         { Engine.renderer.triangle(p1, p2, x3, y3); }
+    
+    public static void triangle(Vector2dc p1, Vector2dc p2, double x3, double y3)         { Engine.renderer.triangle(p1, p2, x3, y3); }
+    
+    public static void triangle(double x1, double y1, double x2, double y2, Vector2ic p3) { Engine.renderer.triangle(x1, y1, x2, y2, p3); }
+    
+    public static void triangle(double x1, double y1, double x2, double y2, Vector2fc p3) { Engine.renderer.triangle(x1, y1, x2, y2, p3); }
+    
+    public static void triangle(double x1, double y1, double x2, double y2, Vector2dc p3) { Engine.renderer.triangle(x1, y1, x2, y2, p3); }
+    
+    public static void triangle(Vector2ic p1, double x2, double y2, double x3, double y3) { Engine.renderer.triangle(p1, x2, y2, x3, y3); }
+    
+    public static void triangle(Vector2fc p1, double x2, double y2, double x3, double y3) { Engine.renderer.triangle(p1, x2, y2, x3, y3); }
+    
+    public static void triangle(Vector2dc p1, double x2, double y2, double x3, double y3) { Engine.renderer.triangle(p1, x2, y2, x3, y3); }
+    
+    public static void triangle(double x1, double y1, Vector2ic p2, double x3, double y3) { Engine.renderer.triangle(x1, y1, p2, x3, y3); }
+    
+    public static void triangle(double x1, double y1, Vector2fc p2, double x3, double y3) { Engine.renderer.triangle(x1, y1, p2, x3, y3); }
+    
+    public static void triangle(double x1, double y1, Vector2dc p2, double x3, double y3) { Engine.renderer.triangle(x1, y1, p2, x3, y3); }
+    
+    public static void drawSquare(double x, double y, double w)
+    {
+        Engine.renderer.drawSquare(x, y, w);
+    }
+    
+    public static void fillSquare(double x, double y, double w)
+    {
+        Engine.renderer.fillSquare(x, y, w);
+    }
+    
+    public static void square(double a, double b, double c)
+    {
+        Engine.renderer.square(a, b, c);
+    }
+    
+    public static void square(Vector2ic ab, double c) { Engine.renderer.square(ab, c); }
+    
+    public static void square(Vector2fc ab, double c) { Engine.renderer.square(ab, c); }
+    
+    public static void square(Vector2dc ab, double c) { Engine.renderer.square(ab, c); }
+    
+    public static void drawRect(double x, double y, double w, double h)
+    {
+        Engine.renderer.drawRect(x, y, w, h);
+    }
+    
+    public static void fillRect(double x, double y, double w, double h)
+    {
+        Engine.renderer.drawRect(x, y, w, h);
+    }
+    
+    public static void rect(double a, double b, double c, double d)
+    {
+        Engine.renderer.rect(a, b, c, d);
+    }
+    
+    public static void rect(Vector2ic ab, Vector2ic cd)       { Engine.renderer.rect(ab, cd); }
+    
+    public static void rect(Vector2ic ab, Vector2fc cd)       { Engine.renderer.rect(ab, cd); }
+    
+    public static void rect(Vector2ic ab, Vector2dc cd)       { Engine.renderer.rect(ab, cd); }
+    
+    public static void rect(Vector2fc ab, Vector2ic cd)       { Engine.renderer.rect(ab, cd); }
+    
+    public static void rect(Vector2fc ab, Vector2fc cd)       { Engine.renderer.rect(ab, cd); }
+    
+    public static void rect(Vector2fc ab, Vector2dc cd)       { Engine.renderer.rect(ab, cd); }
+    
+    public static void rect(Vector2dc ab, Vector2ic cd)       { Engine.renderer.rect(ab, cd); }
+    
+    public static void rect(Vector2dc ab, Vector2fc cd)       { Engine.renderer.rect(ab, cd); }
+    
+    public static void rect(Vector2dc ab, Vector2dc cd)       { Engine.renderer.rect(ab, cd); }
+    
+    public static void rect(Vector2ic ab, double c, double d) { Engine.renderer.rect(ab, c, d); }
+    
+    public static void rect(Vector2fc ab, double c, double d) { Engine.renderer.rect(ab, c, d); }
+    
+    public static void rect(Vector2dc ab, double c, double d) { Engine.renderer.rect(ab, c, d); }
+    
+    public static void rect(double a, double b, Vector2ic cd) { Engine.renderer.rect(a, b, cd); }
+    
+    public static void rect(double a, double b, Vector2fc cd) { Engine.renderer.rect(a, b, cd); }
+    
+    public static void rect(double a, double b, Vector2dc cd) { Engine.renderer.rect(a, b, cd); }
+    
+    public static void drawQuad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
+    {
+        Engine.renderer.drawQuad(x1, y1, x2, y2, x3, y3, x4, y4);
+    }
+    
+    public static void fillQuad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
+    {
+        Engine.renderer.fillQuad(x1, y1, x2, y2, x3, y3, x4, y4);
+    }
+    
+    public static void quad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
+    {
+        Engine.renderer.quad(x1, y1, x2, y2, x3, y3, x4, y4);
+    }
+    
+    public static void quad(Vector2ic p1, Vector2ic p2, Vector2ic p3, Vector2ic p4)                  { Engine.renderer.quad(p1, p2, p3, p4); }
+    
+    public static void quad(Vector2ic p1, Vector2ic p2, Vector2fc p3, Vector2fc p4)                  { Engine.renderer.quad(p1, p2, p3, p4); }
+    
+    public static void quad(Vector2ic p1, Vector2ic p2, Vector2dc p3, Vector2dc p4)                  { Engine.renderer.quad(p1, p2, p3, p4); }
+    
+    public static void quad(Vector2ic p1, Vector2fc p2, Vector2ic p3, Vector2ic p4)                  { Engine.renderer.quad(p1, p2, p3, p4); }
+    
+    public static void quad(Vector2ic p1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                  { Engine.renderer.quad(p1, p2, p3, p4); }
+    
+    public static void quad(Vector2ic p1, Vector2fc p2, Vector2dc p3, Vector2dc p4)                  { Engine.renderer.quad(p1, p2, p3, p4); }
+    
+    public static void quad(Vector2ic p1, Vector2dc p2, Vector2ic p3, Vector2ic p4)                  { Engine.renderer.quad(p1, p2, p3, p4); }
+    
+    public static void quad(Vector2ic p1, Vector2dc p2, Vector2fc p3, Vector2fc p4)                  { Engine.renderer.quad(p1, p2, p3, p4); }
+    
+    public static void quad(Vector2ic p1, Vector2dc p2, Vector2dc p3, Vector2dc p4)                  { Engine.renderer.quad(p1, p2, p3, p4); }
+    
+    public static void quad(Vector2fc p1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                  { Engine.renderer.quad(p1, p2, p3, p4); }
+    
+    public static void quad(Vector2dc p1, Vector2dc p2, Vector2dc p3, Vector2dc p4)                  { Engine.renderer.quad(p1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2ic p2, Vector2ic p3, Vector2ic p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2ic p2, Vector2ic p3, Vector2fc p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2ic p2, Vector2ic p3, Vector2dc p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2ic p2, Vector2fc p3, Vector2ic p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2ic p2, Vector2fc p3, Vector2fc p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2ic p2, Vector2fc p3, Vector2dc p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2ic p2, Vector2dc p3, Vector2ic p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2ic p2, Vector2dc p3, Vector2fc p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2ic p2, Vector2dc p3, Vector2dc p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2fc p2, Vector2ic p3, Vector2ic p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2fc p2, Vector2ic p3, Vector2fc p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2fc p2, Vector2ic p3, Vector2dc p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2fc p2, Vector2fc p3, Vector2ic p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2fc p2, Vector2fc p3, Vector2fc p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2fc p2, Vector2fc p3, Vector2dc p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2fc p2, Vector2dc p3, Vector2ic p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2fc p2, Vector2dc p3, Vector2fc p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2fc p2, Vector2dc p3, Vector2dc p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2dc p2, Vector2ic p3, Vector2ic p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2dc p2, Vector2ic p3, Vector2fc p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2dc p2, Vector2ic p3, Vector2dc p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2dc p2, Vector2fc p3, Vector2ic p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2dc p2, Vector2fc p3, Vector2fc p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2dc p2, Vector2fc p3, Vector2dc p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2dc p2, Vector2dc p3, Vector2ic p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2dc p2, Vector2dc p3, Vector2fc p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2dc p2, Vector2dc p3, Vector2dc p4)          { Engine.renderer.quad(x1, y1, p2, p3, p4); }
+    
+    public static void quad(Vector2ic p1, double x2, double y2, Vector2ic p3, Vector2ic p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2ic p1, double x2, double y2, Vector2ic p3, Vector2fc p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2ic p1, double x2, double y2, Vector2ic p3, Vector2dc p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2ic p1, double x2, double y2, Vector2fc p3, Vector2ic p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2ic p1, double x2, double y2, Vector2fc p3, Vector2fc p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2ic p1, double x2, double y2, Vector2fc p3, Vector2dc p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2ic p1, double x2, double y2, Vector2dc p3, Vector2ic p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2ic p1, double x2, double y2, Vector2dc p3, Vector2fc p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2ic p1, double x2, double y2, Vector2dc p3, Vector2dc p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2fc p1, double x2, double y2, Vector2ic p3, Vector2ic p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2fc p1, double x2, double y2, Vector2ic p3, Vector2fc p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2fc p1, double x2, double y2, Vector2ic p3, Vector2dc p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2fc p1, double x2, double y2, Vector2fc p3, Vector2ic p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2fc p1, double x2, double y2, Vector2fc p3, Vector2fc p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2fc p1, double x2, double y2, Vector2fc p3, Vector2dc p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2fc p1, double x2, double y2, Vector2dc p3, Vector2ic p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2fc p1, double x2, double y2, Vector2dc p3, Vector2fc p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2fc p1, double x2, double y2, Vector2dc p3, Vector2dc p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2dc p1, double x2, double y2, Vector2ic p3, Vector2ic p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2dc p1, double x2, double y2, Vector2ic p3, Vector2fc p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2dc p1, double x2, double y2, Vector2ic p3, Vector2dc p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2dc p1, double x2, double y2, Vector2fc p3, Vector2ic p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2dc p1, double x2, double y2, Vector2fc p3, Vector2fc p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2dc p1, double x2, double y2, Vector2fc p3, Vector2dc p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2dc p1, double x2, double y2, Vector2dc p3, Vector2ic p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2dc p1, double x2, double y2, Vector2dc p3, Vector2fc p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2dc p1, double x2, double y2, Vector2dc p3, Vector2dc p4)          { Engine.renderer.quad(p1, x2, y2, p3, p4); }
+    
+    public static void quad(Vector2ic p1, Vector2ic p2, double x3, double y3, Vector2ic p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2ic p1, Vector2ic p2, double x3, double y3, Vector2fc p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2ic p1, Vector2ic p2, double x3, double y3, Vector2dc p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2ic p1, Vector2fc p2, double x3, double y3, Vector2ic p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2ic p1, Vector2fc p2, double x3, double y3, Vector2fc p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2ic p1, Vector2fc p2, double x3, double y3, Vector2dc p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2ic p1, Vector2dc p2, double x3, double y3, Vector2ic p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2ic p1, Vector2dc p2, double x3, double y3, Vector2fc p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2ic p1, Vector2dc p2, double x3, double y3, Vector2dc p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2fc p1, Vector2ic p2, double x3, double y3, Vector2ic p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2fc p1, Vector2ic p2, double x3, double y3, Vector2fc p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2fc p1, Vector2ic p2, double x3, double y3, Vector2dc p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2fc p1, Vector2fc p2, double x3, double y3, Vector2ic p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2fc p1, Vector2fc p2, double x3, double y3, Vector2fc p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2fc p1, Vector2fc p2, double x3, double y3, Vector2dc p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2fc p1, Vector2dc p2, double x3, double y3, Vector2ic p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2fc p1, Vector2dc p2, double x3, double y3, Vector2fc p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2fc p1, Vector2dc p2, double x3, double y3, Vector2dc p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2dc p1, Vector2ic p2, double x3, double y3, Vector2ic p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2dc p1, Vector2ic p2, double x3, double y3, Vector2fc p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2dc p1, Vector2ic p2, double x3, double y3, Vector2dc p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2dc p1, Vector2fc p2, double x3, double y3, Vector2ic p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2dc p1, Vector2fc p2, double x3, double y3, Vector2fc p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2dc p1, Vector2fc p2, double x3, double y3, Vector2dc p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2dc p1, Vector2dc p2, double x3, double y3, Vector2ic p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2dc p1, Vector2dc p2, double x3, double y3, Vector2fc p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2dc p1, Vector2dc p2, double x3, double y3, Vector2dc p4)          { Engine.renderer.quad(p1, p2, x3, y3, p4); }
+    
+    public static void quad(Vector2ic p1, Vector2ic p2, Vector2ic p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2ic p1, Vector2ic p2, Vector2fc p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2ic p1, Vector2ic p2, Vector2dc p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2ic p1, Vector2fc p2, Vector2ic p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2ic p1, Vector2fc p2, Vector2fc p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2ic p1, Vector2fc p2, Vector2dc p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2ic p1, Vector2dc p2, Vector2ic p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2ic p1, Vector2dc p2, Vector2fc p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2ic p1, Vector2dc p2, Vector2dc p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2fc p1, Vector2ic p2, Vector2ic p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2fc p1, Vector2ic p2, Vector2fc p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2fc p1, Vector2ic p2, Vector2dc p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2fc p1, Vector2fc p2, Vector2ic p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2fc p1, Vector2fc p2, Vector2fc p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2fc p1, Vector2fc p2, Vector2dc p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2fc p1, Vector2dc p2, Vector2ic p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2fc p1, Vector2dc p2, Vector2fc p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2fc p1, Vector2dc p2, Vector2dc p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2dc p1, Vector2ic p2, Vector2ic p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2dc p1, Vector2ic p2, Vector2fc p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2dc p1, Vector2ic p2, Vector2dc p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2dc p1, Vector2fc p2, Vector2ic p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2dc p1, Vector2fc p2, Vector2fc p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2dc p1, Vector2fc p2, Vector2dc p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2dc p1, Vector2dc p2, Vector2ic p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2dc p1, Vector2dc p2, Vector2fc p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2dc p1, Vector2dc p2, Vector2dc p3, double x4, double y4)          { Engine.renderer.quad(p1, p2, p3, x4, y4); }
+    
+    public static void quad(double x1, double y1, double x2, double y2, Vector2ic p3, Vector2ic p4)  { Engine.renderer.quad(x1, y1, x2, y2, p3, p4); }
+    
+    public static void quad(double x1, double y1, double x2, double y2, Vector2ic p3, Vector2fc p4)  { Engine.renderer.quad(x1, y1, x2, y2, p3, p4); }
+    
+    public static void quad(double x1, double y1, double x2, double y2, Vector2ic p3, Vector2dc p4)  { Engine.renderer.quad(x1, y1, x2, y2, p3, p4); }
+    
+    public static void quad(double x1, double y1, double x2, double y2, Vector2fc p3, Vector2ic p4)  { Engine.renderer.quad(x1, y1, x2, y2, p3, p4); }
+    
+    public static void quad(double x1, double y1, double x2, double y2, Vector2fc p3, Vector2fc p4)  { Engine.renderer.quad(x1, y1, x2, y2, p3, p4); }
+    
+    public static void quad(double x1, double y1, double x2, double y2, Vector2fc p3, Vector2dc p4)  { Engine.renderer.quad(x1, y1, x2, y2, p3, p4); }
+    
+    public static void quad(double x1, double y1, double x2, double y2, Vector2dc p3, Vector2ic p4)  { Engine.renderer.quad(x1, y1, x2, y2, p3, p4); }
+    
+    public static void quad(double x1, double y1, double x2, double y2, Vector2dc p3, Vector2fc p4)  { Engine.renderer.quad(x1, y1, x2, y2, p3, p4); }
+    
+    public static void quad(double x1, double y1, double x2, double y2, Vector2dc p3, Vector2dc p4)  { Engine.renderer.quad(x1, y1, x2, y2, p3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2ic p2, double x3, double y3, Vector2ic p4)  { Engine.renderer.quad(x1, y1, p2, x3, y3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2ic p2, double x3, double y3, Vector2fc p4)  { Engine.renderer.quad(x1, y1, p2, x3, y3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2ic p2, double x3, double y3, Vector2dc p4)  { Engine.renderer.quad(x1, y1, p2, x3, y3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2fc p2, double x3, double y3, Vector2ic p4)  { Engine.renderer.quad(x1, y1, p2, x3, y3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2fc p2, double x3, double y3, Vector2fc p4)  { Engine.renderer.quad(x1, y1, p2, x3, y3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2fc p2, double x3, double y3, Vector2dc p4)  { Engine.renderer.quad(x1, y1, p2, x3, y3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2dc p2, double x3, double y3, Vector2ic p4)  { Engine.renderer.quad(x1, y1, p2, x3, y3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2dc p2, double x3, double y3, Vector2fc p4)  { Engine.renderer.quad(x1, y1, p2, x3, y3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2dc p2, double x3, double y3, Vector2dc p4)  { Engine.renderer.quad(x1, y1, p2, x3, y3, p4); }
+    
+    public static void quad(double x1, double y1, Vector2ic p2, Vector2ic p3, double x4, double y4)  { Engine.renderer.quad(x1, y1, p2, p3, x4, y4); }
+    
+    public static void quad(double x1, double y1, Vector2ic p2, Vector2fc p3, double x4, double y4)  { Engine.renderer.quad(x1, y1, p2, p3, x4, y4); }
+    
+    public static void quad(double x1, double y1, Vector2ic p2, Vector2dc p3, double x4, double y4)  { Engine.renderer.quad(x1, y1, p2, p3, x4, y4); }
+    
+    public static void quad(double x1, double y1, Vector2fc p2, Vector2ic p3, double x4, double y4)  { Engine.renderer.quad(x1, y1, p2, p3, x4, y4); }
+    
+    public static void quad(double x1, double y1, Vector2fc p2, Vector2fc p3, double x4, double y4)  { Engine.renderer.quad(x1, y1, p2, p3, x4, y4); }
+    
+    public static void quad(double x1, double y1, Vector2fc p2, Vector2dc p3, double x4, double y4)  { Engine.renderer.quad(x1, y1, p2, p3, x4, y4); }
+    
+    public static void quad(double x1, double y1, Vector2dc p2, Vector2ic p3, double x4, double y4)  { Engine.renderer.quad(x1, y1, p2, p3, x4, y4); }
+    
+    public static void quad(double x1, double y1, Vector2dc p2, Vector2fc p3, double x4, double y4)  { Engine.renderer.quad(x1, y1, p2, p3, x4, y4); }
+    
+    public static void quad(double x1, double y1, Vector2dc p2, Vector2dc p3, double x4, double y4)  { Engine.renderer.quad(x1, y1, p2, p3, x4, y4); }
+    
+    public static void quad(Vector2ic p1, double x2, double y2, double x3, double y3, Vector2ic p4)  { Engine.renderer.quad(p1, x2, y2, x3, y3, p4); }
+    
+    public static void quad(Vector2ic p1, double x2, double y2, double x3, double y3, Vector2fc p4)  { Engine.renderer.quad(p1, x2, y2, x3, y3, p4); }
+    
+    public static void quad(Vector2ic p1, double x2, double y2, double x3, double y3, Vector2dc p4)  { Engine.renderer.quad(p1, x2, y2, x3, y3, p4); }
+    
+    public static void quad(Vector2fc p1, double x2, double y2, double x3, double y3, Vector2ic p4)  { Engine.renderer.quad(p1, x2, y2, x3, y3, p4); }
+    
+    public static void quad(Vector2fc p1, double x2, double y2, double x3, double y3, Vector2fc p4)  { Engine.renderer.quad(p1, x2, y2, x3, y3, p4); }
+    
+    public static void quad(Vector2fc p1, double x2, double y2, double x3, double y3, Vector2dc p4)  { Engine.renderer.quad(p1, x2, y2, x3, y3, p4); }
+    
+    public static void quad(Vector2dc p1, double x2, double y2, double x3, double y3, Vector2ic p4)  { Engine.renderer.quad(p1, x2, y2, x3, y3, p4); }
+    
+    public static void quad(Vector2dc p1, double x2, double y2, double x3, double y3, Vector2fc p4)  { Engine.renderer.quad(p1, x2, y2, x3, y3, p4); }
+    
+    public static void quad(Vector2dc p1, double x2, double y2, double x3, double y3, Vector2dc p4)  { Engine.renderer.quad(p1, x2, y2, x3, y3, p4); }
+    
+    public static void quad(Vector2ic p1, double x2, double y2, Vector2ic p3, double x4, double y4)  { Engine.renderer.quad(p1, x2, y2, p3, x4, y4); }
+    
+    public static void quad(Vector2ic p1, double x2, double y2, Vector2fc p3, double x4, double y4)  { Engine.renderer.quad(p1, x2, y2, p3, x4, y4); }
+    
+    public static void quad(Vector2ic p1, double x2, double y2, Vector2dc p3, double x4, double y4)  { Engine.renderer.quad(p1, x2, y2, p3, x4, y4); }
+    
+    public static void quad(Vector2fc p1, double x2, double y2, Vector2ic p3, double x4, double y4)  { Engine.renderer.quad(p1, x2, y2, p3, x4, y4); }
+    
+    public static void quad(Vector2fc p1, double x2, double y2, Vector2fc p3, double x4, double y4)  { Engine.renderer.quad(p1, x2, y2, p3, x4, y4); }
+    
+    public static void quad(Vector2fc p1, double x2, double y2, Vector2dc p3, double x4, double y4)  { Engine.renderer.quad(p1, x2, y2, p3, x4, y4); }
+    
+    public static void quad(Vector2dc p1, double x2, double y2, Vector2ic p3, double x4, double y4)  { Engine.renderer.quad(p1, x2, y2, p3, x4, y4); }
+    
+    public static void quad(Vector2dc p1, double x2, double y2, Vector2fc p3, double x4, double y4)  { Engine.renderer.quad(p1, x2, y2, p3, x4, y4); }
+    
+    public static void quad(Vector2dc p1, double x2, double y2, Vector2dc p3, double x4, double y4)  { Engine.renderer.quad(p1, x2, y2, p3, x4, y4); }
+    
+    public static void quad(Vector2ic p1, Vector2ic p2, double x3, double y3, double x4, double y4)  { Engine.renderer.quad(p1, p2, x3, y3, x4, y4); }
+    
+    public static void quad(Vector2ic p1, Vector2fc p2, double x3, double y3, double x4, double y4)  { Engine.renderer.quad(p1, p2, x3, y3, x4, y4); }
+    
+    public static void quad(Vector2ic p1, Vector2dc p2, double x3, double y3, double x4, double y4)  { Engine.renderer.quad(p1, p2, x3, y3, x4, y4); }
+    
+    public static void quad(Vector2fc p1, Vector2ic p2, double x3, double y3, double x4, double y4)  { Engine.renderer.quad(p1, p2, x3, y3, x4, y4); }
+    
+    public static void quad(Vector2fc p1, Vector2fc p2, double x3, double y3, double x4, double y4)  { Engine.renderer.quad(p1, p2, x3, y3, x4, y4); }
+    
+    public static void quad(Vector2fc p1, Vector2dc p2, double x3, double y3, double x4, double y4)  { Engine.renderer.quad(p1, p2, x3, y3, x4, y4); }
+    
+    public static void quad(Vector2dc p1, Vector2ic p2, double x3, double y3, double x4, double y4)  { Engine.renderer.quad(p1, p2, x3, y3, x4, y4); }
+    
+    public static void quad(Vector2dc p1, Vector2fc p2, double x3, double y3, double x4, double y4)  { Engine.renderer.quad(p1, p2, x3, y3, x4, y4); }
+    
+    public static void quad(Vector2dc p1, Vector2dc p2, double x3, double y3, double x4, double y4)  { Engine.renderer.quad(p1, p2, x3, y3, x4, y4); }
+    
+    public void quad(double x1, double y1, double x2, double y2, double x3, double y3, Vector2ic p4) { Engine.renderer.quad(x1, y1, x2, y2, x3, y3, p4); }
+    
+    public void quad(double x1, double y1, double x2, double y2, double x3, double y3, Vector2fc p4) { Engine.renderer.quad(x1, y1, x2, y2, x3, y3, p4); }
+    
+    public void quad(double x1, double y1, double x2, double y2, double x3, double y3, Vector2dc p4) { Engine.renderer.quad(x1, y1, x2, y2, x3, y3, p4); }
+    
+    public void quad(double x1, double y1, double x2, double y2, Vector2ic p3, double x4, double y4) { Engine.renderer.quad(x1, y1, x2, y2, p3, x4, y4); }
+    
+    public void quad(double x1, double y1, double x2, double y2, Vector2fc p3, double x4, double y4) { Engine.renderer.quad(x1, y1, x2, y2, p3, x4, y4); }
+    
+    public void quad(double x1, double y1, double x2, double y2, Vector2dc p3, double x4, double y4) { Engine.renderer.quad(x1, y1, x2, y2, p3, x4, y4); }
+    
+    public void quad(double x1, double y1, Vector2ic p2, double x3, double y3, double x4, double y4) { Engine.renderer.quad(x1, y1, p2, x3, y3, x4, y4); }
+    
+    public void quad(double x1, double y1, Vector2fc p2, double x3, double y3, double x4, double y4) { Engine.renderer.quad(x1, y1, p2, x3, y3, x4, y4); }
+    
+    public void quad(double x1, double y1, Vector2dc p2, double x3, double y3, double x4, double y4) { Engine.renderer.quad(x1, y1, p2, x3, y3, x4, y4); }
+    
+    public void quad(Vector2ic p1, double x2, double y2, double x3, double y3, double x4, double y4) { Engine.renderer.quad(p1, x2, y2, x3, y3, x4, y4); }
+    
+    public void quad(Vector2fc p1, double x2, double y2, double x3, double y3, double x4, double y4) { Engine.renderer.quad(p1, x2, y2, x3, y3, x4, y4); }
+    
+    public void quad(Vector2dc p1, double x2, double y2, double x3, double y3, double x4, double y4) { Engine.renderer.quad(p1, x2, y2, x3, y3, x4, y4); }
+    
+    public static void drawPolygon(double[] points)
+    {
+        Engine.renderer.drawPolygon(points);
+    }
+    
+    public static void fillPolygon(double[] points)
+    {
+        Engine.renderer.fillPolygon(points);
+    }
+    
+    public static void polygon(Object... points)
+    {
+        Engine.renderer.polygon(points);
+    }
+    
+    public static void drawCircle(double x, double y, double r)
+    {
+        Engine.renderer.drawCircle(x, y, r);
+    }
+    
+    public static void fillCircle(double x, double y, double r)
+    {
+        Engine.renderer.fillCircle(x, y, r);
+    }
+    
+    public static void circle(double a, double b, double c)
+    {
+        Engine.renderer.circle(a, b, c);
+    }
+    
+    public static void circle(Vector2ic ab, double c) { Engine.renderer.circle(ab, c); }
+    
+    public static void circle(Vector2fc ab, double c) { Engine.renderer.circle(ab, c); }
+    
+    public static void circle(Vector2dc ab, double c) { Engine.renderer.circle(ab, c); }
+    
+    public static void drawEllipse(double x, double y, double rx, double ry)
+    {
+        Engine.renderer.drawEllipse(x, y, rx, ry);
+    }
+    
+    public static void fillEllipse(double x, double y, double rx, double ry)
+    {
+        Engine.renderer.fillEllipse(x, y, rx, ry);
+    }
+    
+    public static void ellipse(double a, double b, double c, double d) { Engine.renderer.ellipse(a, b, c, d); }
+    
+    public static void ellipse(Vector2ic ab, Vector2ic cd)             { Engine.renderer.ellipse(ab, cd); }
+    
+    public static void ellipse(Vector2ic ab, Vector2fc cd)             { Engine.renderer.ellipse(ab, cd); }
+    
+    public static void ellipse(Vector2ic ab, Vector2dc cd)             { Engine.renderer.ellipse(ab, cd); }
+    
+    public static void ellipse(Vector2fc ab, Vector2ic cd)             { Engine.renderer.ellipse(ab, cd); }
+    
+    public static void ellipse(Vector2fc ab, Vector2fc cd)             { Engine.renderer.ellipse(ab, cd); }
+    
+    public static void ellipse(Vector2fc ab, Vector2dc cd)             { Engine.renderer.ellipse(ab, cd); }
+    
+    public static void ellipse(Vector2dc ab, Vector2ic cd)             { Engine.renderer.ellipse(ab, cd); }
+    
+    public static void ellipse(Vector2dc ab, Vector2fc cd)             { Engine.renderer.ellipse(ab, cd); }
+    
+    public static void ellipse(Vector2dc ab, Vector2dc cd)             { Engine.renderer.ellipse(ab, cd); }
+    
+    public static void ellipse(Vector2ic ab, double c, double d)       { Engine.renderer.ellipse(ab, c, d); }
+    
+    public static void ellipse(Vector2fc ab, double c, double d)       { Engine.renderer.ellipse(ab, c, d); }
+    
+    public static void ellipse(Vector2dc ab, double c, double d)       { Engine.renderer.ellipse(ab, c, d); }
+    
+    public static void ellipse(double a, double b, Vector2ic cd)       { Engine.renderer.ellipse(a, b, cd); }
+    
+    public static void ellipse(double a, double b, Vector2fc cd)       { Engine.renderer.ellipse(a, b, cd); }
+    
+    public static void ellipse(double a, double b, Vector2dc cd)       { Engine.renderer.ellipse(a, b, cd); }
     
     // --------------------
     // -- Instance Stuff --

@@ -43,7 +43,7 @@ public class SoftwareRenderer extends Renderer
     public void drawPoint(double x, double y)
     {
         PairD p  = transform(x, y);
-        int   xi = (int) p.a(), yi = (int) p.b();
+        int   xi = (int) round(p.a()), yi = (int) round(p.b());
         
         if (this.weight == 1)
         {
@@ -68,10 +68,10 @@ public class SoftwareRenderer extends Renderer
     public void drawLine(double x1, double y1, double x2, double y2)
     {
         PairD p1  = transform(x1, y1);
-        int   x1i = (int) p1.a(), y1i = (int) p1.b();
-        
+        int   x1i = (int) round(p1.a()), y1i = (int) round(p1.b());
+    
         PairD p2  = transform(x2, y2);
-        int   x2i = (int) p2.a(), y2i = (int) p2.b();
+        int   x2i = (int) round(p2.a()), y2i = (int) round(p2.b());
         
         lineImpl(x1i, y1i, x2i, y2i, (int) this.weight, LINE_OVERLAP_NONE);
         pointsImpl(this.stroke);
@@ -81,13 +81,13 @@ public class SoftwareRenderer extends Renderer
     public void drawBezier(double x1, double y1, double x2, double y2, double x3, double y3)
     {
         PairD p1  = transform(x1, y1);
-        int   x1i = (int) p1.a(), y1i = (int) p1.b();
-        
+        int   x1i = (int) round(p1.a()), y1i = (int) round(p1.b());
+    
         PairD p2  = transform(x2, y2);
-        int   x2i = (int) p2.a(), y2i = (int) p2.b();
-        
+        int   x2i = (int) round(p2.a()), y2i = (int) round(p2.b());
+    
         PairD p3  = transform(x3, y3);
-        int   x3i = (int) p3.a(), y3i = (int) p3.b();
+        int   x3i = (int) round(p3.a()), y3i = (int) round(p3.b());
         
         int width = (int) this.weight;
         
@@ -207,18 +207,18 @@ public class SoftwareRenderer extends Renderer
     {
         int n = points.length;
         int x1, y1, x2, y2;
-        
+    
         PairD pt = transform(points[n - 2], points[n - 1]);
-        x1 = (int) pt.a();
-        y1 = (int) pt.b();
+        x1 = (int) round(pt.a());
+        y1 = (int) round(pt.b());
         for (int i = 0; i < n; i += 2)
         {
             pt = transform(points[i], points[i + 1]);
-            x2 = (int) pt.a();
-            y2 = (int) pt.b();
-            
+            x2 = (int) round(pt.a());
+            y2 = (int) round(pt.b());
+        
             lineImpl(x1, y1, x2, y2, (int) this.weight, LINE_OVERLAP_NONE);
-            
+        
             x1 = x2;
             y1 = y2;
         }
@@ -229,18 +229,18 @@ public class SoftwareRenderer extends Renderer
     public void fillPolygon(double[] points)
     {
         int n = points.length;
-        
+    
         int minX, maxX, minY, maxY;
         int x1, y1, x2, y2;
-        
+    
         PairD cord = transform(points[n - 2], points[n - 1]);
-        minX = maxX = x1 = (int) cord.a();
-        minY = maxY = y1 = (int) cord.b();
+        minX = maxX = x1 = (int) round(cord.a());
+        minY = maxY = y1 = (int) round(cord.b());
         for (int i = 0; i < n; i += 2)
         {
             cord = transform(points[i], points[i + 1]);
-            x2   = (int) cord.a();
-            y2   = (int) cord.b();
+            x2   = (int) round(cord.a());
+            y2   = (int) round(cord.b());
             minX = Math.min(minX, x2);
             maxX = Math.max(maxX, x2);
             minY = Math.min(minY, y2);
@@ -303,9 +303,76 @@ public class SoftwareRenderer extends Renderer
     }
     
     @Override
-    public void texture(Texture texture, double x, double y, double ox, double oy, double w, double h)
+    public void drawTexture(Texture texture, double x, double y, double w, double h, double u, double v, double uw, double vh)
     {
+        double[] points = new double[] {x, y, x + uw, y, x + uw, y + vh, x, y + vh};
+        int      n      = points.length;
+        
+        int minX, maxX, minY, maxY;
+        int x1, y1, x2, y2;
+        
+        PairD cord = transform(points[n - 2], points[n - 1]);
+        minX = maxX = x1 = (int) round(cord.a());
+        minY = maxY = y1 = (int) round(cord.b());
+        for (int i = 0; i < n; i += 2)
+        {
+            cord = transform(points[i], points[i + 1]);
+            x2   = (int) round(cord.a());
+            y2   = (int) round(cord.b());
+            minX = Math.min(minX, x2);
+            maxX = Math.max(maxX, x2);
+            minY = Math.min(minY, y2);
+            maxY = Math.max(maxY, y2);
+            lineImpl(x1, y1, x2, y2, 1, LINE_OVERLAP_NONE);
+            x1 = x2;
+            y1 = y2;
+        }
+        
+        HashMap<Integer, PairI> xMap = new HashMap<>(), yMap = new HashMap<>();
+        
+        PairI xPair, yPair;
+        for (PairI point : SoftwareRenderer.POINTS)
+        {
+            int px = point.a, py = point.b;
+            if (!xMap.containsKey(px)) xMap.put(px, new PairI(py, py));
+            if (!yMap.containsKey(py)) yMap.put(py, new PairI(px, px));
+            xPair = xMap.get(px);
+            yPair = yMap.get(py);
+            
+            xPair.a = Math.min(xPair.a, py + 1);
+            xPair.b = Math.max(xPair.b, py - 1);
+            yPair.a = Math.min(yPair.a, px + 1);
+            yPair.b = Math.max(yPair.b, px - 1);
+        }
+        for (int py : yMap.keySet())
+        {
+            xPair = yMap.get(py);
+            for (int px = xPair.a; px <= xPair.b; px++)
+            {
+                yPair = xMap.get(px);
+                if (yPair.a <= y && y <= yPair.b) SoftwareRenderer.POINTS.add(new PairI(px, py));
+            }
+        }
+        pointsImpl(this.fill);
+    }
     
+    @Override
+    public int[] loadPixels()
+    {
+        for (int i = 0, n = this.pixels.length; i < n; i++)
+        {
+            this.pixels[i] = this.target.data().get(i) & 0xFF;
+        }
+        return this.pixels;
+    }
+    
+    @Override
+    public void updatePixels()
+    {
+        for (int i = 0, n = this.pixels.length; i < n; i++)
+        {
+            this.target.data().put(i, (byte) (this.pixels[i] & 0xFF));
+        }
     }
     
     private void pointImpl(int x, int y, Colorc color)
@@ -342,7 +409,7 @@ public class SoftwareRenderer extends Renderer
         {
             int dx = Math.abs(x2 - x1), sx = x1 < x2 ? 1 : -1;
             int dy = Math.abs(y2 - y1), sy = y1 < y2 ? 1 : -1;
-        
+    
             if (dx == 0)
             {
                 while (true)
@@ -403,9 +470,9 @@ public class SoftwareRenderer extends Renderer
         {
             int dx = Math.abs(y2 - y1), sx = x1 < x2 ? 1 : -1;
             int dy = Math.abs(x2 - x1), sy = y1 < y2 ? 1 : -1;
-        
+    
             int halfWidth = thickness >> 1;
-        
+    
             if (sx < 0 == sy < 0)
             {
                 if (dx >= dy)

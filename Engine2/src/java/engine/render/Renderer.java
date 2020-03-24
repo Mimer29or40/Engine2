@@ -261,6 +261,18 @@ public abstract class Renderer
         if (this.stroke.a() > 0) drawLine(x1, y1, x2, y2);
     }
     
+    public void line(double x1, double y1, Vector2ic p2) { line(x1, y1, p2.x(), p2.y()); }
+    
+    public void line(double x1, double y1, Vector2fc p2) { line(x1, y1, p2.x(), p2.y()); }
+    
+    public void line(double x1, double y1, Vector2dc p2) { line(x1, y1, p2.x(), p2.y()); }
+    
+    public void line(Vector2ic p1, double x2, double y2) { line(p1.x(), p1.y(), x2, y2); }
+    
+    public void line(Vector2fc p1, double x2, double y2) { line(p1.x(), p1.y(), x2, y2); }
+    
+    public void line(Vector2dc p1, double x2, double y2) { line(p1.x(), p1.y(), x2, y2); }
+    
     public void line(Vector2ic p1, Vector2ic p2)         { line(p1.x(), p1.y(), p2.x(), p2.y()); }
     
     public void line(Vector2ic p1, Vector2fc p2)         { line(p1.x(), p1.y(), p2.x(), p2.y()); }
@@ -279,18 +291,6 @@ public abstract class Renderer
     
     public void line(Vector2dc p1, Vector2dc p2)         { line(p1.x(), p1.y(), p2.x(), p2.y()); }
     
-    public void line(Vector2ic p1, double x2, double y2) { line(p1.x(), p1.y(), x2, y2); }
-    
-    public void line(Vector2fc p1, double x2, double y2) { line(p1.x(), p1.y(), x2, y2); }
-    
-    public void line(Vector2dc p1, double x2, double y2) { line(p1.x(), p1.y(), x2, y2); }
-    
-    public void line(double x1, double y1, Vector2ic p2) { line(x1, y1, p2.x(), p2.y()); }
-    
-    public void line(double x1, double y1, Vector2fc p2) { line(x1, y1, p2.x(), p2.y()); }
-    
-    public void line(double x1, double y1, Vector2dc p2) { line(x1, y1, p2.x(), p2.y()); }
-    
     // --------------------
     // -- Bezier Methods --
     // --------------------
@@ -302,27 +302,23 @@ public abstract class Renderer
         if (this.stroke.a() > 0) drawBezier(x1, y1, x2, y2, x3, y3);
     }
     
-    public void bezier(Vector2ic p1, Vector2ic p2, Vector2ic p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    public void bezier(double x1, double y1, double x2, double y2, Vector2ic p3) { bezier(x1, y1, x2, y2, p3.x(), p3.y()); }
     
-    public void bezier(Vector2ic p1, Vector2ic p2, Vector2fc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    public void bezier(double x1, double y1, double x2, double y2, Vector2fc p3) { bezier(x1, y1, x2, y2, p3.x(), p3.y()); }
     
-    public void bezier(Vector2ic p1, Vector2ic p2, Vector2dc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    public void bezier(double x1, double y1, double x2, double y2, Vector2dc p3) { bezier(x1, y1, x2, y2, p3.x(), p3.y()); }
     
-    public void bezier(Vector2ic p1, Vector2fc p2, Vector2ic p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    public void bezier(double x1, double y1, Vector2ic p2, double x3, double y3) { bezier(x1, y1, p2.x(), p2.y(), x3, y3); }
     
-    public void bezier(Vector2ic p1, Vector2fc p2, Vector2fc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    public void bezier(double x1, double y1, Vector2fc p2, double x3, double y3) { bezier(x1, y1, p2.x(), p2.y(), x3, y3); }
     
-    public void bezier(Vector2ic p1, Vector2fc p2, Vector2dc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    public void bezier(double x1, double y1, Vector2dc p2, double x3, double y3) { bezier(x1, y1, p2.x(), p2.y(), x3, y3); }
     
-    public void bezier(Vector2ic p1, Vector2dc p2, Vector2ic p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    public void bezier(Vector2ic p1, double x2, double y2, double x3, double y3) { bezier(p1.x(), p1.y(), x2, y2, x3, y3); }
     
-    public void bezier(Vector2ic p1, Vector2dc p2, Vector2fc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    public void bezier(Vector2fc p1, double x2, double y2, double x3, double y3) { bezier(p1.x(), p1.y(), x2, y2, x3, y3); }
     
-    public void bezier(Vector2ic p1, Vector2dc p2, Vector2dc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2fc p1, Vector2fc p2, Vector2fc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2dc p1, Vector2dc p2, Vector2dc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    public void bezier(Vector2dc p1, double x2, double y2, double x3, double y3) { bezier(p1.x(), p1.y(), x2, y2, x3, y3); }
     
     public void bezier(double x1, double y1, Vector2ic p2, Vector2ic p3)         { bezier(x1, y1, p2.x(), p2.y(), p3.x(), p3.y()); }
     
@@ -378,23 +374,59 @@ public abstract class Renderer
     
     public void bezier(Vector2dc p1, Vector2dc p2, double x3, double y3)         { bezier(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3); }
     
-    public void bezier(double x1, double y1, double x2, double y2, Vector2ic p3) { bezier(x1, y1, x2, y2, p3.x(), p3.y()); }
+    public void bezier(Vector2ic p1, Vector2ic p2, Vector2ic p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
     
-    public void bezier(double x1, double y1, double x2, double y2, Vector2fc p3) { bezier(x1, y1, x2, y2, p3.x(), p3.y()); }
+    public void bezier(Vector2ic p1, Vector2ic p2, Vector2fc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
     
-    public void bezier(double x1, double y1, double x2, double y2, Vector2dc p3) { bezier(x1, y1, x2, y2, p3.x(), p3.y()); }
+    public void bezier(Vector2ic p1, Vector2ic p2, Vector2dc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
     
-    public void bezier(Vector2ic p1, double x2, double y2, double x3, double y3) { bezier(p1.x(), p1.y(), x2, y2, x3, y3); }
+    public void bezier(Vector2ic p1, Vector2fc p2, Vector2ic p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
     
-    public void bezier(Vector2fc p1, double x2, double y2, double x3, double y3) { bezier(p1.x(), p1.y(), x2, y2, x3, y3); }
+    public void bezier(Vector2ic p1, Vector2fc p2, Vector2fc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
     
-    public void bezier(Vector2dc p1, double x2, double y2, double x3, double y3) { bezier(p1.x(), p1.y(), x2, y2, x3, y3); }
+    public void bezier(Vector2ic p1, Vector2fc p2, Vector2dc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
     
-    public void bezier(double x1, double y1, Vector2ic p2, double x3, double y3) { bezier(x1, y1, p2.x(), p2.y(), x3, y3); }
+    public void bezier(Vector2ic p1, Vector2dc p2, Vector2ic p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
     
-    public void bezier(double x1, double y1, Vector2fc p2, double x3, double y3) { bezier(x1, y1, p2.x(), p2.y(), x3, y3); }
+    public void bezier(Vector2ic p1, Vector2dc p2, Vector2fc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
     
-    public void bezier(double x1, double y1, Vector2dc p2, double x3, double y3) { bezier(x1, y1, p2.x(), p2.y(), x3, y3); }
+    public void bezier(Vector2ic p1, Vector2dc p2, Vector2dc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void bezier(Vector2fc p1, Vector2ic p2, Vector2ic p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void bezier(Vector2fc p1, Vector2ic p2, Vector2fc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void bezier(Vector2fc p1, Vector2ic p2, Vector2dc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void bezier(Vector2fc p1, Vector2fc p2, Vector2ic p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void bezier(Vector2fc p1, Vector2fc p2, Vector2fc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void bezier(Vector2fc p1, Vector2fc p2, Vector2dc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void bezier(Vector2fc p1, Vector2dc p2, Vector2ic p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void bezier(Vector2fc p1, Vector2dc p2, Vector2fc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void bezier(Vector2fc p1, Vector2dc p2, Vector2dc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void bezier(Vector2dc p1, Vector2ic p2, Vector2ic p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void bezier(Vector2dc p1, Vector2ic p2, Vector2fc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void bezier(Vector2dc p1, Vector2ic p2, Vector2dc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void bezier(Vector2dc p1, Vector2fc p2, Vector2ic p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void bezier(Vector2dc p1, Vector2fc p2, Vector2fc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void bezier(Vector2dc p1, Vector2fc p2, Vector2dc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void bezier(Vector2dc p1, Vector2dc p2, Vector2ic p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void bezier(Vector2dc p1, Vector2dc p2, Vector2fc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void bezier(Vector2dc p1, Vector2dc p2, Vector2dc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
     
     // ----------------------
     // -- Triangle Methods --
@@ -410,27 +442,23 @@ public abstract class Renderer
         if (this.stroke.a() > 0) drawTriangle(x1, y1, x2, y2, x3, y3);
     }
     
-    public void triangle(Vector2ic p1, Vector2ic p2, Vector2ic p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    public void triangle(double x1, double y1, double x2, double y2, Vector2ic p3) { triangle(x1, y1, x2, y2, p3.x(), p3.y()); }
     
-    public void triangle(Vector2ic p1, Vector2ic p2, Vector2fc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    public void triangle(double x1, double y1, double x2, double y2, Vector2fc p3) { triangle(x1, y1, x2, y2, p3.x(), p3.y()); }
     
-    public void triangle(Vector2ic p1, Vector2ic p2, Vector2dc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    public void triangle(double x1, double y1, double x2, double y2, Vector2dc p3) { triangle(x1, y1, x2, y2, p3.x(), p3.y()); }
     
-    public void triangle(Vector2ic p1, Vector2fc p2, Vector2ic p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    public void triangle(double x1, double y1, Vector2ic p2, double x3, double y3) { triangle(x1, y1, p2.x(), p2.y(), x3, y3); }
     
-    public void triangle(Vector2ic p1, Vector2fc p2, Vector2fc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    public void triangle(double x1, double y1, Vector2fc p2, double x3, double y3) { triangle(x1, y1, p2.x(), p2.y(), x3, y3); }
     
-    public void triangle(Vector2ic p1, Vector2fc p2, Vector2dc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    public void triangle(double x1, double y1, Vector2dc p2, double x3, double y3) { triangle(x1, y1, p2.x(), p2.y(), x3, y3); }
     
-    public void triangle(Vector2ic p1, Vector2dc p2, Vector2ic p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    public void triangle(Vector2ic p1, double x2, double y2, double x3, double y3) { triangle(p1.x(), p1.y(), x2, y2, x3, y3); }
     
-    public void triangle(Vector2ic p1, Vector2dc p2, Vector2fc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    public void triangle(Vector2fc p1, double x2, double y2, double x3, double y3) { triangle(p1.x(), p1.y(), x2, y2, x3, y3); }
     
-    public void triangle(Vector2ic p1, Vector2dc p2, Vector2dc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2fc p1, Vector2fc p2, Vector2fc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2dc p1, Vector2dc p2, Vector2dc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    public void triangle(Vector2dc p1, double x2, double y2, double x3, double y3) { triangle(p1.x(), p1.y(), x2, y2, x3, y3); }
     
     public void triangle(double x1, double y1, Vector2ic p2, Vector2ic p3)         { triangle(x1, y1, p2.x(), p2.y(), p3.x(), p3.y()); }
     
@@ -486,23 +514,59 @@ public abstract class Renderer
     
     public void triangle(Vector2dc p1, Vector2dc p2, double x3, double y3)         { triangle(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3); }
     
-    public void triangle(double x1, double y1, double x2, double y2, Vector2ic p3) { triangle(x1, y1, x2, y2, p3.x(), p3.y()); }
+    public void triangle(Vector2ic p1, Vector2ic p2, Vector2ic p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
     
-    public void triangle(double x1, double y1, double x2, double y2, Vector2fc p3) { triangle(x1, y1, x2, y2, p3.x(), p3.y()); }
+    public void triangle(Vector2ic p1, Vector2ic p2, Vector2fc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
     
-    public void triangle(double x1, double y1, double x2, double y2, Vector2dc p3) { triangle(x1, y1, x2, y2, p3.x(), p3.y()); }
+    public void triangle(Vector2ic p1, Vector2ic p2, Vector2dc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
     
-    public void triangle(Vector2ic p1, double x2, double y2, double x3, double y3) { triangle(p1.x(), p1.y(), x2, y2, x3, y3); }
+    public void triangle(Vector2ic p1, Vector2fc p2, Vector2ic p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
     
-    public void triangle(Vector2fc p1, double x2, double y2, double x3, double y3) { triangle(p1.x(), p1.y(), x2, y2, x3, y3); }
+    public void triangle(Vector2ic p1, Vector2fc p2, Vector2fc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
     
-    public void triangle(Vector2dc p1, double x2, double y2, double x3, double y3) { triangle(p1.x(), p1.y(), x2, y2, x3, y3); }
+    public void triangle(Vector2ic p1, Vector2fc p2, Vector2dc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
     
-    public void triangle(double x1, double y1, Vector2ic p2, double x3, double y3) { triangle(x1, y1, p2.x(), p2.y(), x3, y3); }
+    public void triangle(Vector2ic p1, Vector2dc p2, Vector2ic p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
     
-    public void triangle(double x1, double y1, Vector2fc p2, double x3, double y3) { triangle(x1, y1, p2.x(), p2.y(), x3, y3); }
+    public void triangle(Vector2ic p1, Vector2dc p2, Vector2fc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
     
-    public void triangle(double x1, double y1, Vector2dc p2, double x3, double y3) { triangle(x1, y1, p2.x(), p2.y(), x3, y3); }
+    public void triangle(Vector2ic p1, Vector2dc p2, Vector2dc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void triangle(Vector2fc p1, Vector2ic p2, Vector2ic p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void triangle(Vector2fc p1, Vector2ic p2, Vector2fc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void triangle(Vector2fc p1, Vector2ic p2, Vector2dc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void triangle(Vector2fc p1, Vector2fc p2, Vector2ic p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void triangle(Vector2fc p1, Vector2fc p2, Vector2fc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void triangle(Vector2fc p1, Vector2fc p2, Vector2dc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void triangle(Vector2fc p1, Vector2dc p2, Vector2ic p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void triangle(Vector2fc p1, Vector2dc p2, Vector2fc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void triangle(Vector2fc p1, Vector2dc p2, Vector2dc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void triangle(Vector2dc p1, Vector2ic p2, Vector2ic p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void triangle(Vector2dc p1, Vector2ic p2, Vector2fc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void triangle(Vector2dc p1, Vector2ic p2, Vector2dc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void triangle(Vector2dc p1, Vector2fc p2, Vector2ic p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void triangle(Vector2dc p1, Vector2fc p2, Vector2fc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void triangle(Vector2dc p1, Vector2fc p2, Vector2dc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void triangle(Vector2dc p1, Vector2dc p2, Vector2ic p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void triangle(Vector2dc p1, Vector2dc p2, Vector2fc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
+    
+    public void triangle(Vector2dc p1, Vector2dc p2, Vector2dc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
     
     // --------------------
     // -- Square Methods --
@@ -576,6 +640,18 @@ public abstract class Renderer
         }
     }
     
+    public void rect(double a, double b, Vector2ic cd) { rect(a, b, cd.x(), cd.y()); }
+    
+    public void rect(double a, double b, Vector2fc cd) { rect(a, b, cd.x(), cd.y()); }
+    
+    public void rect(double a, double b, Vector2dc cd) { rect(a, b, cd.x(), cd.y()); }
+    
+    public void rect(Vector2ic ab, double c, double d) { rect(ab.x(), ab.y(), c, d); }
+    
+    public void rect(Vector2fc ab, double c, double d) { rect(ab.x(), ab.y(), c, d); }
+    
+    public void rect(Vector2dc ab, double c, double d) { rect(ab.x(), ab.y(), c, d); }
+    
     public void rect(Vector2ic ab, Vector2ic cd)       { rect(ab.x(), ab.y(), cd.x(), cd.y()); }
     
     public void rect(Vector2ic ab, Vector2fc cd)       { rect(ab.x(), ab.y(), cd.x(), cd.y()); }
@@ -593,18 +669,6 @@ public abstract class Renderer
     public void rect(Vector2dc ab, Vector2fc cd)       { rect(ab.x(), ab.y(), cd.x(), cd.y()); }
     
     public void rect(Vector2dc ab, Vector2dc cd)       { rect(ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void rect(Vector2ic ab, double c, double d) { rect(ab.x(), ab.y(), c, d); }
-    
-    public void rect(Vector2fc ab, double c, double d) { rect(ab.x(), ab.y(), c, d); }
-    
-    public void rect(Vector2dc ab, double c, double d) { rect(ab.x(), ab.y(), c, d); }
-    
-    public void rect(double a, double b, Vector2ic cd) { rect(a, b, cd.x(), cd.y()); }
-    
-    public void rect(double a, double b, Vector2fc cd) { rect(a, b, cd.x(), cd.y()); }
-    
-    public void rect(double a, double b, Vector2dc cd) { rect(a, b, cd.x(), cd.y()); }
     
     // ------------------
     // -- Quad Methods --
@@ -1247,6 +1311,18 @@ public abstract class Renderer
         }
     }
     
+    public void ellipse(double a, double b, Vector2ic cd) { ellipse(a, b, cd.x(), cd.y()); }
+    
+    public void ellipse(double a, double b, Vector2fc cd) { ellipse(a, b, cd.x(), cd.y()); }
+    
+    public void ellipse(double a, double b, Vector2dc cd) { ellipse(a, b, cd.x(), cd.y()); }
+    
+    public void ellipse(Vector2ic ab, double c, double d) { ellipse(ab.x(), ab.y(), c, d); }
+    
+    public void ellipse(Vector2fc ab, double c, double d) { ellipse(ab.x(), ab.y(), c, d); }
+    
+    public void ellipse(Vector2dc ab, double c, double d) { ellipse(ab.x(), ab.y(), c, d); }
+    
     public void ellipse(Vector2ic ab, Vector2ic cd)       { ellipse(ab.x(), ab.y(), cd.x(), cd.y()); }
     
     public void ellipse(Vector2ic ab, Vector2fc cd)       { ellipse(ab.x(), ab.y(), cd.x(), cd.y()); }
@@ -1264,18 +1340,6 @@ public abstract class Renderer
     public void ellipse(Vector2dc ab, Vector2fc cd)       { ellipse(ab.x(), ab.y(), cd.x(), cd.y()); }
     
     public void ellipse(Vector2dc ab, Vector2dc cd)       { ellipse(ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void ellipse(Vector2ic ab, double c, double d) { ellipse(ab.x(), ab.y(), c, d); }
-    
-    public void ellipse(Vector2fc ab, double c, double d) { ellipse(ab.x(), ab.y(), c, d); }
-    
-    public void ellipse(Vector2dc ab, double c, double d) { ellipse(ab.x(), ab.y(), c, d); }
-    
-    public void ellipse(double a, double b, Vector2ic cd) { ellipse(a, b, cd.x(), cd.y()); }
-    
-    public void ellipse(double a, double b, Vector2fc cd) { ellipse(a, b, cd.x(), cd.y()); }
-    
-    public void ellipse(double a, double b, Vector2dc cd) { ellipse(a, b, cd.x(), cd.y()); }
     
     // ---------------------
     // -- Texture Methods --
@@ -1299,495 +1363,541 @@ public abstract class Renderer
         }
     }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, double x3, double y3, Vector2ic p4) { texture(t, x1, y1, x2, y2, x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, double w, double h, double u, double v, Vector2ic texSize)  { texture(t, x, y, w, h, u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, double x3, double y3, Vector2fc p4) { texture(t, x1, y1, x2, y2, x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, double w, double h, double u, double v, Vector2fc texSize)  { texture(t, x, y, w, h, u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, double x3, double y3, Vector2dc p4) { texture(t, x1, y1, x2, y2, x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, double w, double h, double u, double v, Vector2dc texSize)  { texture(t, x, y, w, h, u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2ic p3, double x4, double y4) { texture(t, x1, y1, x2, y2, p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, double x, double y, double w, double h, Vector2ic texPos, double uw, double vh) { texture(t, x, y, w, h, texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2fc p3, double x4, double y4) { texture(t, x1, y1, x2, y2, p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, double x, double y, double w, double h, Vector2fc texPos, double uw, double vh) { texture(t, x, y, w, h, texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2dc p3, double x4, double y4) { texture(t, x1, y1, x2, y2, p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, double x, double y, double w, double h, Vector2dc texPos, double uw, double vh) { texture(t, x, y, w, h, texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2ic p3, Vector2ic p4)         { texture(t, x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, double w, double h, Vector2ic texPos, Vector2ic texSize)    { texture(t, x, y, w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2ic p3, Vector2fc p4)         { texture(t, x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, double w, double h, Vector2ic texPos, Vector2fc texSize)    { texture(t, x, y, w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2ic p3, Vector2dc p4)         { texture(t, x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, double w, double h, Vector2ic texPos, Vector2dc texSize)    { texture(t, x, y, w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2fc p3, Vector2ic p4)         { texture(t, x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, double w, double h, Vector2fc texPos, Vector2ic texSize)    { texture(t, x, y, w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2fc p3, Vector2fc p4)         { texture(t, x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, double w, double h, Vector2fc texPos, Vector2fc texSize)    { texture(t, x, y, w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2fc p3, Vector2dc p4)         { texture(t, x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, double w, double h, Vector2fc texPos, Vector2dc texSize)    { texture(t, x, y, w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2dc p3, Vector2ic p4)         { texture(t, x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, double w, double h, Vector2dc texPos, Vector2ic texSize)    { texture(t, x, y, w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2dc p3, Vector2fc p4)         { texture(t, x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, double w, double h, Vector2dc texPos, Vector2fc texSize)    { texture(t, x, y, w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2dc p3, Vector2dc p4)         { texture(t, x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, double w, double h, Vector2dc texPos, Vector2dc texSize)    { texture(t, x, y, w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, double x3, double y3, Vector2ic p4)         { texture(t, x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2ic size, double u, double v, Vector2ic texSize)      { texture(t, x, y, size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, double x3, double y3, Vector2fc p4)         { texture(t, x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2ic size, double u, double v, Vector2fc texSize)      { texture(t, x, y, size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, double x3, double y3, Vector2dc p4)         { texture(t, x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2ic size, double u, double v, Vector2dc texSize)      { texture(t, x, y, size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, double x3, double y3, Vector2ic p4)         { texture(t, x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2fc size, double u, double v, Vector2ic texSize)      { texture(t, x, y, size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, double x3, double y3, Vector2fc p4)         { texture(t, x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2fc size, double u, double v, Vector2fc texSize)      { texture(t, x, y, size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, double x3, double y3, Vector2dc p4)         { texture(t, x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2fc size, double u, double v, Vector2dc texSize)      { texture(t, x, y, size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, double x3, double y3, Vector2ic p4)         { texture(t, x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2dc size, double u, double v, Vector2ic texSize)      { texture(t, x, y, size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, double x3, double y3, Vector2fc p4)         { texture(t, x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2dc size, double u, double v, Vector2fc texSize)      { texture(t, x, y, size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, double x3, double y3, Vector2dc p4)         { texture(t, x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2dc size, double u, double v, Vector2dc texSize)      { texture(t, x, y, size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2ic p3, double x4, double y4)         { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, double x, double y, Vector2ic size, Vector2ic texPos, double uw, double vh)     { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2fc p3, double x4, double y4)         { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, double x, double y, Vector2ic size, Vector2fc texPos, double uw, double vh)     { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2dc p3, double x4, double y4)         { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, double x, double y, Vector2ic size, Vector2dc texPos, double uw, double vh)     { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2ic p3, double x4, double y4)         { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, double x, double y, Vector2fc size, Vector2ic texPos, double uw, double vh)     { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2fc p3, double x4, double y4)         { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, double x, double y, Vector2fc size, Vector2fc texPos, double uw, double vh)     { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2dc p3, double x4, double y4)         { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, double x, double y, Vector2fc size, Vector2dc texPos, double uw, double vh)     { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2ic p3, double x4, double y4)         { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, double x, double y, Vector2dc size, Vector2ic texPos, double uw, double vh)     { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2fc p3, double x4, double y4)         { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, double x, double y, Vector2dc size, Vector2fc texPos, double uw, double vh)     { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2dc p3, double x4, double y4)         { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, double x, double y, Vector2dc size, Vector2dc texPos, double uw, double vh)     { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, double x3, double y3, Vector2ic p4)         { texture(t, p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, double w, double h, double u, double v, Vector2ic texSize)       { texture(t, pos.x(), pos.y(), w, h, u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, double x3, double y3, Vector2fc p4)         { texture(t, p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, double w, double h, double u, double v, Vector2fc texSize)       { texture(t, pos.x(), pos.y(), w, h, u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, double x3, double y3, Vector2dc p4)         { texture(t, p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, double w, double h, double u, double v, Vector2dc texSize)       { texture(t, pos.x(), pos.y(), w, h, u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, double x3, double y3, Vector2ic p4)         { texture(t, p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, double w, double h, double u, double v, Vector2ic texSize)       { texture(t, pos.x(), pos.y(), w, h, u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, double x3, double y3, Vector2fc p4)         { texture(t, p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, double w, double h, double u, double v, Vector2fc texSize)       { texture(t, pos.x(), pos.y(), w, h, u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, double x3, double y3, Vector2dc p4)         { texture(t, p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, double w, double h, double u, double v, Vector2dc texSize)       { texture(t, pos.x(), pos.y(), w, h, u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, double x3, double y3, Vector2ic p4)         { texture(t, p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, double w, double h, double u, double v, Vector2ic texSize)       { texture(t, pos.x(), pos.y(), w, h, u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, double x3, double y3, Vector2fc p4)         { texture(t, p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, double w, double h, double u, double v, Vector2fc texSize)       { texture(t, pos.x(), pos.y(), w, h, u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, double x3, double y3, Vector2dc p4)         { texture(t, p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, double w, double h, double u, double v, Vector2dc texSize)       { texture(t, pos.x(), pos.y(), w, h, u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2ic p3, double x4, double y4)         { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2ic pos, double w, double h, Vector2ic texPos, double uw, double vh)      { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2fc p3, double x4, double y4)         { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2ic pos, double w, double h, Vector2fc texPos, double uw, double vh)      { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2dc p3, double x4, double y4)         { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2ic pos, double w, double h, Vector2dc texPos, double uw, double vh)      { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2ic p3, double x4, double y4)         { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2fc pos, double w, double h, Vector2ic texPos, double uw, double vh)      { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2fc p3, double x4, double y4)         { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2fc pos, double w, double h, Vector2fc texPos, double uw, double vh)      { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2dc p3, double x4, double y4)         { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2fc pos, double w, double h, Vector2dc texPos, double uw, double vh)      { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2ic p3, double x4, double y4)         { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2dc pos, double w, double h, Vector2ic texPos, double uw, double vh)      { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2fc p3, double x4, double y4)         { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2dc pos, double w, double h, Vector2fc texPos, double uw, double vh)      { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2dc p3, double x4, double y4)         { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2dc pos, double w, double h, Vector2dc texPos, double uw, double vh)      { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, double x3, double y3, double x4, double y4)         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
+    public void texture(Texture t, Vector2ic pos, Vector2ic size, double u, double v, double uw, double vh)        { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, uw, vh); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, double x3, double y3, double x4, double y4)         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
+    public void texture(Texture t, Vector2ic pos, Vector2fc size, double u, double v, double uw, double vh)        { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, uw, vh); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, double x3, double y3, double x4, double y4)         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
+    public void texture(Texture t, Vector2ic pos, Vector2dc size, double u, double v, double uw, double vh)        { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, uw, vh); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, double x3, double y3, double x4, double y4)         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
+    public void texture(Texture t, Vector2fc pos, Vector2ic size, double u, double v, double uw, double vh)        { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, uw, vh); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, double x3, double y3, double x4, double y4)         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
+    public void texture(Texture t, Vector2fc pos, Vector2fc size, double u, double v, double uw, double vh)        { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, uw, vh); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, double x3, double y3, double x4, double y4)         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
+    public void texture(Texture t, Vector2fc pos, Vector2dc size, double u, double v, double uw, double vh)        { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, uw, vh); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, double x3, double y3, double x4, double y4)         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
+    public void texture(Texture t, Vector2dc pos, Vector2ic size, double u, double v, double uw, double vh)        { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, uw, vh); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, double x3, double y3, double x4, double y4)         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
+    public void texture(Texture t, Vector2dc pos, Vector2fc size, double u, double v, double uw, double vh)        { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, uw, vh); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, double x3, double y3, double x4, double y4)         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
+    public void texture(Texture t, Vector2dc pos, Vector2dc size, double u, double v, double uw, double vh)        { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, uw, vh); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2ic p3, Vector2ic p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2ic size, Vector2ic texPos, Vector2ic texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2ic p3, Vector2fc p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2ic size, Vector2ic texPos, Vector2fc texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2ic p3, Vector2dc p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2ic size, Vector2ic texPos, Vector2dc texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2fc p3, Vector2ic p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2ic size, Vector2fc texPos, Vector2ic texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2fc p3, Vector2fc p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2ic size, Vector2fc texPos, Vector2fc texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2fc p3, Vector2dc p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2ic size, Vector2fc texPos, Vector2dc texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2dc p3, Vector2ic p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2ic size, Vector2dc texPos, Vector2ic texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2dc p3, Vector2fc p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2ic size, Vector2dc texPos, Vector2fc texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2dc p3, Vector2dc p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2ic size, Vector2dc texPos, Vector2dc texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2ic p3, Vector2ic p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2fc size, Vector2ic texPos, Vector2ic texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2ic p3, Vector2fc p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2fc size, Vector2ic texPos, Vector2fc texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2ic p3, Vector2dc p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2fc size, Vector2ic texPos, Vector2dc texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2fc p3, Vector2ic p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2fc size, Vector2fc texPos, Vector2ic texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2fc size, Vector2fc texPos, Vector2fc texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2fc p3, Vector2dc p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2fc size, Vector2fc texPos, Vector2dc texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2dc p3, Vector2ic p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2fc size, Vector2dc texPos, Vector2ic texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2dc p3, Vector2fc p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2fc size, Vector2dc texPos, Vector2fc texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2dc p3, Vector2dc p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2fc size, Vector2dc texPos, Vector2dc texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2ic p3, Vector2ic p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2dc size, Vector2ic texPos, Vector2ic texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2ic p3, Vector2fc p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2dc size, Vector2ic texPos, Vector2fc texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2ic p3, Vector2dc p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2dc size, Vector2ic texPos, Vector2dc texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2fc p3, Vector2ic p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2dc size, Vector2fc texPos, Vector2ic texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2fc p3, Vector2fc p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2dc size, Vector2fc texPos, Vector2fc texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2fc p3, Vector2dc p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2dc size, Vector2fc texPos, Vector2dc texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2dc p3, Vector2ic p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2dc size, Vector2dc texPos, Vector2ic texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2dc p3, Vector2fc p4)                 { texture(t, x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, double x, double y, Vector2dc size, Vector2dc texPos, Vector2fc texSize)        { texture(t, x, y, size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2ic p3, Vector2ic p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, double w, double h, Vector2ic texPos, Vector2ic texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2ic p3, Vector2fc p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, double w, double h, Vector2ic texPos, Vector2fc texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2ic p3, Vector2dc p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, double w, double h, Vector2ic texPos, Vector2dc texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2fc p3, Vector2ic p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, double w, double h, Vector2fc texPos, Vector2ic texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2fc p3, Vector2fc p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, double w, double h, Vector2fc texPos, Vector2fc texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2fc p3, Vector2dc p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, double w, double h, Vector2fc texPos, Vector2dc texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2dc p3, Vector2ic p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, double w, double h, Vector2dc texPos, Vector2ic texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2dc p3, Vector2fc p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, double w, double h, Vector2dc texPos, Vector2fc texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2dc p3, Vector2dc p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, double w, double h, Vector2dc texPos, Vector2dc texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2ic p3, Vector2ic p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, double w, double h, Vector2ic texPos, Vector2ic texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2ic p3, Vector2fc p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, double w, double h, Vector2ic texPos, Vector2fc texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2ic p3, Vector2dc p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, double w, double h, Vector2ic texPos, Vector2dc texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2fc p3, Vector2ic p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, double w, double h, Vector2fc texPos, Vector2ic texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2fc p3, Vector2fc p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, double w, double h, Vector2fc texPos, Vector2fc texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2fc p3, Vector2dc p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, double w, double h, Vector2fc texPos, Vector2dc texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2dc p3, Vector2ic p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, double w, double h, Vector2dc texPos, Vector2ic texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2dc p3, Vector2fc p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, double w, double h, Vector2dc texPos, Vector2fc texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2dc p3, Vector2dc p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, double w, double h, Vector2dc texPos, Vector2dc texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2ic p3, Vector2ic p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, double w, double h, Vector2ic texPos, Vector2ic texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2ic p3, Vector2fc p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, double w, double h, Vector2ic texPos, Vector2fc texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2ic p3, Vector2dc p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, double w, double h, Vector2ic texPos, Vector2dc texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2fc p3, Vector2ic p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, double w, double h, Vector2fc texPos, Vector2ic texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2fc p3, Vector2fc p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, double w, double h, Vector2fc texPos, Vector2fc texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2fc p3, Vector2dc p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, double w, double h, Vector2fc texPos, Vector2dc texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2dc p3, Vector2ic p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, double w, double h, Vector2dc texPos, Vector2ic texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2dc p3, Vector2fc p4)                 { texture(t, p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, double w, double h, Vector2dc texPos, Vector2fc texSize)         { texture(t, pos.x(), pos.y(), w, h, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, double x3, double y3, Vector2ic p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2ic size, double u, double v, Vector2ic texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, double x3, double y3, Vector2fc p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2ic size, double u, double v, Vector2fc texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, double x3, double y3, Vector2dc p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2ic size, double u, double v, Vector2dc texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, double x3, double y3, Vector2ic p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2fc size, double u, double v, Vector2ic texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, double x3, double y3, Vector2fc p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2fc size, double u, double v, Vector2fc texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, double x3, double y3, Vector2dc p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2fc size, double u, double v, Vector2dc texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, double x3, double y3, Vector2ic p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2dc size, double u, double v, Vector2ic texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, double x3, double y3, Vector2fc p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2dc size, double u, double v, Vector2fc texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, double x3, double y3, Vector2dc p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2dc size, double u, double v, Vector2dc texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, double x3, double y3, Vector2ic p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2ic size, double u, double v, Vector2ic texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, double x3, double y3, Vector2fc p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2ic size, double u, double v, Vector2fc texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, double x3, double y3, Vector2dc p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2ic size, double u, double v, Vector2dc texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, double x3, double y3, Vector2ic p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2fc size, double u, double v, Vector2ic texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, double x3, double y3, Vector2fc p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2fc size, double u, double v, Vector2fc texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, double x3, double y3, Vector2dc p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2fc size, double u, double v, Vector2dc texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, double x3, double y3, Vector2ic p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2dc size, double u, double v, Vector2ic texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, double x3, double y3, Vector2fc p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2dc size, double u, double v, Vector2fc texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, double x3, double y3, Vector2dc p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2dc size, double u, double v, Vector2dc texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, double x3, double y3, Vector2ic p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2ic size, double u, double v, Vector2ic texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, double x3, double y3, Vector2fc p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2ic size, double u, double v, Vector2fc texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, double x3, double y3, Vector2dc p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2ic size, double u, double v, Vector2dc texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, double x3, double y3, Vector2ic p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2fc size, double u, double v, Vector2ic texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, double x3, double y3, Vector2fc p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2fc size, double u, double v, Vector2fc texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, double x3, double y3, Vector2dc p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2fc size, double u, double v, Vector2dc texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, double x3, double y3, Vector2ic p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2dc size, double u, double v, Vector2ic texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, double x3, double y3, Vector2fc p4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2dc size, double u, double v, Vector2fc texSize)           { texture(t, pos.x(), pos.y(), size.x(), size.y(), u, v, texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2ic p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2ic pos, Vector2ic size, Vector2ic texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2fc p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2ic pos, Vector2ic size, Vector2fc texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2dc p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2ic pos, Vector2ic size, Vector2dc texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2ic p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2ic pos, Vector2fc size, Vector2ic texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2fc p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2ic pos, Vector2fc size, Vector2fc texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2dc p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2ic pos, Vector2fc size, Vector2dc texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2ic p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2ic pos, Vector2dc size, Vector2ic texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2fc p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2ic pos, Vector2dc size, Vector2fc texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2dc p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2ic pos, Vector2dc size, Vector2dc texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2ic p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2fc pos, Vector2ic size, Vector2ic texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2fc p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2fc pos, Vector2ic size, Vector2fc texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2dc p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2fc pos, Vector2ic size, Vector2dc texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2ic p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2fc pos, Vector2fc size, Vector2ic texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2fc p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2fc pos, Vector2fc size, Vector2fc texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2dc p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2fc pos, Vector2fc size, Vector2dc texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2ic p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2fc pos, Vector2dc size, Vector2ic texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2fc p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2fc pos, Vector2dc size, Vector2fc texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2dc p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2fc pos, Vector2dc size, Vector2dc texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2ic p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2dc pos, Vector2ic size, Vector2ic texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2fc p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2dc pos, Vector2ic size, Vector2fc texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2dc p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2dc pos, Vector2ic size, Vector2dc texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2ic p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2dc pos, Vector2fc size, Vector2ic texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2fc p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2dc pos, Vector2fc size, Vector2fc texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2dc p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2dc pos, Vector2fc size, Vector2dc texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2ic p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2dc pos, Vector2dc size, Vector2ic texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2fc p3, double x4, double y4)                 { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
+    public void texture(Texture t, Vector2dc pos, Vector2dc size, Vector2fc texPos, double uw, double vh)          { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), uw, vh); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2ic p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2ic size, Vector2ic texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2ic p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2ic size, Vector2ic texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2ic p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2ic size, Vector2ic texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2fc p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2ic size, Vector2fc texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2fc p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2ic size, Vector2fc texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2fc p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2ic size, Vector2fc texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2dc p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2ic size, Vector2dc texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2dc p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2ic size, Vector2dc texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2dc p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2ic size, Vector2dc texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2ic p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2fc size, Vector2ic texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2ic p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2fc size, Vector2ic texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2ic p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2fc size, Vector2ic texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2fc p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2fc size, Vector2fc texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2fc size, Vector2fc texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2fc p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2fc size, Vector2fc texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2dc p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2fc size, Vector2dc texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2dc p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2fc size, Vector2dc texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2dc p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2fc size, Vector2dc texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2ic p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2dc size, Vector2ic texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2ic p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2dc size, Vector2ic texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2ic p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2dc size, Vector2ic texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2fc p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2dc size, Vector2fc texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2fc p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2dc size, Vector2fc texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2fc p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2dc size, Vector2fc texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2dc p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2dc size, Vector2dc texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2dc p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2dc size, Vector2dc texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2dc p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2ic pos, Vector2dc size, Vector2dc texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2ic p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2ic size, Vector2ic texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2ic p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2ic size, Vector2ic texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2ic p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2ic size, Vector2ic texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2fc p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2ic size, Vector2fc texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2fc p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2ic size, Vector2fc texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2fc p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2ic size, Vector2fc texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2dc p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2ic size, Vector2dc texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2dc p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2ic size, Vector2dc texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2dc p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2ic size, Vector2dc texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2ic p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2fc size, Vector2ic texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2ic p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2fc size, Vector2ic texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2ic p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2fc size, Vector2ic texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2fc p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2fc size, Vector2fc texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2fc size, Vector2fc texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2fc p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2fc size, Vector2fc texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2dc p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2fc size, Vector2dc texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2dc p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2fc size, Vector2dc texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2dc p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2fc size, Vector2dc texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2ic p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2dc size, Vector2ic texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2ic p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2dc size, Vector2ic texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2ic p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2dc size, Vector2ic texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2fc p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2dc size, Vector2fc texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2fc p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2dc size, Vector2fc texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2fc p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2dc size, Vector2fc texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2dc p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2dc size, Vector2dc texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2dc p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2dc size, Vector2dc texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2dc p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2fc pos, Vector2dc size, Vector2dc texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2ic p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2ic size, Vector2ic texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2ic p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2ic size, Vector2ic texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2ic p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2ic size, Vector2ic texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2fc p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2ic size, Vector2fc texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2fc p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2ic size, Vector2fc texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2fc p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2ic size, Vector2fc texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2dc p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2ic size, Vector2dc texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2dc p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2ic size, Vector2dc texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2dc p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2ic size, Vector2dc texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2ic p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2fc size, Vector2ic texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2ic p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2fc size, Vector2ic texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2ic p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2fc size, Vector2ic texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2fc p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2fc size, Vector2fc texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2fc size, Vector2fc texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2fc p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2fc size, Vector2fc texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2dc p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2fc size, Vector2dc texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2dc p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2fc size, Vector2dc texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2dc p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2fc size, Vector2dc texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2ic p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2dc size, Vector2ic texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2ic p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2dc size, Vector2ic texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2ic p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2dc size, Vector2ic texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2fc p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2dc size, Vector2fc texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2fc p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2dc size, Vector2fc texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2fc p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2dc size, Vector2fc texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2dc p3, Vector2ic p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2dc size, Vector2dc texPos, Vector2ic texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2dc p3, Vector2fc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2dc size, Vector2dc texPos, Vector2fc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2dc p3, Vector2dc p4)                         { texture(t, p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
+    public void texture(Texture t, Vector2dc pos, Vector2dc size, Vector2dc texPos, Vector2dc texSize)             { texture(t, pos.x(), pos.y(), size.x(), size.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
+    
+    public void texture(Texture t, double x, double y, double w, double h)
+    {
+        texture(t, x, y, w, h, 0, 0, t.width(), t.height());
+    }
+    
+    public void texture(Texture t, double x, double y, Vector2ic size) { texture(t, x, y, size.x(), size.y()); }
+    
+    public void texture(Texture t, double x, double y, Vector2fc size) { texture(t, x, y, size.x(), size.y()); }
+    
+    public void texture(Texture t, double x, double y, Vector2dc size) { texture(t, x, y, size.x(), size.y()); }
+    
+    public void texture(Texture t, Vector2ic pos, double w, double h)  { texture(t, pos.x(), pos.y(), w, h); }
+    
+    public void texture(Texture t, Vector2fc pos, double w, double h)  { texture(t, pos.x(), pos.y(), w, h); }
+    
+    public void texture(Texture t, Vector2dc pos, double w, double h)  { texture(t, pos.x(), pos.y(), w, h); }
+    
+    public void texture(Texture t, Vector2ic pos, Vector2ic size)      { texture(t, pos.x(), pos.y(), size.x(), size.y()); }
+    
+    public void texture(Texture t, Vector2ic pos, Vector2fc size)      { texture(t, pos.x(), pos.y(), size.x(), size.y()); }
+    
+    public void texture(Texture t, Vector2ic pos, Vector2dc size)      { texture(t, pos.x(), pos.y(), size.x(), size.y()); }
+    
+    public void texture(Texture t, Vector2fc pos, Vector2ic size)      { texture(t, pos.x(), pos.y(), size.x(), size.y()); }
+    
+    public void texture(Texture t, Vector2fc pos, Vector2fc size)      { texture(t, pos.x(), pos.y(), size.x(), size.y()); }
+    
+    public void texture(Texture t, Vector2fc pos, Vector2dc size)      { texture(t, pos.x(), pos.y(), size.x(), size.y()); }
+    
+    public void texture(Texture t, Vector2dc pos, Vector2ic size)      { texture(t, pos.x(), pos.y(), size.x(), size.y()); }
+    
+    public void texture(Texture t, Vector2dc pos, Vector2fc size)      { texture(t, pos.x(), pos.y(), size.x(), size.y()); }
+    
+    public void texture(Texture t, Vector2dc pos, Vector2dc size)      { texture(t, pos.x(), pos.y(), size.x(), size.y()); }
+    
+    public void texture(Texture t, double x, double y)
+    {
+        texture(t, x, y, t.width(), t.height(), 0, 0, t.width(), t.height());
+    }
+    
+    public void texture(Texture t, Vector2ic pos) { texture(t, pos.x(), pos.y()); }
+    
+    public void texture(Texture t, Vector2fc pos) { texture(t, pos.x(), pos.y()); }
+    
+    public void texture(Texture t, Vector2dc pos) { texture(t, pos.x(), pos.y()); }
     
     // -------------------
     // -- Pixel Methods --

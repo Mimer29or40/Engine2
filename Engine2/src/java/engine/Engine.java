@@ -741,6 +741,18 @@ public class Engine
         Engine.renderer.line(x1, y1, x2, y2);
     }
     
+    public static void line(double x1, double y1, Vector2ic p2) { Engine.renderer.line(x1, y1, p2); }
+    
+    public static void line(double x1, double y1, Vector2fc p2) { Engine.renderer.line(x1, y1, p2); }
+    
+    public static void line(double x1, double y1, Vector2dc p2) { Engine.renderer.line(x1, y1, p2); }
+    
+    public static void line(Vector2ic p1, double x2, double y2) { Engine.renderer.line(p1, x2, y2); }
+    
+    public static void line(Vector2fc p1, double x2, double y2) { Engine.renderer.line(p1, x2, y2); }
+    
+    public static void line(Vector2dc p1, double x2, double y2) { Engine.renderer.line(p1, x2, y2); }
+    
     public static void line(Vector2ic p1, Vector2ic p2)         { Engine.renderer.line(p1, p2); }
     
     public static void line(Vector2ic p1, Vector2fc p2)         { Engine.renderer.line(p1, p2); }
@@ -759,18 +771,6 @@ public class Engine
     
     public static void line(Vector2dc p1, Vector2dc p2)         { Engine.renderer.line(p1, p2); }
     
-    public static void line(Vector2ic p1, double x2, double y2) { Engine.renderer.line(p1, x2, y2); }
-    
-    public static void line(Vector2fc p1, double x2, double y2) { Engine.renderer.line(p1, x2, y2); }
-    
-    public static void line(Vector2dc p1, double x2, double y2) { Engine.renderer.line(p1, x2, y2); }
-    
-    public static void line(double x1, double y1, Vector2ic p2) { Engine.renderer.line(x1, y1, p2); }
-    
-    public static void line(double x1, double y1, Vector2fc p2) { Engine.renderer.line(x1, y1, p2); }
-    
-    public static void line(double x1, double y1, Vector2dc p2) { Engine.renderer.line(x1, y1, p2); }
-    
     public static void drawBezier(double x1, double y1, double x2, double y2, double x3, double y3)
     {
         Engine.renderer.drawBezier(x1, y1, x2, y2, x3, y3);
@@ -781,27 +781,23 @@ public class Engine
         Engine.renderer.bezier(x1, y1, x2, y2, x3, y3);
     }
     
-    public static void bezier(Vector2ic p1, Vector2ic p2, Vector2ic p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    public static void bezier(double x1, double y1, double x2, double y2, Vector2ic p3) { Engine.renderer.bezier(x1, y1, x2, y2, p3); }
     
-    public static void bezier(Vector2ic p1, Vector2ic p2, Vector2fc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    public static void bezier(double x1, double y1, double x2, double y2, Vector2fc p3) { Engine.renderer.bezier(x1, y1, x2, y2, p3); }
     
-    public static void bezier(Vector2ic p1, Vector2ic p2, Vector2dc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    public static void bezier(double x1, double y1, double x2, double y2, Vector2dc p3) { Engine.renderer.bezier(x1, y1, x2, y2, p3); }
     
-    public static void bezier(Vector2ic p1, Vector2fc p2, Vector2ic p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    public static void bezier(double x1, double y1, Vector2ic p2, double x3, double y3) { Engine.renderer.bezier(x1, y1, p2, x3, y3); }
     
-    public static void bezier(Vector2ic p1, Vector2fc p2, Vector2fc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    public static void bezier(double x1, double y1, Vector2fc p2, double x3, double y3) { Engine.renderer.bezier(x1, y1, p2, x3, y3); }
     
-    public static void bezier(Vector2ic p1, Vector2fc p2, Vector2dc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    public static void bezier(double x1, double y1, Vector2dc p2, double x3, double y3) { Engine.renderer.bezier(x1, y1, p2, x3, y3); }
     
-    public static void bezier(Vector2ic p1, Vector2dc p2, Vector2ic p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    public static void bezier(Vector2ic p1, double x2, double y2, double x3, double y3) { Engine.renderer.bezier(p1, x2, y2, x3, y3); }
     
-    public static void bezier(Vector2ic p1, Vector2dc p2, Vector2fc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    public static void bezier(Vector2fc p1, double x2, double y2, double x3, double y3) { Engine.renderer.bezier(p1, x2, y2, x3, y3); }
     
-    public static void bezier(Vector2ic p1, Vector2dc p2, Vector2dc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
-    
-    public static void bezier(Vector2fc p1, Vector2fc p2, Vector2fc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
-    
-    public static void bezier(Vector2dc p1, Vector2dc p2, Vector2dc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    public static void bezier(Vector2dc p1, double x2, double y2, double x3, double y3) { Engine.renderer.bezier(p1, x2, y2, x3, y3); }
     
     public static void bezier(double x1, double y1, Vector2ic p2, Vector2ic p3)         { Engine.renderer.bezier(x1, y1, p2, p3); }
     
@@ -857,23 +853,59 @@ public class Engine
     
     public static void bezier(Vector2dc p1, Vector2dc p2, double x3, double y3)         { Engine.renderer.bezier(p1, p2, x3, y3); }
     
-    public static void bezier(double x1, double y1, double x2, double y2, Vector2ic p3) { Engine.renderer.bezier(x1, y1, x2, y2, p3); }
+    public static void bezier(Vector2ic p1, Vector2ic p2, Vector2ic p3)                 { Engine.renderer.bezier(p1, p2, p3); }
     
-    public static void bezier(double x1, double y1, double x2, double y2, Vector2fc p3) { Engine.renderer.bezier(x1, y1, x2, y2, p3); }
+    public static void bezier(Vector2ic p1, Vector2ic p2, Vector2fc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
     
-    public static void bezier(double x1, double y1, double x2, double y2, Vector2dc p3) { Engine.renderer.bezier(x1, y1, x2, y2, p3); }
+    public static void bezier(Vector2ic p1, Vector2ic p2, Vector2dc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
     
-    public static void bezier(Vector2ic p1, double x2, double y2, double x3, double y3) { Engine.renderer.bezier(p1, x2, y2, x3, y3); }
+    public static void bezier(Vector2ic p1, Vector2fc p2, Vector2ic p3)                 { Engine.renderer.bezier(p1, p2, p3); }
     
-    public static void bezier(Vector2fc p1, double x2, double y2, double x3, double y3) { Engine.renderer.bezier(p1, x2, y2, x3, y3); }
+    public static void bezier(Vector2ic p1, Vector2fc p2, Vector2fc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
     
-    public static void bezier(Vector2dc p1, double x2, double y2, double x3, double y3) { Engine.renderer.bezier(p1, x2, y2, x3, y3); }
+    public static void bezier(Vector2ic p1, Vector2fc p2, Vector2dc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
     
-    public static void bezier(double x1, double y1, Vector2ic p2, double x3, double y3) { Engine.renderer.bezier(x1, y1, p2, x3, y3); }
+    public static void bezier(Vector2ic p1, Vector2dc p2, Vector2ic p3)                 { Engine.renderer.bezier(p1, p2, p3); }
     
-    public static void bezier(double x1, double y1, Vector2fc p2, double x3, double y3) { Engine.renderer.bezier(x1, y1, p2, x3, y3); }
+    public static void bezier(Vector2ic p1, Vector2dc p2, Vector2fc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
     
-    public static void bezier(double x1, double y1, Vector2dc p2, double x3, double y3) { Engine.renderer.bezier(x1, y1, p2, x3, y3); }
+    public static void bezier(Vector2ic p1, Vector2dc p2, Vector2dc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2fc p1, Vector2ic p2, Vector2ic p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2fc p1, Vector2ic p2, Vector2fc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2fc p1, Vector2ic p2, Vector2dc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2fc p1, Vector2fc p2, Vector2ic p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2fc p1, Vector2fc p2, Vector2fc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2fc p1, Vector2fc p2, Vector2dc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2fc p1, Vector2dc p2, Vector2ic p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2fc p1, Vector2dc p2, Vector2fc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2fc p1, Vector2dc p2, Vector2dc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2dc p1, Vector2ic p2, Vector2ic p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2dc p1, Vector2ic p2, Vector2fc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2dc p1, Vector2ic p2, Vector2dc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2dc p1, Vector2fc p2, Vector2ic p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2dc p1, Vector2fc p2, Vector2fc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2dc p1, Vector2fc p2, Vector2dc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2dc p1, Vector2dc p2, Vector2ic p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2dc p1, Vector2dc p2, Vector2fc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
+    
+    public static void bezier(Vector2dc p1, Vector2dc p2, Vector2dc p3)                 { Engine.renderer.bezier(p1, p2, p3); }
     
     public static void drawTriangle(double x1, double y1, double x2, double y2, double x3, double y3)
     {
@@ -890,27 +922,23 @@ public class Engine
         Engine.renderer.triangle(x1, y1, x2, y2, x3, y3);
     }
     
-    public static void triangle(Vector2ic p1, Vector2ic p2, Vector2ic p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    public static void triangle(double x1, double y1, double x2, double y2, Vector2ic p3) { Engine.renderer.triangle(x1, y1, x2, y2, p3); }
     
-    public static void triangle(Vector2ic p1, Vector2ic p2, Vector2fc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    public static void triangle(double x1, double y1, double x2, double y2, Vector2fc p3) { Engine.renderer.triangle(x1, y1, x2, y2, p3); }
     
-    public static void triangle(Vector2ic p1, Vector2ic p2, Vector2dc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    public static void triangle(double x1, double y1, double x2, double y2, Vector2dc p3) { Engine.renderer.triangle(x1, y1, x2, y2, p3); }
     
-    public static void triangle(Vector2ic p1, Vector2fc p2, Vector2ic p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    public static void triangle(double x1, double y1, Vector2ic p2, double x3, double y3) { Engine.renderer.triangle(x1, y1, p2, x3, y3); }
     
-    public static void triangle(Vector2ic p1, Vector2fc p2, Vector2fc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    public static void triangle(double x1, double y1, Vector2fc p2, double x3, double y3) { Engine.renderer.triangle(x1, y1, p2, x3, y3); }
     
-    public static void triangle(Vector2ic p1, Vector2fc p2, Vector2dc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    public static void triangle(double x1, double y1, Vector2dc p2, double x3, double y3) { Engine.renderer.triangle(x1, y1, p2, x3, y3); }
     
-    public static void triangle(Vector2ic p1, Vector2dc p2, Vector2ic p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    public static void triangle(Vector2ic p1, double x2, double y2, double x3, double y3) { Engine.renderer.triangle(p1, x2, y2, x3, y3); }
     
-    public static void triangle(Vector2ic p1, Vector2dc p2, Vector2fc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    public static void triangle(Vector2fc p1, double x2, double y2, double x3, double y3) { Engine.renderer.triangle(p1, x2, y2, x3, y3); }
     
-    public static void triangle(Vector2ic p1, Vector2dc p2, Vector2dc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
-    
-    public static void triangle(Vector2fc p1, Vector2fc p2, Vector2fc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
-    
-    public static void triangle(Vector2dc p1, Vector2dc p2, Vector2dc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    public static void triangle(Vector2dc p1, double x2, double y2, double x3, double y3) { Engine.renderer.triangle(p1, x2, y2, x3, y3); }
     
     public static void triangle(double x1, double y1, Vector2ic p2, Vector2ic p3)         { Engine.renderer.triangle(x1, y1, p2, p3); }
     
@@ -966,23 +994,59 @@ public class Engine
     
     public static void triangle(Vector2dc p1, Vector2dc p2, double x3, double y3)         { Engine.renderer.triangle(p1, p2, x3, y3); }
     
-    public static void triangle(double x1, double y1, double x2, double y2, Vector2ic p3) { Engine.renderer.triangle(x1, y1, x2, y2, p3); }
+    public static void triangle(Vector2ic p1, Vector2ic p2, Vector2ic p3)                 { Engine.renderer.triangle(p1, p2, p3); }
     
-    public static void triangle(double x1, double y1, double x2, double y2, Vector2fc p3) { Engine.renderer.triangle(x1, y1, x2, y2, p3); }
+    public static void triangle(Vector2ic p1, Vector2ic p2, Vector2fc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
     
-    public static void triangle(double x1, double y1, double x2, double y2, Vector2dc p3) { Engine.renderer.triangle(x1, y1, x2, y2, p3); }
+    public static void triangle(Vector2ic p1, Vector2ic p2, Vector2dc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
     
-    public static void triangle(Vector2ic p1, double x2, double y2, double x3, double y3) { Engine.renderer.triangle(p1, x2, y2, x3, y3); }
+    public static void triangle(Vector2ic p1, Vector2fc p2, Vector2ic p3)                 { Engine.renderer.triangle(p1, p2, p3); }
     
-    public static void triangle(Vector2fc p1, double x2, double y2, double x3, double y3) { Engine.renderer.triangle(p1, x2, y2, x3, y3); }
+    public static void triangle(Vector2ic p1, Vector2fc p2, Vector2fc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
     
-    public static void triangle(Vector2dc p1, double x2, double y2, double x3, double y3) { Engine.renderer.triangle(p1, x2, y2, x3, y3); }
+    public static void triangle(Vector2ic p1, Vector2fc p2, Vector2dc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
     
-    public static void triangle(double x1, double y1, Vector2ic p2, double x3, double y3) { Engine.renderer.triangle(x1, y1, p2, x3, y3); }
+    public static void triangle(Vector2ic p1, Vector2dc p2, Vector2ic p3)                 { Engine.renderer.triangle(p1, p2, p3); }
     
-    public static void triangle(double x1, double y1, Vector2fc p2, double x3, double y3) { Engine.renderer.triangle(x1, y1, p2, x3, y3); }
+    public static void triangle(Vector2ic p1, Vector2dc p2, Vector2fc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
     
-    public static void triangle(double x1, double y1, Vector2dc p2, double x3, double y3) { Engine.renderer.triangle(x1, y1, p2, x3, y3); }
+    public static void triangle(Vector2ic p1, Vector2dc p2, Vector2dc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2fc p1, Vector2ic p2, Vector2ic p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2fc p1, Vector2ic p2, Vector2fc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2fc p1, Vector2ic p2, Vector2dc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2fc p1, Vector2fc p2, Vector2ic p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2fc p1, Vector2fc p2, Vector2fc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2fc p1, Vector2fc p2, Vector2dc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2fc p1, Vector2dc p2, Vector2ic p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2fc p1, Vector2dc p2, Vector2fc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2fc p1, Vector2dc p2, Vector2dc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2dc p1, Vector2ic p2, Vector2ic p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2dc p1, Vector2ic p2, Vector2fc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2dc p1, Vector2ic p2, Vector2dc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2dc p1, Vector2fc p2, Vector2ic p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2dc p1, Vector2fc p2, Vector2fc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2dc p1, Vector2fc p2, Vector2dc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2dc p1, Vector2dc p2, Vector2ic p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2dc p1, Vector2dc p2, Vector2fc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
+    
+    public static void triangle(Vector2dc p1, Vector2dc p2, Vector2dc p3)                 { Engine.renderer.triangle(p1, p2, p3); }
     
     public static void drawSquare(double x, double y, double w)
     {
@@ -1020,6 +1084,18 @@ public class Engine
         Engine.renderer.rect(a, b, c, d);
     }
     
+    public static void rect(double a, double b, Vector2ic cd) { Engine.renderer.rect(a, b, cd); }
+    
+    public static void rect(double a, double b, Vector2fc cd) { Engine.renderer.rect(a, b, cd); }
+    
+    public static void rect(double a, double b, Vector2dc cd) { Engine.renderer.rect(a, b, cd); }
+    
+    public static void rect(Vector2ic ab, double c, double d) { Engine.renderer.rect(ab, c, d); }
+    
+    public static void rect(Vector2fc ab, double c, double d) { Engine.renderer.rect(ab, c, d); }
+    
+    public static void rect(Vector2dc ab, double c, double d) { Engine.renderer.rect(ab, c, d); }
+    
     public static void rect(Vector2ic ab, Vector2ic cd)       { Engine.renderer.rect(ab, cd); }
     
     public static void rect(Vector2ic ab, Vector2fc cd)       { Engine.renderer.rect(ab, cd); }
@@ -1037,18 +1113,6 @@ public class Engine
     public static void rect(Vector2dc ab, Vector2fc cd)       { Engine.renderer.rect(ab, cd); }
     
     public static void rect(Vector2dc ab, Vector2dc cd)       { Engine.renderer.rect(ab, cd); }
-    
-    public static void rect(Vector2ic ab, double c, double d) { Engine.renderer.rect(ab, c, d); }
-    
-    public static void rect(Vector2fc ab, double c, double d) { Engine.renderer.rect(ab, c, d); }
-    
-    public static void rect(Vector2dc ab, double c, double d) { Engine.renderer.rect(ab, c, d); }
-    
-    public static void rect(double a, double b, Vector2ic cd) { Engine.renderer.rect(a, b, cd); }
-    
-    public static void rect(double a, double b, Vector2fc cd) { Engine.renderer.rect(a, b, cd); }
-    
-    public static void rect(double a, double b, Vector2dc cd) { Engine.renderer.rect(a, b, cd); }
     
     public static void drawQuad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
     {
@@ -1603,6 +1667,18 @@ public class Engine
     
     public static void ellipse(double a, double b, double c, double d) { Engine.renderer.ellipse(a, b, c, d); }
     
+    public static void ellipse(double a, double b, Vector2ic cd)       { Engine.renderer.ellipse(a, b, cd); }
+    
+    public static void ellipse(double a, double b, Vector2fc cd)       { Engine.renderer.ellipse(a, b, cd); }
+    
+    public static void ellipse(double a, double b, Vector2dc cd)       { Engine.renderer.ellipse(a, b, cd); }
+    
+    public static void ellipse(Vector2ic ab, double c, double d)       { Engine.renderer.ellipse(ab, c, d); }
+    
+    public static void ellipse(Vector2fc ab, double c, double d)       { Engine.renderer.ellipse(ab, c, d); }
+    
+    public static void ellipse(Vector2dc ab, double c, double d)       { Engine.renderer.ellipse(ab, c, d); }
+    
     public static void ellipse(Vector2ic ab, Vector2ic cd)             { Engine.renderer.ellipse(ab, cd); }
     
     public static void ellipse(Vector2ic ab, Vector2fc cd)             { Engine.renderer.ellipse(ab, cd); }
@@ -1613,25 +1689,13 @@ public class Engine
     
     public static void ellipse(Vector2fc ab, Vector2fc cd)             { Engine.renderer.ellipse(ab, cd); }
     
-    public static void ellipse(Vector2fc ab, Vector2dc cd)       { Engine.renderer.ellipse(ab, cd); }
+    public static void ellipse(Vector2fc ab, Vector2dc cd)             { Engine.renderer.ellipse(ab, cd); }
     
-    public static void ellipse(Vector2dc ab, Vector2ic cd)       { Engine.renderer.ellipse(ab, cd); }
+    public static void ellipse(Vector2dc ab, Vector2ic cd)             { Engine.renderer.ellipse(ab, cd); }
     
-    public static void ellipse(Vector2dc ab, Vector2fc cd)       { Engine.renderer.ellipse(ab, cd); }
+    public static void ellipse(Vector2dc ab, Vector2fc cd)             { Engine.renderer.ellipse(ab, cd); }
     
-    public static void ellipse(Vector2dc ab, Vector2dc cd)       { Engine.renderer.ellipse(ab, cd); }
-    
-    public static void ellipse(Vector2ic ab, double c, double d) { Engine.renderer.ellipse(ab, c, d); }
-    
-    public static void ellipse(Vector2fc ab, double c, double d) { Engine.renderer.ellipse(ab, c, d); }
-    
-    public static void ellipse(Vector2dc ab, double c, double d) { Engine.renderer.ellipse(ab, c, d); }
-    
-    public static void ellipse(double a, double b, Vector2ic cd) { Engine.renderer.ellipse(a, b, cd); }
-    
-    public static void ellipse(double a, double b, Vector2fc cd) { Engine.renderer.ellipse(a, b, cd); }
-    
-    public static void ellipse(double a, double b, Vector2dc cd) { Engine.renderer.ellipse(a, b, cd); }
+    public static void ellipse(Vector2dc ab, Vector2dc cd)             { Engine.renderer.ellipse(ab, cd); }
     
     public void drawTexture(Texture texture, double x, double y, double w, double h, double u, double v, double uw, double vh)
     {
@@ -1643,495 +1707,541 @@ public class Engine
         Engine.renderer.texture(texture, x, y, w, h, u, v, uw, vh);
     }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, double x3, double y3, Vector2ic p4) { Engine.renderer.texture(t, x1, y1, x2, y2, x3, y3, p4); }
+    public static void texture(Texture t, double x1, double y1, double x2, double y2, double x3, double y3, Vector2ic p4) { Engine.renderer.texture(t, x1, y1, x2, y2, x3, y3, p4); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, double x3, double y3, Vector2fc p4) { Engine.renderer.texture(t, x1, y1, x2, y2, x3, y3, p4); }
+    public static void texture(Texture t, double x1, double y1, double x2, double y2, double x3, double y3, Vector2fc p4) { Engine.renderer.texture(t, x1, y1, x2, y2, x3, y3, p4); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, double x3, double y3, Vector2dc p4) { Engine.renderer.texture(t, x1, y1, x2, y2, x3, y3, p4); }
+    public static void texture(Texture t, double x1, double y1, double x2, double y2, double x3, double y3, Vector2dc p4) { Engine.renderer.texture(t, x1, y1, x2, y2, x3, y3, p4); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2ic p3, double x4, double y4) { Engine.renderer.texture(t, x1, y1, x2, y2, p3, x4, y4); }
+    public static void texture(Texture t, double x1, double y1, double x2, double y2, Vector2ic p3, double x4, double y4) { Engine.renderer.texture(t, x1, y1, x2, y2, p3, x4, y4); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2fc p3, double x4, double y4) { Engine.renderer.texture(t, x1, y1, x2, y2, p3, x4, y4); }
+    public static void texture(Texture t, double x1, double y1, double x2, double y2, Vector2fc p3, double x4, double y4) { Engine.renderer.texture(t, x1, y1, x2, y2, p3, x4, y4); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2dc p3, double x4, double y4) { Engine.renderer.texture(t, x1, y1, x2, y2, p3, x4, y4); }
+    public static void texture(Texture t, double x1, double y1, double x2, double y2, Vector2dc p3, double x4, double y4) { Engine.renderer.texture(t, x1, y1, x2, y2, p3, x4, y4); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2ic p3, Vector2ic p4)         { Engine.renderer.texture(t, x1, y1, x2, y2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, double x2, double y2, Vector2ic p3, Vector2ic p4)         { Engine.renderer.texture(t, x1, y1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2ic p3, Vector2fc p4)         { Engine.renderer.texture(t, x1, y1, x2, y2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, double x2, double y2, Vector2ic p3, Vector2fc p4)         { Engine.renderer.texture(t, x1, y1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2ic p3, Vector2dc p4)         { Engine.renderer.texture(t, x1, y1, x2, y2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, double x2, double y2, Vector2ic p3, Vector2dc p4)         { Engine.renderer.texture(t, x1, y1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2fc p3, Vector2ic p4)         { Engine.renderer.texture(t, x1, y1, x2, y2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, double x2, double y2, Vector2fc p3, Vector2ic p4)         { Engine.renderer.texture(t, x1, y1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2fc p3, Vector2fc p4)         { Engine.renderer.texture(t, x1, y1, x2, y2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, double x2, double y2, Vector2fc p3, Vector2fc p4)         { Engine.renderer.texture(t, x1, y1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2fc p3, Vector2dc p4)         { Engine.renderer.texture(t, x1, y1, x2, y2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, double x2, double y2, Vector2fc p3, Vector2dc p4)         { Engine.renderer.texture(t, x1, y1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2dc p3, Vector2ic p4)         { Engine.renderer.texture(t, x1, y1, x2, y2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, double x2, double y2, Vector2dc p3, Vector2ic p4)         { Engine.renderer.texture(t, x1, y1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2dc p3, Vector2fc p4)         { Engine.renderer.texture(t, x1, y1, x2, y2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, double x2, double y2, Vector2dc p3, Vector2fc p4)         { Engine.renderer.texture(t, x1, y1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, double x2, double y2, Vector2dc p3, Vector2dc p4)         { Engine.renderer.texture(t, x1, y1, x2, y2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, double x2, double y2, Vector2dc p3, Vector2dc p4)         { Engine.renderer.texture(t, x1, y1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, double x3, double y3, Vector2ic p4)         { Engine.renderer.texture(t, x1, y1, p2, x3, y3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2ic p2, double x3, double y3, Vector2ic p4)         { Engine.renderer.texture(t, x1, y1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, double x3, double y3, Vector2fc p4)         { Engine.renderer.texture(t, x1, y1, p2, x3, y3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2ic p2, double x3, double y3, Vector2fc p4)         { Engine.renderer.texture(t, x1, y1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, double x3, double y3, Vector2dc p4)         { Engine.renderer.texture(t, x1, y1, p2, x3, y3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2ic p2, double x3, double y3, Vector2dc p4)         { Engine.renderer.texture(t, x1, y1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, double x3, double y3, Vector2ic p4)         { Engine.renderer.texture(t, x1, y1, p2, x3, y3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2fc p2, double x3, double y3, Vector2ic p4)         { Engine.renderer.texture(t, x1, y1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, double x3, double y3, Vector2fc p4)         { Engine.renderer.texture(t, x1, y1, p2, x3, y3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2fc p2, double x3, double y3, Vector2fc p4)         { Engine.renderer.texture(t, x1, y1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, double x3, double y3, Vector2dc p4)         { Engine.renderer.texture(t, x1, y1, p2, x3, y3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2fc p2, double x3, double y3, Vector2dc p4)         { Engine.renderer.texture(t, x1, y1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, double x3, double y3, Vector2ic p4)         { Engine.renderer.texture(t, x1, y1, p2, x3, y3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2dc p2, double x3, double y3, Vector2ic p4)         { Engine.renderer.texture(t, x1, y1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, double x3, double y3, Vector2fc p4)         { Engine.renderer.texture(t, x1, y1, p2, x3, y3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2dc p2, double x3, double y3, Vector2fc p4)         { Engine.renderer.texture(t, x1, y1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, double x3, double y3, Vector2dc p4)         { Engine.renderer.texture(t, x1, y1, p2, x3, y3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2dc p2, double x3, double y3, Vector2dc p4)         { Engine.renderer.texture(t, x1, y1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2ic p3, double x4, double y4)         { Engine.renderer.texture(t, x1, y1, p2, p3, x4, y4); }
+    public static void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2ic p3, double x4, double y4)         { Engine.renderer.texture(t, x1, y1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2fc p3, double x4, double y4)         { Engine.renderer.texture(t, x1, y1, p2, p3, x4, y4); }
+    public static void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2fc p3, double x4, double y4)         { Engine.renderer.texture(t, x1, y1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2dc p3, double x4, double y4)         { Engine.renderer.texture(t, x1, y1, p2, p3, x4, y4); }
+    public static void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2dc p3, double x4, double y4)         { Engine.renderer.texture(t, x1, y1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2ic p3, double x4, double y4)         { Engine.renderer.texture(t, x1, y1, p2, p3, x4, y4); }
+    public static void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2ic p3, double x4, double y4)         { Engine.renderer.texture(t, x1, y1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2fc p3, double x4, double y4)         { Engine.renderer.texture(t, x1, y1, p2, p3, x4, y4); }
+    public static void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2fc p3, double x4, double y4)         { Engine.renderer.texture(t, x1, y1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2dc p3, double x4, double y4)         { Engine.renderer.texture(t, x1, y1, p2, p3, x4, y4); }
+    public static void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2dc p3, double x4, double y4)         { Engine.renderer.texture(t, x1, y1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2ic p3, double x4, double y4)         { Engine.renderer.texture(t, x1, y1, p2, p3, x4, y4); }
+    public static void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2ic p3, double x4, double y4)         { Engine.renderer.texture(t, x1, y1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2fc p3, double x4, double y4)         { Engine.renderer.texture(t, x1, y1, p2, p3, x4, y4); }
+    public static void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2fc p3, double x4, double y4)         { Engine.renderer.texture(t, x1, y1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2dc p3, double x4, double y4)         { Engine.renderer.texture(t, x1, y1, p2, p3, x4, y4); }
+    public static void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2dc p3, double x4, double y4)         { Engine.renderer.texture(t, x1, y1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, double x3, double y3, Vector2ic p4)         { Engine.renderer.texture(t, p1, x2, y2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2ic p1, double x2, double y2, double x3, double y3, Vector2ic p4)         { Engine.renderer.texture(t, p1, x2, y2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, double x3, double y3, Vector2fc p4)         { Engine.renderer.texture(t, p1, x2, y2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2ic p1, double x2, double y2, double x3, double y3, Vector2fc p4)         { Engine.renderer.texture(t, p1, x2, y2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, double x3, double y3, Vector2dc p4)         { Engine.renderer.texture(t, p1, x2, y2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2ic p1, double x2, double y2, double x3, double y3, Vector2dc p4)         { Engine.renderer.texture(t, p1, x2, y2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, double x3, double y3, Vector2ic p4)         { Engine.renderer.texture(t, p1, x2, y2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2fc p1, double x2, double y2, double x3, double y3, Vector2ic p4)         { Engine.renderer.texture(t, p1, x2, y2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, double x3, double y3, Vector2fc p4)         { Engine.renderer.texture(t, p1, x2, y2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2fc p1, double x2, double y2, double x3, double y3, Vector2fc p4)         { Engine.renderer.texture(t, p1, x2, y2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, double x3, double y3, Vector2dc p4)         { Engine.renderer.texture(t, p1, x2, y2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2fc p1, double x2, double y2, double x3, double y3, Vector2dc p4)         { Engine.renderer.texture(t, p1, x2, y2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, double x3, double y3, Vector2ic p4)         { Engine.renderer.texture(t, p1, x2, y2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2dc p1, double x2, double y2, double x3, double y3, Vector2ic p4)         { Engine.renderer.texture(t, p1, x2, y2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, double x3, double y3, Vector2fc p4)         { Engine.renderer.texture(t, p1, x2, y2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2dc p1, double x2, double y2, double x3, double y3, Vector2fc p4)         { Engine.renderer.texture(t, p1, x2, y2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, double x3, double y3, Vector2dc p4)         { Engine.renderer.texture(t, p1, x2, y2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2dc p1, double x2, double y2, double x3, double y3, Vector2dc p4)         { Engine.renderer.texture(t, p1, x2, y2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2ic p3, double x4, double y4)         { Engine.renderer.texture(t, p1, x2, y2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2ic p3, double x4, double y4)         { Engine.renderer.texture(t, p1, x2, y2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2fc p3, double x4, double y4)         { Engine.renderer.texture(t, p1, x2, y2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2fc p3, double x4, double y4)         { Engine.renderer.texture(t, p1, x2, y2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2dc p3, double x4, double y4)         { Engine.renderer.texture(t, p1, x2, y2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2dc p3, double x4, double y4)         { Engine.renderer.texture(t, p1, x2, y2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2ic p3, double x4, double y4)         { Engine.renderer.texture(t, p1, x2, y2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2ic p3, double x4, double y4)         { Engine.renderer.texture(t, p1, x2, y2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2fc p3, double x4, double y4)         { Engine.renderer.texture(t, p1, x2, y2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2fc p3, double x4, double y4)         { Engine.renderer.texture(t, p1, x2, y2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2dc p3, double x4, double y4)         { Engine.renderer.texture(t, p1, x2, y2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2dc p3, double x4, double y4)         { Engine.renderer.texture(t, p1, x2, y2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2ic p3, double x4, double y4)         { Engine.renderer.texture(t, p1, x2, y2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2ic p3, double x4, double y4)         { Engine.renderer.texture(t, p1, x2, y2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2fc p3, double x4, double y4)         { Engine.renderer.texture(t, p1, x2, y2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2fc p3, double x4, double y4)         { Engine.renderer.texture(t, p1, x2, y2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2dc p3, double x4, double y4)         { Engine.renderer.texture(t, p1, x2, y2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2dc p3, double x4, double y4)         { Engine.renderer.texture(t, p1, x2, y2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, double x3, double y3, double x4, double y4)         { Engine.renderer.texture(t, p1, p2, x3, y3, x4, y4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2ic p2, double x3, double y3, double x4, double y4)         { Engine.renderer.texture(t, p1, p2, x3, y3, x4, y4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, double x3, double y3, double x4, double y4)         { Engine.renderer.texture(t, p1, p2, x3, y3, x4, y4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2fc p2, double x3, double y3, double x4, double y4)         { Engine.renderer.texture(t, p1, p2, x3, y3, x4, y4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, double x3, double y3, double x4, double y4)         { Engine.renderer.texture(t, p1, p2, x3, y3, x4, y4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2dc p2, double x3, double y3, double x4, double y4)         { Engine.renderer.texture(t, p1, p2, x3, y3, x4, y4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, double x3, double y3, double x4, double y4)         { Engine.renderer.texture(t, p1, p2, x3, y3, x4, y4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2ic p2, double x3, double y3, double x4, double y4)         { Engine.renderer.texture(t, p1, p2, x3, y3, x4, y4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, double x3, double y3, double x4, double y4)         { Engine.renderer.texture(t, p1, p2, x3, y3, x4, y4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2fc p2, double x3, double y3, double x4, double y4)         { Engine.renderer.texture(t, p1, p2, x3, y3, x4, y4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, double x3, double y3, double x4, double y4)         { Engine.renderer.texture(t, p1, p2, x3, y3, x4, y4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2dc p2, double x3, double y3, double x4, double y4)         { Engine.renderer.texture(t, p1, p2, x3, y3, x4, y4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, double x3, double y3, double x4, double y4)         { Engine.renderer.texture(t, p1, p2, x3, y3, x4, y4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2ic p2, double x3, double y3, double x4, double y4)         { Engine.renderer.texture(t, p1, p2, x3, y3, x4, y4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, double x3, double y3, double x4, double y4)         { Engine.renderer.texture(t, p1, p2, x3, y3, x4, y4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2fc p2, double x3, double y3, double x4, double y4)         { Engine.renderer.texture(t, p1, p2, x3, y3, x4, y4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, double x3, double y3, double x4, double y4)         { Engine.renderer.texture(t, p1, p2, x3, y3, x4, y4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2dc p2, double x3, double y3, double x4, double y4)         { Engine.renderer.texture(t, p1, p2, x3, y3, x4, y4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2ic p3, Vector2ic p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2ic p3, Vector2ic p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2ic p3, Vector2fc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2ic p3, Vector2fc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2ic p3, Vector2dc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2ic p3, Vector2dc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2fc p3, Vector2ic p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2fc p3, Vector2ic p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2fc p3, Vector2fc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2fc p3, Vector2fc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2fc p3, Vector2dc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2fc p3, Vector2dc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2dc p3, Vector2ic p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2dc p3, Vector2ic p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2dc p3, Vector2fc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2dc p3, Vector2fc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2dc p3, Vector2dc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2ic p2, Vector2dc p3, Vector2dc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2ic p3, Vector2ic p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2ic p3, Vector2ic p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2ic p3, Vector2fc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2ic p3, Vector2fc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2ic p3, Vector2dc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2ic p3, Vector2dc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2fc p3, Vector2ic p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2fc p3, Vector2ic p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2fc p3, Vector2dc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2fc p3, Vector2dc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2dc p3, Vector2ic p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2dc p3, Vector2ic p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2dc p3, Vector2fc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2dc p3, Vector2fc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2dc p3, Vector2dc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2fc p2, Vector2dc p3, Vector2dc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2ic p3, Vector2ic p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2ic p3, Vector2ic p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2ic p3, Vector2fc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2ic p3, Vector2fc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2ic p3, Vector2dc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2ic p3, Vector2dc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2fc p3, Vector2ic p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2fc p3, Vector2ic p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2fc p3, Vector2fc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2fc p3, Vector2fc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2fc p3, Vector2dc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2fc p3, Vector2dc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2dc p3, Vector2ic p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2dc p3, Vector2ic p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2dc p3, Vector2fc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
+    public static void texture(Texture t, double x1, double y1, Vector2dc p2, Vector2dc p3, Vector2fc p4)                 { Engine.renderer.texture(t, x1, y1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2ic p3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2ic p3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2ic p3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2ic p3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2ic p3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2ic p3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2fc p3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2fc p3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2fc p3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2fc p3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2fc p3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2fc p3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2dc p3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2dc p3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2dc p3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2dc p3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2dc p3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, double x2, double y2, Vector2dc p3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2ic p3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2ic p3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2ic p3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2ic p3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2ic p3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2ic p3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2fc p3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2fc p3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2fc p3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2fc p3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2fc p3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2fc p3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2dc p3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2dc p3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2dc p3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2dc p3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2dc p3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, double x2, double y2, Vector2dc p3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2ic p3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2ic p3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2ic p3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2ic p3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2ic p3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2ic p3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2fc p3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2fc p3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2fc p3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2fc p3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2fc p3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2fc p3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2dc p3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2dc p3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2dc p3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, double x2, double y2, Vector2dc p3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, x2, y2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, double x3, double y3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2ic p2, double x3, double y3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, double x3, double y3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2ic p2, double x3, double y3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, double x3, double y3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2ic p2, double x3, double y3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, double x3, double y3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2fc p2, double x3, double y3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, double x3, double y3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2fc p2, double x3, double y3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, double x3, double y3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2fc p2, double x3, double y3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, double x3, double y3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2dc p2, double x3, double y3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, double x3, double y3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2dc p2, double x3, double y3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, double x3, double y3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2dc p2, double x3, double y3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, double x3, double y3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2ic p2, double x3, double y3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, double x3, double y3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2ic p2, double x3, double y3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, double x3, double y3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2ic p2, double x3, double y3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, double x3, double y3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2fc p2, double x3, double y3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, double x3, double y3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2fc p2, double x3, double y3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, double x3, double y3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2fc p2, double x3, double y3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, double x3, double y3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2dc p2, double x3, double y3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, double x3, double y3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2dc p2, double x3, double y3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, double x3, double y3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2dc p2, double x3, double y3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, double x3, double y3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2ic p2, double x3, double y3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, double x3, double y3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2ic p2, double x3, double y3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, double x3, double y3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2ic p2, double x3, double y3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, double x3, double y3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2fc p2, double x3, double y3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, double x3, double y3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2fc p2, double x3, double y3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, double x3, double y3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2fc p2, double x3, double y3, Vector2dc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, double x3, double y3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2dc p2, double x3, double y3, Vector2ic p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, double x3, double y3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2dc p2, double x3, double y3, Vector2fc p4)                 { Engine.renderer.texture(t, p1, p2, x3, y3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2ic p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2ic p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2fc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2fc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2dc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2dc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2ic p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2ic p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2fc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2fc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2dc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2dc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2ic p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2ic p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2fc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2fc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2dc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2dc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2ic p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2ic p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2fc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2fc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2dc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2dc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2ic p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2ic p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2fc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2fc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2dc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2dc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2ic p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2ic p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2fc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2fc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2dc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2dc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2ic p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2ic p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2fc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2fc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2dc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2dc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2ic p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2ic p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2fc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2fc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2dc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2dc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2ic p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2ic p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2fc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2fc p3, double x4, double y4)                 { Engine.renderer.texture(t, p1, p2, p3, x4, y4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2ic p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2ic p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2ic p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2ic p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2ic p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2ic p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2fc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2fc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2fc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2fc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2fc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2fc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2dc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2dc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2dc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2dc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2dc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2ic p2, Vector2dc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2ic p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2ic p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2ic p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2ic p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2ic p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2ic p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2fc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2fc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2fc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2fc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2dc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2dc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2dc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2dc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2dc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2fc p2, Vector2dc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2ic p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2ic p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2ic p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2ic p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2ic p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2ic p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2fc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2fc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2fc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2fc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2fc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2fc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2dc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2dc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2dc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2dc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2dc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2ic p1, Vector2dc p2, Vector2dc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2ic p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2ic p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2ic p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2ic p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2ic p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2ic p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2fc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2fc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2fc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2fc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2fc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2fc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2dc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2dc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2dc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2dc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2dc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2ic p2, Vector2dc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2ic p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2ic p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2ic p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2ic p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2ic p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2ic p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2fc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2fc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2fc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2fc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2dc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2dc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2dc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2dc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2dc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2fc p2, Vector2dc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2ic p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2ic p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2ic p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2ic p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2ic p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2ic p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2fc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2fc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2fc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2fc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2fc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2fc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2dc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2dc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2dc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2dc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2dc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2fc p1, Vector2dc p2, Vector2dc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2ic p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2ic p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2ic p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2ic p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2ic p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2ic p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2fc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2fc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2fc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2fc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2fc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2fc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2dc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2dc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2dc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2dc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2dc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2ic p2, Vector2dc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2ic p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2ic p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2ic p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2ic p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2ic p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2ic p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2fc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2fc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2fc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2fc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2dc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2dc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2dc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2dc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2dc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2fc p2, Vector2dc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2ic p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2ic p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2ic p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2ic p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2ic p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2ic p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2fc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2fc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2fc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2fc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2fc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2fc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2dc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2dc p3, Vector2ic p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2dc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2dc p3, Vector2fc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
-    public void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2dc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    public static void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2dc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
+    
+    public static void texture(Texture t, double x, double y, double w, double h)
+    {
+        Engine.renderer.texture(t, x, y, w, h, 0, 0, t.width(), t.height());
+    }
+    
+    public static void texture(Texture t, double x, double y, Vector2ic size) { Engine.renderer.texture(t, x, y, size); }
+    
+    public static void texture(Texture t, double x, double y, Vector2fc size) { Engine.renderer.texture(t, x, y, size); }
+    
+    public static void texture(Texture t, double x, double y, Vector2dc size) { Engine.renderer.texture(t, x, y, size); }
+    
+    public static void texture(Texture t, Vector2ic pos, double w, double h)  { Engine.renderer.texture(t, pos, w, h); }
+    
+    public static void texture(Texture t, Vector2fc pos, double w, double h)  { Engine.renderer.texture(t, pos, w, h); }
+    
+    public static void texture(Texture t, Vector2dc pos, double w, double h)  { Engine.renderer.texture(t, pos, w, h); }
+    
+    public static void texture(Texture t, Vector2ic pos, Vector2ic size)      { Engine.renderer.texture(t, pos, size); }
+    
+    public static void texture(Texture t, Vector2ic pos, Vector2fc size)      { Engine.renderer.texture(t, pos, size); }
+    
+    public static void texture(Texture t, Vector2ic pos, Vector2dc size)      { Engine.renderer.texture(t, pos, size); }
+    
+    public static void texture(Texture t, Vector2fc pos, Vector2ic size)      { Engine.renderer.texture(t, pos, size); }
+    
+    public static void texture(Texture t, Vector2fc pos, Vector2fc size)      { Engine.renderer.texture(t, pos, size); }
+    
+    public static void texture(Texture t, Vector2fc pos, Vector2dc size)      { Engine.renderer.texture(t, pos, size); }
+    
+    public static void texture(Texture t, Vector2dc pos, Vector2ic size)      { Engine.renderer.texture(t, pos, size); }
+    
+    public static void texture(Texture t, Vector2dc pos, Vector2fc size)      { Engine.renderer.texture(t, pos, size); }
+    
+    public static void texture(Texture t, Vector2dc pos, Vector2dc size)      { Engine.renderer.texture(t, pos, size); }
+    
+    public static void texture(Texture t, double x, double y)
+    {
+        Engine.renderer.texture(t, x, y);
+    }
+    
+    public static void texture(Texture t, Vector2ic pos) { Engine.renderer.texture(t, pos); }
+    
+    public static void texture(Texture t, Vector2fc pos) { Engine.renderer.texture(t, pos); }
+    
+    public static void texture(Texture t, Vector2dc pos) { Engine.renderer.texture(t, pos); }
     
     public static int[] loadPixels()
     {

@@ -88,27 +88,27 @@ public class Texture
         this(width, height, 4, Color.BLACK);
     }
     
-    public int getId()
+    public int id()
     {
         return this.id;
     }
     
-    public int getWidth()
+    public int width()
     {
         return this.width;
     }
     
-    public int getHeight()
+    public int height()
     {
         return this.height;
     }
     
-    public int getChannels()
+    public int channels()
     {
         return this.channels;
     }
     
-    public ByteBuffer getData()
+    public ByteBuffer data()
     {
         return this.data;
     }

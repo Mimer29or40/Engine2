@@ -134,7 +134,7 @@ public class SoftwareRenderer extends Renderer
             err = dx + dy + xy;                /* error 1st step */
             do
             {
-                POINTS.add(new PairI(x1i, y1i)); /* plot curve */
+                SoftwareRenderer.POINTS.add(new PairI(x1i, y1i)); /* plot curve */
                 if (x1i == x3i && y1i == y3i) return;  /* last pixel -> curve finished */
                 boolean yStep = 2 * err < dx;      /* save value for test of y step */
                 if (2 * err > dy)
@@ -302,11 +302,17 @@ public class SoftwareRenderer extends Renderer
         fillPolygon(getCirclePoints(x, y, rx, ry));
     }
     
+    @Override
+    public void texture(Texture texture, double x, double y, double ox, double oy, double w, double h)
+    {
+    
+    }
+    
     private void pointImpl(int x, int y, Colorc color)
     {
         if (this.enableBlend)
         {
-            this.target.setPixel(x, y, Engine.blend().blend(color, this.target.getPixel(x, y), COLOR));
+            this.target.setPixel(x, y, Engine.blend().blend(color, this.target.getPixel(x, y), SoftwareRenderer.COLOR));
         }
         else
         {

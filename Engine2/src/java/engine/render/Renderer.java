@@ -1159,5 +1159,139 @@ public abstract class Renderer
     // -- Texture Methods --
     // ---------------------
     
-    // TODO - Texture Methods
+    public abstract void texture(Texture texture, double x, double y, double ox, double oy, double w, double h);
+    
+    public void texture(Texture texture, double x, double y, double ox, double oy, Vector2ic size) { texture(texture, x, y, ox, oy, size.x(), size.y()); }
+    
+    public void texture(Texture texture, double x, double y, double ox, double oy, Vector2fc size) { texture(texture, x, y, ox, oy, size.x(), size.y()); }
+    
+    public void texture(Texture texture, double x, double y, double ox, double oy, Vector2dc size) { texture(texture, x, y, ox, oy, size.x(), size.y()); }
+    
+    public void texture(Texture texture, double x, double y, Vector2ic o, double w, double h)      { texture(texture, x, y, o.x(), o.y(), w, h); }
+    
+    public void texture(Texture texture, double x, double y, Vector2fc o, double w, double h)      { texture(texture, x, y, o.x(), o.y(), w, h); }
+    
+    public void texture(Texture texture, double x, double y, Vector2dc o, double w, double h)      { texture(texture, x, y, o.x(), o.y(), w, h); }
+    
+    public void texture(Texture texture, Vector2ic p, double ox, double oy, double w, double h)    { texture(texture, p.x(), p.y(), ox, oy, w, h); }
+    
+    public void texture(Texture texture, Vector2fc p, double ox, double oy, double w, double h)    { texture(texture, p.x(), p.y(), ox, oy, w, h); }
+    
+    public void texture(Texture texture, Vector2dc p, double ox, double oy, double w, double h)    { texture(texture, p.x(), p.y(), ox, oy, w, h); }
+    
+    public void texture(Texture texture, double x, double y, Vector2ic o, Vector2ic size)          { texture(texture, x, y, o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, double x, double y, Vector2ic o, Vector2fc size)          { texture(texture, x, y, o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, double x, double y, Vector2ic o, Vector2dc size)          { texture(texture, x, y, o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, double x, double y, Vector2fc o, Vector2ic size)          { texture(texture, x, y, o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, double x, double y, Vector2fc o, Vector2fc size)          { texture(texture, x, y, o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, double x, double y, Vector2fc o, Vector2dc size)          { texture(texture, x, y, o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, double x, double y, Vector2dc o, Vector2ic size)          { texture(texture, x, y, o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, double x, double y, Vector2dc o, Vector2fc size)          { texture(texture, x, y, o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, double x, double y, Vector2dc o, Vector2dc size)          { texture(texture, x, y, o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2ic p, double ox, double oy, Vector2ic size)        { texture(texture, p.x(), p.y(), ox, oy, size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2ic p, double ox, double oy, Vector2fc size)        { texture(texture, p.x(), p.y(), ox, oy, size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2ic p, double ox, double oy, Vector2dc size)        { texture(texture, p.x(), p.y(), ox, oy, size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2fc p, double ox, double oy, Vector2ic size)        { texture(texture, p.x(), p.y(), ox, oy, size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2fc p, double ox, double oy, Vector2fc size)        { texture(texture, p.x(), p.y(), ox, oy, size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2fc p, double ox, double oy, Vector2dc size)        { texture(texture, p.x(), p.y(), ox, oy, size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2dc p, double ox, double oy, Vector2ic size)        { texture(texture, p.x(), p.y(), ox, oy, size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2dc p, double ox, double oy, Vector2fc size)        { texture(texture, p.x(), p.y(), ox, oy, size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2dc p, double ox, double oy, Vector2dc size)        { texture(texture, p.x(), p.y(), ox, oy, size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2ic p, Vector2ic o, double w, double h)             { texture(texture, p.x(), p.y(), o.x(), o.y(), w, h); }
+    
+    public void texture(Texture texture, Vector2fc p, Vector2ic o, double w, double h)             { texture(texture, p.x(), p.y(), o.x(), o.y(), w, h); }
+    
+    public void texture(Texture texture, Vector2dc p, Vector2ic o, double w, double h)             { texture(texture, p.x(), p.y(), o.x(), o.y(), w, h); }
+    
+    public void texture(Texture texture, Vector2ic p, Vector2fc o, double w, double h)             { texture(texture, p.x(), p.y(), o.x(), o.y(), w, h); }
+    
+    public void texture(Texture texture, Vector2fc p, Vector2fc o, double w, double h)             { texture(texture, p.x(), p.y(), o.x(), o.y(), w, h); }
+    
+    public void texture(Texture texture, Vector2dc p, Vector2fc o, double w, double h)             { texture(texture, p.x(), p.y(), o.x(), o.y(), w, h); }
+    
+    public void texture(Texture texture, Vector2ic p, Vector2dc o, double w, double h)             { texture(texture, p.x(), p.y(), o.x(), o.y(), w, h); }
+    
+    public void texture(Texture texture, Vector2fc p, Vector2dc o, double w, double h)             { texture(texture, p.x(), p.y(), o.x(), o.y(), w, h); }
+    
+    public void texture(Texture texture, Vector2dc p, Vector2dc o, double w, double h)             { texture(texture, p.x(), p.y(), o.x(), o.y(), w, h); }
+    
+    public void texture(Texture texture, Vector2ic p, Vector2ic o, Vector2ic size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2fc p, Vector2ic o, Vector2ic size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2dc p, Vector2ic o, Vector2ic size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2ic p, Vector2fc o, Vector2ic size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2fc p, Vector2fc o, Vector2ic size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2dc p, Vector2fc o, Vector2ic size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2ic p, Vector2dc o, Vector2ic size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2fc p, Vector2dc o, Vector2ic size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2dc p, Vector2dc o, Vector2ic size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2ic p, Vector2ic o, Vector2fc size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2fc p, Vector2ic o, Vector2fc size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2dc p, Vector2ic o, Vector2fc size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2ic p, Vector2fc o, Vector2fc size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2fc p, Vector2fc o, Vector2fc size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2dc p, Vector2fc o, Vector2fc size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2ic p, Vector2dc o, Vector2fc size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2fc p, Vector2dc o, Vector2fc size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2dc p, Vector2dc o, Vector2fc size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2ic p, Vector2ic o, Vector2dc size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2fc p, Vector2ic o, Vector2dc size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2dc p, Vector2ic o, Vector2dc size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2ic p, Vector2fc o, Vector2dc size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2fc p, Vector2fc o, Vector2dc size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2dc p, Vector2fc o, Vector2dc size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2ic p, Vector2dc o, Vector2dc size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2fc p, Vector2dc o, Vector2dc size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, Vector2dc p, Vector2dc o, Vector2dc size)                 { texture(texture, p.x(), p.y(), o.x(), o.y(), size.x(), size.y()); }
+    
+    public void texture(Texture texture, double x, double y)                                       { texture(texture, x, y, 0, 0, texture.width(), texture.height()); }
+    
+    public void texture(Texture texture, Vector2ic p)                                              { texture(texture, p.x(), p.y(), 0, 0, texture.width(), texture.height()); }
+    
+    public void texture(Texture texture, Vector2fc p)                                              { texture(texture, p.x(), p.y(), 0, 0, texture.width(), texture.height()); }
+    
+    public void texture(Texture texture, Vector2dc p)                                              { texture(texture, p.x(), p.y(), 0, 0, texture.width(), texture.height()); }
 }

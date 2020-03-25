@@ -216,9 +216,7 @@ public class SoftwareRenderer extends Renderer
             pt = transform(points[i], points[i + 1]);
             x2 = (int) round(pt.a());
             y2 = (int) round(pt.b());
-        
             lineImpl(x1, y1, x2, y2, (int) this.weight, LINE_OVERLAP_NONE);
-        
             x1 = x2;
             y1 = y2;
         }
@@ -229,22 +227,16 @@ public class SoftwareRenderer extends Renderer
     public void fillPolygon(double[] points)
     {
         int n = points.length;
-    
-        int minX, maxX, minY, maxY;
         int x1, y1, x2, y2;
     
-        PairD cord = transform(points[n - 2], points[n - 1]);
-        minX = maxX = x1 = (int) round(cord.a());
-        minY = maxY = y1 = (int) round(cord.b());
+        PairD pt = transform(points[n - 2], points[n - 1]);
+        x1 = (int) round(pt.a());
+        y1 = (int) round(pt.b());
         for (int i = 0; i < n; i += 2)
         {
-            cord = transform(points[i], points[i + 1]);
-            x2   = (int) round(cord.a());
-            y2   = (int) round(cord.b());
-            minX = Math.min(minX, x2);
-            maxX = Math.max(maxX, x2);
-            minY = Math.min(minY, y2);
-            maxY = Math.max(maxY, y2);
+            pt = transform(points[i], points[i + 1]);
+            x2 = (int) round(pt.a());
+            y2 = (int) round(pt.b());
             lineImpl(x1, y1, x2, y2, 1, LINE_OVERLAP_NONE);
             x1 = x2;
             y1 = y2;
@@ -305,44 +297,51 @@ public class SoftwareRenderer extends Renderer
     @Override
     public void drawTexture(Texture texture, double x, double y, double w, double h, double u, double v, double uw, double vh)
     {
-        double[] points = new double[] {x, y, x + uw, y, x + uw, y + vh, x, y + vh};
-        int      n      = points.length;
-        
-        int minX, maxX, minY, maxY;
-        int x1, y1, x2, y2;
-        
-        PairD cord = transform(points[n - 2], points[n - 1]);
-        minX = maxX = x1 = (int) round(cord.a());
-        minY = maxY = y1 = (int) round(cord.b());
-        for (int i = 0; i < n; i += 2)
-        {
-            cord = transform(points[i], points[i + 1]);
-            x2   = (int) round(cord.a());
-            y2   = (int) round(cord.b());
-            minX = Math.min(minX, x2);
-            maxX = Math.max(maxX, x2);
-            minY = Math.min(minY, y2);
-            maxY = Math.max(maxY, y2);
-            lineImpl(x1, y1, x2, y2, 1, LINE_OVERLAP_NONE);
-            x1 = x2;
-            y1 = y2;
-        }
-        
+        PairD topLeft     = transform(x, y);
+        PairD topRight    = transform(x + w, y);
+        PairD bottomLeft  = transform(x, y + h);
+        PairD bottomRight = transform(x + w, y + h);
+    
+        int topLeftX     = (int) round(topLeft.a());
+        int topLeftY     = (int) round(topLeft.b());
+        int topRightX    = (int) round(topRight.a());
+        int topRightY    = (int) round(topRight.b());
+        int bottomLeftX  = (int) round(bottomLeft.a());
+        int bottomLeftY  = (int) round(bottomLeft.b());
+        int bottomRightX = (int) round(bottomRight.a());
+        int bottomRightY = (int) round(bottomRight.b());
+    
+        int ui  = (int) round(u);
+        int vi  = (int) round(v);
+        int uwi = (int) round(uw);
+        int vhi = (int) round(vh);
+    
+        lineImpl(topLeftX, topLeftY, topRightX, topRightY, 1, LINE_OVERLAP_NONE);
+        lineImpl(topRightX, topRightY, bottomRightX, bottomRightY, 1, LINE_OVERLAP_NONE);
+        lineImpl(bottomRightX, bottomRightY, bottomLeftX, bottomLeftY, 1, LINE_OVERLAP_NONE);
+        lineImpl(bottomLeftX, bottomLeftY, topLeftX, topLeftY, 1, LINE_OVERLAP_NONE);
+    
+        int xAxisX   = topRightX - topLeftX;
+        int xAxisY   = topRightY - topLeftY;
+        int yAxisX   = bottomLeftX - topLeftX;
+        int yAxisY   = bottomLeftY - topLeftY;
+        int xAxisLen = xAxisX * xAxisX + xAxisY * xAxisY;
+        int yAxisLen = yAxisX * yAxisX + yAxisY * yAxisY;
+    
         HashMap<Integer, PairI> xMap = new HashMap<>(), yMap = new HashMap<>();
-        
+    
         PairI xPair, yPair;
         for (PairI point : SoftwareRenderer.POINTS)
         {
-            int px = point.a, py = point.b;
-            if (!xMap.containsKey(px)) xMap.put(px, new PairI(py, py));
-            if (!yMap.containsKey(py)) yMap.put(py, new PairI(px, px));
-            xPair = xMap.get(px);
-            yPair = yMap.get(py);
-            
-            xPair.a = Math.min(xPair.a, py + 1);
-            xPair.b = Math.max(xPair.b, py - 1);
-            yPair.a = Math.min(yPair.a, px + 1);
-            yPair.b = Math.max(yPair.b, px - 1);
+            if (!xMap.containsKey(point.a)) xMap.put(point.a, new PairI(point.b, point.b));
+            if (!yMap.containsKey(point.b)) yMap.put(point.b, new PairI(point.a, point.a));
+            xPair = xMap.get(point.a);
+            yPair = yMap.get(point.b);
+        
+            xPair.a = Math.min(xPair.a, point.b + 1);
+            xPair.b = Math.max(xPair.b, point.b - 1);
+            yPair.a = Math.min(yPair.a, point.a + 1);
+            yPair.b = Math.max(yPair.b, point.a - 1);
         }
         for (int py : yMap.keySet())
         {
@@ -350,10 +349,18 @@ public class SoftwareRenderer extends Renderer
             for (int px = xPair.a; px <= xPair.b; px++)
             {
                 yPair = xMap.get(px);
-                if (yPair.a <= y && y <= yPair.b) SoftwareRenderer.POINTS.add(new PairI(px, py));
+                if (yPair.a <= py && py <= yPair.b) SoftwareRenderer.POINTS.add(new PairI(px, py));
             }
         }
-        pointsImpl(this.fill);
+        for (PairI point : SoftwareRenderer.POINTS)
+        {
+            int dx    = point.a() - topLeftX;
+            int dy    = point.b() - topLeftY;
+            int textX = ui + ((dx * xAxisX + dy * xAxisY) * uwi / xAxisLen);
+            int textY = vi + ((dx * yAxisX + dy * yAxisY) * vhi / yAxisLen);
+            pointImpl(point.a(), point.b(), texture.getPixel(textX, textY));
+        }
+        SoftwareRenderer.POINTS.clear();
     }
     
     @Override
@@ -497,7 +504,6 @@ public class SoftwareRenderer extends Renderer
                     sy        = -sy;
                 }
             }
-            // int ox = x1, oy = y1, adx, ady;
             int i, err, e2, overlap, c;
             err = dx - dy;
             for (i = 0; i < halfWidth; i++)
@@ -515,13 +521,6 @@ public class SoftwareRenderer extends Renderer
                     y1 -= sy;
                     y2 -= sy;
                 }
-                // adx = Math.abs(x1 - ox);
-                // ady = Math.abs(y1 - oy);
-                // if (adx * adx + ady * ady > halfWidth * halfWidth)
-                // {
-                //     halfWidth = i;
-                //     break;
-                // }
             }
             lineImpl(x1, y1, x2, y2, 1, LINE_OVERLAP_NONE);
             err = dx - dy;
@@ -558,7 +557,7 @@ public class SoftwareRenderer extends Renderer
     
     private double[] getCirclePoints(double x, double y, double rx, double ry)
     {
-        int      RESOLUTION = 16;
+        int      RESOLUTION = (int) Math.max(rx, ry) / 2;
         double   TWO_PI     = 2.0 * Math.PI;
         double[] points     = new double[RESOLUTION * 2];
         for (int i = 0; i < RESOLUTION; i++)

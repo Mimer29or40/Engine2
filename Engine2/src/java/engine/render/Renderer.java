@@ -2,6 +2,7 @@ package engine.render;
 
 import engine.color.Color;
 import engine.color.Colorc;
+import engine.util.Logger;
 import org.joml.Matrix4d;
 import org.joml.Vector2dc;
 import org.joml.Vector2fc;
@@ -12,6 +13,8 @@ import java.util.Stack;
 
 public abstract class Renderer
 {
+    private static final Logger LOGGER = new Logger();
+    
     private static final Color       DEFAULT_FILL         = new Color(255);
     private static final Color       DEFAULT_STROKE       = new Color(51);
     private static final double      DEFAULT_WEIGHT       = 5;
@@ -23,9 +26,23 @@ public abstract class Renderer
     
     protected static final Color CLEAR = new Color();
     
-    public static Renderer getRenderer(Texture target)
+    public static Renderer getRenderer(Texture target, String renderer)
     {
-        // TODO - Set renderer then return a new instance here.
+        if (renderer.equals("software"))
+        {
+            Renderer.LOGGER.debug("Using Software Renderer");
+            return new SoftwareRenderer(target);
+        }
+        else if (renderer.equals("opengl"))
+        {
+            Renderer.LOGGER.debug("Using OpenGL Renderer");
+            return new OpenGLRenderer(target);
+        }
+        // else
+        // {
+        //     // TODO - Check for registered renderers?
+        // }
+        Renderer.LOGGER.warn("Could not parse renderer. Using Software Renderer");
         return new SoftwareRenderer(target);
     }
     
@@ -1358,7 +1375,7 @@ public abstract class Renderer
                 break;
             case CENTER:
             case RADIUS:
-                drawTexture(texture, x - w * 0.5, y - h * 0.5, 1, 1, u, v, uw, vh);
+                drawTexture(texture, x - w * 0.5, y - h * 0.5, w, h, u, v, uw, vh);
                 break;
         }
     }

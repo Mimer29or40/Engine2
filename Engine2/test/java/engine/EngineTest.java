@@ -10,22 +10,23 @@ import static engine.util.Util.map;
 public class EngineTest extends Engine
 {
     Logger  logger = new Logger();
-    int     state  = 1;
+    int     state  = 6;
     Texture texture;
     
     @Override
     protected void setup()
     {
         // size(200, 200, 2, 2);
-        size(100, 100, 8, 8);
-        
+        // size(100, 100, 8, 8);
+        size(400, 400, 2, 2, "opengl");
+    
         texture = new Texture(30, 30);
         Color c = new Color();
-        for (int j = 0; j < 10; j++)
+        for (int j = 0; j < texture.height(); j++)
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < texture.width(); i++)
             {
-                texture.setPixel(i, j, c.set((double) i / 255., (double) j / 255., 255, 255));
+                texture.setPixel(i, j, c.set((double) i / (double) texture.width(), (double) j / (double) texture.height(), 255, 255));
             }
         }
         
@@ -78,13 +79,15 @@ public class EngineTest extends Engine
                 break;
             case 6:
                 clear();
-                weight(1);
+                weight(10);
                 stroke(255);
                 fill(255, 0, 0);
                 rectMode(RectMode.CENTER);
                 translate(screenWidth() / 2., screenHeight() / 2.);
-                rotate(time() / 1000000000.);
-                texture(texture, 0, 0);
+                circle(0, 0, 200 * Math.sqrt(2));
+                rotate(time() / 2000000000.);
+                // scale(0.5, 2);
+                texture(texture, 0, 0, 200, 200);
                 break;
             case 7:
                 break;
@@ -127,6 +130,6 @@ public class EngineTest extends Engine
     public static void main(String[] args)
     {
         // enableProfiler();
-        start(new EngineTest(), Logger.Level.INFO);
+        start(new EngineTest(), Logger.Level.DEBUG);
     }
 }

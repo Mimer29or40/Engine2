@@ -285,13 +285,13 @@ public class Engine
         }
         finally
         {
-            Engine.LOGGER.trace("Extension Pre Destruction");
+            Engine.LOGGER.debug("Extension Pre Destruction");
             Engine.extensions.values().forEach(Extension::beforeDestroy);
-            
-            Engine.LOGGER.debug("User Initialization");
+    
+            Engine.LOGGER.debug("User Destruction");
             Engine.logic.destroy();
-            
-            Engine.LOGGER.trace("Extension Post Destruction");
+    
+            Engine.LOGGER.debug("Extension Post Destruction");
             Engine.extensions.values().forEach(Extension::afterDestroy);
             
             if (Engine.window != null) Engine.window.destroy();
@@ -304,13 +304,13 @@ public class Engine
     
     public static void stop()                 { Engine.running = false; }
     
-    protected static void size(int screenW, int screenH, int pixelW, int pixelH)
+    protected static void size(int screenW, int screenH, int pixelW, int pixelH, String renderer)
     {
         Engine.screenSize.set(screenW, screenH);
         Engine.LOGGER.trace("Screen Size %s", Engine.screenSize);
         
         Engine.pixelSize.set(pixelW, pixelH);
-        Engine.LOGGER.trace("Color Dimensions %s", Engine.pixelSize);
+        Engine.LOGGER.trace("Pixel Dimensions %s", Engine.pixelSize);
         
         if (Engine.screenSize.lengthSquared() == 0) throw new RuntimeException("Screen dimension must be > 0");
         if (Engine.pixelSize.lengthSquared() == 0) throw new RuntimeException("Pixel dimension must be > 0");
@@ -322,7 +322,7 @@ public class Engine
         Engine.window.makeCurrent();
         
         GL.createCapabilities();
-    
+        
         Engine.target = new Texture(screenW, screenH);
         
         Engine.shader = new Shader();
@@ -335,16 +335,20 @@ public class Engine
         Engine.vertexArray = new VertexArray();
         Engine.vertexArray.add(2, new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, -1.0F, 1.0F, 1.0F, -1.0F, 1.0F, 1.0F});
         
-        Engine.renderer = Renderer.getRenderer(Engine.target);
+        Engine.renderer = Renderer.getRenderer(Engine.target, renderer);
     }
     
-    protected static void size(int screenW, int screenH) { size(screenW, screenH, 4, 4); }
+    protected static void size(int screenW, int screenH, int pixelW, int pixelH) { size(screenW, screenH, pixelW, pixelH, "software"); }
+    
+    protected static void size(int screenW, int screenH, String renderer)        { size(screenW, screenH, 4, 4, renderer); }
+    
+    protected static void size(int screenW, int screenH)                         { size(screenW, screenH, 4, 4, "software"); }
     
     // ----------------
     // -- Properties --
     // ----------------
     
-    public static long time() { return Engine.startTime > 0 ? System.nanoTime() - Engine.startTime : -1L; }
+    public static long time()                   { return Engine.startTime > 0 ? System.nanoTime() - Engine.startTime : -1L; }
     
     public static int frameRate()               { return (int) (1_000_000_000L / Engine.frameRate); }
     

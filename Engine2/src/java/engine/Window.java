@@ -45,7 +45,7 @@ public class Window
     
     public Window(Mouse mouse, Keyboard keyboard)
     {
-        Window.LOGGER.debug("Window Creation Started");
+        Window.LOGGER.trace("Window Creation Started");
         
         screenSize().mul(pixelSize(), this.windowSize);
         
@@ -140,8 +140,8 @@ public class Window
         });
         
         show();
-        
-        Window.LOGGER.debug("Window Creation Finished");
+    
+        Window.LOGGER.debug("Window Created");
     }
     
     public Vector2ic monitorSize()             { return this.monitorSize; }

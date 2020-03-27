@@ -169,9 +169,9 @@ public class Texture
     
     public Colorc sample(float x, float y)
     {
-        int sx = Math.min((int) (x * (float) this.width), this.width - 1);
-        int sy = Math.min((int) (y * (float) this.height), this.height - 1);
-        
+        int sx = Math.max(0, (Math.min((int) (x * (float) this.width), this.width - 1)));
+        int sy = Math.max(0, (Math.min((int) (y * (float) this.height), this.height - 1)));
+    
         return getPixel(sx, sy);
     }
     
@@ -179,32 +179,32 @@ public class Texture
     {
         u = u * width - 0.5f;
         v = v * height - 0.5f;
-        
+    
         int x = (int) Math.floor(u);
         int y = (int) Math.floor(v);
-        
-        float u_ratio    = u - x;
-        float v_ratio    = v - y;
-        float u_opposite = 1 - u_ratio;
-        float v_opposite = 1 - v_ratio;
-        
+    
+        float uRat = u - x;
+        float vRat = v - y;
+        float uOpp = 1 - uRat;
+        float vOpp = 1 - vRat;
+    
         Color p1 = new Color(getPixel(Math.max(x, 0), Math.max(y, 0)));
         Color p2 = new Color(getPixel(Math.min(x + 1, this.width - 1), Math.max(y, 0)));
         Color p3 = new Color(getPixel(Math.max(x, 0), Math.min(y + 1, this.height - 1)));
         Color p4 = new Color(getPixel(Math.min(x + 1, this.width - 1), Math.min(y + 1, this.height - 1)));
-        
-        return this.tempColor.set((p1.r() * u_opposite + p2.r() * u_ratio) * v_opposite + (p3.r() * u_opposite + p4.r() * u_ratio) * v_ratio,
-                                  (p1.g() * u_opposite + p2.g() * u_ratio) * v_opposite + (p3.g() * u_opposite + p4.g() * u_ratio) * v_ratio,
-                                  (p1.b() * u_opposite + p2.b() * u_ratio) * v_opposite + (p3.b() * u_opposite + p4.b() * u_ratio) * v_ratio);
-        
+    
+        return this.tempColor.set((p1.r() * uOpp + p2.r() * uRat) * vOpp + (p3.r() * uOpp + p4.r() * uRat) * vRat,
+                                  (p1.g() * uOpp + p2.g() * uRat) * vOpp + (p3.g() * uOpp + p4.g() * uRat) * vRat,
+                                  (p1.b() * uOpp + p2.b() * uRat) * vOpp + (p3.b() * uOpp + p4.b() * uRat) * vRat);
+    
     }
     
     public void clear()
     {
         if (this.data != null)
         {
-            this.data.clear();
             zeroBuffer(this.data);
+            this.data.clear();
         }
     }
     
@@ -297,8 +297,8 @@ public class Texture
         if (this.data == null) return;
         
         if (!imagePath.endsWith(".png")) imagePath += ".png";
-        
-        if (!stbi_write_png(imagePath, this.width, this.height, this.channels, this.data, this.width * 4))
+    
+        if (!stbi_write_png(imagePath, this.width, this.height, this.channels, this.data, this.width * this.channels))
         {
             Texture.LOGGER.error("Image could not be saved: " + imagePath);
         }

@@ -1,6 +1,12 @@
 package engine.util;
 
+import org.lwjgl.BufferUtils;
+
+import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.ByteBuffer;
+import java.nio.channels.SeekableByteChannel;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -134,14 +140,30 @@ public class Util
     
     public static double round(double value) { return round(value, 0); }
     
-    public static Path getPath(String filePath)
+    public static Path getPath(String resource)
     {
         try
         {
-            return Paths.get(Objects.requireNonNull(Util.class.getClassLoader().getResource(filePath)).toURI());
+            return Paths.get(Objects.requireNonNull(Util.class.getClassLoader().getResource(resource)).toURI());
         }
         catch (URISyntaxException | NullPointerException ignored) { }
-        return Paths.get(filePath);
+        return Paths.get(resource);
+    }
+    
+    @SuppressWarnings("StatementWithEmptyBody")
+    public static ByteBuffer resourceToByteBuffer(String resource)
+    {
+        try (SeekableByteChannel fc = Files.newByteChannel(getPath(resource)))
+        {
+            ByteBuffer buffer = BufferUtils.createByteBuffer((int) fc.size() + 1);
+            while (fc.read(buffer) != -1) { }
+            buffer.flip();
+            return buffer.slice();
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(String.format("Could not load resource: \"%s\"", resource), e);
+        }
     }
     
     public static double getDecimal(double value)

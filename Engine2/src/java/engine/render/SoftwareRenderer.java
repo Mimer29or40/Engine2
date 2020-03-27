@@ -241,32 +241,7 @@ public class SoftwareRenderer extends Renderer
             x1 = x2;
             y1 = y2;
         }
-        
-        HashMap<Integer, PairI> xMap = new HashMap<>(), yMap = new HashMap<>();
-        
-        PairI xPair, yPair;
-        for (PairI point : SoftwareRenderer.POINTS)
-        {
-            int x = point.a, y = point.b;
-            if (!xMap.containsKey(x)) xMap.put(x, new PairI(y, y));
-            if (!yMap.containsKey(y)) yMap.put(y, new PairI(x, x));
-            xPair = xMap.get(x);
-            yPair = yMap.get(y);
-            
-            xPair.a = Math.min(xPair.a, y + 1);
-            xPair.b = Math.max(xPair.b, y - 1);
-            yPair.a = Math.min(yPair.a, x + 1);
-            yPair.b = Math.max(yPair.b, x - 1);
-        }
-        for (int y : yMap.keySet())
-        {
-            xPair = yMap.get(y);
-            for (int x = xPair.a; x <= xPair.b; x++)
-            {
-                yPair = xMap.get(x);
-                if (yPair.a <= y && y <= yPair.b) SoftwareRenderer.POINTS.add(new PairI(x, y));
-            }
-        }
+        fillBetweenLines();
         pointsImpl(this.fill);
     }
     
@@ -297,6 +272,8 @@ public class SoftwareRenderer extends Renderer
     @Override
     public void drawTexture(Texture texture, double x, double y, double w, double h, double u, double v, double uw, double vh)
     {
+        if (w <= 0 || h <= 0 || uw <= 0 || vh <= 0) return;
+    
         PairD topLeft     = transform(x, y);
         PairD topRight    = transform(x + w, y);
         PairD bottomLeft  = transform(x, y + h);
@@ -311,15 +288,16 @@ public class SoftwareRenderer extends Renderer
         int bottomRightX = (int) round(bottomRight.a());
         int bottomRightY = (int) round(bottomRight.b());
     
-        int ui  = (int) round(u);
-        int vi  = (int) round(v);
-        int uwi = (int) round(uw);
-        int vhi = (int) round(vh);
+        int ui  = (int) round(u * texture.width());
+        int vi  = (int) round(v * texture.height());
+        int uwi = (int) round(uw * texture.width());
+        int vhi = (int) round(vh * texture.height());
     
         lineImpl(topLeftX, topLeftY, topRightX, topRightY, 1, LINE_OVERLAP_NONE);
         lineImpl(topRightX, topRightY, bottomRightX, bottomRightY, 1, LINE_OVERLAP_NONE);
         lineImpl(bottomRightX, bottomRightY, bottomLeftX, bottomLeftY, 1, LINE_OVERLAP_NONE);
         lineImpl(bottomLeftX, bottomLeftY, topLeftX, topLeftY, 1, LINE_OVERLAP_NONE);
+        fillBetweenLines();
     
         int xAxisX   = topRightX - topLeftX;
         int xAxisY   = topRightY - topLeftY;
@@ -327,31 +305,9 @@ public class SoftwareRenderer extends Renderer
         int yAxisY   = bottomLeftY - topLeftY;
         int xAxisLen = xAxisX * xAxisX + xAxisY * xAxisY;
         int yAxisLen = yAxisX * yAxisX + yAxisY * yAxisY;
+        if (xAxisLen == 0) xAxisLen = 1;
+        if (yAxisLen == 0) yAxisLen = 1;
     
-        HashMap<Integer, PairI> xMap = new HashMap<>(), yMap = new HashMap<>();
-    
-        PairI xPair, yPair;
-        for (PairI point : SoftwareRenderer.POINTS)
-        {
-            if (!xMap.containsKey(point.a)) xMap.put(point.a, new PairI(point.b, point.b));
-            if (!yMap.containsKey(point.b)) yMap.put(point.b, new PairI(point.a, point.a));
-            xPair = xMap.get(point.a);
-            yPair = yMap.get(point.b);
-        
-            xPair.a = Math.min(xPair.a, point.b + 1);
-            xPair.b = Math.max(xPair.b, point.b - 1);
-            yPair.a = Math.min(yPair.a, point.a + 1);
-            yPair.b = Math.max(yPair.b, point.a - 1);
-        }
-        for (int py : yMap.keySet())
-        {
-            xPair = yMap.get(py);
-            for (int px = xPair.a; px <= xPair.b; px++)
-            {
-                yPair = xMap.get(px);
-                if (yPair.a <= py && py <= yPair.b) SoftwareRenderer.POINTS.add(new PairI(px, py));
-            }
-        }
         for (PairI point : SoftwareRenderer.POINTS)
         {
             int dx    = point.a() - topLeftX;
@@ -361,6 +317,70 @@ public class SoftwareRenderer extends Renderer
             pointImpl(point.a(), point.b(), texture.getPixel(textX, textY));
         }
         SoftwareRenderer.POINTS.clear();
+    }
+    
+    @Override
+    public void drawText(String text, double x, double y)
+    {
+        double[] vertices = this.font.renderText(text);
+        for (int i = 0, lineSize = text.length(); i < lineSize; i++)
+        {
+            int index = i * 8;
+            
+            double xPos   = vertices[index] + x;
+            double yPos   = vertices[index + 1] + y;
+            double width  = vertices[index + 2];
+            double height = vertices[index + 3];
+            double u      = vertices[index + 4];
+            double v      = vertices[index + 5];
+            double uw     = vertices[index + 6];
+            double vh     = vertices[index + 7];
+            
+            PairD topLeft     = transform(xPos, yPos);
+            PairD topRight    = transform(xPos + width, yPos);
+            PairD bottomLeft  = transform(xPos, yPos + height);
+            PairD bottomRight = transform(xPos + width, yPos + height);
+            
+            int topLeftX     = (int) round(topLeft.a());
+            int topLeftY     = (int) round(topLeft.b());
+            int topRightX    = (int) round(topRight.a());
+            int topRightY    = (int) round(topRight.b());
+            int bottomLeftX  = (int) round(bottomLeft.a());
+            int bottomLeftY  = (int) round(bottomLeft.b());
+            int bottomRightX = (int) round(bottomRight.a());
+            int bottomRightY = (int) round(bottomRight.b());
+            
+            int ui  = (int) round(u * this.font.getBitmap().width());
+            int vi  = (int) round(v * this.font.getBitmap().height());
+            int uwi = (int) round(uw * this.font.getBitmap().width());
+            int vhi = (int) round(vh * this.font.getBitmap().height());
+            
+            lineImpl(topLeftX, topLeftY, topRightX, topRightY, 1, LINE_OVERLAP_NONE);
+            lineImpl(topRightX, topRightY, bottomRightX, bottomRightY, 1, LINE_OVERLAP_NONE);
+            lineImpl(bottomRightX, bottomRightY, bottomLeftX, bottomLeftY, 1, LINE_OVERLAP_NONE);
+            lineImpl(bottomLeftX, bottomLeftY, topLeftX, topLeftY, 1, LINE_OVERLAP_NONE);
+            fillBetweenLines();
+            
+            int xAxisX   = topRightX - topLeftX;
+            int xAxisY   = topRightY - topLeftY;
+            int yAxisX   = bottomLeftX - topLeftX;
+            int yAxisY   = bottomLeftY - topLeftY;
+            int xAxisLen = xAxisX * xAxisX + xAxisY * xAxisY;
+            int yAxisLen = yAxisX * yAxisX + yAxisY * yAxisY;
+            if (xAxisLen == 0) xAxisLen = 1;
+            if (yAxisLen == 0) yAxisLen = 1;
+            
+            for (PairI point : SoftwareRenderer.POINTS)
+            {
+                int dx    = point.a() - topLeftX;
+                int dy    = point.b() - topLeftY;
+                int textX = ui + ((dx * xAxisX + dy * xAxisY) * uwi / xAxisLen);
+                int textY = vi + ((dx * yAxisX + dy * yAxisY) * vhi / yAxisLen);
+                int red   = this.font.getBitmap().getPixel(textX, textY).r();
+                if (red > 0) pointImpl(point.a(), point.b(), SoftwareRenderer.COLOR.set(this.fill).scale((double) red / 255, true));
+            }
+            SoftwareRenderer.POINTS.clear();
+        }
     }
     
     @Override
@@ -567,5 +587,33 @@ public class SoftwareRenderer extends Renderer
             points[(2 * i) + 1] = y + Math.sin(angle) * ry;
         }
         return points;
+    }
+    
+    private void fillBetweenLines()
+    {
+        HashMap<Integer, PairI> xMap = new HashMap<>(), yMap = new HashMap<>();
+        
+        PairI xPair, yPair;
+        for (PairI point : SoftwareRenderer.POINTS)
+        {
+            if (!xMap.containsKey(point.a)) xMap.put(point.a, new PairI(point.b, point.b));
+            if (!yMap.containsKey(point.b)) yMap.put(point.b, new PairI(point.a, point.a));
+            xPair = xMap.get(point.a);
+            yPair = yMap.get(point.b);
+            
+            xPair.a = Math.min(xPair.a, point.b + 1);
+            xPair.b = Math.max(xPair.b, point.b - 1);
+            yPair.a = Math.min(yPair.a, point.a + 1);
+            yPair.b = Math.max(yPair.b, point.a - 1);
+        }
+        for (int y : yMap.keySet())
+        {
+            xPair = yMap.get(y);
+            for (int x = xPair.a; x <= xPair.b; x++)
+            {
+                yPair = xMap.get(x);
+                if (yPair.a <= y && y <= yPair.b && 0 <= x && x < this.target.width() && 0 <= y && y < this.target.height()) SoftwareRenderer.POINTS.add(new PairI(x, y));
+            }
+        }
     }
 }

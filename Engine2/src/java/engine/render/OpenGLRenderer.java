@@ -131,6 +131,12 @@ public class OpenGLRenderer extends Renderer
     }
     
     @Override
+    public void drawText(String text, double x, double y)
+    {
+    
+    }
+    
+    @Override
     public int[] loadPixels()
     {
         return new int[0];

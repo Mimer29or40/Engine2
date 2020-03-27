@@ -651,49 +651,61 @@ public class Engine
     
     public static void stroke(Number grey)                            { Engine.renderer.stroke(grey); }
     
-    public static void stroke(Colorc stroke)                          { Engine.renderer.stroke(stroke); }
+    public static void stroke(Colorc stroke)                { Engine.renderer.stroke(stroke); }
     
-    public static void noStroke()                                     { Engine.renderer.noStroke(); }
+    public static void noStroke()                           { Engine.renderer.noStroke(); }
     
-    public static double weight()                                     { return Engine.renderer.weight(); }
+    public static double weight()                           { return Engine.renderer.weight(); }
     
-    public static void weight(double weight)                          { Engine.renderer.weight(weight); }
+    public static void weight(double weight)                { Engine.renderer.weight(weight); }
     
-    public static RectMode rectMode()                                 { return Engine.renderer.rectMode(); }
+    public static RectMode rectMode()                       { return Engine.renderer.rectMode(); }
     
-    public static void rectMode(RectMode rectMode)                    { Engine.renderer.rectMode(rectMode); }
+    public static void rectMode(RectMode rectMode)          { Engine.renderer.rectMode(rectMode); }
     
-    public static EllipseMode ellipseMode()                           { return Engine.renderer.ellipseMode(); }
+    public static EllipseMode ellipseMode()                 { return Engine.renderer.ellipseMode(); }
     
-    public static void ellipseMode(EllipseMode ellipseMode)           { Engine.renderer.ellipseMode(ellipseMode); }
+    public static void ellipseMode(EllipseMode ellipseMode) { Engine.renderer.ellipseMode(ellipseMode); }
     
-    public static ArcMode arcMode()                                   { return Engine.renderer.arcMode(); }
+    public static ArcMode arcMode()                         { return Engine.renderer.arcMode(); }
     
-    public static void arcMode(ArcMode arcMode)                       { Engine.renderer.arcMode(arcMode); }
+    public static void arcMode(ArcMode arcMode)             { Engine.renderer.arcMode(arcMode); }
     
-    public static double textSize()                                   { return Engine.renderer.textSize(); }
+    public static Font textFont()                           { return Engine.renderer.textFont(); }
     
-    public static void textSize(double textSize)                      { Engine.renderer.textSize(textSize); }
+    public static void textFont(Font font)                  { Engine.renderer.textFont(font); }
     
-    public static TextAlign textAlign()                               { return Engine.renderer.textAlign(); }
+    public static void textFont(String font)                { Engine.renderer.textFont(font); }
     
-    public static void textAlign(TextAlign textAlign)                 { Engine.renderer.textAlign(textAlign); }
+    public static void textFont(String font, int size)      { Engine.renderer.textFont(font, size); }
     
-    public static void identity()                                     { Engine.renderer.identity(); }
+    public static int textSize()                            { return Engine.renderer.textSize(); }
     
-    public static void translate(double x, double y)                  { Engine.renderer.translate(x, y); }
+    public static void textSize(int textSize)               { Engine.renderer.textSize(textSize); }
     
-    public static void translate(Vector2ic vector)                    { Engine.renderer.translate(vector); }
+    public static double textAscent()                       { return Engine.renderer.textAscent(); }
     
-    public static void translate(Vector2fc vector)                    { Engine.renderer.translate(vector); }
+    public static double textDescent()                      { return Engine.renderer.textDescent(); }
     
-    public static void translate(Vector2dc vector)                    { Engine.renderer.translate(vector); }
+    public static TextAlign textAlign()                     { return Engine.renderer.textAlign(); }
     
-    public static void rotate(double angle)                           { Engine.renderer.rotate(angle); }
+    public static void textAlign(TextAlign textAlign)       { Engine.renderer.textAlign(textAlign); }
     
-    public static void scale(double x, double y)                      { Engine.renderer.scale(x, y); }
+    public static void identity()                           { Engine.renderer.identity(); }
     
-    public static void scale(Vector2ic vector)                        { Engine.renderer.scale(vector); }
+    public static void translate(double x, double y)        { Engine.renderer.translate(x, y); }
+    
+    public static void translate(Vector2ic vector)          { Engine.renderer.translate(vector); }
+    
+    public static void translate(Vector2fc vector)          { Engine.renderer.translate(vector); }
+    
+    public static void translate(Vector2dc vector)          { Engine.renderer.translate(vector); }
+    
+    public static void rotate(double angle)                 { Engine.renderer.rotate(angle); }
+    
+    public static void scale(double x, double y)            { Engine.renderer.scale(x, y); }
+    
+    public static void scale(Vector2ic vector)              { Engine.renderer.scale(vector); }
     
     public static void scale(Vector2fc vector)                        { Engine.renderer.scale(vector); }
     
@@ -1701,12 +1713,12 @@ public class Engine
     
     public static void ellipse(Vector2dc ab, Vector2dc cd)             { Engine.renderer.ellipse(ab, cd); }
     
-    public void drawTexture(Texture texture, double x, double y, double w, double h, double u, double v, double uw, double vh)
+    public static void drawTexture(Texture texture, double x, double y, double w, double h, double u, double v, double uw, double vh)
     {
         Engine.renderer.drawTexture(texture, x, y, w, h, u, v, uw, vh);
     }
     
-    public void texture(Texture texture, double x, double y, double w, double h, double u, double v, double uw, double vh)
+    public static void texture(Texture texture, double x, double y, double w, double h, double u, double v, double uw, double vh)
     {
         Engine.renderer.texture(texture, x, y, w, h, u, v, uw, vh);
     }
@@ -2201,9 +2213,140 @@ public class Engine
     
     public static void texture(Texture t, Vector2dc p1, Vector2dc p2, Vector2dc p3, Vector2dc p4)                         { Engine.renderer.texture(t, p1, p2, p3, p4); }
     
+    public static void texture(Texture t, double x, double y, double u, double v, double uw, double vh)
+    {
+        texture(t, x, y, t.width(), t.height(), u, v, uw, vh);
+    }
+    
+    public static void texture(Texture t, double x, double y, double u, double v, Vector2ic texSize)  { Engine.renderer.texture(t, x, y, u, v, texSize); }
+    
+    public static void texture(Texture t, double x, double y, double u, double v, Vector2fc texSize)  { Engine.renderer.texture(t, x, y, u, v, texSize); }
+    
+    public static void texture(Texture t, double x, double y, double u, double v, Vector2dc texSize)  { Engine.renderer.texture(t, x, y, u, v, texSize); }
+    
+    public static void texture(Texture t, double x, double y, Vector2ic texPos, double uw, double vh) { Engine.renderer.texture(t, x, y, texPos, uw, vh); }
+    
+    public static void texture(Texture t, double x, double y, Vector2fc texPos, double uw, double vh) { Engine.renderer.texture(t, x, y, texPos, uw, vh); }
+    
+    public static void texture(Texture t, double x, double y, Vector2dc texPos, double uw, double vh) { Engine.renderer.texture(t, x, y, texPos, uw, vh); }
+    
+    public static void texture(Texture t, Vector2ic pos, double u, double v, double uw, double vh)    { Engine.renderer.texture(t, pos, u, v, uw, vh); }
+    
+    public static void texture(Texture t, Vector2fc pos, double u, double v, double uw, double vh)    { Engine.renderer.texture(t, pos, u, v, uw, vh); }
+    
+    public static void texture(Texture t, Vector2dc pos, double u, double v, double uw, double vh)    { Engine.renderer.texture(t, pos, u, v, uw, vh); }
+    
+    public static void texture(Texture t, double x, double y, Vector2ic texPos, Vector2ic texSize)    { Engine.renderer.texture(t, x, y, texPos, texSize); }
+    
+    public static void texture(Texture t, double x, double y, Vector2ic texPos, Vector2fc texSize)    { Engine.renderer.texture(t, x, y, texPos, texSize); }
+    
+    public static void texture(Texture t, double x, double y, Vector2ic texPos, Vector2dc texSize)    { Engine.renderer.texture(t, x, y, texPos, texSize); }
+    
+    public static void texture(Texture t, double x, double y, Vector2fc texPos, Vector2ic texSize)    { Engine.renderer.texture(t, x, y, texPos, texSize); }
+    
+    public static void texture(Texture t, double x, double y, Vector2fc texPos, Vector2fc texSize)    { Engine.renderer.texture(t, x, y, texPos, texSize); }
+    
+    public static void texture(Texture t, double x, double y, Vector2fc texPos, Vector2dc texSize)    { Engine.renderer.texture(t, x, y, texPos, texSize); }
+    
+    public static void texture(Texture t, double x, double y, Vector2dc texPos, Vector2ic texSize)    { Engine.renderer.texture(t, x, y, texPos, texSize); }
+    
+    public static void texture(Texture t, double x, double y, Vector2dc texPos, Vector2fc texSize)    { Engine.renderer.texture(t, x, y, texPos, texSize); }
+    
+    public static void texture(Texture t, double x, double y, Vector2dc texPos, Vector2dc texSize)    { Engine.renderer.texture(t, x, y, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2ic pos, double u, double v, Vector2ic texSize)       { Engine.renderer.texture(t, pos, u, v, texSize); }
+    
+    public static void texture(Texture t, Vector2ic pos, double u, double v, Vector2fc texSize)       { Engine.renderer.texture(t, pos, u, v, texSize); }
+    
+    public static void texture(Texture t, Vector2ic pos, double u, double v, Vector2dc texSize)       { Engine.renderer.texture(t, pos, u, v, texSize); }
+    
+    public static void texture(Texture t, Vector2fc pos, double u, double v, Vector2ic texSize)       { Engine.renderer.texture(t, pos, u, v, texSize); }
+    
+    public static void texture(Texture t, Vector2fc pos, double u, double v, Vector2fc texSize)       { Engine.renderer.texture(t, pos, u, v, texSize); }
+    
+    public static void texture(Texture t, Vector2fc pos, double u, double v, Vector2dc texSize)       { Engine.renderer.texture(t, pos, u, v, texSize); }
+    
+    public static void texture(Texture t, Vector2dc pos, double u, double v, Vector2ic texSize)       { Engine.renderer.texture(t, pos, u, v, texSize); }
+    
+    public static void texture(Texture t, Vector2dc pos, double u, double v, Vector2fc texSize)       { Engine.renderer.texture(t, pos, u, v, texSize); }
+    
+    public static void texture(Texture t, Vector2dc pos, double u, double v, Vector2dc texSize)       { Engine.renderer.texture(t, pos, u, v, texSize); }
+    
+    public static void texture(Texture t, Vector2ic pos, Vector2ic texPos, double uw, double vh)      { Engine.renderer.texture(t, pos, texPos, uw, vh); }
+    
+    public static void texture(Texture t, Vector2ic pos, Vector2fc texPos, double uw, double vh)      { Engine.renderer.texture(t, pos, texPos, uw, vh); }
+    
+    public static void texture(Texture t, Vector2ic pos, Vector2dc texPos, double uw, double vh)      { Engine.renderer.texture(t, pos, texPos, uw, vh); }
+    
+    public static void texture(Texture t, Vector2fc pos, Vector2ic texPos, double uw, double vh)      { Engine.renderer.texture(t, pos, texPos, uw, vh); }
+    
+    public static void texture(Texture t, Vector2fc pos, Vector2fc texPos, double uw, double vh)      { Engine.renderer.texture(t, pos, texPos, uw, vh); }
+    
+    public static void texture(Texture t, Vector2fc pos, Vector2dc texPos, double uw, double vh)      { Engine.renderer.texture(t, pos, texPos, uw, vh); }
+    
+    public static void texture(Texture t, Vector2dc pos, Vector2ic texPos, double uw, double vh)      { Engine.renderer.texture(t, pos, texPos, uw, vh); }
+    
+    public static void texture(Texture t, Vector2dc pos, Vector2fc texPos, double uw, double vh)      { Engine.renderer.texture(t, pos, texPos, uw, vh); }
+    
+    public static void texture(Texture t, Vector2dc pos, Vector2dc texPos, double uw, double vh)      { Engine.renderer.texture(t, pos, texPos, uw, vh); }
+    
+    public static void texture(Texture t, Vector2ic pos, Vector2ic texPos, Vector2ic texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2ic pos, Vector2ic texPos, Vector2fc texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2ic pos, Vector2ic texPos, Vector2dc texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2ic pos, Vector2fc texPos, Vector2ic texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2ic pos, Vector2fc texPos, Vector2fc texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2ic pos, Vector2fc texPos, Vector2dc texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2ic pos, Vector2dc texPos, Vector2ic texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2ic pos, Vector2dc texPos, Vector2fc texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2ic pos, Vector2dc texPos, Vector2dc texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2fc pos, Vector2ic texPos, Vector2ic texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2fc pos, Vector2ic texPos, Vector2fc texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2fc pos, Vector2ic texPos, Vector2dc texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2fc pos, Vector2fc texPos, Vector2ic texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2fc pos, Vector2fc texPos, Vector2fc texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2fc pos, Vector2fc texPos, Vector2dc texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2fc pos, Vector2dc texPos, Vector2ic texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2fc pos, Vector2dc texPos, Vector2fc texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2fc pos, Vector2dc texPos, Vector2dc texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2dc pos, Vector2ic texPos, Vector2ic texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2dc pos, Vector2ic texPos, Vector2fc texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2dc pos, Vector2ic texPos, Vector2dc texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2dc pos, Vector2fc texPos, Vector2ic texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2dc pos, Vector2fc texPos, Vector2fc texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2dc pos, Vector2fc texPos, Vector2dc texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2dc pos, Vector2dc texPos, Vector2ic texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2dc pos, Vector2dc texPos, Vector2fc texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
+    public static void texture(Texture t, Vector2dc pos, Vector2dc texPos, Vector2dc texSize)         { Engine.renderer.texture(t, pos, texPos, texSize); }
+    
     public static void texture(Texture t, double x, double y, double w, double h)
     {
-        Engine.renderer.texture(t, x, y, w, h, 0, 0, t.width(), t.height());
+        Engine.renderer.texture(t, x, y, w, h);
     }
     
     public static void texture(Texture t, double x, double y, Vector2ic size) { Engine.renderer.texture(t, x, y, size); }
@@ -2246,6 +2389,57 @@ public class Engine
     public static void texture(Texture t, Vector2fc pos) { Engine.renderer.texture(t, pos); }
     
     public static void texture(Texture t, Vector2dc pos) { Engine.renderer.texture(t, pos); }
+    
+    public static void drawText(String text, double x, double y)
+    {
+        Engine.renderer.drawText(text, x, y);
+    }
+    
+    public static void text(String text, double x, double y, double w, double h)
+    {
+        Engine.renderer.text(text, x, y, w, h);
+    }
+    
+    public static void text(String text, double a, double b, Vector2ic cd) { Engine.renderer.text(text, a, b, cd); }
+    
+    public static void text(String text, double a, double b, Vector2fc cd) { Engine.renderer.text(text, a, b, cd); }
+    
+    public static void text(String text, double a, double b, Vector2dc cd) { Engine.renderer.text(text, a, b, cd); }
+    
+    public static void text(String text, Vector2ic ab, double c, double d) { Engine.renderer.text(text, ab, c, d); }
+    
+    public static void text(String text, Vector2fc ab, double c, double d) { Engine.renderer.text(text, ab, c, d); }
+    
+    public static void text(String text, Vector2dc ab, double c, double d) { Engine.renderer.text(text, ab, c, d); }
+    
+    public static void text(String text, Vector2ic ab, Vector2ic cd)       { Engine.renderer.text(text, ab, cd); }
+    
+    public static void text(String text, Vector2ic ab, Vector2fc cd)       { Engine.renderer.text(text, ab, cd); }
+    
+    public static void text(String text, Vector2ic ab, Vector2dc cd)       { Engine.renderer.text(text, ab, cd); }
+    
+    public static void text(String text, Vector2fc ab, Vector2ic cd)       { Engine.renderer.text(text, ab, cd); }
+    
+    public static void text(String text, Vector2fc ab, Vector2fc cd)       { Engine.renderer.text(text, ab, cd); }
+    
+    public static void text(String text, Vector2fc ab, Vector2dc cd)       { Engine.renderer.text(text, ab, cd); }
+    
+    public static void text(String text, Vector2dc ab, Vector2ic cd)       { Engine.renderer.text(text, ab, cd); }
+    
+    public static void text(String text, Vector2dc ab, Vector2fc cd)       { Engine.renderer.text(text, ab, cd); }
+    
+    public static void text(String text, Vector2dc ab, Vector2dc cd)       { Engine.renderer.text(text, ab, cd); }
+    
+    public static void text(String text, double x, double y)
+    {
+        Engine.renderer.text(text, x, y);
+    }
+    
+    public static void text(String text, Vector2ic pos) { Engine.renderer.text(text, pos); }
+    
+    public static void text(String text, Vector2fc pos) { Engine.renderer.text(text, pos); }
+    
+    public static void text(String text, Vector2dc pos) { Engine.renderer.text(text, pos); }
     
     public static int[] loadPixels()
     {

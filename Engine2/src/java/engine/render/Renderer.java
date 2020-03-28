@@ -25,6 +25,15 @@ public abstract class Renderer
     
     protected static final Color CLEAR = new Color();
     
+    /**
+     * Gets a new renderer instance for the target texture based on the string passed in.
+     * <p>
+     * If the string does not match a renderer, then the default SoftwareRenderer is used.
+     *
+     * @param target   The target texture.
+     * @param renderer The name of the renderer.
+     * @return The new Renderer instance.
+     */
     public static Renderer getRenderer(Texture target, String renderer)
     {
         if (renderer.equals("software"))
@@ -952,10 +961,44 @@ public abstract class Renderer
     // -- Circle Methods --
     // --------------------
     
+    /**
+     * Draws a circle whose center is at {@code (x, y)} that is {@link #weight()} pixels thick and {@link #stroke()} in color.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x The center x coordinate of the circle.
+     * @param y The center y coordinate of the circle.
+     * @param r The radius of the circle.
+     */
     public abstract void drawCircle(double x, double y, double r);
     
+    /**
+     * Fills a circle whose center is at {@code (x, y)} that is {@link #fill()} in color.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x The center x coordinate of the circle.
+     * @param y The center y coordinate of the circle.
+     * @param r The radius of the circle.
+     */
     public abstract void fillCircle(double x, double y, double r);
     
+    /**
+     * Draws a circle based on {@link #ellipseMode()} that is {@link #fill()} in color
+     * with a border {@link #weight()} thick and {@link #stroke()} in color.
+     * <p>
+     * See {@link #ellipse} for how the points get transformed.
+     * <p>
+     * If the strokes alpha is equal to zero then the border will not be drawn.
+     * <p>
+     * If the fills alpha is equal to zero then the inside will not be filled.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param a The a value.
+     * @param b The b value.
+     * @param c The c value.
+     */
     public void circle(double a, double b, double c)
     {
         switch (this.ellipseMode)
@@ -983,10 +1026,94 @@ public abstract class Renderer
     // -- Ellipse Methods --
     // ---------------------
     
+    /**
+     * Draws an ellipse whose center is at {@code (x, y)} that is {@link #weight()} pixels thick and {@link #stroke()} in color.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x  The center x coordinate of the ellipse.
+     * @param y  The center y coordinate of the ellipse.
+     * @param rx The radius of the ellipse along the x axis.
+     * @param ry The radius of the ellipse along the y axis.
+     */
     public abstract void drawEllipse(double x, double y, double rx, double ry);
     
+    /**
+     * Fills an ellipse whose center is at {@code (x, y)} that is {@link #fill()} in color.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x  The center x coordinate of the ellipse.
+     * @param y  The center y coordinate of the ellipse.
+     * @param rx The radius of the ellipse along the x axis.
+     * @param ry The radius of the ellipse along the y axis.
+     */
     public abstract void fillEllipse(double x, double y, double rx, double ry);
     
+    /**
+     * Draws an ellipse based on {@link #ellipseMode()} that is {@link #fill()} in color
+     * with a border {@link #weight()} thick and {@link #stroke()} in color.
+     * <p>
+     * If the strokes alpha is equal to zero then the border will not be drawn.
+     * <p>
+     * If the fills alpha is equal to zero then the inside will not be filled.
+     * <p>
+     * <p>
+     * {@code EllipseMode.CENTER}
+     * <p>
+     * -- a: The center x coordinate
+     * <p>
+     * -- b: The center y coordinate
+     * <p>
+     * -- c: The width along the x axis
+     * <p>
+     * -- d: The height along the y axis
+     * <p>
+     * <p>
+     * {@code EllipseMode.RADIUS}
+     * <p>
+     * -- a: The center x coordinate
+     * <p>
+     * -- b: The center y coordinate
+     * <p>
+     * -- c: The radius along the x axis
+     * <p>
+     * -- d: The radius along the y axis
+     * <p>
+     * <p>
+     * {@code EllipseMode.CORNER}
+     * <p>
+     * -- a: The top left x coordinate
+     * <p>
+     * -- b: The top left y coordinate
+     * <p>
+     * -- c: The width along the x axis
+     * <p>
+     * -- d: The height along the y axis
+     * <p>
+     * <p>
+     * {@code EllipseMode.CORNERS}
+     * <p>
+     * -- a: The top left x coordinate
+     * <p>
+     * -- b: The top left y coordinate
+     * <p>
+     * -- c: The bottom right x coordinate
+     * <p>
+     * -- d: The bottom right y coordinate
+     * <p>
+     * <p>
+     * If the strokes alpha is equal to zero then the border will not be drawn.
+     * <p>
+     * If the fills alpha is equal to zero then the inside will not be filled.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param a The a value.
+     * @param b The b value.
+     * @param c The c value.
+     * @param d The d value.
+     */
     public void ellipse(double a, double b, double c, double d)
     {
         switch (this.ellipseMode)
@@ -1018,10 +1145,48 @@ public abstract class Renderer
     // -- Aec Methods --
     // -----------------
     
+    /**
+     * Draws an arc whose center is at {@code (x, y)} that is {@link #weight()} pixels thick and {@link #stroke()} in color.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x     The center x coordinate of the ellipse.
+     * @param y     The center y coordinate of the ellipse.
+     * @param rx    The radius of the ellipse along the x axis.
+     * @param ry    The radius of the ellipse along the y axis.
+     * @param start The starting angle in radians.
+     * @param stop  The ending angle in radians.
+     */
     public abstract void drawArc(double x, double y, double rx, double ry, double start, double stop);
     
+    /**
+     * Fills an arc whose center is at {@code (x, y)} that is {@link #fill()} in color.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x  The center x coordinate of the ellipse.
+     * @param y  The center y coordinate of the ellipse.
+     * @param rx The radius of the ellipse along the x axis.
+     * @param ry The radius of the ellipse along the y axis.
+     */
     public abstract void fillArc(double x, double y, double rx, double ry, double start, double stop);
     
+    /**
+     * Draws an arc based on {@link #ellipseMode()} that is {@link #fill()} in color
+     * with a border {@link #weight()} thick and {@link #stroke()} in color.
+     * <p>
+     * See {@link #ellipse} for how the points get transformed.
+     * <p>
+     * If the strokes alpha is equal to zero then the border will not be drawn.
+     * <p>
+     * If the fills alpha is equal to zero then the inside will not be filled.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param a The a value.
+     * @param b The b value.
+     * @param c The c value.
+     */
     public void arc(double a, double b, double c, double d, double start, double stop)
     {
         switch (this.ellipseMode)
@@ -1053,8 +1218,44 @@ public abstract class Renderer
     // -- Texture Methods --
     // ---------------------
     
+    /**
+     * Draws a textured rectangle whose top left corner is at {@code (x, y)} and is {@code w} pixels wide and {@code y} tall.
+     * <p>
+     * You can specify the coordinate of the texture to pull from.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param texture The texture to draw.
+     * @param x       The top left corner x coordinate of the rectangle.
+     * @param y       The top left corner y coordinate of the rectangle.
+     * @param w       The width of the rectangle.
+     * @param h       The height of the rectangle.
+     * @param u       The top left corner x texture coordinate of the rectangle.
+     * @param v       The top left corner y texture coordinate of the rectangle.
+     * @param uw      The width of the texture rectangle.
+     * @param vh      The height of the texture rectangle.
+     */
     public abstract void drawTexture(Texture texture, double x, double y, double w, double h, double u, double v, double uw, double vh);
     
+    /**
+     * Draws a textured rectangle based on {@link #rectMode()}, with uv coordinates.
+     * <p>
+     * See {@link #rect} for how the rectangle is drawn.
+     * <p>
+     * You can specify the coordinate of the texture to pull from.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param texture The texture to draw.
+     * @param a       The a value.
+     * @param b       The b value.
+     * @param c       The c value.
+     * @param d       The d value.
+     * @param u       The top left corner x texture coordinate of the rectangle.
+     * @param v       The top left corner y texture coordinate of the rectangle.
+     * @param uw      The width of the texture rectangle.
+     * @param vh      The height of the texture rectangle.
+     */
     public void texture(Texture texture, double a, double b, double c, double d, double u, double v, double uw, double vh)
     {
         switch (this.rectMode)
@@ -1075,27 +1276,95 @@ public abstract class Renderer
         }
     }
     
-    public void texture(Texture t, double x, double y, double u, double v, double uw, double vh)
+    /**
+     * Draws a textured rectangle whose top left coordinate is at {@code (x, y)} the size of {@code texture}, with uv coordinates.
+     * <p>
+     * You can specify the coordinate of the texture to pull from.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param texture The texture to draw.
+     * @param x       The top left x coordinate of the textured rectangle.
+     * @param y       The top left y coordinate of the textured rectangle.
+     * @param u       The top left corner x texture coordinate of the rectangle.
+     * @param v       The top left corner y texture coordinate of the rectangle.
+     * @param uw      The width of the texture rectangle.
+     * @param vh      The height of the texture rectangle.
+     */
+    public void texture(Texture texture, double x, double y, double u, double v, double uw, double vh)
     {
-        texture(t, x, y, t.width(), t.height(), u, v, uw, vh);
+        drawTexture(texture, x, y, texture.width(), texture.height(), u, v, uw, vh);
     }
     
-    public void texture(Texture t, double a, double y, double w, double h)
+    /**
+     * Draws a textured rectangle based on {@link #rectMode()}.
+     * <p>
+     * See {@link #rect} for how the rectangle is drawn.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param texture The texture to draw.
+     * @param a       The a value.
+     * @param b       The b value.
+     * @param c       The c value.
+     * @param d       The d value.
+     */
+    public void texture(Texture texture, double a, double b, double c, double d)
     {
-        texture(t, a, y, w, h, 0, 0, 1, 1);
+        texture(texture, a, b, c, d, 0, 0, 1, 1);
     }
     
-    public void texture(Texture t, double x, double y)
+    /**
+     * Draws a textured rectangle whose top left coordinate is at {@code (x, y)} the size of {@code texture}.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param texture The texture to draw.
+     * @param x       The top left x coordinate of the textured rectangle.
+     * @param y       The top left y coordinate of the textured rectangle.
+     */
+    public void texture(Texture texture, double x, double y)
     {
-        texture(t, x, y, t.width(), t.height(), 0, 0, 1, 1);
+        drawTexture(texture, x, y, texture.width(), texture.height(), 0, 0, 1, 1);
     }
     
     // ------------------
     // -- Text Methods --
     // ------------------
     
+    /**
+     * Draws a string of text to the screen. The coordinate specified will be the top left of the text.
+     * <p>
+     * You can change the font with {@link #textFont()}.
+     * <p>
+     * You can change the size of the text with {@link #textSize()}
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param text The text to render
+     * @param x    The x coordinate of the text.
+     * @param y    The y coordinate of the text.
+     */
     public abstract void drawText(String text, double x, double y);
     
+    /**
+     * Draws a string of text to the screen contained in a rectangle described by the parameters.
+     * If the text will be outside of the rectangle, then it wont be drawn.
+     * <p>
+     * The rectangle size and position is determined by {@link #rectMode()}.
+     * <p>
+     * You can change the font with {@link #textFont()}.
+     * <p>
+     * You can change the size of the text with {@link #textSize()}
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param text The text to render
+     * @param a    The a value.
+     * @param b    The b value.
+     * @param c    The c value.
+     * @param d    The d value.
+     */
     public void text(String text, double a, double b, double c, double d)
     {
         List<String> lines;
@@ -1181,6 +1450,21 @@ public abstract class Renderer
         }
     }
     
+    /**
+     * Draws a string of text to the screen.
+     * <p>
+     * You can change the font with {@link #textFont()}.
+     * <p>
+     * You can change the size of the text with {@link #textSize()}
+     * <p>
+     * You can change the alignment of the text will change with {@link #textAlign()}.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param text The text to render
+     * @param x    The x coordinate of the text.
+     * @param y    The y coordinate of the text.
+     */
     public void text(String text, double x, double y)
     {
         text(text, x, y, 0, 0);
@@ -1190,7 +1474,23 @@ public abstract class Renderer
     // -- Pixel Methods --
     // -------------------
     
+    /**
+     * Loads the color values of the pixels into an 1-D array.
+     * <p>
+     * The length of the array will be {@code (this.target.width() * this.target.height() * this.target.channels())} long.
+     * <p>
+     * The order of values depends on the number of channels the target has, by default the value order is [r0,g0,b0,a0,r1,g1,b1,a1,...]
+     * <p>
+     * If you modify thee values of the array, you must call {@link #updatePixels()} to show the changes.
+     *
+     * @return The color array.
+     */
     public abstract int[] loadPixels();
     
+    /**
+     * Updates the target with the values of the pixel array.
+     * <p>
+     * This will do nothing if {@link #loadPixels()} is not called and the pixel array is not modified.
+     */
     public abstract void updatePixels();
 }

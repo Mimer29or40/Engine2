@@ -2,5 +2,5 @@ package engine.render;
 
 public enum ArcMode
 {
-    OPEN, CHORD, PIE
+    DEFAULT, OPEN, CHORD, PIE
 }

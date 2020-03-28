@@ -71,7 +71,7 @@ public class SoftwareRenderer extends Renderer
     {
         PairD p1  = transform(x1, y1);
         int   x1i = (int) round(p1.a()), y1i = (int) round(p1.b());
-    
+        
         PairD p2  = transform(x2, y2);
         int   x2i = (int) round(p2.a()), y2i = (int) round(p2.b());
         
@@ -84,10 +84,10 @@ public class SoftwareRenderer extends Renderer
     {
         PairD p1  = transform(x1, y1);
         int   x1i = (int) round(p1.a()), y1i = (int) round(p1.b());
-    
+        
         PairD p2  = transform(x2, y2);
         int   x2i = (int) round(p2.a()), y2i = (int) round(p2.b());
-    
+        
         PairD p3  = transform(x3, y3);
         int   x3i = (int) round(p3.a()), y3i = (int) round(p3.b());
         
@@ -207,22 +207,7 @@ public class SoftwareRenderer extends Renderer
     @Override
     public void drawPolygon(double[] points)
     {
-        int n = points.length;
-        int x1, y1, x2, y2;
-    
-        PairD pt = transform(points[n - 2], points[n - 1]);
-        x1 = (int) round(pt.a());
-        y1 = (int) round(pt.b());
-        for (int i = 0; i < n; i += 2)
-        {
-            pt = transform(points[i], points[i + 1]);
-            x2 = (int) round(pt.a());
-            y2 = (int) round(pt.b());
-            lineImpl(x1, y1, x2, y2, (int) this.weight, LINE_OVERLAP_NONE);
-            x1 = x2;
-            y1 = y2;
-        }
-        pointsImpl(this.stroke);
+        drawPolygonImpl(points, true);
     }
     
     @Override
@@ -230,7 +215,7 @@ public class SoftwareRenderer extends Renderer
     {
         int n = points.length;
         int x1, y1, x2, y2;
-    
+        
         PairD pt = transform(points[n - 2], points[n - 1]);
         x1 = (int) round(pt.a());
         y1 = (int) round(pt.b());
@@ -274,25 +259,55 @@ public class SoftwareRenderer extends Renderer
     @Override
     public void drawArc(double x, double y, double rx, double ry, double start, double stop)
     {
-    
+        int modifier = (int) (180. * Math.abs(stop - start) / Math.PI);
+        if (modifier == 0) return;
+        int      RESOLUTION = Math.max(2, (int) Math.max(rx, ry) / 2) * 360 / modifier;
+        double[] points     = new double[RESOLUTION * 2 + (this.arcMode == ArcMode.PIE ? 2 : 0)];
+        for (int i = 0; i < RESOLUTION; i++)
+        {
+            double angle = start + (stop - start) * (double) i / (double) (RESOLUTION - 1);
+            points[(2 * i)]     = x + Math.cos(angle) * rx;
+            points[(2 * i) + 1] = y + Math.sin(angle) * ry;
+        }
+        if (this.arcMode == ArcMode.PIE)
+        {
+            points[points.length - 2] = x;
+            points[points.length - 1] = y;
+        }
+        drawPolygonImpl(points, this.arcMode == ArcMode.CHORD || this.arcMode == ArcMode.PIE);
     }
     
     @Override
     public void fillArc(double x, double y, double rx, double ry, double start, double stop)
     {
-    
+        int modifier = (int) (180. * Math.abs(stop - start) / Math.PI);
+        if (modifier == 0) return;
+        int      RESOLUTION = Math.max(2, (int) Math.max(rx, ry) / 2) * 360 / modifier;
+        double[] points     = new double[RESOLUTION * 2 + (this.arcMode == ArcMode.DEFAULT || this.arcMode == ArcMode.PIE ? 2 : 0)];
+        for (int i = 0; i < RESOLUTION; i++)
+        {
+            double angle = start + (stop - start) * (double) i / (double) (RESOLUTION - 1);
+            points[(2 * i)]     = x + Math.cos(angle) * rx;
+            points[(2 * i) + 1] = y + Math.sin(angle) * ry;
+        }
+        if (this.arcMode == ArcMode.DEFAULT || this.arcMode == ArcMode.PIE)
+        {
+            points[points.length - 2] = x;
+            points[points.length - 1] = y;
+        }
+        fillPolygon(points);
     }
     
     @Override
     public void drawTexture(Texture texture, double x, double y, double w, double h, double u, double v, double uw, double vh)
     {
         if (w <= 0 || h <= 0 || uw <= 0 || vh <= 0) return;
-    
+        
         PairD topLeft     = transform(x, y);
         PairD topRight    = transform(x + w, y);
         PairD bottomLeft  = transform(x, y + h);
         PairD bottomRight = transform(x + w, y + h);
-    
+        
         int topLeftX     = (int) round(topLeft.a());
         int topLeftY     = (int) round(topLeft.b());
         int topRightX    = (int) round(topRight.a());
@@ -301,18 +316,18 @@ public class SoftwareRenderer extends Renderer
         int bottomLeftY  = (int) round(bottomLeft.b());
         int bottomRightX = (int) round(bottomRight.a());
         int bottomRightY = (int) round(bottomRight.b());
-    
+        
         int ui  = (int) round(u * texture.width());
         int vi  = (int) round(v * texture.height());
         int uwi = (int) round(uw * texture.width());
         int vhi = (int) round(vh * texture.height());
-    
+        
         lineImpl(topLeftX, topLeftY, topRightX, topRightY, 1, LINE_OVERLAP_NONE);
         lineImpl(topRightX, topRightY, bottomRightX, bottomRightY, 1, LINE_OVERLAP_NONE);
         lineImpl(bottomRightX, bottomRightY, bottomLeftX, bottomLeftY, 1, LINE_OVERLAP_NONE);
         lineImpl(bottomLeftX, bottomLeftY, topLeftX, topLeftY, 1, LINE_OVERLAP_NONE);
         fillBetweenLines();
-    
+        
         int xAxisX   = topRightX - topLeftX;
         int xAxisY   = topRightY - topLeftY;
         int yAxisX   = bottomLeftX - topLeftX;
@@ -321,7 +336,7 @@ public class SoftwareRenderer extends Renderer
         int yAxisLen = yAxisX * yAxisX + yAxisY * yAxisY;
         if (xAxisLen == 0) xAxisLen = 1;
         if (yAxisLen == 0) yAxisLen = 1;
-    
+        
         for (PairI point : SoftwareRenderer.POINTS)
         {
             int dx    = point.a() - topLeftX;
@@ -341,19 +356,19 @@ public class SoftwareRenderer extends Renderer
         {
             int index = i * 8;
             
-            double xPos   = vertices[index] + x;
-            double yPos   = vertices[index + 1] + y;
-            double width  = vertices[index + 2];
-            double height = vertices[index + 3];
-            double u      = vertices[index + 4];
-            double v      = vertices[index + 5];
-            double uw     = vertices[index + 6];
-            double vh     = vertices[index + 7];
+            double xPos = vertices[index] + x;
+            double yPos = vertices[index + 1] + y;
+            double w    = vertices[index + 2];
+            double h    = vertices[index + 3];
+            double u    = vertices[index + 4];
+            double v    = vertices[index + 5];
+            double uw   = vertices[index + 6];
+            double vh   = vertices[index + 7];
             
             PairD topLeft     = transform(xPos, yPos);
-            PairD topRight    = transform(xPos + width, yPos);
-            PairD bottomLeft  = transform(xPos, yPos + height);
-            PairD bottomRight = transform(xPos + width, yPos + height);
+            PairD topRight    = transform(xPos + w, yPos);
+            PairD bottomLeft  = transform(xPos, yPos + h);
+            PairD bottomRight = transform(xPos + w, yPos + h);
             
             int topLeftX     = (int) round(topLeft.a());
             int topLeftY     = (int) round(topLeft.b());
@@ -445,12 +460,12 @@ public class SoftwareRenderer extends Renderer
         //     x2   = x1;
         //     x1   = temp;
         // }
-    
+        
         if (thickness == 1)
         {
             int dx = Math.abs(x2 - x1), sx = x1 < x2 ? 1 : -1;
             int dy = Math.abs(y2 - y1), sy = y1 < y2 ? 1 : -1;
-    
+            
             if (dx == 0)
             {
                 while (true)
@@ -511,9 +526,9 @@ public class SoftwareRenderer extends Renderer
         {
             int dx = Math.abs(y2 - y1), sx = x1 < x2 ? 1 : -1;
             int dy = Math.abs(x2 - x1), sy = y1 < y2 ? 1 : -1;
-    
+            
             int halfWidth = thickness >> 1;
-    
+            
             if (sx < 0 == sy < 0)
             {
                 if (dx >= dy)
@@ -583,10 +598,26 @@ public class SoftwareRenderer extends Renderer
         }
     }
     
-    private PairD transform(double x, double y)
+    private void drawPolygonImpl(double[] points, boolean connected)
     {
-        this.viewMatrix.transform(SoftwareRenderer.VECTOR.set(x, y, 0, 1));
-        return new PairD(SoftwareRenderer.VECTOR.x, SoftwareRenderer.VECTOR.y);
+        int n = points.length;
+        int x1, y1, x2, y2;
+        
+        int start = connected ? 0 : 2;
+        
+        PairD pt = connected ? transform(points[n - 2], points[n - 1]) : transform(points[0], points[1]);
+        x1 = (int) round(pt.a());
+        y1 = (int) round(pt.b());
+        for (int i = start; i < n; i += 2)
+        {
+            pt = transform(points[i], points[i + 1]);
+            x2 = (int) round(pt.a());
+            y2 = (int) round(pt.b());
+            lineImpl(x1, y1, x2, y2, (int) this.weight, LINE_OVERLAP_NONE);
+            x1 = x2;
+            y1 = y2;
+        }
+        pointsImpl(this.stroke);
     }
     
     private double[] getCirclePoints(double x, double y, double rx, double ry)
@@ -629,5 +660,11 @@ public class SoftwareRenderer extends Renderer
                 if (yPair.a <= y && y <= yPair.b && 0 <= x && x < this.target.width() && 0 <= y && y < this.target.height()) SoftwareRenderer.POINTS.add(new PairI(x, y));
             }
         }
+    }
+    
+    private PairD transform(double x, double y)
+    {
+        this.viewMatrix.transform(SoftwareRenderer.VECTOR.set(x, y, 0, 1));
+        return new PairD(SoftwareRenderer.VECTOR.x, SoftwareRenderer.VECTOR.y);
     }
 }

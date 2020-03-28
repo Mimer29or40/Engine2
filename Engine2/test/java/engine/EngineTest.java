@@ -1,6 +1,7 @@
 package engine;
 
 import engine.color.Color;
+import engine.render.ArcMode;
 import engine.render.RectMode;
 import engine.render.Texture;
 import engine.util.Logger;
@@ -10,7 +11,7 @@ import static engine.util.Util.map;
 public class EngineTest extends Engine
 {
     Logger  logger = new Logger();
-    int     state  = 6;
+    int     state  = 8;
     Texture texture;
     
     @Override
@@ -102,6 +103,13 @@ public class EngineTest extends Engine
                 line(-10, 0, 10, 0);
                 break;
             case 8:
+                if (keyboard().K1.held()) arcMode(ArcMode.DEFAULT);
+                if (keyboard().K2.held()) arcMode(ArcMode.OPEN);
+                if (keyboard().K3.held()) arcMode(ArcMode.CHORD);
+                if (keyboard().K4.held()) arcMode(ArcMode.PIE);
+                clear();
+                translate(screenWidth() / 2., screenHeight() / 2.);
+                arc(0, 0, 100, 100, 0, map(mouse().x(), 0, screenWidth() - 1, 0, 2.0 * Math.PI));
                 break;
             case 9:
                 break;

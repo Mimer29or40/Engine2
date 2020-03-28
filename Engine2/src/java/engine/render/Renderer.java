@@ -15,11 +15,11 @@ public abstract class Renderer
     private static final Logger LOGGER = new Logger();
     
     private static final Color       DEFAULT_FILL         = new Color(255);
-    private static final Color       DEFAULT_STROKE       = new Color(51);
+    private static final Color       DEFAULT_STROKE       = new Color(0);
     private static final double      DEFAULT_WEIGHT       = 5;
     private static final RectMode    DEFAULT_RECT_MODE    = RectMode.CORNER;
     private static final EllipseMode DEFAULT_ELLIPSE_MODE = EllipseMode.CENTER;
-    private static final ArcMode     DEFAULT_ARC_MODE     = ArcMode.OPEN;
+    private static final ArcMode     DEFAULT_ARC_MODE     = ArcMode.DEFAULT;
     private static final Font        DEFAULT_FONT         = new Font();
     private static final TextAlign   DEFAULT_TEXT_ALIGN   = TextAlign.TOP_LEFT;
     

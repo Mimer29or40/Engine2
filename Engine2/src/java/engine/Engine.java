@@ -862,6 +862,21 @@ public class Engine
         Engine.renderer.ellipse(a, b, c, d);
     }
     
+    public static void drawArc(double x, double y, double rx, double ry, double start, double stop)
+    {
+        Engine.renderer.drawArc(x, y, rx, ry, start, stop);
+    }
+    
+    public static void fillArc(double x, double y, double rx, double ry, double start, double stop)
+    {
+        Engine.renderer.fillArc(x, y, rx, ry, start, stop);
+    }
+    
+    public static void arc(double a, double b, double c, double d, double start, double stop)
+    {
+        Engine.renderer.arc(a, b, c, d, start, stop);
+    }
+    
     public static void drawTexture(Texture texture, double x, double y, double w, double h, double u, double v, double uw, double vh)
     {
         Engine.renderer.drawTexture(texture, x, y, w, h, u, v, uw, vh);

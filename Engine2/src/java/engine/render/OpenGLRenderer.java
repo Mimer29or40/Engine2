@@ -13,6 +13,8 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void finish()
     {
+        super.finish();
+        
         this.target.download();
     }
     
@@ -120,6 +122,18 @@ public class OpenGLRenderer extends Renderer
     
     @Override
     public void fillEllipse(double x, double y, double rx, double ry)
+    {
+    
+    }
+    
+    @Override
+    public void drawArc(double x, double y, double rx, double ry, double start, double stop)
+    {
+    
+    }
+    
+    @Override
+    public void fillArc(double x, double y, double rx, double ry, double start, double stop)
     {
     
     }

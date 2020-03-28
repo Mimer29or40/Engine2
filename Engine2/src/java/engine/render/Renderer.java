@@ -4,9 +4,6 @@ import engine.color.Color;
 import engine.color.Colorc;
 import engine.util.Logger;
 import org.joml.Matrix4d;
-import org.joml.Vector2dc;
-import org.joml.Vector2fc;
-import org.joml.Vector2ic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +45,7 @@ public abstract class Renderer
         return new SoftwareRenderer(target);
     }
     
-    protected Texture target;
+    protected final Texture target;
     
     protected boolean enableBlend = false;
     
@@ -81,115 +78,297 @@ public abstract class Renderer
     
     protected int[] pixels;
     
+    private boolean drawing = false;
+    
     protected Renderer(Texture target)
     {
         this.target = target;
-    
+        
         this.pixels = new int[this.target.width() * this.target.height() * this.target.channels()];
     }
-    
-    public boolean enableBlend()                 { return this.enableBlend; }
-    
-    public void enableBlend(boolean enableBlend) { this.enableBlend = enableBlend; }
     
     // ----------------
     // -- Properties --
     // ----------------
     
-    public Colorc fill()                                       { return this.fill; }
+    /**
+     * @return If blend is enabled for the renderer.
+     */
+    public boolean enableBlend() { return this.enableBlend; }
     
-    public void fill(Number r, Number g, Number b, Number a)   { this.fill.set(r, g, b, a); }
+    /**
+     * Sets if the renderer should blend when pixels are drawn.
+     *
+     * @param enableBlend If blend is enabled.
+     */
+    public void enableBlend(boolean enableBlend) { this.enableBlend = enableBlend; }
     
-    public void fill(Number r, Number g, Number b)             { this.fill.set(r, g, b); }
+    /**
+     * @return The current fill color.
+     */
+    public Colorc fill() { return this.fill; }
     
-    public void fill(Number grey, Number a)                    { this.fill.set(grey, a); }
+    /**
+     * Sets the fill color.
+     *
+     * @param r The red value of the color [0-255] [0.0-1.0]
+     * @param g The green value of the color [0-255] [0.0-1.0]
+     * @param b The blue value of the color [0-255] [0.0-1.0]
+     * @param a The alpha value of the color [0-255] [0.0-1.0]
+     */
+    public void fill(Number r, Number g, Number b, Number a) { this.fill.set(r, g, b, a); }
     
-    public void fill(Number grey)                              { this.fill.set(grey); }
+    /**
+     * Sets the fill color.
+     *
+     * @param r The red value of the color [0-255] [0.0-1.0]
+     * @param g The green value of the color [0-255] [0.0-1.0]
+     * @param b The blue value of the color [0-255] [0.0-1.0]
+     */
+    public void fill(Number r, Number g, Number b) { this.fill.set(r, g, b); }
     
-    public void fill(Colorc fill)                              { this.fill.set(fill); }
+    /**
+     * Sets the fill color.
+     *
+     * @param grey The red, green and blue value of the color [0-255] [0.0-1.0]
+     * @param a    The alpha value of the color [0-255] [0.0-1.0]
+     */
+    public void fill(Number grey, Number a) { this.fill.set(grey, a); }
     
-    public void noFill()                                       { this.fill.a(0); }
+    /**
+     * Sets the fill color.
+     *
+     * @param grey The red, green and blue value of the color [0-255] [0.0-1.0]
+     */
+    public void fill(Number grey) { this.fill.set(grey); }
     
-    public Colorc stroke()                                     { return this.stroke; }
+    /**
+     * Sets the fill color.
+     *
+     * @param fill The color to set fill to.
+     */
+    public void fill(Colorc fill) { this.fill.set(fill); }
     
+    /**
+     * Disabled the fill of shapes
+     */
+    public void noFill() { this.fill.a(0); }
+    
+    /**
+     * @return The current stroke color.
+     */
+    public Colorc stroke() { return this.stroke; }
+    
+    /**
+     * Sets the stroke color.
+     *
+     * @param r The red value of the color [0-255] [0.0-1.0]
+     * @param g The green value of the color [0-255] [0.0-1.0]
+     * @param b The blue value of the color [0-255] [0.0-1.0]
+     * @param a The alpha value of the color [0-255] [0.0-1.0]
+     */
     public void stroke(Number r, Number g, Number b, Number a) { this.stroke.set(r, g, b, a); }
     
-    public void stroke(Number r, Number g, Number b)           { this.stroke.set(r, g, b); }
+    /**
+     * Sets the stroke color.
+     *
+     * @param r The red value of the color [0-255] [0.0-1.0]
+     * @param g The green value of the color [0-255] [0.0-1.0]
+     * @param b The blue value of the color [0-255] [0.0-1.0]
+     */
+    public void stroke(Number r, Number g, Number b) { this.stroke.set(r, g, b); }
     
-    public void stroke(Number grey, Number a)                  { this.stroke.set(grey, a); }
+    /**
+     * Sets the stroke color.
+     *
+     * @param grey The red, green and blue value of the color [0-255] [0.0-1.0]
+     * @param a    The alpha value of the color [0-255] [0.0-1.0]
+     */
+    public void stroke(Number grey, Number a) { this.stroke.set(grey, a); }
     
-    public void stroke(Number grey)                            { this.stroke.set(grey); }
+    /**
+     * Sets the stroke color.
+     *
+     * @param grey The red, green and blue value of the color [0-255] [0.0-1.0]
+     */
+    public void stroke(Number grey) { this.stroke.set(grey); }
     
-    public void stroke(Colorc stroke)                { this.stroke.set(stroke); }
+    /**
+     * Sets the stroke color.
+     *
+     * @param stroke The color to set fill to.
+     */
+    public void stroke(Colorc stroke) { this.stroke.set(stroke); }
     
-    public void noStroke()                           { this.stroke.a(0); }
+    /**
+     * Disabled the stroke of shapes
+     */
+    public void noStroke() { this.stroke.a(0); }
     
-    public double weight()                           { return this.weight; }
+    /**
+     * @return The stroke weight in pixels.
+     */
+    public double weight() { return this.weight; }
     
-    public void weight(double weight)                { this.weight = Math.max(1, weight); }
+    /**
+     * Sets the stroke weight.
+     *
+     * @param weight The new stroke weight in pixels. [1..Double.MAX_VALUE]
+     */
+    public void weight(double weight) { this.weight = Math.max(1, weight); }
     
-    public RectMode rectMode()                       { return this.rectMode; }
+    /**
+     * @return The current {@link RectMode}
+     */
+    public RectMode rectMode() { return this.rectMode; }
     
-    public void rectMode(RectMode rectMode)          { this.rectMode = rectMode; }
+    /**
+     * Sets the {@link RectMode} option.
+     * <p>
+     * See {@link #rect} for details on what each option does.
+     *
+     * @param rectMode The new {@link RectMode} option.
+     */
+    public void rectMode(RectMode rectMode) { this.rectMode = rectMode; }
     
-    public EllipseMode ellipseMode()                 { return this.ellipseMode; }
+    /**
+     * @return The current {@link EllipseMode}
+     */
+    public EllipseMode ellipseMode() { return this.ellipseMode; }
     
+    /**
+     * Sets the {@link EllipseMode} option.
+     * <p>
+     * See {@link #ellipse} for details on what each option does.
+     *
+     * @param ellipseMode The new {@link EllipseMode} option.
+     */
     public void ellipseMode(EllipseMode ellipseMode) { this.ellipseMode = ellipseMode; }
     
-    public ArcMode arcMode()                         { return this.arcMode; }
+    /**
+     * @return The current {@link ArcMode}
+     */
+    public ArcMode arcMode() { return this.arcMode; }
     
-    public void arcMode(ArcMode arcMode)             { this.arcMode = arcMode; }
+    /**
+     * Sets the {@link ArcMode} option.
+     * <p>
+     * See {@link #arc} for details on what each option does.
+     *
+     * @param arcMode The new {@link ArcMode} option.
+     */
+    public void arcMode(ArcMode arcMode) { this.arcMode = arcMode; }
     
-    public Font textFont()                           { return this.font; }
+    /**
+     * @return The current Font
+     */
+    public Font textFont() { return this.font; }
     
-    public void textFont(Font font)                  { this.font = font; }
+    /**
+     * Sets the current Font.
+     *
+     * @param font The new font.
+     */
+    public void textFont(Font font) { this.font = font; }
     
-    public void textFont(String font)                { this.font = new Font(font); }
+    /**
+     * Creates and sets the current Font.
+     *
+     * @param font The path to the ttf file.
+     */
+    public void textFont(String font) { this.font = new Font(font); }
     
-    public void textFont(String font, int size)      { this.font = new Font(font, size); }
+    /**
+     * Creates and sets the current Font.
+     *
+     * @param font The path to the ttf file.
+     * @param size The size of the font in pixels. [4::Integer.MAX_VALUE]
+     */
+    public void textFont(String font, int size) { this.font = new Font(font, size); }
     
-    public int textSize()                            { return this.font.getSize(); }
+    /**
+     * @return The size of the current font in pixels.
+     */
+    public int textSize() { return this.font.getSize(); }
     
-    public void textSize(int textSize)               { this.font.setSize(textSize); }
+    /**
+     * Sets the size of the current Font.
+     *
+     * @param textSize The new size in pixels [4::Integer.MAX_VALUE]
+     */
+    public void textSize(int textSize) { this.font.setSize(textSize); }
     
-    public double textAscent()                       { return this.font.getAscent(); }
+    /**
+     * @return The size in pixels of the current Font's ascent.
+     */
+    public double textAscent() { return this.font.getAscent(); }
     
-    public double textDescent()                      { return this.font.getDescent(); }
+    /**
+     * @return The size in pixels of the current Font's descent.
+     */
+    public double textDescent() { return this.font.getDescent(); }
     
-    public TextAlign textAlign()                     { return this.textAlign; }
+    /**
+     * @return The current {@link TextAlign} value.
+     */
+    public TextAlign textAlign() { return this.textAlign; }
     
-    public void textAlign(TextAlign textAlign)       { this.textAlign = textAlign; }
+    /**
+     * Sets the {@link TextAlign} option.
+     * <p>
+     * See {@link #text} for details on what each option does.
+     *
+     * @param textAlign The new {@link TextAlign} option.
+     */
+    public void textAlign(TextAlign textAlign) { this.textAlign = textAlign; }
     
     // ----------------------------
     // -- Transformation Methods --
     // ----------------------------
     
-    public void identity()                    { this.viewMatrix.identity(); }
+    /**
+     * Resets the view space transformations.
+     */
+    public void identity() { this.viewMatrix.identity(); }
     
+    /**
+     * Translates the view space.
+     *
+     * @param x The amount to translate horizontally.
+     * @param y The amount to translate vertically.
+     */
     public void translate(double x, double y) { this.viewMatrix.translate(x, y, 0); }
     
-    public void translate(Vector2ic vector)   { translate(vector.x(), vector.y()); }
+    /**
+     * Rotates the view space.
+     *
+     * @param angle The angle in radian to rotate by.
+     */
+    public void rotate(double angle) { this.viewMatrix.rotate(angle, 0, 0, 1); }
     
-    public void translate(Vector2fc vector)   { translate(vector.x(), vector.y()); }
-    
-    public void translate(Vector2dc vector)   { translate(vector.x(), vector.y()); }
-    
-    public void rotate(double angle)          { this.viewMatrix.rotate(angle, 0, 0, 1); }
-    
-    public void scale(double x, double y)     { this.viewMatrix.scale(x, y, 1); }
-    
-    public void scale(Vector2ic vector)       { scale(vector.x(), vector.y()); }
-    
-    public void scale(Vector2fc vector)       { scale(vector.x(), vector.y()); }
-    
-    public void scale(Vector2dc vector)       { scale(vector.x(), vector.y()); }
+    /**
+     * Scales the view space.
+     *
+     * @param x The amount to scale horizontally.
+     * @param y The amount to scale vertically.
+     */
+    public void scale(double x, double y) { this.viewMatrix.scale(x, y, 1); }
     
     // --------------------
     // -- Render Methods --
     // --------------------
     
-    public void begin()
+    /**
+     * Begins the rendering process.
+     * <p>
+     * This must be called before any draw functions are called.
+     */
+    public void start()
     {
+        if (this.drawing) throw new RuntimeException("Renderer was never finished");
+        
+        this.drawing = true;
+        
         this.fill.set(Renderer.DEFAULT_FILL);
         this.fills.clear();
         
@@ -198,28 +377,41 @@ public abstract class Renderer
         
         this.weight = Renderer.DEFAULT_WEIGHT;
         this.weights.clear();
-    
+        
         this.rectMode = Renderer.DEFAULT_RECT_MODE;
         this.rectModes.clear();
-    
+        
         this.ellipseMode = Renderer.DEFAULT_ELLIPSE_MODE;
         this.ellipseModes.clear();
-    
+        
         this.arcMode = Renderer.DEFAULT_ARC_MODE;
         this.arcModes.clear();
-    
+        
         this.font = Renderer.DEFAULT_FONT;
         this.fonts.clear();
-    
+        
         this.textAlign = Renderer.DEFAULT_TEXT_ALIGN;
         this.textAligns.clear();
-    
+        
         this.viewMatrix.identity();
         this.viewMatrices.clear();
     }
     
-    public abstract void finish();
+    /**
+     * Finishes the render.
+     * <p>
+     * This must be called after {@link #start}
+     */
+    public void finish()
+    {
+        if (!this.drawing) throw new RuntimeException("Renderer was never started");
+        
+        this.drawing = false;
+    }
     
+    /**
+     * Createa a known state of the renderers properties that can be returned to by calling {@link #pop}.
+     */
     public void push()
     {
         this.fills.push(new Color(this.fill));
@@ -233,6 +425,9 @@ public abstract class Renderer
         this.viewMatrices.push(new Matrix4d(this.viewMatrix));
     }
     
+    /**
+     * Returns the renderers properties to the state when {@link #push} was called.
+     */
     public void pop()
     {
         this.fill.set(this.fills.pop());
@@ -250,363 +445,248 @@ public abstract class Renderer
     // -- Clear Methods --
     // -------------------
     
+    /**
+     * Clears the render target to the color provided.
+     *
+     * @param r The red value to clear the target to. [0-255] [0.0-1.0]
+     * @param g The green value to clear the target to. [0-255] [0.0-1.0]
+     * @param b The blue value to clear the target to. [0-255] [0.0-1.0]
+     * @param a The alpha value to clear the target to. [0-255] [0.0-1.0]
+     */
     public void clear(Number r, Number g, Number b, Number a) { clear(Renderer.CLEAR.set(r, g, b, a)); }
     
-    public void clear(Number r, Number g, Number b)           { clear(Renderer.CLEAR.set(r, g, b)); }
+    /**
+     * Clears the render target to the color provided.
+     *
+     * @param r The red value to clear the target to. [0-255] [0.0-1.0]
+     * @param g The green value to clear the target to. [0-255] [0.0-1.0]
+     * @param b The blue value to clear the target to. [0-255] [0.0-1.0]
+     */
+    public void clear(Number r, Number g, Number b) { clear(Renderer.CLEAR.set(r, g, b)); }
     
-    public void clear(Number grey, Number a)                  { clear(Renderer.CLEAR.set(grey, a)); }
+    /**
+     * Clears the render target to the color provided.
+     *
+     * @param grey The red, green and blue value to clear the target to. [0-255] [0.0-1.0]
+     * @param a    The alpha value to clear the target to. [0-255] [0.0-1.0]
+     */
+    public void clear(Number grey, Number a) { clear(Renderer.CLEAR.set(grey, a)); }
     
-    public void clear(Number grey)                            { clear(Renderer.CLEAR.set(grey)); }
+    /**
+     * Clears the render target to the color provided.
+     *
+     * @param grey The red, green and blue value to clear the target to. [0-255] [0.0-1.0]
+     */
+    public void clear(Number grey) { clear(Renderer.CLEAR.set(grey)); }
     
-    public void clear()                                       { clear(Color.BACKGROUND_GREY); }
+    /**
+     * Clears the render target to the r: 51, g: 51, b: 51, a: 255
+     */
+    public void clear() { clear(Color.BACKGROUND_GREY); }
     
+    /**
+     * Clears the render target to the color provided.
+     *
+     * @param color The color to set the target to.
+     */
     public abstract void clear(Colorc color);
-    
-    // TODO - Have methods that handle 3D coordinates
     
     // -------------------
     // -- Point Methods --
     // -------------------
     
+    /**
+     * Draws a point that is {@link #weight()} in size and {@link #stroke()} in color.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x The x coordinate to draw the point at.
+     * @param y The y coordinate to draw the point at.
+     */
     public abstract void drawPoint(double x, double y);
     
+    /**
+     * Draws a point that is {@link #weight()} in size and {@link #stroke()} in color.
+     * <p>
+     * If the strokes alpha is equal to zero then the point will not be drawn.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x The x coordinate to draw the point at.
+     * @param y The y coordinate to draw the point at.
+     */
     public void point(double x, double y)
     {
         if (this.stroke.a() > 0) drawPoint(x, y);
     }
     
-    public void point(Vector2ic p) { point(p.x(), p.y()); }
-    
-    public void point(Vector2fc p) { point(p.x(), p.y()); }
-    
-    public void point(Vector2dc p) { point(p.x(), p.y()); }
-    
     // ------------------
     // -- Line Methods --
     // ------------------
     
+    /**
+     * Draws a line from {@code (x1, y1)} to {@code (x2, y2)} that is {@link #weight()} pixels thick and {@link #stroke()} in color.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x1 The start x coordinate to draw the line at.
+     * @param y1 The start y coordinate to draw the line at.
+     * @param x2 The end x coordinate to draw the line at.
+     * @param y2 The end y coordinate to draw the line at.
+     */
     public abstract void drawLine(double x1, double y1, double x2, double y2);
     
+    /**
+     * Draws a line from {@code (x1, y1)} to {@code (x2, y2)} that is {@link #weight()} pixels thick and {@link #stroke()} in color.
+     * <p>
+     * If the strokes alpha is equal to zero then the point will not be drawn.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x1 The start x coordinate to draw the line at.
+     * @param y1 The start y coordinate to draw the line at.
+     * @param x2 The end x coordinate to draw the line at.
+     * @param y2 The end y coordinate to draw the line at.
+     */
     public void line(double x1, double y1, double x2, double y2)
     {
         if (this.stroke.a() > 0) drawLine(x1, y1, x2, y2);
     }
     
-    public void line(double x1, double y1, Vector2ic p2) { line(x1, y1, p2.x(), p2.y()); }
-    
-    public void line(double x1, double y1, Vector2fc p2) { line(x1, y1, p2.x(), p2.y()); }
-    
-    public void line(double x1, double y1, Vector2dc p2) { line(x1, y1, p2.x(), p2.y()); }
-    
-    public void line(Vector2ic p1, double x2, double y2) { line(p1.x(), p1.y(), x2, y2); }
-    
-    public void line(Vector2fc p1, double x2, double y2) { line(p1.x(), p1.y(), x2, y2); }
-    
-    public void line(Vector2dc p1, double x2, double y2) { line(p1.x(), p1.y(), x2, y2); }
-    
-    public void line(Vector2ic p1, Vector2ic p2)         { line(p1.x(), p1.y(), p2.x(), p2.y()); }
-    
-    public void line(Vector2ic p1, Vector2fc p2)         { line(p1.x(), p1.y(), p2.x(), p2.y()); }
-    
-    public void line(Vector2ic p1, Vector2dc p2)         { line(p1.x(), p1.y(), p2.x(), p2.y()); }
-    
-    public void line(Vector2fc p1, Vector2ic p2)         { line(p1.x(), p1.y(), p2.x(), p2.y()); }
-    
-    public void line(Vector2fc p1, Vector2fc p2)         { line(p1.x(), p1.y(), p2.x(), p2.y()); }
-    
-    public void line(Vector2fc p1, Vector2dc p2)         { line(p1.x(), p1.y(), p2.x(), p2.y()); }
-    
-    public void line(Vector2dc p1, Vector2ic p2)         { line(p1.x(), p1.y(), p2.x(), p2.y()); }
-    
-    public void line(Vector2dc p1, Vector2fc p2)         { line(p1.x(), p1.y(), p2.x(), p2.y()); }
-    
-    public void line(Vector2dc p1, Vector2dc p2)         { line(p1.x(), p1.y(), p2.x(), p2.y()); }
-    
     // --------------------
     // -- Bezier Methods --
     // --------------------
     
+    /**
+     * Draws a bezier from {@code (x1, y1)} through {@code (x2, y2) to {@code (x3, y3)} that is {@link #weight()} pixels thick and {@link #stroke()} in color.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x1 The start x coordinate to draw the line at.
+     * @param y1 The start y coordinate to draw the line at.
+     * @param x2 The midpoint x coordinate to determine the curve.
+     * @param y2 The midpoint y coordinate to determine the curve.
+     * @param x3 The end x coordinate to draw the line at.
+     * @param y3 The end y coordinate to draw the line at.
+     */
     public abstract void drawBezier(double x1, double y1, double x2, double y2, double x3, double y3);
     
+    /**
+     * Draws a bezier from {@code (x1, y1)} through {@code (x2, y2) to {@code (x3, y3)} that is {@link #weight()} pixels thick and {@link #stroke()} in color.
+     * <p>
+     * If the strokes alpha is equal to zero then the point will not be drawn.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x1 The start x coordinate to draw the line at.
+     * @param y1 The start y coordinate to draw the line at.
+     * @param x2 The midpoint x coordinate to determine the curve.
+     * @param y2 The midpoint y coordinate to determine the curve.
+     * @param x3 The end x coordinate to draw the line at.
+     * @param y3 The end y coordinate to draw the line at.
+     */
     public void bezier(double x1, double y1, double x2, double y2, double x3, double y3)
     {
         if (this.stroke.a() > 0) drawBezier(x1, y1, x2, y2, x3, y3);
     }
     
-    public void bezier(double x1, double y1, double x2, double y2, Vector2ic p3) { bezier(x1, y1, x2, y2, p3.x(), p3.y()); }
-    
-    public void bezier(double x1, double y1, double x2, double y2, Vector2fc p3) { bezier(x1, y1, x2, y2, p3.x(), p3.y()); }
-    
-    public void bezier(double x1, double y1, double x2, double y2, Vector2dc p3) { bezier(x1, y1, x2, y2, p3.x(), p3.y()); }
-    
-    public void bezier(double x1, double y1, Vector2ic p2, double x3, double y3) { bezier(x1, y1, p2.x(), p2.y(), x3, y3); }
-    
-    public void bezier(double x1, double y1, Vector2fc p2, double x3, double y3) { bezier(x1, y1, p2.x(), p2.y(), x3, y3); }
-    
-    public void bezier(double x1, double y1, Vector2dc p2, double x3, double y3) { bezier(x1, y1, p2.x(), p2.y(), x3, y3); }
-    
-    public void bezier(Vector2ic p1, double x2, double y2, double x3, double y3) { bezier(p1.x(), p1.y(), x2, y2, x3, y3); }
-    
-    public void bezier(Vector2fc p1, double x2, double y2, double x3, double y3) { bezier(p1.x(), p1.y(), x2, y2, x3, y3); }
-    
-    public void bezier(Vector2dc p1, double x2, double y2, double x3, double y3) { bezier(p1.x(), p1.y(), x2, y2, x3, y3); }
-    
-    public void bezier(double x1, double y1, Vector2ic p2, Vector2ic p3)         { bezier(x1, y1, p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(double x1, double y1, Vector2ic p2, Vector2fc p3)         { bezier(x1, y1, p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(double x1, double y1, Vector2ic p2, Vector2dc p3)         { bezier(x1, y1, p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(double x1, double y1, Vector2fc p2, Vector2ic p3)         { bezier(x1, y1, p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(double x1, double y1, Vector2fc p2, Vector2fc p3)         { bezier(x1, y1, p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(double x1, double y1, Vector2fc p2, Vector2dc p3)         { bezier(x1, y1, p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(double x1, double y1, Vector2dc p2, Vector2ic p3)         { bezier(x1, y1, p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(double x1, double y1, Vector2dc p2, Vector2fc p3)         { bezier(x1, y1, p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(double x1, double y1, Vector2dc p2, Vector2dc p3)         { bezier(x1, y1, p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2ic p1, double x2, double y2, Vector2ic p3)         { bezier(p1.x(), p1.y(), x2, y2, p3.x(), p3.y()); }
-    
-    public void bezier(Vector2ic p1, double x2, double y2, Vector2fc p3)         { bezier(p1.x(), p1.y(), x2, y2, p3.x(), p3.y()); }
-    
-    public void bezier(Vector2ic p1, double x2, double y2, Vector2dc p3)         { bezier(p1.x(), p1.y(), x2, y2, p3.x(), p3.y()); }
-    
-    public void bezier(Vector2fc p1, double x2, double y2, Vector2ic p3)         { bezier(p1.x(), p1.y(), x2, y2, p3.x(), p3.y()); }
-    
-    public void bezier(Vector2fc p1, double x2, double y2, Vector2fc p3)         { bezier(p1.x(), p1.y(), x2, y2, p3.x(), p3.y()); }
-    
-    public void bezier(Vector2fc p1, double x2, double y2, Vector2dc p3)         { bezier(p1.x(), p1.y(), x2, y2, p3.x(), p3.y()); }
-    
-    public void bezier(Vector2dc p1, double x2, double y2, Vector2ic p3)         { bezier(p1.x(), p1.y(), x2, y2, p3.x(), p3.y()); }
-    
-    public void bezier(Vector2dc p1, double x2, double y2, Vector2fc p3)         { bezier(p1.x(), p1.y(), x2, y2, p3.x(), p3.y()); }
-    
-    public void bezier(Vector2dc p1, double x2, double y2, Vector2dc p3)         { bezier(p1.x(), p1.y(), x2, y2, p3.x(), p3.y()); }
-    
-    public void bezier(Vector2ic p1, Vector2ic p2, double x3, double y3)         { bezier(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3); }
-    
-    public void bezier(Vector2ic p1, Vector2fc p2, double x3, double y3)         { bezier(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3); }
-    
-    public void bezier(Vector2ic p1, Vector2dc p2, double x3, double y3)         { bezier(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3); }
-    
-    public void bezier(Vector2fc p1, Vector2ic p2, double x3, double y3)         { bezier(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3); }
-    
-    public void bezier(Vector2fc p1, Vector2fc p2, double x3, double y3)         { bezier(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3); }
-    
-    public void bezier(Vector2fc p1, Vector2dc p2, double x3, double y3)         { bezier(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3); }
-    
-    public void bezier(Vector2dc p1, Vector2ic p2, double x3, double y3)         { bezier(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3); }
-    
-    public void bezier(Vector2dc p1, Vector2fc p2, double x3, double y3)         { bezier(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3); }
-    
-    public void bezier(Vector2dc p1, Vector2dc p2, double x3, double y3)         { bezier(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3); }
-    
-    public void bezier(Vector2ic p1, Vector2ic p2, Vector2ic p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2ic p1, Vector2ic p2, Vector2fc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2ic p1, Vector2ic p2, Vector2dc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2ic p1, Vector2fc p2, Vector2ic p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2ic p1, Vector2fc p2, Vector2fc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2ic p1, Vector2fc p2, Vector2dc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2ic p1, Vector2dc p2, Vector2ic p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2ic p1, Vector2dc p2, Vector2fc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2ic p1, Vector2dc p2, Vector2dc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2fc p1, Vector2ic p2, Vector2ic p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2fc p1, Vector2ic p2, Vector2fc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2fc p1, Vector2ic p2, Vector2dc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2fc p1, Vector2fc p2, Vector2ic p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2fc p1, Vector2fc p2, Vector2fc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2fc p1, Vector2fc p2, Vector2dc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2fc p1, Vector2dc p2, Vector2ic p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2fc p1, Vector2dc p2, Vector2fc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2fc p1, Vector2dc p2, Vector2dc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2dc p1, Vector2ic p2, Vector2ic p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2dc p1, Vector2ic p2, Vector2fc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2dc p1, Vector2ic p2, Vector2dc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2dc p1, Vector2fc p2, Vector2ic p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2dc p1, Vector2fc p2, Vector2fc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2dc p1, Vector2fc p2, Vector2dc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2dc p1, Vector2dc p2, Vector2ic p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2dc p1, Vector2dc p2, Vector2fc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void bezier(Vector2dc p1, Vector2dc p2, Vector2dc p3)                 { bezier(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
     // ----------------------
     // -- Triangle Methods --
     // ----------------------
     
+    /**
+     * Draws a triangle from {@code (x1, y1)} through {@code (x2, y2) to {@code (x3, y3)} that is {@link #weight()} pixels thick and {@link #stroke()} in color.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x1 The first x coordinate of the triangle.
+     * @param y1 The first y coordinate of the triangle.
+     * @param x2 The second x coordinate of the triangle.
+     * @param y2 The second y coordinate of the triangle.
+     * @param x3 The third x coordinate of the triangle.
+     * @param y3 The third y coordinate of the triangle.
+     */
     public abstract void drawTriangle(double x1, double y1, double x2, double y2, double x3, double y3);
     
+    /**
+     * Fills a triangle from {@code (x1, y1)} through {@code (x2, y2) to {@code (x3, y3)} that is {@link #fill()} in color.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x1 The first x coordinate of the triangle.
+     * @param y1 The first y coordinate of the triangle.
+     * @param x2 The second x coordinate of the triangle.
+     * @param y2 The second y coordinate of the triangle.
+     * @param x3 The third x coordinate of the triangle.
+     * @param y3 The third y coordinate of the triangle.
+     */
     public abstract void fillTriangle(double x1, double y1, double x2, double y2, double x3, double y3);
     
+    /**
+     * Draws a triangle from {@code (x1, y1)} through {@code (x2, y2) to {@code (x3, y3)} that is {@link #fill()} in color
+     * with a border {@link #weight()} thick and {@link #stroke()} in color.
+     * <p>
+     * If the strokes alpha is equal to zero then the border will not be drawn.
+     * <p>
+     * If the fills alpha is equal to zero then the inside will not be filled.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x1 The first x coordinate of the triangle.
+     * @param y1 The first y coordinate of the triangle.
+     * @param x2 The second x coordinate of the triangle.
+     * @param y2 The second y coordinate of the triangle.
+     * @param x3 The third x coordinate of the triangle.
+     * @param y3 The third y coordinate of the triangle.
+     */
     public void triangle(double x1, double y1, double x2, double y2, double x3, double y3)
     {
         if (this.fill.a() > 0) fillTriangle(x1, y1, x2, y2, x3, y3);
         if (this.stroke.a() > 0) drawTriangle(x1, y1, x2, y2, x3, y3);
     }
     
-    public void triangle(double x1, double y1, double x2, double y2, Vector2ic p3) { triangle(x1, y1, x2, y2, p3.x(), p3.y()); }
-    
-    public void triangle(double x1, double y1, double x2, double y2, Vector2fc p3) { triangle(x1, y1, x2, y2, p3.x(), p3.y()); }
-    
-    public void triangle(double x1, double y1, double x2, double y2, Vector2dc p3) { triangle(x1, y1, x2, y2, p3.x(), p3.y()); }
-    
-    public void triangle(double x1, double y1, Vector2ic p2, double x3, double y3) { triangle(x1, y1, p2.x(), p2.y(), x3, y3); }
-    
-    public void triangle(double x1, double y1, Vector2fc p2, double x3, double y3) { triangle(x1, y1, p2.x(), p2.y(), x3, y3); }
-    
-    public void triangle(double x1, double y1, Vector2dc p2, double x3, double y3) { triangle(x1, y1, p2.x(), p2.y(), x3, y3); }
-    
-    public void triangle(Vector2ic p1, double x2, double y2, double x3, double y3) { triangle(p1.x(), p1.y(), x2, y2, x3, y3); }
-    
-    public void triangle(Vector2fc p1, double x2, double y2, double x3, double y3) { triangle(p1.x(), p1.y(), x2, y2, x3, y3); }
-    
-    public void triangle(Vector2dc p1, double x2, double y2, double x3, double y3) { triangle(p1.x(), p1.y(), x2, y2, x3, y3); }
-    
-    public void triangle(double x1, double y1, Vector2ic p2, Vector2ic p3)         { triangle(x1, y1, p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(double x1, double y1, Vector2ic p2, Vector2fc p3)         { triangle(x1, y1, p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(double x1, double y1, Vector2ic p2, Vector2dc p3)         { triangle(x1, y1, p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(double x1, double y1, Vector2fc p2, Vector2ic p3)         { triangle(x1, y1, p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(double x1, double y1, Vector2fc p2, Vector2fc p3)         { triangle(x1, y1, p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(double x1, double y1, Vector2fc p2, Vector2dc p3)         { triangle(x1, y1, p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(double x1, double y1, Vector2dc p2, Vector2ic p3)         { triangle(x1, y1, p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(double x1, double y1, Vector2dc p2, Vector2fc p3)         { triangle(x1, y1, p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(double x1, double y1, Vector2dc p2, Vector2dc p3)         { triangle(x1, y1, p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2ic p1, double x2, double y2, Vector2ic p3)         { triangle(p1.x(), p1.y(), x2, y2, p3.x(), p3.y()); }
-    
-    public void triangle(Vector2ic p1, double x2, double y2, Vector2fc p3)         { triangle(p1.x(), p1.y(), x2, y2, p3.x(), p3.y()); }
-    
-    public void triangle(Vector2ic p1, double x2, double y2, Vector2dc p3)         { triangle(p1.x(), p1.y(), x2, y2, p3.x(), p3.y()); }
-    
-    public void triangle(Vector2fc p1, double x2, double y2, Vector2ic p3)         { triangle(p1.x(), p1.y(), x2, y2, p3.x(), p3.y()); }
-    
-    public void triangle(Vector2fc p1, double x2, double y2, Vector2fc p3)         { triangle(p1.x(), p1.y(), x2, y2, p3.x(), p3.y()); }
-    
-    public void triangle(Vector2fc p1, double x2, double y2, Vector2dc p3)         { triangle(p1.x(), p1.y(), x2, y2, p3.x(), p3.y()); }
-    
-    public void triangle(Vector2dc p1, double x2, double y2, Vector2ic p3)         { triangle(p1.x(), p1.y(), x2, y2, p3.x(), p3.y()); }
-    
-    public void triangle(Vector2dc p1, double x2, double y2, Vector2fc p3)         { triangle(p1.x(), p1.y(), x2, y2, p3.x(), p3.y()); }
-    
-    public void triangle(Vector2dc p1, double x2, double y2, Vector2dc p3)         { triangle(p1.x(), p1.y(), x2, y2, p3.x(), p3.y()); }
-    
-    public void triangle(Vector2ic p1, Vector2ic p2, double x3, double y3)         { triangle(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3); }
-    
-    public void triangle(Vector2ic p1, Vector2fc p2, double x3, double y3)         { triangle(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3); }
-    
-    public void triangle(Vector2ic p1, Vector2dc p2, double x3, double y3)         { triangle(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3); }
-    
-    public void triangle(Vector2fc p1, Vector2ic p2, double x3, double y3)         { triangle(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3); }
-    
-    public void triangle(Vector2fc p1, Vector2fc p2, double x3, double y3)         { triangle(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3); }
-    
-    public void triangle(Vector2fc p1, Vector2dc p2, double x3, double y3)         { triangle(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3); }
-    
-    public void triangle(Vector2dc p1, Vector2ic p2, double x3, double y3)         { triangle(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3); }
-    
-    public void triangle(Vector2dc p1, Vector2fc p2, double x3, double y3)         { triangle(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3); }
-    
-    public void triangle(Vector2dc p1, Vector2dc p2, double x3, double y3)         { triangle(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3); }
-    
-    public void triangle(Vector2ic p1, Vector2ic p2, Vector2ic p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2ic p1, Vector2ic p2, Vector2fc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2ic p1, Vector2ic p2, Vector2dc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2ic p1, Vector2fc p2, Vector2ic p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2ic p1, Vector2fc p2, Vector2fc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2ic p1, Vector2fc p2, Vector2dc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2ic p1, Vector2dc p2, Vector2ic p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2ic p1, Vector2dc p2, Vector2fc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2ic p1, Vector2dc p2, Vector2dc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2fc p1, Vector2ic p2, Vector2ic p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2fc p1, Vector2ic p2, Vector2fc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2fc p1, Vector2ic p2, Vector2dc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2fc p1, Vector2fc p2, Vector2ic p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2fc p1, Vector2fc p2, Vector2fc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2fc p1, Vector2fc p2, Vector2dc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2fc p1, Vector2dc p2, Vector2ic p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2fc p1, Vector2dc p2, Vector2fc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2fc p1, Vector2dc p2, Vector2dc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2dc p1, Vector2ic p2, Vector2ic p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2dc p1, Vector2ic p2, Vector2fc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2dc p1, Vector2ic p2, Vector2dc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2dc p1, Vector2fc p2, Vector2ic p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2dc p1, Vector2fc p2, Vector2fc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2dc p1, Vector2fc p2, Vector2dc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2dc p1, Vector2dc p2, Vector2ic p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2dc p1, Vector2dc p2, Vector2fc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
-    public void triangle(Vector2dc p1, Vector2dc p2, Vector2dc p3)                 { triangle(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y()); }
-    
     // --------------------
     // -- Square Methods --
     // --------------------
     
+    /**
+     * Draws a square whose top left corner is at {@code (x, y)} that is {@link #weight()} pixels thick and {@link #stroke()} in color.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x The top left x coordinate of the square.
+     * @param y The top left y coordinate of the square.
+     * @param w The side length of the square.
+     */
     public abstract void drawSquare(double x, double y, double w);
     
+    /**
+     * Fills a square whose top left corner is at {@code (x, y)} that is {@link #fill()} in color.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x The top left x coordinate of the square.
+     * @param y The top left y coordinate of the square.
+     * @param w The side length of the square.
+     */
     public abstract void fillSquare(double x, double y, double w);
     
+    /**
+     * Draws a square based on {@link #rectMode()} that is {@link #fill()} in color
+     * with a border {@link #weight()} thick and {@link #stroke()} in color.
+     * <p>
+     * See {@link #rect} for how the points get transformed.
+     * <p>
+     * If the strokes alpha is equal to zero then the border will not be drawn.
+     * <p>
+     * If the fills alpha is equal to zero then the inside will not be filled.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param a The a value.
+     * @param b The b value.
+     * @param c The c value.
+     */
     public void square(double a, double b, double c)
     {
         switch (this.rectMode)
@@ -632,20 +712,98 @@ public abstract class Renderer
         }
     }
     
-    public void square(Vector2ic ab, double c) { square(ab.x(), ab.y(), c); }
-    
-    public void square(Vector2fc ab, double c) { square(ab.x(), ab.y(), c); }
-    
-    public void square(Vector2dc ab, double c) { square(ab.x(), ab.y(), c); }
-    
     // ------------------
     // -- Rect Methods --
     // ------------------
     
+    /**
+     * Draws a rectangle whose top left corner is at {@code (x, y)} that is {@link #weight()} pixels thick and {@link #stroke()} in color.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x The top left x coordinate of the rectangle.
+     * @param y The top left y coordinate of the rectangle.
+     * @param w The width of the rectangle.
+     * @param h The height of the rectangle.
+     */
     public abstract void drawRect(double x, double y, double w, double h);
     
+    /**
+     * Fills a rectangle whose top left corner is at {@code (x, y)} that is {@link #fill()} in color.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x The top left x coordinate of the rectangle.
+     * @param y The top left y coordinate of the rectangle.
+     * @param w The width of the rectangle.
+     * @param h The height of the rectangle.
+     */
     public abstract void fillRect(double x, double y, double w, double h);
     
+    /**
+     * Draws a rectangle based on {@link #rectMode()} that is {@link #fill()} in color
+     * with a border {@link #weight()} thick and {@link #stroke()} in color.
+     * <p>
+     * If the strokes alpha is equal to zero then the border will not be drawn.
+     * <p>
+     * If the fills alpha is equal to zero then the inside will not be filled.
+     * <p>
+     * <p>
+     * {@code RectMode.CORNER}
+     * <p>
+     * -- a: The top left x coordinate
+     * <p>
+     * -- b: The top left y coordinate
+     * <p>
+     * -- c: The width
+     * <p>
+     * -- d: The height
+     * <p>
+     * <p>
+     * {@code RectMode.CORNERS}
+     * <p>
+     * -- a: The top left x coordinate
+     * <p>
+     * -- b: The top left y coordinate
+     * <p>
+     * -- c: The bottom right x coordinate
+     * <p>
+     * -- d: The bottom right y coordinate
+     * <p>
+     * <p>
+     * {@code RectMode.CENTER}
+     * <p>
+     * -- a: The center x coordinate
+     * <p>
+     * -- b: The center y coordinate
+     * <p>
+     * -- c: The width
+     * <p>
+     * -- d: The height
+     * <p>
+     * <p>
+     * {@code RectMode.RADIUS}
+     * <p>
+     * -- a: The center x coordinate
+     * <p>
+     * -- b: The center y coordinate
+     * <p>
+     * -- c: The half width
+     * <p>
+     * -- d: The half height
+     * <p>
+     * <p>
+     * If the strokes alpha is equal to zero then the border will not be drawn.
+     * <p>
+     * If the fills alpha is equal to zero then the inside will not be filled.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param a The a value.
+     * @param b The b value.
+     * @param c The c value.
+     * @param d The d value.
+     */
     public void rect(double a, double b, double c, double d)
     {
         switch (this.rectMode)
@@ -670,605 +828,124 @@ public abstract class Renderer
         }
     }
     
-    public void rect(double a, double b, Vector2ic cd) { rect(a, b, cd.x(), cd.y()); }
-    
-    public void rect(double a, double b, Vector2fc cd) { rect(a, b, cd.x(), cd.y()); }
-    
-    public void rect(double a, double b, Vector2dc cd) { rect(a, b, cd.x(), cd.y()); }
-    
-    public void rect(Vector2ic ab, double c, double d) { rect(ab.x(), ab.y(), c, d); }
-    
-    public void rect(Vector2fc ab, double c, double d) { rect(ab.x(), ab.y(), c, d); }
-    
-    public void rect(Vector2dc ab, double c, double d) { rect(ab.x(), ab.y(), c, d); }
-    
-    public void rect(Vector2ic ab, Vector2ic cd)       { rect(ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void rect(Vector2ic ab, Vector2fc cd)       { rect(ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void rect(Vector2ic ab, Vector2dc cd)       { rect(ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void rect(Vector2fc ab, Vector2ic cd)       { rect(ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void rect(Vector2fc ab, Vector2fc cd)       { rect(ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void rect(Vector2fc ab, Vector2dc cd)       { rect(ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void rect(Vector2dc ab, Vector2ic cd)       { rect(ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void rect(Vector2dc ab, Vector2fc cd)       { rect(ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void rect(Vector2dc ab, Vector2dc cd)       { rect(ab.x(), ab.y(), cd.x(), cd.y()); }
-    
     // ------------------
     // -- Quad Methods --
     // ------------------
     
+    /**
+     * Draws a quad from the points provided that is {@link #weight()} pixels thick and {@link #stroke()} in color.
+     * <p>
+     * The winding order does not matter.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x1 The first x coordinate.
+     * @param y1 The first y coordinate.
+     * @param x2 The second x coordinate.
+     * @param y2 The second y coordinate.
+     * @param x3 The third x coordinate.
+     * @param y3 The third y coordinate.
+     * @param x4 The fourth x coordinate.
+     * @param y4 The fourth y coordinate.
+     */
     public abstract void drawQuad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4);
     
+    /**
+     * Fills a quad from the points provided that is {@link #fill()} in color.
+     * <p>
+     * The winding order does not matter.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x1 The first x coordinate.
+     * @param y1 The first y coordinate.
+     * @param x2 The second x coordinate.
+     * @param y2 The second y coordinate.
+     * @param x3 The third x coordinate.
+     * @param y3 The third y coordinate.
+     * @param x4 The fourth x coordinate.
+     * @param y4 The fourth y coordinate.
+     */
     public abstract void fillQuad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4);
     
+    /**
+     * Draws a quad from the points provided that is {@link #weight()} pixels thick and {@link #stroke()} in color and filled with color {@link #fill()}.
+     * <p>
+     * The winding order does not matter.
+     * <p>
+     * If the strokes alpha is equal to zero then the border will not be drawn.
+     * <p>
+     * If the fills alpha is equal to zero then the inside will not be filled.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x1 The first x coordinate.
+     * @param y1 The first y coordinate.
+     * @param x2 The second x coordinate.
+     * @param y2 The second y coordinate.
+     * @param x3 The third x coordinate.
+     * @param y3 The third y coordinate.
+     * @param x4 The fourth x coordinate.
+     * @param y4 The fourth y coordinate.
+     */
     public void quad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
     {
         if (this.fill.a() > 0) fillQuad(x1, y1, x2, y2, x3, y3, x4, y4);
         if (this.stroke.a() > 0) drawQuad(x1, y1, x2, y2, x3, y3, x4, y4);
     }
     
-    public void quad(double x1, double y1, double x2, double y2, double x3, double y3, Vector2ic p4) { quad(x1, y1, x2, y2, x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, double x2, double y2, double x3, double y3, Vector2fc p4) { quad(x1, y1, x2, y2, x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, double x2, double y2, double x3, double y3, Vector2dc p4) { quad(x1, y1, x2, y2, x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, double x2, double y2, Vector2ic p3, double x4, double y4) { quad(x1, y1, x2, y2, p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(double x1, double y1, double x2, double y2, Vector2fc p3, double x4, double y4) { quad(x1, y1, x2, y2, p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(double x1, double y1, double x2, double y2, Vector2dc p3, double x4, double y4) { quad(x1, y1, x2, y2, p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(double x1, double y1, double x2, double y2, Vector2ic p3, Vector2ic p4)         { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, double x2, double y2, Vector2ic p3, Vector2fc p4)         { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, double x2, double y2, Vector2ic p3, Vector2dc p4)         { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, double x2, double y2, Vector2fc p3, Vector2ic p4)         { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, double x2, double y2, Vector2fc p3, Vector2fc p4)         { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, double x2, double y2, Vector2fc p3, Vector2dc p4)         { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, double x2, double y2, Vector2dc p3, Vector2ic p4)         { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, double x2, double y2, Vector2dc p3, Vector2fc p4)         { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, double x2, double y2, Vector2dc p3, Vector2dc p4)         { quad(x1, y1, x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2ic p2, double x3, double y3, Vector2ic p4)         { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2ic p2, double x3, double y3, Vector2fc p4)         { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2ic p2, double x3, double y3, Vector2dc p4)         { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2fc p2, double x3, double y3, Vector2ic p4)         { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2fc p2, double x3, double y3, Vector2fc p4)         { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2fc p2, double x3, double y3, Vector2dc p4)         { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2dc p2, double x3, double y3, Vector2ic p4)         { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2dc p2, double x3, double y3, Vector2fc p4)         { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2dc p2, double x3, double y3, Vector2dc p4)         { quad(x1, y1, p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2ic p2, Vector2ic p3, double x4, double y4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(double x1, double y1, Vector2ic p2, Vector2fc p3, double x4, double y4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(double x1, double y1, Vector2ic p2, Vector2dc p3, double x4, double y4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(double x1, double y1, Vector2fc p2, Vector2ic p3, double x4, double y4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(double x1, double y1, Vector2fc p2, Vector2fc p3, double x4, double y4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(double x1, double y1, Vector2fc p2, Vector2dc p3, double x4, double y4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(double x1, double y1, Vector2dc p2, Vector2ic p3, double x4, double y4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(double x1, double y1, Vector2dc p2, Vector2fc p3, double x4, double y4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(double x1, double y1, Vector2dc p2, Vector2dc p3, double x4, double y4)         { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2ic p1, double x2, double y2, double x3, double y3, Vector2ic p4)         { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, double x2, double y2, double x3, double y3, Vector2fc p4)         { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, double x2, double y2, double x3, double y3, Vector2dc p4)         { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, double x2, double y2, double x3, double y3, Vector2ic p4)         { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, double x2, double y2, double x3, double y3, Vector2fc p4)         { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, double x2, double y2, double x3, double y3, Vector2dc p4)         { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, double x2, double y2, double x3, double y3, Vector2ic p4)         { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, double x2, double y2, double x3, double y3, Vector2fc p4)         { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, double x2, double y2, double x3, double y3, Vector2dc p4)         { quad(p1.x(), p1.y(), x2, y2, x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, double x2, double y2, Vector2ic p3, double x4, double y4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2ic p1, double x2, double y2, Vector2fc p3, double x4, double y4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2ic p1, double x2, double y2, Vector2dc p3, double x4, double y4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2fc p1, double x2, double y2, Vector2ic p3, double x4, double y4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2fc p1, double x2, double y2, Vector2fc p3, double x4, double y4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2fc p1, double x2, double y2, Vector2dc p3, double x4, double y4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2dc p1, double x2, double y2, Vector2ic p3, double x4, double y4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2dc p1, double x2, double y2, Vector2fc p3, double x4, double y4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2dc p1, double x2, double y2, Vector2dc p3, double x4, double y4)         { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2ic p1, Vector2ic p2, double x3, double y3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
-    
-    public void quad(Vector2ic p1, Vector2fc p2, double x3, double y3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
-    
-    public void quad(Vector2ic p1, Vector2dc p2, double x3, double y3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
-    
-    public void quad(Vector2fc p1, Vector2ic p2, double x3, double y3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
-    
-    public void quad(Vector2fc p1, Vector2fc p2, double x3, double y3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
-    
-    public void quad(Vector2fc p1, Vector2dc p2, double x3, double y3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
-    
-    public void quad(Vector2dc p1, Vector2ic p2, double x3, double y3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
-    
-    public void quad(Vector2dc p1, Vector2fc p2, double x3, double y3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
-    
-    public void quad(Vector2dc p1, Vector2dc p2, double x3, double y3, double x4, double y4)         { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, x4, y4); }
-    
-    public void quad(double x1, double y1, Vector2ic p2, Vector2ic p3, Vector2ic p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2ic p2, Vector2ic p3, Vector2fc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2ic p2, Vector2ic p3, Vector2dc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2ic p2, Vector2fc p3, Vector2ic p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2ic p2, Vector2fc p3, Vector2fc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2ic p2, Vector2fc p3, Vector2dc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2ic p2, Vector2dc p3, Vector2ic p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2ic p2, Vector2dc p3, Vector2fc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2ic p2, Vector2dc p3, Vector2dc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2fc p2, Vector2ic p3, Vector2ic p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2fc p2, Vector2ic p3, Vector2fc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2fc p2, Vector2ic p3, Vector2dc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2fc p2, Vector2fc p3, Vector2ic p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2fc p2, Vector2fc p3, Vector2dc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2fc p2, Vector2dc p3, Vector2ic p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2fc p2, Vector2dc p3, Vector2fc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2fc p2, Vector2dc p3, Vector2dc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2dc p2, Vector2ic p3, Vector2ic p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2dc p2, Vector2ic p3, Vector2fc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2dc p2, Vector2ic p3, Vector2dc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2dc p2, Vector2fc p3, Vector2ic p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2dc p2, Vector2fc p3, Vector2fc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2dc p2, Vector2fc p3, Vector2dc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2dc p2, Vector2dc p3, Vector2ic p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(double x1, double y1, Vector2dc p2, Vector2dc p3, Vector2fc p4)                 { quad(x1, y1, p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, double x2, double y2, Vector2ic p3, Vector2ic p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, double x2, double y2, Vector2ic p3, Vector2fc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, double x2, double y2, Vector2ic p3, Vector2dc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, double x2, double y2, Vector2fc p3, Vector2ic p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, double x2, double y2, Vector2fc p3, Vector2fc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, double x2, double y2, Vector2fc p3, Vector2dc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, double x2, double y2, Vector2dc p3, Vector2ic p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, double x2, double y2, Vector2dc p3, Vector2fc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, double x2, double y2, Vector2dc p3, Vector2dc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, double x2, double y2, Vector2ic p3, Vector2ic p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, double x2, double y2, Vector2ic p3, Vector2fc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, double x2, double y2, Vector2ic p3, Vector2dc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, double x2, double y2, Vector2fc p3, Vector2ic p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, double x2, double y2, Vector2fc p3, Vector2fc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, double x2, double y2, Vector2fc p3, Vector2dc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, double x2, double y2, Vector2dc p3, Vector2ic p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, double x2, double y2, Vector2dc p3, Vector2fc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, double x2, double y2, Vector2dc p3, Vector2dc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, double x2, double y2, Vector2ic p3, Vector2ic p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, double x2, double y2, Vector2ic p3, Vector2fc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, double x2, double y2, Vector2ic p3, Vector2dc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, double x2, double y2, Vector2fc p3, Vector2ic p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, double x2, double y2, Vector2fc p3, Vector2fc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, double x2, double y2, Vector2fc p3, Vector2dc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, double x2, double y2, Vector2dc p3, Vector2ic p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, double x2, double y2, Vector2dc p3, Vector2fc p4)                 { quad(p1.x(), p1.y(), x2, y2, p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2ic p2, double x3, double y3, Vector2ic p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2ic p2, double x3, double y3, Vector2fc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2ic p2, double x3, double y3, Vector2dc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2fc p2, double x3, double y3, Vector2ic p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2fc p2, double x3, double y3, Vector2fc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2fc p2, double x3, double y3, Vector2dc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2dc p2, double x3, double y3, Vector2ic p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2dc p2, double x3, double y3, Vector2fc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2dc p2, double x3, double y3, Vector2dc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2ic p2, double x3, double y3, Vector2ic p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2ic p2, double x3, double y3, Vector2fc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2ic p2, double x3, double y3, Vector2dc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2fc p2, double x3, double y3, Vector2ic p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2fc p2, double x3, double y3, Vector2fc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2fc p2, double x3, double y3, Vector2dc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2dc p2, double x3, double y3, Vector2ic p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2dc p2, double x3, double y3, Vector2fc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2dc p2, double x3, double y3, Vector2dc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2ic p2, double x3, double y3, Vector2ic p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2ic p2, double x3, double y3, Vector2fc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2ic p2, double x3, double y3, Vector2dc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2fc p2, double x3, double y3, Vector2ic p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2fc p2, double x3, double y3, Vector2fc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2fc p2, double x3, double y3, Vector2dc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2dc p2, double x3, double y3, Vector2ic p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2dc p2, double x3, double y3, Vector2fc p4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), x3, y3, p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2ic p2, Vector2ic p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2ic p1, Vector2ic p2, Vector2fc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2ic p1, Vector2ic p2, Vector2dc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2ic p1, Vector2fc p2, Vector2ic p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2ic p1, Vector2fc p2, Vector2fc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2ic p1, Vector2fc p2, Vector2dc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2ic p1, Vector2dc p2, Vector2ic p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2ic p1, Vector2dc p2, Vector2fc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2ic p1, Vector2dc p2, Vector2dc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2fc p1, Vector2ic p2, Vector2ic p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2fc p1, Vector2ic p2, Vector2fc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2fc p1, Vector2ic p2, Vector2dc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2fc p1, Vector2fc p2, Vector2ic p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2fc p1, Vector2fc p2, Vector2fc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2fc p1, Vector2fc p2, Vector2dc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2fc p1, Vector2dc p2, Vector2ic p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2fc p1, Vector2dc p2, Vector2fc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2fc p1, Vector2dc p2, Vector2dc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2dc p1, Vector2ic p2, Vector2ic p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2dc p1, Vector2ic p2, Vector2fc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2dc p1, Vector2ic p2, Vector2dc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2dc p1, Vector2fc p2, Vector2ic p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2dc p1, Vector2fc p2, Vector2fc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2dc p1, Vector2fc p2, Vector2dc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2dc p1, Vector2dc p2, Vector2ic p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2dc p1, Vector2dc p2, Vector2fc p3, double x4, double y4)                 { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), x4, y4); }
-    
-    public void quad(Vector2ic p1, Vector2ic p2, Vector2ic p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2ic p2, Vector2ic p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2ic p2, Vector2ic p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2ic p2, Vector2fc p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2ic p2, Vector2fc p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2ic p2, Vector2fc p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2ic p2, Vector2dc p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2ic p2, Vector2dc p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2ic p2, Vector2dc p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2fc p2, Vector2ic p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2fc p2, Vector2ic p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2fc p2, Vector2ic p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2fc p2, Vector2fc p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2fc p2, Vector2fc p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2fc p2, Vector2dc p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2fc p2, Vector2dc p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2fc p2, Vector2dc p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2dc p2, Vector2ic p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2dc p2, Vector2ic p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2dc p2, Vector2ic p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2dc p2, Vector2fc p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2dc p2, Vector2fc p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2dc p2, Vector2fc p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2dc p2, Vector2dc p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2dc p2, Vector2dc p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2ic p1, Vector2dc p2, Vector2dc p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2ic p2, Vector2ic p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2ic p2, Vector2ic p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2ic p2, Vector2ic p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2ic p2, Vector2fc p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2ic p2, Vector2fc p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2ic p2, Vector2fc p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2ic p2, Vector2dc p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2ic p2, Vector2dc p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2ic p2, Vector2dc p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2fc p2, Vector2ic p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2fc p2, Vector2ic p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2fc p2, Vector2ic p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2fc p2, Vector2fc p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2fc p2, Vector2fc p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2fc p2, Vector2dc p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2fc p2, Vector2dc p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2fc p2, Vector2dc p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2dc p2, Vector2ic p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2dc p2, Vector2ic p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2dc p2, Vector2ic p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2dc p2, Vector2fc p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2dc p2, Vector2fc p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2dc p2, Vector2fc p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2dc p2, Vector2dc p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2dc p2, Vector2dc p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2fc p1, Vector2dc p2, Vector2dc p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2ic p2, Vector2ic p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2ic p2, Vector2ic p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2ic p2, Vector2ic p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2ic p2, Vector2fc p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2ic p2, Vector2fc p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2ic p2, Vector2fc p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2ic p2, Vector2dc p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2ic p2, Vector2dc p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2ic p2, Vector2dc p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2fc p2, Vector2ic p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2fc p2, Vector2ic p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2fc p2, Vector2ic p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2fc p2, Vector2fc p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2fc p2, Vector2fc p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2fc p2, Vector2fc p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2fc p2, Vector2dc p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2fc p2, Vector2dc p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2fc p2, Vector2dc p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2dc p2, Vector2ic p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2dc p2, Vector2ic p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2dc p2, Vector2ic p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2dc p2, Vector2fc p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2dc p2, Vector2fc p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2dc p2, Vector2fc p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2dc p2, Vector2dc p3, Vector2ic p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2dc p2, Vector2dc p3, Vector2fc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
-    public void quad(Vector2dc p1, Vector2dc p2, Vector2dc p3, Vector2dc p4)                         { quad(p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y(), p4.x(), p4.y()); }
-    
     // ---------------------
     // -- Polygon Methods --
     // ---------------------
     
-    public abstract void drawPolygon(double[] points);
+    /**
+     * Draws a polygon from the points provided that is {@link #weight()} pixels thick and {@link #stroke()} in color.
+     * <p>
+     * The winding order does not matter.
+     * <p>
+     * This method does not validate the points.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param points The points.
+     */
+    public abstract void drawPolygon(double... points);
     
-    public abstract void fillPolygon(double[] points);
+    /**
+     * Fills a polygon from the points provided that is {@link #fill()} in color.
+     * <p>
+     * The winding order does not matter.
+     * <p>
+     * This method does not validate the points.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param points The points.
+     */
+    public abstract void fillPolygon(double... points);
     
-    public void polygon(Object... points)
+    /**
+     * Draws a polygon from the points provided that is {@link #weight()} pixels thick and {@link #stroke()} in color and filled with color {@link #fill()}.
+     * <p>
+     * The winding order does not matter.
+     * <p>
+     * If the strokes alpha is equal to zero then the border will not be drawn.
+     * <p>
+     * If the fills alpha is equal to zero then the inside will not be filled.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param points The points.
+     */
+    public void polygon(double... points)
     {
-        boolean           expectNumber = false;
-        ArrayList<Double> data         = new ArrayList<>();
-        for (Object value : points)
-        {
-            if (value instanceof Integer)
-            {
-                expectNumber = !expectNumber;
-                data.add((double) ((Integer) value));
-            }
-            else if (value instanceof Float)
-            {
-                expectNumber = !expectNumber;
-                data.add((double) ((Float) value));
-            }
-            else if (value instanceof Double)
-            {
-                expectNumber = !expectNumber;
-                data.add((Double) value);
-            }
-            else if (value instanceof Vector2ic)
-            {
-                if (expectNumber) throw new RuntimeException("Invalid coordinates. Mismatch");
-                Vector2ic point = (Vector2ic) value;
-                data.add((double) point.x());
-                data.add((double) point.y());
-            }
-            else if (value instanceof Vector2fc)
-            {
-                if (expectNumber) throw new RuntimeException("Invalid coordinates. Mismatch");
-                Vector2fc point = (Vector2fc) value;
-                data.add((double) point.x());
-                data.add((double) point.y());
-            }
-            else if (value instanceof Vector2dc)
-            {
-                if (expectNumber) throw new RuntimeException("Invalid coordinates. Mismatch");
-                Vector2dc point = (Vector2dc) value;
-                data.add(point.x());
-                data.add(point.y());
-            }
-        }
-        if (expectNumber) throw new RuntimeException("Invalid coordinates. Mismatch");
-        
-        int      n         = data.size();
-        double[] newPoints = new double[n];
-        for (int i = 0; i < n; i++)
-        {
-            newPoints[i] = data.get(i);
-        }
+        int n = points.length;
         
         if ((n & 1) == 1) throw new RuntimeException("Invalid coordinates. Must be an even number");
         if (n < 6) throw new RuntimeException("Invalid coordinates. Must have at least 3 coordinate pairs");
         
-        if (this.fill.a() > 0) fillPolygon(newPoints);
-        if (this.stroke.a() > 0) drawPolygon(newPoints);
+        if (this.fill.a() > 0) fillPolygon(points);
+        if (this.stroke.a() > 0) drawPolygon(points);
     }
     
     // --------------------
@@ -1302,12 +979,6 @@ public abstract class Renderer
         }
     }
     
-    public void circle(Vector2ic ab, double c) { circle(ab.x(), ab.y(), c); }
-    
-    public void circle(Vector2fc ab, double c) { circle(ab.x(), ab.y(), c); }
-    
-    public void circle(Vector2dc ab, double c) { circle(ab.x(), ab.y(), c); }
-    
     // ---------------------
     // -- Ellipse Methods --
     // ---------------------
@@ -1322,54 +993,61 @@ public abstract class Renderer
         {
             case CENTER:
             default:
+                if (this.fill.a() > 0) fillEllipse(a, b, c * 0.5, d * 0.5);
+                if (this.stroke.a() > 0) drawEllipse(a, b, c * 0.5, d * 0.5);
+                break;
+            case RADIUS:
                 if (this.fill.a() > 0) fillEllipse(a, b, c, d);
                 if (this.stroke.a() > 0) drawEllipse(a, b, c, d);
                 break;
-            case RADIUS:
-                if (this.fill.a() > 0) fillEllipse(a, b, c * 2, d * 2);
-                if (this.stroke.a() > 0) drawEllipse(a, b, c * 2, d * 2);
-                break;
             case CORNER:
-                if (this.fill.a() > 0) fillEllipse(a + c * 0.5, b + d * 0.5, c, d);
-                if (this.stroke.a() > 0) drawEllipse(a + c * 0.5, b + d * 0.5, c, d);
+                c *= 0.5;
+                d *= 0.5;
+                if (this.fill.a() > 0) fillEllipse(a + c, b + d, c, d);
+                if (this.stroke.a() > 0) drawEllipse(a + c, b + d, c, d);
                 break;
             case CORNERS:
-                double w = c - a, h = d - b;
-                if (this.fill.a() > 0) fillEllipse(a + w * 0.5, b + h * 0.5, w, h);
-                if (this.stroke.a() > 0) drawEllipse(a + w * 0.5, b + h * 0.5, w, h);
+                double rx = (c - a) * 0.5, ry = (d - b) * 0.5;
+                if (this.fill.a() > 0) fillEllipse(a + rx, b + ry, rx, ry);
+                if (this.stroke.a() > 0) drawEllipse(a + rx, b + ry, rx, ry);
                 break;
         }
     }
     
-    public void ellipse(double a, double b, Vector2ic cd) { ellipse(a, b, cd.x(), cd.y()); }
+    // -----------------
+    // -- Aec Methods --
+    // -----------------
     
-    public void ellipse(double a, double b, Vector2fc cd) { ellipse(a, b, cd.x(), cd.y()); }
+    public abstract void drawArc(double x, double y, double rx, double ry, double start, double stop);
     
-    public void ellipse(double a, double b, Vector2dc cd) { ellipse(a, b, cd.x(), cd.y()); }
+    public abstract void fillArc(double x, double y, double rx, double ry, double start, double stop);
     
-    public void ellipse(Vector2ic ab, double c, double d) { ellipse(ab.x(), ab.y(), c, d); }
-    
-    public void ellipse(Vector2fc ab, double c, double d) { ellipse(ab.x(), ab.y(), c, d); }
-    
-    public void ellipse(Vector2dc ab, double c, double d) { ellipse(ab.x(), ab.y(), c, d); }
-    
-    public void ellipse(Vector2ic ab, Vector2ic cd)       { ellipse(ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void ellipse(Vector2ic ab, Vector2fc cd)       { ellipse(ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void ellipse(Vector2ic ab, Vector2dc cd)       { ellipse(ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void ellipse(Vector2fc ab, Vector2ic cd)       { ellipse(ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void ellipse(Vector2fc ab, Vector2fc cd)       { ellipse(ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void ellipse(Vector2fc ab, Vector2dc cd)       { ellipse(ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void ellipse(Vector2dc ab, Vector2ic cd)       { ellipse(ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void ellipse(Vector2dc ab, Vector2fc cd)       { ellipse(ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void ellipse(Vector2dc ab, Vector2dc cd)       { ellipse(ab.x(), ab.y(), cd.x(), cd.y()); }
+    public void arc(double a, double b, double c, double d, double start, double stop)
+    {
+        switch (this.ellipseMode)
+        {
+            case CENTER:
+            default:
+                if (this.fill.a() > 0) fillArc(a, b, c * 0.5, d * 0.5, start, stop);
+                if (this.stroke.a() > 0) drawArc(a, b, c * 0.5, d * 0.5, start, stop);
+                break;
+            case RADIUS:
+                if (this.fill.a() > 0) fillArc(a, b, c, d, start, stop);
+                if (this.stroke.a() > 0) drawArc(a, b, c, d, start, stop);
+                break;
+            case CORNER:
+                c *= 0.5;
+                d *= 0.5;
+                if (this.fill.a() > 0) fillArc(a + c, b + d, c, d, start, stop);
+                if (this.stroke.a() > 0) drawArc(a + c, b + d, c, d, start, stop);
+                break;
+            case CORNERS:
+                double rx = (c - a) * 0.5, ry = (d - b) * 0.5;
+                if (this.fill.a() > 0) fillArc(a + rx, b + ry, rx, ry, start, stop);
+                if (this.stroke.a() > 0) drawArc(a + rx, b + ry, rx, ry, start, stop);
+                break;
+        }
+    }
     
     // ---------------------
     // -- Texture Methods --
@@ -1397,672 +1075,20 @@ public abstract class Renderer
         }
     }
     
-    public void texture(Texture t, double a, double b, double c, double d, double u, double v, Vector2ic texSize)  { texture(t, a, b, c, d, u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, double c, double d, double u, double v, Vector2fc texSize)  { texture(t, a, b, c, d, u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, double c, double d, double u, double v, Vector2dc texSize)  { texture(t, a, b, c, d, u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, double c, double d, Vector2ic texPos, double uw, double vh) { texture(t, a, b, c, d, texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, double a, double b, double c, double d, Vector2fc texPos, double uw, double vh) { texture(t, a, b, c, d, texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, double a, double b, double c, double d, Vector2dc texPos, double uw, double vh) { texture(t, a, b, c, d, texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, double a, double b, double c, double d, Vector2ic texPos, Vector2ic texSize)    { texture(t, a, b, c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, double c, double d, Vector2ic texPos, Vector2fc texSize)    { texture(t, a, b, c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, double c, double d, Vector2ic texPos, Vector2dc texSize)    { texture(t, a, b, c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, double c, double d, Vector2fc texPos, Vector2ic texSize)    { texture(t, a, b, c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, double c, double d, Vector2fc texPos, Vector2fc texSize)    { texture(t, a, b, c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, double c, double d, Vector2fc texPos, Vector2dc texSize)    { texture(t, a, b, c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, double c, double d, Vector2dc texPos, Vector2ic texSize)    { texture(t, a, b, c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, double c, double d, Vector2dc texPos, Vector2fc texSize)    { texture(t, a, b, c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, double c, double d, Vector2dc texPos, Vector2dc texSize)    { texture(t, a, b, c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2ic cd, double u, double v, Vector2ic texSize)        { texture(t, a, b, cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2ic cd, double u, double v, Vector2fc texSize)        { texture(t, a, b, cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2ic cd, double u, double v, Vector2dc texSize)        { texture(t, a, b, cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2fc cd, double u, double v, Vector2ic texSize)        { texture(t, a, b, cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2fc cd, double u, double v, Vector2fc texSize)        { texture(t, a, b, cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2fc cd, double u, double v, Vector2dc texSize)        { texture(t, a, b, cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2dc cd, double u, double v, Vector2ic texSize)        { texture(t, a, b, cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2dc cd, double u, double v, Vector2fc texSize)        { texture(t, a, b, cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2dc cd, double u, double v, Vector2dc texSize)        { texture(t, a, b, cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2ic cd, Vector2ic texPos, double uw, double vh)       { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, double a, double b, Vector2ic cd, Vector2fc texPos, double uw, double vh)       { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, double a, double b, Vector2ic cd, Vector2dc texPos, double uw, double vh)       { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, double a, double b, Vector2fc cd, Vector2ic texPos, double uw, double vh)       { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, double a, double b, Vector2fc cd, Vector2fc texPos, double uw, double vh)       { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, double a, double b, Vector2fc cd, Vector2dc texPos, double uw, double vh)       { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, double a, double b, Vector2dc cd, Vector2ic texPos, double uw, double vh)       { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, double a, double b, Vector2dc cd, Vector2fc texPos, double uw, double vh)       { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, double a, double b, Vector2dc cd, Vector2dc texPos, double uw, double vh)       { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2ic ab, double c, double d, double u, double v, Vector2ic texSize)        { texture(t, ab.x(), ab.y(), c, d, u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, double c, double d, double u, double v, Vector2fc texSize)        { texture(t, ab.x(), ab.y(), c, d, u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, double c, double d, double u, double v, Vector2dc texSize)        { texture(t, ab.x(), ab.y(), c, d, u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, double c, double d, double u, double v, Vector2ic texSize)        { texture(t, ab.x(), ab.y(), c, d, u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, double c, double d, double u, double v, Vector2fc texSize)        { texture(t, ab.x(), ab.y(), c, d, u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, double c, double d, double u, double v, Vector2dc texSize)        { texture(t, ab.x(), ab.y(), c, d, u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, double c, double d, double u, double v, Vector2ic texSize)        { texture(t, ab.x(), ab.y(), c, d, u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, double c, double d, double u, double v, Vector2fc texSize)        { texture(t, ab.x(), ab.y(), c, d, u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, double c, double d, double u, double v, Vector2dc texSize)        { texture(t, ab.x(), ab.y(), c, d, u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, double c, double d, Vector2ic texPos, double uw, double vh)       { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2ic ab, double c, double d, Vector2fc texPos, double uw, double vh)       { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2ic ab, double c, double d, Vector2dc texPos, double uw, double vh)       { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2fc ab, double c, double d, Vector2ic texPos, double uw, double vh)       { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2fc ab, double c, double d, Vector2fc texPos, double uw, double vh)       { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2fc ab, double c, double d, Vector2dc texPos, double uw, double vh)       { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2dc ab, double c, double d, Vector2ic texPos, double uw, double vh)       { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2dc ab, double c, double d, Vector2fc texPos, double uw, double vh)       { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2dc ab, double c, double d, Vector2dc texPos, double uw, double vh)       { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2ic cd, double u, double v, double uw, double vh)           { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, uw, vh); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2fc cd, double u, double v, double uw, double vh)           { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, uw, vh); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2dc cd, double u, double v, double uw, double vh)           { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, uw, vh); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2ic cd, double u, double v, double uw, double vh)           { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, uw, vh); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2fc cd, double u, double v, double uw, double vh)           { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, uw, vh); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2dc cd, double u, double v, double uw, double vh)           { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, uw, vh); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2ic cd, double u, double v, double uw, double vh)           { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, uw, vh); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2fc cd, double u, double v, double uw, double vh)           { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, uw, vh); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2dc cd, double u, double v, double uw, double vh)           { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, uw, vh); }
-    
-    public void texture(Texture t, double a, double b, Vector2ic cd, Vector2ic texPos, Vector2ic texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2ic cd, Vector2ic texPos, Vector2fc texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2ic cd, Vector2ic texPos, Vector2dc texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2ic cd, Vector2fc texPos, Vector2ic texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2ic cd, Vector2fc texPos, Vector2fc texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2ic cd, Vector2fc texPos, Vector2dc texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2ic cd, Vector2dc texPos, Vector2ic texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2ic cd, Vector2dc texPos, Vector2fc texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2ic cd, Vector2dc texPos, Vector2dc texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2fc cd, Vector2ic texPos, Vector2ic texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2fc cd, Vector2ic texPos, Vector2fc texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2fc cd, Vector2ic texPos, Vector2dc texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2fc cd, Vector2fc texPos, Vector2ic texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2fc cd, Vector2fc texPos, Vector2fc texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2fc cd, Vector2fc texPos, Vector2dc texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2fc cd, Vector2dc texPos, Vector2ic texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2fc cd, Vector2dc texPos, Vector2fc texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2fc cd, Vector2dc texPos, Vector2dc texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2dc cd, Vector2ic texPos, Vector2ic texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2dc cd, Vector2ic texPos, Vector2fc texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2dc cd, Vector2ic texPos, Vector2dc texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2dc cd, Vector2fc texPos, Vector2ic texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2dc cd, Vector2fc texPos, Vector2fc texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2dc cd, Vector2fc texPos, Vector2dc texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2dc cd, Vector2dc texPos, Vector2ic texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2dc cd, Vector2dc texPos, Vector2fc texSize)          { texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, double c, double d, Vector2ic texPos, Vector2ic texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, double c, double d, Vector2ic texPos, Vector2fc texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, double c, double d, Vector2ic texPos, Vector2dc texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, double c, double d, Vector2fc texPos, Vector2ic texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, double c, double d, Vector2fc texPos, Vector2fc texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, double c, double d, Vector2fc texPos, Vector2dc texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, double c, double d, Vector2dc texPos, Vector2ic texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, double c, double d, Vector2dc texPos, Vector2fc texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, double c, double d, Vector2dc texPos, Vector2dc texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, double c, double d, Vector2ic texPos, Vector2ic texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, double c, double d, Vector2ic texPos, Vector2fc texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, double c, double d, Vector2ic texPos, Vector2dc texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, double c, double d, Vector2fc texPos, Vector2ic texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, double c, double d, Vector2fc texPos, Vector2fc texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, double c, double d, Vector2fc texPos, Vector2dc texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, double c, double d, Vector2dc texPos, Vector2ic texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, double c, double d, Vector2dc texPos, Vector2fc texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, double c, double d, Vector2dc texPos, Vector2dc texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, double c, double d, Vector2ic texPos, Vector2ic texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, double c, double d, Vector2ic texPos, Vector2fc texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, double c, double d, Vector2ic texPos, Vector2dc texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, double c, double d, Vector2fc texPos, Vector2ic texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, double c, double d, Vector2fc texPos, Vector2fc texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, double c, double d, Vector2fc texPos, Vector2dc texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, double c, double d, Vector2dc texPos, Vector2ic texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, double c, double d, Vector2dc texPos, Vector2fc texSize)          { texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2ic cd, double u, double v, Vector2ic texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2ic cd, double u, double v, Vector2fc texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2ic cd, double u, double v, Vector2dc texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2fc cd, double u, double v, Vector2ic texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2fc cd, double u, double v, Vector2fc texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2fc cd, double u, double v, Vector2dc texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2dc cd, double u, double v, Vector2ic texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2dc cd, double u, double v, Vector2fc texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2dc cd, double u, double v, Vector2dc texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2ic cd, double u, double v, Vector2ic texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2ic cd, double u, double v, Vector2fc texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2ic cd, double u, double v, Vector2dc texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2fc cd, double u, double v, Vector2ic texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2fc cd, double u, double v, Vector2fc texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2fc cd, double u, double v, Vector2dc texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2dc cd, double u, double v, Vector2ic texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2dc cd, double u, double v, Vector2fc texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2dc cd, double u, double v, Vector2dc texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2ic cd, double u, double v, Vector2ic texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2ic cd, double u, double v, Vector2fc texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2ic cd, double u, double v, Vector2dc texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2fc cd, double u, double v, Vector2ic texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2fc cd, double u, double v, Vector2fc texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2fc cd, double u, double v, Vector2dc texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2dc cd, double u, double v, Vector2ic texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2dc cd, double u, double v, Vector2fc texSize)              { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2ic cd, Vector2ic texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2ic cd, Vector2fc texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2ic cd, Vector2dc texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2fc cd, Vector2ic texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2fc cd, Vector2fc texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2fc cd, Vector2dc texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2dc cd, Vector2ic texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2dc cd, Vector2fc texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2dc cd, Vector2dc texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2ic cd, Vector2ic texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2ic cd, Vector2fc texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2ic cd, Vector2dc texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2fc cd, Vector2ic texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2fc cd, Vector2fc texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2fc cd, Vector2dc texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2dc cd, Vector2ic texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2dc cd, Vector2fc texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2dc cd, Vector2dc texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2ic cd, Vector2ic texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2ic cd, Vector2fc texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2ic cd, Vector2dc texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2fc cd, Vector2ic texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2fc cd, Vector2fc texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2fc cd, Vector2dc texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2dc cd, Vector2ic texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2dc cd, Vector2fc texPos, double uw, double vh)             { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2ic cd, Vector2ic texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2ic cd, Vector2ic texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2ic cd, Vector2ic texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2ic cd, Vector2fc texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2ic cd, Vector2fc texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2ic cd, Vector2fc texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2ic cd, Vector2dc texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2ic cd, Vector2dc texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2ic cd, Vector2dc texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2fc cd, Vector2ic texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2fc cd, Vector2ic texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2fc cd, Vector2ic texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2fc cd, Vector2fc texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2fc cd, Vector2fc texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2fc cd, Vector2fc texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2fc cd, Vector2dc texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2fc cd, Vector2dc texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2fc cd, Vector2dc texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2dc cd, Vector2ic texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2dc cd, Vector2ic texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2dc cd, Vector2ic texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2dc cd, Vector2fc texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2dc cd, Vector2fc texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2dc cd, Vector2fc texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2dc cd, Vector2dc texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2dc cd, Vector2dc texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2dc cd, Vector2dc texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2ic cd, Vector2ic texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2ic cd, Vector2ic texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2ic cd, Vector2ic texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2ic cd, Vector2fc texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2ic cd, Vector2fc texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2ic cd, Vector2fc texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2ic cd, Vector2dc texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2ic cd, Vector2dc texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2ic cd, Vector2dc texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2fc cd, Vector2ic texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2fc cd, Vector2ic texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2fc cd, Vector2ic texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2fc cd, Vector2fc texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2fc cd, Vector2fc texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2fc cd, Vector2fc texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2fc cd, Vector2dc texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2fc cd, Vector2dc texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2fc cd, Vector2dc texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2dc cd, Vector2ic texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2dc cd, Vector2ic texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2dc cd, Vector2ic texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2dc cd, Vector2fc texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2dc cd, Vector2fc texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2dc cd, Vector2fc texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2dc cd, Vector2dc texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2dc cd, Vector2dc texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2dc cd, Vector2dc texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2ic cd, Vector2ic texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2ic cd, Vector2ic texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2ic cd, Vector2ic texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2ic cd, Vector2fc texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2ic cd, Vector2fc texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2ic cd, Vector2fc texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2ic cd, Vector2dc texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2ic cd, Vector2dc texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2ic cd, Vector2dc texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2fc cd, Vector2ic texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2fc cd, Vector2ic texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2fc cd, Vector2ic texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2fc cd, Vector2fc texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2fc cd, Vector2fc texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2fc cd, Vector2fc texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2fc cd, Vector2dc texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2fc cd, Vector2dc texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2fc cd, Vector2dc texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2dc cd, Vector2ic texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2dc cd, Vector2ic texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2dc cd, Vector2ic texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2dc cd, Vector2fc texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2dc cd, Vector2fc texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2dc cd, Vector2fc texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2dc cd, Vector2dc texPos, Vector2ic texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2dc cd, Vector2dc texPos, Vector2fc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2dc cd, Vector2dc texPos, Vector2dc texSize)                { texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
     public void texture(Texture t, double x, double y, double u, double v, double uw, double vh)
     {
         texture(t, x, y, t.width(), t.height(), u, v, uw, vh);
     }
-    
-    public void texture(Texture t, double x, double y, double u, double v, Vector2ic texSize)  { texture(t, x, y, u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double x, double y, double u, double v, Vector2fc texSize)  { texture(t, x, y, u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double x, double y, double u, double v, Vector2dc texSize)  { texture(t, x, y, u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double x, double y, Vector2ic texPos, double uw, double vh) { texture(t, x, y, texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, double x, double y, Vector2fc texPos, double uw, double vh) { texture(t, x, y, texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, double x, double y, Vector2dc texPos, double uw, double vh) { texture(t, x, y, texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2ic pos, double u, double v, double uw, double vh)    { texture(t, pos.x(), pos.y(), u, v, uw, vh); }
-    
-    public void texture(Texture t, Vector2fc pos, double u, double v, double uw, double vh)    { texture(t, pos.x(), pos.y(), u, v, uw, vh); }
-    
-    public void texture(Texture t, Vector2dc pos, double u, double v, double uw, double vh)    { texture(t, pos.x(), pos.y(), u, v, uw, vh); }
-    
-    public void texture(Texture t, double x, double y, Vector2ic texPos, Vector2ic texSize)    { texture(t, x, y, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double x, double y, Vector2ic texPos, Vector2fc texSize)    { texture(t, x, y, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double x, double y, Vector2ic texPos, Vector2dc texSize)    { texture(t, x, y, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double x, double y, Vector2fc texPos, Vector2ic texSize)    { texture(t, x, y, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double x, double y, Vector2fc texPos, Vector2fc texSize)    { texture(t, x, y, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double x, double y, Vector2fc texPos, Vector2dc texSize)    { texture(t, x, y, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double x, double y, Vector2dc texPos, Vector2ic texSize)    { texture(t, x, y, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double x, double y, Vector2dc texPos, Vector2fc texSize)    { texture(t, x, y, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, double x, double y, Vector2dc texPos, Vector2dc texSize)    { texture(t, x, y, texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic pos, double u, double v, Vector2ic texSize)       { texture(t, pos.x(), pos.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic pos, double u, double v, Vector2fc texSize)       { texture(t, pos.x(), pos.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic pos, double u, double v, Vector2dc texSize)       { texture(t, pos.x(), pos.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc pos, double u, double v, Vector2ic texSize)       { texture(t, pos.x(), pos.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc pos, double u, double v, Vector2fc texSize)       { texture(t, pos.x(), pos.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc pos, double u, double v, Vector2dc texSize)       { texture(t, pos.x(), pos.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc pos, double u, double v, Vector2ic texSize)       { texture(t, pos.x(), pos.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc pos, double u, double v, Vector2fc texSize)       { texture(t, pos.x(), pos.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc pos, double u, double v, Vector2dc texSize)       { texture(t, pos.x(), pos.y(), u, v, texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic pos, Vector2ic texPos, double uw, double vh)      { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2ic pos, Vector2fc texPos, double uw, double vh)      { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2ic pos, Vector2dc texPos, double uw, double vh)      { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2fc pos, Vector2ic texPos, double uw, double vh)      { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2fc pos, Vector2fc texPos, double uw, double vh)      { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2fc pos, Vector2dc texPos, double uw, double vh)      { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2dc pos, Vector2ic texPos, double uw, double vh)      { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2dc pos, Vector2fc texPos, double uw, double vh)      { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2dc pos, Vector2dc texPos, double uw, double vh)      { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), uw, vh); }
-    
-    public void texture(Texture t, Vector2ic pos, Vector2ic texPos, Vector2ic texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic pos, Vector2ic texPos, Vector2fc texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic pos, Vector2ic texPos, Vector2dc texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic pos, Vector2fc texPos, Vector2ic texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic pos, Vector2fc texPos, Vector2fc texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic pos, Vector2fc texPos, Vector2dc texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic pos, Vector2dc texPos, Vector2ic texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic pos, Vector2dc texPos, Vector2fc texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2ic pos, Vector2dc texPos, Vector2dc texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc pos, Vector2ic texPos, Vector2ic texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc pos, Vector2ic texPos, Vector2fc texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc pos, Vector2ic texPos, Vector2dc texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc pos, Vector2fc texPos, Vector2ic texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc pos, Vector2fc texPos, Vector2fc texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc pos, Vector2fc texPos, Vector2dc texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc pos, Vector2dc texPos, Vector2ic texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc pos, Vector2dc texPos, Vector2fc texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2fc pos, Vector2dc texPos, Vector2dc texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc pos, Vector2ic texPos, Vector2ic texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc pos, Vector2ic texPos, Vector2fc texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc pos, Vector2ic texPos, Vector2dc texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc pos, Vector2fc texPos, Vector2ic texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc pos, Vector2fc texPos, Vector2fc texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc pos, Vector2fc texPos, Vector2dc texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc pos, Vector2dc texPos, Vector2ic texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc pos, Vector2dc texPos, Vector2fc texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
-    
-    public void texture(Texture t, Vector2dc pos, Vector2dc texPos, Vector2dc texSize)         { texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y()); }
     
     public void texture(Texture t, double a, double y, double w, double h)
     {
         texture(t, a, y, w, h, 0, 0, 1, 1);
     }
     
-    public void texture(Texture t, double a, double b, Vector2ic cd) { texture(t, a, b, cd.x(), cd.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2fc cd) { texture(t, a, b, cd.x(), cd.y()); }
-    
-    public void texture(Texture t, double a, double b, Vector2dc cd) { texture(t, a, b, cd.x(), cd.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, double c, double d) { texture(t, ab.x(), ab.y(), c, d); }
-    
-    public void texture(Texture t, Vector2fc ab, double c, double d) { texture(t, ab.x(), ab.y(), c, d); }
-    
-    public void texture(Texture t, Vector2dc ab, double c, double d) { texture(t, ab.x(), ab.y(), c, d); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2ic cd)       { texture(t, ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2fc cd)       { texture(t, ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void texture(Texture t, Vector2ic ab, Vector2dc cd)       { texture(t, ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2ic cd)       { texture(t, ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2fc cd)       { texture(t, ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void texture(Texture t, Vector2fc ab, Vector2dc cd)       { texture(t, ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2ic cd)       { texture(t, ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2fc cd)       { texture(t, ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void texture(Texture t, Vector2dc ab, Vector2dc cd)       { texture(t, ab.x(), ab.y(), cd.x(), cd.y()); }
-    
     public void texture(Texture t, double x, double y)
     {
         texture(t, x, y, t.width(), t.height(), 0, 0, 1, 1);
     }
-    
-    public void texture(Texture t, Vector2ic ab) { texture(t, ab.x(), ab.y()); }
-    
-    public void texture(Texture t, Vector2fc ab) { texture(t, ab.x(), ab.y()); }
-    
-    public void texture(Texture t, Vector2dc ab) { texture(t, ab.x(), ab.y()); }
     
     // ------------------
     // -- Text Methods --
@@ -2155,46 +1181,10 @@ public abstract class Renderer
         }
     }
     
-    public void text(String text, double a, double b, Vector2ic cd) { text(text, a, b, cd.x(), cd.y()); }
-    
-    public void text(String text, double a, double b, Vector2fc cd) { text(text, a, b, cd.x(), cd.y()); }
-    
-    public void text(String text, double a, double b, Vector2dc cd) { text(text, a, b, cd.x(), cd.y()); }
-    
-    public void text(String text, Vector2ic ab, double c, double d) { text(text, ab.x(), ab.y(), c, d); }
-    
-    public void text(String text, Vector2fc ab, double c, double d) { text(text, ab.x(), ab.y(), c, d); }
-    
-    public void text(String text, Vector2dc ab, double c, double d) { text(text, ab.x(), ab.y(), c, d); }
-    
-    public void text(String text, Vector2ic ab, Vector2ic cd)       { text(text, ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void text(String text, Vector2ic ab, Vector2fc cd)       { text(text, ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void text(String text, Vector2ic ab, Vector2dc cd)       { text(text, ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void text(String text, Vector2fc ab, Vector2ic cd)       { text(text, ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void text(String text, Vector2fc ab, Vector2fc cd)       { text(text, ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void text(String text, Vector2fc ab, Vector2dc cd)       { text(text, ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void text(String text, Vector2dc ab, Vector2ic cd)       { text(text, ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void text(String text, Vector2dc ab, Vector2fc cd)       { text(text, ab.x(), ab.y(), cd.x(), cd.y()); }
-    
-    public void text(String text, Vector2dc ab, Vector2dc cd)       { text(text, ab.x(), ab.y(), cd.x(), cd.y()); }
-    
     public void text(String text, double x, double y)
     {
         text(text, x, y, 0, 0);
     }
-    
-    public void text(String text, Vector2ic pos) { text(text, pos.x(), pos.y()); }
-    
-    public void text(String text, Vector2fc pos) { text(text, pos.x(), pos.y()); }
-    
-    public void text(String text, Vector2dc pos) { text(text, pos.x(), pos.y()); }
     
     // -------------------
     // -- Pixel Methods --

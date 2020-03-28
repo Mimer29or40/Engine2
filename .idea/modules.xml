@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Engine2/Engine2.iml" filepath="$PROJECT_DIR$/Engine2/Engine2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Engine2/src/Engine2.iml" filepath="$PROJECT_DIR$/Engine2/src/Engine2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Playground/Playground.iml" filepath="$PROJECT_DIR$/Playground/Playground.iml" />
     </modules>
   </component>
 </project>

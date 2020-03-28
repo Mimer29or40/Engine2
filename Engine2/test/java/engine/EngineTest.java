@@ -46,13 +46,13 @@ public class EngineTest extends Engine
                 logger.info(mouse().pos().toString());
             
                 stroke(Color.RED);
-                line(screenWidth() / 2.0, screenHeight() / 2.0, mouse().pos());
-                point(mouse().pos());
+                line(screenWidth() / 2.0, screenHeight() / 2.0, mouse().x(), mouse().y());
+                point(mouse().x(), mouse().y());
                 break;
             case 2:
                 clear();
                 stroke(255);
-                bezier(0, 0, mouse().pos(), screenWidth() - 1, screenHeight() - 1);
+                bezier(0, 0, mouse().x(), mouse().y(), screenWidth() - 1, screenHeight() - 1);
                 break;
             case 3:
                 clear();
@@ -61,7 +61,7 @@ public class EngineTest extends Engine
                 fill(255);
                 // polygon(mouse().pos(), 99, 75, 75, 75, 50, 25, 25, 75, 0, 75);
                 // polygon(mouse().pos(), 99, 25, 99, 99, 0, 99, 0, 25);
-                polygon(0, 25, 10, 0, 30, 50, 30, 0, 40, 25, 50, 0, 50, 50, 70, 0, 80, 25, 99, 99, mouse().pos());
+                polygon(0, 25, 10, 0, 30, 50, 30, 0, 40, 25, 50, 0, 50, 50, 70, 0, 80, 25, 99, 99, mouse().x(), mouse().y());
                 break;
             case 4:
                 clear();
@@ -91,6 +91,15 @@ public class EngineTest extends Engine
                 texture(texture, 0, 0, 200, 200);
                 break;
             case 7:
+                clear();
+                stroke(255, 0, 0, 100);
+                weight(3);
+                fill(255);
+                translate(screenWidth() / 2., screenHeight() / 2.);
+                // polygon(mouse().pos(), 99, 75, 75, 75, 50, 25, 25, 75, 0, 75);
+                // polygon(mouse().pos(), 99, 25, 99, 99, 0, 99, 0, 25);
+                ellipse(0, 0, 10, 100);
+                line(-10, 0, 10, 0);
                 break;
             case 8:
                 break;

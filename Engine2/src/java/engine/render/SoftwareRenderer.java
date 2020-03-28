@@ -30,6 +30,8 @@ public class SoftwareRenderer extends Renderer
     @Override
     public void finish()
     {
+        super.finish();
+        
         this.target.upload();
     }
     
@@ -267,6 +269,18 @@ public class SoftwareRenderer extends Renderer
     public void fillEllipse(double x, double y, double rx, double ry)
     {
         fillPolygon(getCirclePoints(x, y, rx, ry));
+    }
+    
+    @Override
+    public void drawArc(double x, double y, double rx, double ry, double start, double stop)
+    {
+    
+    }
+    
+    @Override
+    public void fillArc(double x, double y, double rx, double ry, double start, double stop)
+    {
+    
     }
     
     @Override
@@ -577,7 +591,7 @@ public class SoftwareRenderer extends Renderer
     
     private double[] getCirclePoints(double x, double y, double rx, double ry)
     {
-        int      RESOLUTION = (int) Math.max(rx, ry) / 2;
+        int      RESOLUTION = Math.max(16, (int) Math.max(rx, ry) / 2);
         double   TWO_PI     = 2.0 * Math.PI;
         double[] points     = new double[RESOLUTION * 2];
         for (int i = 0; i < RESOLUTION; i++)

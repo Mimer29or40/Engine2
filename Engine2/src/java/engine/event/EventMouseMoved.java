@@ -3,7 +3,9 @@ package engine.event;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
-@SuppressWarnings("unused")
+/**
+ * This event is generated when ever the mouse is moved, with the current mouse position and the relative mouse move.
+ */
 public class EventMouseMoved extends Event
 {
     public EventMouseMoved(Object[] values)

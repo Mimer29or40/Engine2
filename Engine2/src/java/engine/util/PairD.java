@@ -1,5 +1,8 @@
 package engine.util;
 
+/**
+ * A simple {@code double} pair.
+ */
 @SuppressWarnings("unused")
 public class PairD extends Pair<Double, Double>
 {

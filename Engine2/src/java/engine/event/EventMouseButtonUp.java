@@ -4,6 +4,9 @@ import org.joml.Vector2i;
 import org.joml.Vector2ic;
 import engine.input.Mouse;
 
+/**
+ * This event is generated when ever a mouse button is released, with the mouse button that was released and the position of the mouse.
+ */
 public class EventMouseButtonUp extends Event
 {
     public EventMouseButtonUp(Object[] values)

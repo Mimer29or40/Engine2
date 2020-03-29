@@ -1,5 +1,8 @@
 package engine.util;
 
+/**
+ * A simple {@code double} float.
+ */
 @SuppressWarnings("unused")
 public class TupleF extends Tuple<Float, Float, Float>
 {

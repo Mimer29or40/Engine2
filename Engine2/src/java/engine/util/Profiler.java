@@ -5,6 +5,9 @@ import java.util.function.Function;
 
 import static engine.util.Util.round;
 
+/**
+ * A profiler that tracks the time taken to perform a task. It can track groups and sub groups.
+ */
 public class Profiler
 {
     private static final Logger LOGGER = new Logger();
@@ -19,11 +22,19 @@ public class Profiler
     public  boolean enabled = false;
     private boolean started = false;
     
+    /**
+     * Creates a new Profiler.
+     *
+     * @param root The root group name.
+     */
     public Profiler(String root)
     {
         this.root = root;
     }
     
+    /**
+     * Starts the profiler frame. The profiler must be enabled and the frame must be stopped.
+     */
     public void startFrame()
     {
         if (this.enabled)
@@ -42,6 +53,9 @@ public class Profiler
         }
     }
     
+    /**
+     * Ends the profiler frame. The profiler must be enabled and the frame must have been started.
+     */
     public void endFrame()
     {
         if (this.enabled)
@@ -62,6 +76,11 @@ public class Profiler
         }
     }
     
+    /**
+     * Begins a section to start timing it. Must be paired with {@link #endSection()}. You can call again with a unique name to start a sub section.
+     *
+     * @param section The unique section name.
+     */
     public void startSection(String section)
     {
         if (this.enabled)
@@ -75,12 +94,15 @@ public class Profiler
                 String parent = !this.sections.isEmpty() ? this.sections.peek().a + '.' : "";
                 
                 this.sections.push(new Pair<>(parent + section, System.nanoTime()));
-    
+                
                 Profiler.LOGGER.trace("Starting Section: %s", parent + section);
             }
         }
     }
     
+    /**
+     * Ends a section and records the time since {@link #startSection} was called. Must be paired with {@link #endSection()}.
+     */
     public void endSection()
     {
         if (this.enabled)
@@ -104,22 +126,28 @@ public class Profiler
                 {
                     Profiler.LOGGER.warn("Something's taking too long! '%s' took approx %s us", section, delta / 1_000D);
                 }
-    
+                
                 Profiler.LOGGER.trace("Ending Section: %s", section);
             }
         }
     }
     
-    public List<FrameData> getData(String _parent)
+    /**
+     * Gets the raw data for the section and all of its children and grandchildren.
+     *
+     * @param parent The section.
+     * @return The list of data points for the parent.
+     */
+    public List<FrameData> getData(String parent)
     {
-        final String parent = _parent == null || _parent.equals("") ? this.root : _parent;
+        final String p = parent == null || parent.equals("") ? this.root : parent;
         
-        Function<String, Boolean> check = (s) -> s.startsWith(parent + ".") && !s.replaceAll(parent + ".", "").contains(".");
+        Function<String, Boolean> check = (s) -> s.startsWith(p + ".") && !s.replaceAll(p + ".", "").contains(".");
         
         long actualTotal = 0;
         for (String section : this.times.keySet()) if (check.apply(section)) actualTotal += this.times.get(section);
         
-        long parentTotal = this.times.get(parent);
+        long parentTotal = this.times.get(p);
         long globalTotal = Math.max(this.times.get(this.root), parentTotal);
         
         long total = Math.max(actualTotal, parentTotal);
@@ -141,21 +169,27 @@ public class Profiler
             long   time     = parentTotal - actualTotal;
             double percent  = round(((double) time / (double) total) * 100D, 3);
             double gPercent = round(((double) time / (double) globalTotal) * 100D, 3);
-            data.add(new FrameData(parent + ".Unspecified", time, percent, gPercent));
+            data.add(new FrameData(p + ".Unspecified", time, percent, gPercent));
         }
         
         Collections.sort(data);
-        FrameData pData = new FrameData(parent, parentTotal, 100, round((double) parentTotal / (double) globalTotal * 100, 3));
+        FrameData pData = new FrameData(p, parentTotal, 100, round((double) parentTotal / (double) globalTotal * 100, 3));
         data.add(0, pData);
         
         return data;
     }
     
-    public String getFormattedData(String _parent)
+    /**
+     * Gets a formatted string of the data points for the parent and its children.
+     *
+     * @param parent The section.
+     * @return The formatted string.
+     */
+    public String getFormattedData(String parent)
     {
-        final String  parent  = _parent == null || _parent.equals("") ? this.root : _parent;
+        final String  p       = parent == null || parent.equals("") ? this.root : parent;
         StringBuilder builder = new StringBuilder();
-        format(0, parent, builder, true);
+        format(0, p, builder, true);
         return builder.toString();
     }
     
@@ -203,7 +237,7 @@ public class Profiler
         public final double percentage;
         public final double globalPercentage;
         
-        public FrameData(String name, long time, double percentage, double globalPercentage)
+        private FrameData(String name, long time, double percentage, double globalPercentage)
         {
             this.name             = name;
             this.time             = time;

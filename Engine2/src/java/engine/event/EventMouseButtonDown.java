@@ -4,6 +4,9 @@ import org.joml.Vector2i;
 import org.joml.Vector2ic;
 import engine.input.Mouse;
 
+/**
+ * This event is generated when ever a mouse button is pressed, with the mouse button that was pressed and the position of the mouse.
+ */
 public class EventMouseButtonDown extends Event
 {
     public EventMouseButtonDown(Object[] values)

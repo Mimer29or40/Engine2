@@ -1,5 +1,8 @@
 package engine.util;
 
+/**
+ * A simple {@code int} pair.
+ */
 @SuppressWarnings("unused")
 public class PairI extends Pair<Integer, Integer>
 {

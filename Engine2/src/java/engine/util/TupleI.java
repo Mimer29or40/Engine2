@@ -1,5 +1,8 @@
 package engine.util;
 
+/**
+ * A simple {@code int} tuple.
+ */
 @SuppressWarnings("unused")
 public class TupleI extends Tuple<Integer, Integer, Integer>
 {

@@ -1,5 +1,8 @@
 package engine.util;
 
+/**
+ * A simple {@code double} tuple.
+ */
 @SuppressWarnings("unused")
 public class TupleD extends Tuple<Double, Double, Double>
 {

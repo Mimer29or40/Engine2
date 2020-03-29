@@ -1,5 +1,8 @@
 package engine.util;
 
+/**
+ * A simple {@code float} pair.
+ */
 @SuppressWarnings("unused")
 public class PairF extends Pair<Float, Float>
 {

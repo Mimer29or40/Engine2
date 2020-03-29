@@ -1,5 +1,8 @@
 package engine.util;
 
+/**
+ * A simple {@code long} tuple.
+ */
 @SuppressWarnings("unused")
 public class TupleL extends Tuple<Long, Long, Long>
 {

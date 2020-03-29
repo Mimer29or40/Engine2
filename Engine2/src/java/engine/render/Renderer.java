@@ -10,6 +10,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
+/**
+ * Abstract Renderer to draw things to a texture.
+ */
 public abstract class Renderer
 {
     private static final Logger LOGGER = new Logger();
@@ -234,7 +237,7 @@ public abstract class Renderer
     /**
      * Sets the {@link RectMode} option.
      * <p>
-     * See {@link #rect} for details on what each option does.
+     * See {@link RectMode} for how the points get transformed.
      *
      * @param rectMode The new {@link RectMode} option.
      */
@@ -248,7 +251,7 @@ public abstract class Renderer
     /**
      * Sets the {@link EllipseMode} option.
      * <p>
-     * See {@link #ellipse} for details on what each option does.
+     * See {@link EllipseMode} for how the points get transformed.
      *
      * @param ellipseMode The new {@link EllipseMode} option.
      */
@@ -262,7 +265,7 @@ public abstract class Renderer
     /**
      * Sets the {@link ArcMode} option.
      * <p>
-     * See {@link #arc} for details on what each option does.
+     * See {@link ArcMode} for how the points get transformed.
      *
      * @param arcMode The new {@link ArcMode} option.
      */
@@ -419,7 +422,7 @@ public abstract class Renderer
     }
     
     /**
-     * Createa a known state of the renderers properties that can be returned to by calling {@link #pop}.
+     * Creates a known state of the renderers properties that can be returned to by calling {@link #pop}.
      */
     public void push()
     {
@@ -684,7 +687,7 @@ public abstract class Renderer
      * Draws a square based on {@link #rectMode()} that is {@link #fill()} in color
      * with a border {@link #weight()} thick and {@link #stroke()} in color.
      * <p>
-     * See {@link #rect} for how the points get transformed.
+     * See {@link RectMode} for how the points get transformed.
      * <p>
      * If the strokes alpha is equal to zero then the border will not be drawn.
      * <p>
@@ -753,54 +756,7 @@ public abstract class Renderer
      * Draws a rectangle based on {@link #rectMode()} that is {@link #fill()} in color
      * with a border {@link #weight()} thick and {@link #stroke()} in color.
      * <p>
-     * If the strokes alpha is equal to zero then the border will not be drawn.
-     * <p>
-     * If the fills alpha is equal to zero then the inside will not be filled.
-     * <p>
-     * <p>
-     * {@code RectMode.CORNER}
-     * <p>
-     * -- a: The top left x coordinate
-     * <p>
-     * -- b: The top left y coordinate
-     * <p>
-     * -- c: The width
-     * <p>
-     * -- d: The height
-     * <p>
-     * <p>
-     * {@code RectMode.CORNERS}
-     * <p>
-     * -- a: The top left x coordinate
-     * <p>
-     * -- b: The top left y coordinate
-     * <p>
-     * -- c: The bottom right x coordinate
-     * <p>
-     * -- d: The bottom right y coordinate
-     * <p>
-     * <p>
-     * {@code RectMode.CENTER}
-     * <p>
-     * -- a: The center x coordinate
-     * <p>
-     * -- b: The center y coordinate
-     * <p>
-     * -- c: The width
-     * <p>
-     * -- d: The height
-     * <p>
-     * <p>
-     * {@code RectMode.RADIUS}
-     * <p>
-     * -- a: The center x coordinate
-     * <p>
-     * -- b: The center y coordinate
-     * <p>
-     * -- c: The half width
-     * <p>
-     * -- d: The half height
-     * <p>
+     * See {@link RectMode} for how the points get transformed.
      * <p>
      * If the strokes alpha is equal to zero then the border will not be drawn.
      * <p>
@@ -987,7 +943,7 @@ public abstract class Renderer
      * Draws a circle based on {@link #ellipseMode()} that is {@link #fill()} in color
      * with a border {@link #weight()} thick and {@link #stroke()} in color.
      * <p>
-     * See {@link #ellipse} for how the points get transformed.
+     * See {@link EllipseMode} for how the points get transformed.
      * <p>
      * If the strokes alpha is equal to zero then the border will not be drawn.
      * <p>
@@ -1054,54 +1010,7 @@ public abstract class Renderer
      * Draws an ellipse based on {@link #ellipseMode()} that is {@link #fill()} in color
      * with a border {@link #weight()} thick and {@link #stroke()} in color.
      * <p>
-     * If the strokes alpha is equal to zero then the border will not be drawn.
-     * <p>
-     * If the fills alpha is equal to zero then the inside will not be filled.
-     * <p>
-     * <p>
-     * {@code EllipseMode.CENTER}
-     * <p>
-     * -- a: The center x coordinate
-     * <p>
-     * -- b: The center y coordinate
-     * <p>
-     * -- c: The width along the x axis
-     * <p>
-     * -- d: The height along the y axis
-     * <p>
-     * <p>
-     * {@code EllipseMode.RADIUS}
-     * <p>
-     * -- a: The center x coordinate
-     * <p>
-     * -- b: The center y coordinate
-     * <p>
-     * -- c: The radius along the x axis
-     * <p>
-     * -- d: The radius along the y axis
-     * <p>
-     * <p>
-     * {@code EllipseMode.CORNER}
-     * <p>
-     * -- a: The top left x coordinate
-     * <p>
-     * -- b: The top left y coordinate
-     * <p>
-     * -- c: The width along the x axis
-     * <p>
-     * -- d: The height along the y axis
-     * <p>
-     * <p>
-     * {@code EllipseMode.CORNERS}
-     * <p>
-     * -- a: The top left x coordinate
-     * <p>
-     * -- b: The top left y coordinate
-     * <p>
-     * -- c: The bottom right x coordinate
-     * <p>
-     * -- d: The bottom right y coordinate
-     * <p>
+     * See {@link EllipseMode} for how the points get transformed.
      * <p>
      * If the strokes alpha is equal to zero then the border will not be drawn.
      * <p>
@@ -1175,7 +1084,9 @@ public abstract class Renderer
      * Draws an arc based on {@link #ellipseMode()} that is {@link #fill()} in color
      * with a border {@link #weight()} thick and {@link #stroke()} in color.
      * <p>
-     * See {@link #ellipse} for how the points get transformed.
+     * See {@link EllipseMode} for how the points get transformed.
+     * <p>
+     * See {@link ArcMode} for how the arc is drawn.
      * <p>
      * If the strokes alpha is equal to zero then the border will not be drawn.
      * <p>
@@ -1240,7 +1151,7 @@ public abstract class Renderer
     /**
      * Draws a textured rectangle based on {@link #rectMode()}, with uv coordinates.
      * <p>
-     * See {@link #rect} for how the rectangle is drawn.
+     * See {@link RectMode} for how the points get transformed.
      * <p>
      * You can specify the coordinate of the texture to pull from.
      * <p>
@@ -1299,7 +1210,7 @@ public abstract class Renderer
     /**
      * Draws a textured rectangle based on {@link #rectMode()}.
      * <p>
-     * See {@link #rect} for how the rectangle is drawn.
+     * See {@link RectMode} for how the points get transformed.
      * <p>
      * The coordinates passed in will be transformed by the view matrix
      *

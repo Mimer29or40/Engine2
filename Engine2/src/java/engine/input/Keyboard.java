@@ -125,12 +125,21 @@ public class Keyboard extends Device<Keyboard.Key>
     
     private String capturedText = "";
     
+    /**
+     * @return Gets the default Input for this Device.
+     */
     @Override
     protected Key getDefault()
     {
         return this.NONE;
     }
     
+    /**
+     * This is called by the Engine to generate the events and state changes for the Device.
+     *
+     * @param time  The time in nano seconds that it happened.
+     * @param delta The time in nano seconds since the last frame.
+     */
     @Override
     public void handleEvents(long time, long delta)
     {
@@ -143,6 +152,13 @@ public class Keyboard extends Device<Keyboard.Key>
         super.handleEvents(time, delta);
     }
     
+    /**
+     * This is called by the Device to post any events that it may have generated this frame.
+     *
+     * @param input The Input
+     * @param time  The time in nano seconds that it happened.
+     * @param delta The time in nano seconds since the last frame.
+     */
     @Override
     protected void postEvents(Key input, long time, long delta)
     {
@@ -165,16 +181,24 @@ public class Keyboard extends Device<Keyboard.Key>
         if (input.repeat) Events.post(EventKeyboardKeyRepeat.class, input);
     }
     
+    /**
+     * This is a callback for when {@link org.lwjgl.glfw.GLFW#glfwSetCharCallback} is called.
+     *
+     * @param codePoint the {@code codePoint} to be converted
+     */
     public void charCallback(int codePoint)
     {
         capturedText += Character.toString(codePoint);
     }
     
+    /**
+     * This class represents a key on the keyboard.
+     */
     public class Key extends Device.Input
     {
-        public final int  scancode;
-        public final char baseChar;
-        public final char shiftChar;
+        private final int  scancode;
+        private final char baseChar;
+        private final char shiftChar;
         
         private Key(String name, int reference, int baseChar, int shiftChar)
         {
@@ -183,6 +207,30 @@ public class Keyboard extends Device<Keyboard.Key>
             this.scancode  = reference > 0 ? glfwGetKeyScancode(reference) : 0;
             this.baseChar  = (char) baseChar;
             this.shiftChar = (char) shiftChar;
+        }
+        
+        /**
+         * @return The keyboard scancode that represents this Key.
+         */
+        public int scancode()
+        {
+            return this.scancode;
+        }
+        
+        /**
+         * @return The baseChar of the keyboard.
+         */
+        public char baseChar()
+        {
+            return this.baseChar;
+        }
+        
+        /**
+         * @return The character of the keyboard when shift is pressed.
+         */
+        public char shiftChar()
+        {
+            return this.shiftChar;
         }
     }
 }

@@ -1,5 +1,8 @@
 package engine.util;
 
+/**
+ * A simple {@code long} pair.
+ */
 @SuppressWarnings("unused")
 public class PairL extends Pair<Long, Long>
 {

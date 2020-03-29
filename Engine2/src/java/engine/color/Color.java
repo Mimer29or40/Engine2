@@ -2,7 +2,7 @@ package engine.color;
 
 import java.util.Objects;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class Color implements Colorc
 {
     public static final Colorc WHITE      = new Color(255, 255, 255);

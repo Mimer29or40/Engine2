@@ -1,5 +1,46 @@
 package engine.render;
 
+/**
+ * Determines how the text is aligned to a point or in a rectangle.
+ * <p>
+ * <p>
+ * {@link TextAlign#TOP_LEFT} <p>
+ * -- The point is above and to the left of the text. <p>
+ * -- The text is drawn in the top left corner of a rect <p>
+ * <p>
+ * {@link TextAlign#TOP} <p>
+ * -- The point is above and centered on the text. <p>
+ * -- The text is drawn in the top and centered in a rect <p>
+ * <p>
+ * {@link TextAlign#TOP_RIGHT} <p>
+ * -- The point is above and to the right of the text. <p>
+ * -- The text is drawn in the top right corner of a rect <p>
+ * <p>
+ * {@link TextAlign#LEFT} <p>
+ * -- The point is centered and to the left of the text. <p>
+ * -- The text is drawn in the center left side of a rect <p>
+ * <p>
+ * {@link TextAlign#CENTER} <p>
+ * -- The point is centered on the text. <p>
+ * -- The text is drawn in the center of a rect <p>
+ * <p>
+ * {@link TextAlign#RIGHT} <p>
+ * -- The point is centered and to the right of the text. <p>
+ * -- The text is drawn in the center right side of a rect <p>
+ * <p>
+ * {@link TextAlign#BOTTOM_LEFT} <p>
+ * -- The point is below and to the left of the text. <p>
+ * -- The text is drawn in the bottom left corner of a rect <p>
+ * <p>
+ * {@link TextAlign#BOTTOM} <p>
+ * -- The point is below and centered on the text. <p>
+ * -- The text is drawn in the bottom center of a rect <p>
+ * <p>
+ * {@link TextAlign#BOTTOM_RIGHT} <p>
+ * -- The point is below and to the right of the text. <p>
+ * -- The text is drawn in the bottom right corner of a rect <p>
+ * <p>
+ */
 public enum TextAlign
 {
     TOP_LEFT(-1, -1),

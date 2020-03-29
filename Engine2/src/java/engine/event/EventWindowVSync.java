@@ -1,6 +1,8 @@
 package engine.event;
 
-@SuppressWarnings("unused")
+/**
+ * This event is generated whenever the window's vsync setting is toggled, with if its vsync or not.
+ */
 public class EventWindowVSync extends Event
 {
     public EventWindowVSync(Object[] values)

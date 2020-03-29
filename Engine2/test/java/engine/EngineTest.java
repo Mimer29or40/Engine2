@@ -122,8 +122,8 @@ public class EngineTest extends Engine
         }
         if (keyboard().SPACE.down()) screenShot("screenshot" + frameCount());
         if (keyboard().S.down()) screenShot();
-        if (keyboard().F.down()) fullscreen(!fullscreen());
-        if (keyboard().V.down()) vsync(!vsync());
+        if (keyboard().F.down()) window().fullscreen(!window().fullscreen());
+        if (keyboard().V.down()) window().vsync(!window().vsync());
     
         if (keyboard().F1.down()) state = 1;
         if (keyboard().F2.down()) state = 2;

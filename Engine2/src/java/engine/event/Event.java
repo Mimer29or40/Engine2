@@ -1,5 +1,12 @@
 package engine.event;
 
+/**
+ * Generic {@link Event} that represents a group of information related to something happening with the engine.
+ * <p>
+ * To use an event Sub-Class this class and add getters to cast the values to the actual types.
+ * <p>
+ * To post an event call {@link Events#post} with the event class and parameters.
+ */
 public class Event
 {
     protected final String[] keys;

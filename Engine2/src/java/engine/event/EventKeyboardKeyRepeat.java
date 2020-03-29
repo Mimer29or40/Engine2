@@ -2,6 +2,9 @@ package engine.event;
 
 import engine.input.Keyboard;
 
+/**
+ * This event is generated when ever a key is repeated, with the key that was repeated.
+ */
 public class EventKeyboardKeyRepeat extends Event
 {
     public EventKeyboardKeyRepeat(Object[] values)

@@ -6,6 +6,9 @@ import org.joml.Vector2ic;
 
 import java.util.ArrayList;
 
+/**
+ * This class is used to pass in joml Vectors to renderer methods.
+ */
 @SuppressWarnings("unused")
 public class Overloads
 {

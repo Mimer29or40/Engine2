@@ -1,19 +1,30 @@
 package engine.event;
 
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
+
+/**
+ * This event is generated whenever the window is resized, with the current window size.
+ */
 public class EventWindowResized extends Event
 {
     public EventWindowResized(Object[] values)
     {
-        super(new String[] {"width", "height"}, values);
+        super(new String[] {"size"}, values);
+    }
+    
+    public Vector2ic size()
+    {
+        return (Vector2i) this.values[0];
     }
     
     public int width()
     {
-        return (int) this.values[0];
+        return size().x();
     }
     
     public int height()
     {
-        return (int) this.values[1];
+        return size().y();
     }
 }

@@ -62,6 +62,41 @@ public class Engine
     // -- Engine Functions --
     // ----------------------
     
+    /**
+     * Starts the engine with the engine instance and optional log level. This method should only be called once in a static main method.
+     * <p>
+     * Below is an example class.
+     * <pre>{@code
+     * public class EngineClass extends Engine
+     * {
+     *     @Override
+     *     protected void setup()
+     *     {
+     *
+     *     }
+     *
+     *     @Override
+     *     protected void draw(double elapsedTime)
+     *     {
+     *
+     *     }
+     *
+     *     @Override
+     *     protected void destroy()
+     *     {
+     *
+     *     }
+     *
+     *     public static void main(String[] args)
+     *     {
+     *         start(new EngineClass(), Logger.Level.DEBUG);
+     *     }
+     * }}
+     * </pre>
+     *
+     * @param logic The engine instance to use.
+     * @param level The level logging is set to.
+     */
     protected static void start(Engine logic, Logger.Level level)
     {
         Logger.setLevel(level);
@@ -117,7 +152,7 @@ public class Engine
                         GL.createCapabilities();
                         
                         long t, dt;
-                        long lastFrame  = System.nanoTime();
+                        long lastFrame  = time();
                         long lastSecond = 0;
                         
                         long frameTime;
@@ -130,7 +165,7 @@ public class Engine
                         
                         while (Engine.running)
                         {
-                            t = System.nanoTime();
+                            t = time();
                             
                             dt = t - lastFrame;
                             if (dt >= Engine.frameRate)
@@ -237,7 +272,7 @@ public class Engine
                                     }
                                     Engine.PROFILER.endSection();
                                     
-                                    frameTime = System.nanoTime() - t;
+                                    frameTime = time() - t;
                                     minTime   = Math.min(minTime, frameTime);
                                     maxTime   = Math.max(maxTime, frameTime);
                                     totalTime += frameTime;
@@ -255,7 +290,29 @@ public class Engine
                                 
                                 if (Engine.screenshot != null)
                                 {
-                                    screenShotNow(Engine.screenshot);
+                                    if (!Engine.screenshot.endsWith(".png")) Engine.screenshot += ".png";
+                                    
+                                    int w = Engine.window.width();
+                                    int h = Engine.window.height();
+                                    int c = 4;
+                                    
+                                    int stride = w * c;
+                                    
+                                    ByteBuffer buf = BufferUtils.createByteBuffer(w * h * c);
+                                    glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, buf);
+                                    
+                                    byte[] tmp1 = new byte[stride], tmp2 = new byte[stride];
+                                    for (int i = 0, n = h >> 1, col1, col2; i < n; i++)
+                                    {
+                                        col1 = i * stride;
+                                        col2 = (h - i - 1) * stride;
+                                        buf.get(col1, tmp1);
+                                        buf.get(col2, tmp2);
+                                        buf.put(col1, tmp2);
+                                        buf.put(col2, tmp1);
+                                    }
+                                    
+                                    if (!stbi_write_png(Engine.screenshot, w, h, c, buf, stride)) Engine.LOGGER.error("Could not take screen shot");
                                     
                                     Engine.screenshot = null;
                                 }
@@ -306,10 +363,29 @@ public class Engine
         Engine.LOGGER.info("Engine Finished");
     }
     
+    /**
+     * Starts the engine with the engine instance at log level INFO. This method should only be called once in a static main method.
+     *
+     * @param logic The engine instance to use.
+     */
     protected static void start(Engine logic) { start(logic, Logger.Level.INFO); }
     
-    public static void stop()                 { Engine.running = false; }
+    /**
+     * Stops the engine after the current frame. This should be called instead of System.exit() to allow destruction methods to be called.
+     */
+    public static void stop() { Engine.running = false; }
     
+    /**
+     * Sets the size of the window and screen pixels and uses the renderer specified. If this function is not called then the engine will not enter the render loop.
+     * <p>
+     * <b>THIS MUST ONLY BE CALLED ONCE</b>
+     *
+     * @param screenW  The width of the screen in drawable pixels.
+     * @param screenH  The height of the screen in drawable pixels.
+     * @param pixelW   The width of the drawable pixels in actual pixels.
+     * @param pixelH   The height of the drawable pixels in actual pixels.
+     * @param renderer The optional renderer to use.
+     */
     protected static void size(int screenW, int screenH, int pixelW, int pixelH, String renderer)
     {
         Engine.screenSize.set(screenW, screenH);
@@ -344,584 +420,1545 @@ public class Engine
         Engine.renderer = Renderer.getRenderer(Engine.target, renderer);
     }
     
+    /**
+     * Sets the size of the window and screen pixels and uses the software renderer. If this function is not called then the engine will not enter the render loop.
+     * <p>
+     * <b>THIS MUST ONLY BE CALLED ONCE</b>
+     *
+     * @param screenW The width of the screen in drawable pixels.
+     * @param screenH The height of the screen in drawable pixels.
+     * @param pixelW  The width of the drawable pixels in actual pixels.
+     * @param pixelH  The height of the drawable pixels in actual pixels.
+     */
     protected static void size(int screenW, int screenH, int pixelW, int pixelH) { size(screenW, screenH, pixelW, pixelH, "software"); }
     
-    protected static void size(int screenW, int screenH, String renderer)        { size(screenW, screenH, 4, 4, renderer); }
     
-    protected static void size(int screenW, int screenH)                         { size(screenW, screenH, 4, 4, "software"); }
+    /**
+     * Sets the size of the window and uses the renderer specified. If this function is not called then the engine will not enter the render loop.
+     * <p>
+     * <b>THIS MUST ONLY BE CALLED ONCE</b>
+     *
+     * @param screenW  The width of the screen in drawable pixels.
+     * @param screenH  The height of the screen in drawable pixels.
+     * @param renderer The optional renderer to use.
+     */
+    protected static void size(int screenW, int screenH, String renderer) { size(screenW, screenH, 4, 4, renderer); }
+    
+    /**
+     * Sets the size of the window and uses the software renderer If this function is not called then the engine will not enter the render loop.
+     * <p>
+     * <b>THIS MUST ONLY BE CALLED ONCE</b>
+     *
+     * @param screenW The width of the screen in drawable pixels.
+     * @param screenH The height of the screen in drawable pixels.
+     */
+    protected static void size(int screenW, int screenH) { size(screenW, screenH, 4, 4, "software"); }
     
     // ----------------
     // -- Properties --
     // ----------------
     
-    public static long time()                   { return Engine.startTime > 0 ? System.nanoTime() - Engine.startTime : -1L; }
+    /**
+     * @return The time in nano seconds since the engine started
+     */
+    public static long time()
+    {
+        return Engine.startTime > 0 ? System.nanoTime() - Engine.startTime : -1L;
+    }
     
-    public static int frameRate()               { return (int) (1_000_000_000L / Engine.frameRate); }
+    /**
+     * @return The time in seconds since the engine started
+     */
+    public static double timeS()
+    {
+        return time() / 1_000_000_000D;
+    }
     
-    public static void frameRate(int frameRate) { Engine.frameRate = frameRate > 0 ? 1_000_000_000L / (long) frameRate : 0L; }
+    /**
+     * @return The current frame rate or zero if not limit is set.
+     */
+    public static int frameRate()
+    {
+        return Engine.frameRate > 0 ? (int) (1_000_000_000L / Engine.frameRate) : 0;
+    }
     
-    public static long frameCount()             { return Engine.frameCount; }
+    /**
+     * Sets the frame rate to try to run at. Use zero for no limit.
+     *
+     * @param frameRate The new frame rate.
+     */
+    public static void frameRate(int frameRate)
+    {
+        Engine.frameRate = frameRate > 0 ? 1_000_000_000L / (long) frameRate : 0L;
+    }
     
-    public static Vector2ic screenSize()        { return Engine.screenSize; }
+    /**
+     * @return The current frame that engine is on.
+     */
+    public static long frameCount()
+    {
+        return Engine.frameCount;
+    }
     
-    public static int screenWidth()             { return Engine.screenSize.x; }
+    /**
+     * @return The read-only screen size vector in screen pixels. This will be the values passed in to the {@link #size} function.
+     */
+    public static Vector2ic screenSize()
+    {
+        return Engine.screenSize;
+    }
     
-    public static int screenHeight()            { return Engine.screenSize.y; }
+    /**
+     * @return The screen width in screen pixels. This will be the value passed in to the {@link #size} function.
+     */
+    public static int screenWidth()
+    {
+        return Engine.screenSize.x;
+    }
     
-    public static Vector2ic pixelSize()         { return Engine.pixelSize; }
+    /**
+     * @return The screen height in screen pixels. This will be the value passed in to the {@link #size} function.
+     */
+    public static int screenHeight()
+    {
+        return Engine.screenSize.y;
+    }
     
-    public static int pixelWidth()              { return Engine.pixelSize.x; }
+    /**
+     * @return The read-only pixel size vector in actual pixels. This will be the values passed in to the {@link #size} function.
+     */
+    public static Vector2ic pixelSize()
+    {
+        return Engine.pixelSize;
+    }
     
-    public static int pixelHeight()             { return Engine.pixelSize.y; }
+    /**
+     * @return The pixel width in actual pixels. This will be the value passed in to the {@link #size} function.
+     */
+    public static int pixelWidth()
+    {
+        return Engine.pixelSize.x;
+    }
     
-    public static Mouse mouse()                 { return Engine.mouse; }
+    /**
+     * @return The pixel height in actual pixels. This will be the value passed in to the {@link #size} function.
+     */
+    public static int pixelHeight()
+    {
+        return Engine.pixelSize.y;
+    }
     
-    public static Keyboard keyboard()           { return Engine.keyboard; }
+    /**
+     * @return The mouse instance. This will be null unless {@link #size} is called.
+     */
+    public static Mouse mouse()
+    {
+        return Engine.mouse;
+    }
+    
+    /**
+     * @return The keyboard instance. This will be null unless {@link #size} is called.
+     */
+    public static Keyboard keyboard()
+    {
+        return Engine.keyboard;
+    }
+    
+    /**
+     * @return The window instance. This will be null unless {@link #size} is called.
+     */
+    public static Window window()
+    {
+        return Engine.window;
+    }
     
     // ---------------
     // -- Functions --
     // ---------------
     
-    public static void enableProfiler()              { Engine.PROFILER.enabled = true; }
-    
-    public static void disableProfiler()             { Engine.PROFILER.enabled = false; }
-    
-    public static void printFrameData(String parent) { if (Engine.PROFILER.enabled) Engine.printFrame = parent; }
-    
-    public static void screenShot()                  { screenShot(null); }
-    
-    public static void screenShot(String path)       { Engine.screenshot = path == null || path.equals("") ? "screenshot - " + getCurrentDateTimeString() : path; }
-    
-    public static void screenShotNow(String path)
+    /**
+     * Enables the profiler to start keeping track of frame data.
+     */
+    public static void enableProfiler()
     {
-        if (!path.endsWith(".png")) path += ".png";
-        
-        int w = Engine.window.windowWidth();
-        int h = Engine.window.windowHeight();
-        int c = 4;
-        
-        int stride = w * c;
-        
-        ByteBuffer buf = BufferUtils.createByteBuffer(w * h * c);
-        glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, buf);
-        
-        byte[] tmp1 = new byte[stride], tmp2 = new byte[stride];
-        for (int i = 0, n = h >> 1, col1, col2; i < n; i++)
-        {
-            col1 = i * stride;
-            col2 = (h - i - 1) * stride;
-            buf.get(col1, tmp1);
-            buf.get(col2, tmp2);
-            buf.put(col1, tmp2);
-            buf.put(col2, tmp1);
-        }
-        
-        if (!stbi_write_png(path, w, h, c, buf, stride)) Engine.LOGGER.error("Could not take screen shot");
+        Engine.PROFILER.enabled = true;
+    }
+    
+    /**
+     * Disabled the profiler.
+     */
+    public static void disableProfiler()
+    {
+        Engine.PROFILER.enabled = false;
+    }
+    
+    /**
+     * Prints the data for the current frame after the frame has competed.
+     *
+     * @param parent The frame group to print. If no parent is given, then it will print everything.
+     */
+    public static void printFrameData(String parent)
+    {
+        if (Engine.PROFILER.enabled) Engine.printFrame = parent;
+    }
+    
+    /**
+     * Takes a screen shot after the frame is completed and saves it to the path given.
+     *
+     * @param path The path to the output image file.
+     */
+    public static void screenShot(String path)
+    {
+        Engine.screenshot = path == null || path.equals("") ? "screenshot - " + getCurrentDateTimeString() : path;
+    }
+    
+    /**
+     * Takes a screen shot and saves it to the current directory.
+     */
+    public static void screenShot()
+    {
+        screenShot(null);
     }
     
     // ---------------------
     // -- Random Instance --
     // ---------------------
     
-    public static Random random()                                                 { return Engine.random; }
-    
-    public static void setSeed(long seed)                                         { Engine.random.setSeed(seed); }
-    
-    public static boolean nextBoolean()                                           { return Engine.random.nextBoolean(); }
-    
-    public static int nextInt()                                                   { return Engine.random.nextInt(); }
-    
-    public static int nextInt(int limit)                                          { return Engine.random.nextInt(limit); }
-    
-    public static int nextInt(int origin, int limit)                              { return Engine.random.nextInt(origin, limit); }
-    
-    public static long nextLong()                                                 { return Engine.random.nextLong(); }
-    
-    public static long nextLong(long limit)                                       { return Engine.random.nextLong(limit); }
-    
-    public static long nextLong(long origin, long limit)                          { return Engine.random.nextLong(origin, limit); }
-    
-    public static float nextFloat()                                               { return Engine.random.nextFloat(); }
-    
-    public static float nextFloat(float limit)                                    { return Engine.random.nextFloat(limit); }
-    
-    public static float nextFloat(float origin, float limit)                      { return Engine.random.nextFloat(origin, limit); }
-    
-    public static float nextFloatDir()                                            { return Engine.random.nextFloatDir(); }
-    
-    public static double nextDouble()                                             { return Engine.random.nextDouble(); }
-    
-    public static double nextDouble(double limit)                                 { return Engine.random.nextDouble(limit); }
-    
-    public static double nextDouble(double origin, double limit)                  { return Engine.random.nextDouble(origin, limit); }
-    
-    public static double nextDoubleDir()                                          { return Engine.random.nextDouble(); }
-    
-    public static double nextGaussian()                                           { return Engine.random.nextGaussian(); }
-    
-    public static int nextIndex(int... array)                                     { return Engine.random.nextIndex(array); }
-    
-    public static long nextIndex(long... array)                                   { return Engine.random.nextIndex(array); }
-    
-    public static float nextIndex(float... array)                                 { return Engine.random.nextIndex(array); }
-    
-    public static double nextIndex(double... array)                               { return Engine.random.nextIndex(array); }
-    
-    public static <T> T nextIndex(T[] array)                                      { return Engine.random.nextIndex(array); }
-    
-    public static <T> T nextIndex(Collection<T> collection)                       { return Engine.random.nextIndex(collection); }
-    
-    public static Vector2i nextVector2i()                                         { return Engine.random.nextVector2i(); }
-    
-    public static Vector2i nextVector2i(int bound)                                { return Engine.random.nextVector2i(bound); }
-    
-    public static Vector2i nextVector2i(int origin, int bound)                    { return Engine.random.nextVector2i(origin, bound); }
-    
-    public static Vector3i nextVector3i()                                         { return Engine.random.nextVector3i(); }
-    
-    public static Vector3i nextVector3i(int bound)                                { return Engine.random.nextVector3i(bound); }
-    
-    public static Vector3i nextVector3i(int origin, int bound)                    { return Engine.random.nextVector3i(origin, bound); }
-    
-    public static Vector4i nextVector4i()                                         { return Engine.random.nextVector4i(); }
-    
-    public static Vector4i nextVector4i(int bound)                                { return Engine.random.nextVector4i(bound); }
-    
-    public static Vector4i nextVector4i(int origin, int bound)                    { return Engine.random.nextVector4i(origin, bound); }
-    
-    public static Vector2f nextVector2f()                                         { return Engine.random.nextVector2f(); }
-    
-    public static Vector2f nextVector2f(float bound)                              { return Engine.random.nextVector2f(bound); }
-    
-    public static Vector2f nextVector2f(float origin, float bound)                { return Engine.random.nextVector2f(origin, bound); }
-    
-    public static Vector3f nextVector3f()                                         { return Engine.random.nextVector3f(); }
-    
-    public static Vector3f nextVector3f(float bound)                              { return Engine.random.nextVector3f(bound); }
-    
-    public static Vector3f nextVector3f(float origin, float bound)                { return Engine.random.nextVector3f(origin, bound); }
-    
-    public static Vector4f nextVector4f()                                         { return Engine.random.nextVector4f(); }
-    
-    public static Vector4f nextVector4f(float bound)                              { return Engine.random.nextVector4f(bound); }
-    
-    public static Vector4f nextVector4f(float origin, float bound)                { return Engine.random.nextVector4f(origin, bound); }
-    
-    public static Vector2d nextVector2d()                                         { return Engine.random.nextVector2d(); }
-    
-    public static Vector2d nextVector2d(float bound)                              { return Engine.random.nextVector2d(bound); }
-    
-    public static Vector2d nextVector2d(float origin, float bound)                { return Engine.random.nextVector2d(origin, bound); }
-    
-    public static Vector3d nextVector3d()                                         { return Engine.random.nextVector3d(); }
-    
-    public static Vector3d nextVector3d(float bound)                              { return Engine.random.nextVector3d(bound); }
-    
-    public static Vector3d nextVector3d(float origin, float bound)                { return Engine.random.nextVector3d(origin, bound); }
-    
-    public static Vector4d nextVector4d()                                         { return Engine.random.nextVector4d(); }
-    
-    public static Vector4d nextVector4d(float bound)                              { return Engine.random.nextVector4d(bound); }
-    
-    public static Vector4d nextVector4d(float origin, float bound)                { return Engine.random.nextVector4d(origin, bound); }
-    
-    public static Vector2f nextUnit2f()                                           { return Engine.random.nextUnit2f(); }
-    
-    public static Vector3f nextUnit3f()                                           { return Engine.random.nextUnit3f(); }
-    
-    public static Vector4f nextUnit4f()                                           { return Engine.random.nextUnit4f(); }
-    
-    public static Vector2d nextUnit2d()                                           { return Engine.random.nextUnit2d(); }
-    
-    public static Vector3d nextUnit3d()                                           { return Engine.random.nextUnit3d(); }
-    
-    public static Vector4d nextUnit4d()                                           { return Engine.random.nextUnit4d(); }
-    
-    public static Color nextColor(int lower, int upper, boolean alpha, Color out) { return Engine.random.nextColor(lower, upper, alpha, out); }
-    
-    public static Color nextColor(int lower, int upper, Color out)                { return Engine.random.nextColor(lower, upper, out); }
-    
-    public static Color nextColor(int lower, int upper, boolean alpha)            { return Engine.random.nextColor(lower, upper, alpha); }
-    
-    public static Color nextColor(int lower, int upper)                           { return Engine.random.nextColor(lower, upper); }
-    
-    public static Color nextColor(int upper, Color out)                           { return Engine.random.nextColor(upper, out); }
-    
-    public static Color nextColor(int upper, boolean alpha)                       { return Engine.random.nextColor(upper, alpha); }
-    
-    public static Color nextColor(int upper)                                      { return Engine.random.nextColor(upper); }
-    
-    public static Color nextColor(Color out)                                      { return Engine.random.nextColor(out); }
-    
-    public static Color nextColor(boolean alpha)                                  { return Engine.random.nextColor(alpha); }
-    
-    public static Color nextColor()                                               { return Engine.random.nextColor(); }
+    /**
+     * Gets the engine's random instance. This is used to give the entire engine a common state if desired.
+     *
+     * @return The common random instance.
+     */
+    public static Random random()
+    {
+        return Engine.random;
+    }
+    
+    /**
+     * See {@link Random#}
+     */
+    public static void setSeed(long seed)
+    {
+        Engine.random.setSeed(seed);
+    }
+    
+    /**
+     * See {@link Random#nextBoolean()}
+     */
+    public static boolean nextBoolean()
+    {
+        return Engine.random.nextBoolean();
+    }
+    
+    /**
+     * See {@link Random#nextInt()}
+     */
+    public static int nextInt()
+    {
+        return Engine.random.nextInt();
+    }
+    
+    /**
+     * See {@link Random#nextInt(int)}
+     */
+    public static int nextInt(int bound)
+    {
+        return Engine.random.nextInt(bound);
+    }
+    
+    /**
+     * See {@link Random#nextInt(int, int)}
+     */
+    public static int nextInt(int origin, int bound)
+    {
+        return Engine.random.nextInt(origin, bound);
+    }
+    
+    /**
+     * See {@link Random#nextLong()}
+     */
+    public static long nextLong()
+    {
+        return Engine.random.nextLong();
+    }
+    
+    /**
+     * See {@link Random#nextLong(long)}
+     */
+    public static long nextLong(long bound)
+    {
+        return Engine.random.nextLong(bound);
+    }
+    
+    /**
+     * See {@link Random#nextLong(long, long)}
+     */
+    public static long nextLong(long origin, long bound)
+    {
+        return Engine.random.nextLong(origin, bound);
+    }
+    
+    /**
+     * See {@link Random#nextFloat()}
+     */
+    public static float nextFloat()
+    {
+        return Engine.random.nextFloat();
+    }
+    
+    /**
+     * See {@link Random#nextFloat(float)}
+     */
+    public static float nextFloat(float bound)
+    {
+        return Engine.random.nextFloat(bound);
+    }
+    
+    /**
+     * See {@link Random#nextFloat(float, float)}
+     */
+    public static float nextFloat(float origin, float bound)
+    {
+        return Engine.random.nextFloat(origin, bound);
+    }
+    
+    /**
+     * See {@link Random#nextFloatDir()}
+     */
+    public static float nextFloatDir()
+    {
+        return Engine.random.nextFloatDir();
+    }
+    
+    /**
+     * See {@link Random#nextDouble()}
+     */
+    public static double nextDouble()
+    {
+        return Engine.random.nextDouble();
+    }
+    
+    /**
+     * See {@link Random#nextDouble(double)}
+     */
+    public static double nextDouble(double bound)
+    {
+        return Engine.random.nextDouble(bound);
+    }
+    
+    /**
+     * See {@link Random#nextDouble(double, double)}
+     */
+    public static double nextDouble(double origin, double bound)
+    {
+        return Engine.random.nextDouble(origin, bound);
+    }
+    
+    /**
+     * See {@link Random#nextDoubleDir()}
+     */
+    public static double nextDoubleDir()
+    {
+        return Engine.random.nextDouble();
+    }
+    
+    /**
+     * See {@link Random#nextGaussian()}
+     */
+    public static double nextGaussian()
+    {
+        return Engine.random.nextGaussian();
+    }
+    
+    /**
+     * See {@link Random#nextFrom(int...)}
+     */
+    public static int nextFrom(int... array)
+    {
+        return Engine.random.nextFrom(array);
+    }
+    
+    /**
+     * See {@link Random#nextFrom(long...)}
+     */
+    public static long nextFrom(long... array)
+    {
+        return Engine.random.nextFrom(array);
+    }
+    
+    /**
+     * See {@link Random#nextFrom(float...)}
+     */
+    public static float nextFrom(float... array)
+    {
+        return Engine.random.nextFrom(array);
+    }
+    
+    /**
+     * See {@link Random#nextFrom(double...)}
+     */
+    public static double nextFrom(double... array)
+    {
+        return Engine.random.nextFrom(array);
+    }
+    
+    /**
+     * See {@link Random#}
+     * public static <T> T nextFrom(T...)
+     */
+    @SafeVarargs
+    public static <T> T nextFrom(T... array)
+    {
+        return Engine.random.nextFrom(array);
+    }
+    
+    /**
+     * See {@link Random#> T nextFrom(Collection<T> collection)}
+     */
+    public static <T> T nextFrom(Collection<T> collection)
+    {
+        return Engine.random.nextFrom(collection);
+    }
+    
+    /**
+     * See {@link Random#nextVector2i()}
+     */
+    public static Vector2i nextVector2i()
+    {
+        return Engine.random.nextVector2i();
+    }
+    
+    /**
+     * See {@link Random#nextVector2i(int)}
+     */
+    public static Vector2i nextVector2i(int bound)
+    {
+        return Engine.random.nextVector2i(bound);
+    }
+    
+    /**
+     * See {@link Random#nextVector2i(int, int)}
+     */
+    public static Vector2i nextVector2i(int origin, int bound)
+    {
+        return Engine.random.nextVector2i(origin, bound);
+    }
+    
+    /**
+     * See {@link Random#nextVector3i()}
+     */
+    public static Vector3i nextVector3i()
+    {
+        return Engine.random.nextVector3i();
+    }
+    
+    /**
+     * See {@link Random#nextVector3i(int)}
+     */
+    public static Vector3i nextVector3i(int bound)
+    {
+        return Engine.random.nextVector3i(bound);
+    }
+    
+    /**
+     * See {@link Random#nextVector3i(int, int)}
+     */
+    public static Vector3i nextVector3i(int origin, int bound)
+    {
+        return Engine.random.nextVector3i(origin, bound);
+    }
+    
+    /**
+     * See {@link Random#nextVector4i()}
+     */
+    public static Vector4i nextVector4i()
+    {
+        return Engine.random.nextVector4i();
+    }
+    
+    /**
+     * See {@link Random#nextVector4i(int)}
+     */
+    public static Vector4i nextVector4i(int bound)
+    {
+        return Engine.random.nextVector4i(bound);
+    }
+    
+    /**
+     * See {@link Random#nextVector4i(int, int)}
+     */
+    public static Vector4i nextVector4i(int origin, int bound)
+    {
+        return Engine.random.nextVector4i(origin, bound);
+    }
+    
+    /**
+     * See {@link Random#nextVector2f()}
+     */
+    public static Vector2f nextVector2f()
+    {
+        return Engine.random.nextVector2f();
+    }
+    
+    /**
+     * See {@link Random#nextVector2f(float)}
+     */
+    public static Vector2f nextVector2f(float bound)
+    {
+        return Engine.random.nextVector2f(bound);
+    }
+    
+    /**
+     * See {@link Random#nextVector2f(float, float)}
+     */
+    public static Vector2f nextVector2f(float origin, float bound)
+    {
+        return Engine.random.nextVector2f(origin, bound);
+    }
+    
+    /**
+     * See {@link Random#nextVector3f()}
+     */
+    public static Vector3f nextVector3f()
+    {
+        return Engine.random.nextVector3f();
+    }
+    
+    /**
+     * See {@link Random#nextVector3f(float)}
+     */
+    public static Vector3f nextVector3f(float bound)
+    {
+        return Engine.random.nextVector3f(bound);
+    }
+    
+    /**
+     * See {@link Random#nextVector3f(float, float)}
+     */
+    public static Vector3f nextVector3f(float origin, float bound)
+    {
+        return Engine.random.nextVector3f(origin, bound);
+    }
+    
+    /**
+     * See {@link Random#nextVector4f()}
+     */
+    public static Vector4f nextVector4f()
+    {
+        return Engine.random.nextVector4f();
+    }
+    
+    /**
+     * See {@link Random#nextVector4f(float)}
+     */
+    public static Vector4f nextVector4f(float bound)
+    {
+        return Engine.random.nextVector4f(bound);
+    }
+    
+    /**
+     * See {@link Random#nextVector4f(float, float)}
+     */
+    public static Vector4f nextVector4f(float origin, float bound)
+    {
+        return Engine.random.nextVector4f(origin, bound);
+    }
+    
+    /**
+     * See {@link Random#nextVector2d()}
+     */
+    public static Vector2d nextVector2d()
+    {
+        return Engine.random.nextVector2d();
+    }
+    
+    /**
+     * See {@link Random#nextVector2d(float)}
+     */
+    public static Vector2d nextVector2d(float bound)
+    {
+        return Engine.random.nextVector2d(bound);
+    }
+    
+    /**
+     * See {@link Random#nextVector2d(float, float)}
+     */
+    public static Vector2d nextVector2d(float origin, float bound)
+    {
+        return Engine.random.nextVector2d(origin, bound);
+    }
+    
+    /**
+     * See {@link Random#nextVector3d()}
+     */
+    public static Vector3d nextVector3d()
+    {
+        return Engine.random.nextVector3d();
+    }
+    
+    /**
+     * See {@link Random#nextVector3d(float)}
+     */
+    public static Vector3d nextVector3d(float bound)
+    {
+        return Engine.random.nextVector3d(bound);
+    }
+    
+    /**
+     * See {@link Random#nextVector3d(float, float)}
+     */
+    public static Vector3d nextVector3d(float origin, float bound)
+    {
+        return Engine.random.nextVector3d(origin, bound);
+    }
+    
+    /**
+     * See {@link Random#nextVector4d()}
+     */
+    public static Vector4d nextVector4d()
+    {
+        return Engine.random.nextVector4d();
+    }
+    
+    /**
+     * See {@link Random#nextVector4d(float)}
+     */
+    public static Vector4d nextVector4d(float bound)
+    {
+        return Engine.random.nextVector4d(bound);
+    }
+    
+    /**
+     * See {@link Random#nextVector4d(float, float)}
+     */
+    public static Vector4d nextVector4d(float origin, float bound)
+    {
+        return Engine.random.nextVector4d(origin, bound);
+    }
+    
+    /**
+     * See {@link Random#nextUnit2f()}
+     */
+    public static Vector2f nextUnit2f()
+    {
+        return Engine.random.nextUnit2f();
+    }
+    
+    /**
+     * See {@link Random#nextUnit3f()}
+     */
+    public static Vector3f nextUnit3f()
+    {
+        return Engine.random.nextUnit3f();
+    }
+    
+    /**
+     * See {@link Random#nextUnit4f()}
+     */
+    public static Vector4f nextUnit4f()
+    {
+        return Engine.random.nextUnit4f();
+    }
+    
+    /**
+     * See {@link Random#nextUnit2d()}
+     */
+    public static Vector2d nextUnit2d()
+    {
+        return Engine.random.nextUnit2d();
+    }
+    
+    /**
+     * See {@link Random#nextUnit3d()}
+     */
+    public static Vector3d nextUnit3d()
+    {
+        return Engine.random.nextUnit3d();
+    }
+    
+    /**
+     * See {@link Random#nextUnit4d()}
+     */
+    public static Vector4d nextUnit4d()
+    {
+        return Engine.random.nextUnit4d();
+    }
+    
+    /**
+     * See {@link Random#nextColor(int, int, boolean, Color)}
+     */
+    public static Color nextColor(int lower, int upper, boolean alpha, Color out)
+    {
+        return Engine.random.nextColor(lower, upper, alpha, out);
+    }
+    
+    /**
+     * See {@link Random#nextColor(int, int, Color)}
+     */
+    public static Color nextColor(int lower, int upper, Color out)
+    {
+        return Engine.random.nextColor(lower, upper, out);
+    }
+    
+    /**
+     * See {@link Random#nextColor(int, int, boolean)}
+     */
+    public static Color nextColor(int lower, int upper, boolean alpha)
+    {
+        return Engine.random.nextColor(lower, upper, alpha);
+    }
+    
+    /**
+     * See {@link Random#nextColor(int, int)}
+     */
+    public static Color nextColor(int lower, int upper)
+    {
+        return Engine.random.nextColor(lower, upper);
+    }
+    
+    /**
+     * See {@link Random#nextColor(int, Color)}
+     */
+    public static Color nextColor(int upper, Color out)
+    {
+        return Engine.random.nextColor(upper, out);
+    }
+    
+    /**
+     * See {@link Random#nextColor(int, boolean)}
+     */
+    public static Color nextColor(int upper, boolean alpha)
+    {
+        return Engine.random.nextColor(upper, alpha);
+    }
+    
+    /**
+     * See {@link Random#nextColor(int)}
+     */
+    public static Color nextColor(int upper)
+    {
+        return Engine.random.nextColor(upper);
+    }
+    
+    /**
+     * See {@link Random#nextColor(Color)}
+     */
+    public static Color nextColor(Color out)
+    {
+        return Engine.random.nextColor(out);
+    }
+    
+    /**
+     * See {@link Random#nextColor(boolean)}
+     */
+    public static Color nextColor(boolean alpha)
+    {
+        return Engine.random.nextColor(alpha);
+    }
+    
+    /**
+     * See {@link Random#nextColor()}
+     */
+    public static Color nextColor()
+    {
+        return Engine.random.nextColor();
+    }
     
     // --------------------
     // -- Blend Instance --
     // --------------------
     
-    public static Blend blend()                                                                             { return Engine.blend; }
+    /**
+     * @return The engine's blend instance.
+     */
+    public static Blend blend()
+    {
+        return Engine.blend;
+    }
     
-    public static Blend.Func sourceFactor()                                                                 { return Engine.blend.sourceFactor(); }
+    /**
+     * See {@link Blend#sourceFactor()}
+     */
+    public static Blend.Func sourceFactor()
+    {
+        return Engine.blend.sourceFactor();
+    }
     
-    public static Blend.Func destFactor()                                                                   { return Engine.blend.destFactor(); }
+    /**
+     * See {@link Blend#destFactor()}
+     */
+    public static Blend.Func destFactor()
+    {
+        return Engine.blend.destFactor();
+    }
     
-    public static Blend blendFunc(Blend.Func sourceFactor, Blend.Func destFactor)                           { return Engine.blend.blendFunc(sourceFactor, destFactor); }
+    /**
+     * See {@link Blend#blendFunc(Blend.Func, Blend.Func)}
+     */
+    public static Blend blendFunc(Blend.Func sourceFactor, Blend.Func destFactor)
+    {
+        return Engine.blend.blendFunc(sourceFactor, destFactor);
+    }
     
-    public static Blend.Equation blendEquation()                                                            { return Engine.blend.blendEquation(); }
+    /**
+     * See {@link Blend#blendEquation()}
+     */
+    public static Blend.Equation blendEquation()
+    {
+        return Engine.blend.blendEquation();
+    }
     
-    public static Blend blendEquation(Blend.Equation blendEquation)                                         { return Engine.blend.blendEquation(blendEquation); }
+    /**
+     * See {@link Blend#blendEquation(Blend.Equation)}
+     */
+    public static Blend blendEquation(Blend.Equation blendEquation)
+    {
+        return Engine.blend.blendEquation(blendEquation);
+    }
     
-    public static Color blend(int rs, int gs, int bs, int as, int rd, int gd, int bd, int ad, Color result) { return Engine.blend.blend(rs, gs, bs, as, rd, gd, bd, ad, result); }
+    /**
+     * See {@link Blend#blend(int, int, int, int, int, int, int, int, Color)}
+     */
+    public static Color blend(int rs, int gs, int bs, int as, int rd, int gd, int bd, int ad, Color result)
+    {
+        return Engine.blend.blend(rs, gs, bs, as, rd, gd, bd, ad, result);
+    }
     
-    public static Color blend(Colorc source, int rd, int gd, int bd, int ad, Color result)                  { return Engine.blend.blend(source, rd, gd, bd, ad, result); }
+    /**
+     * See {@link Blend#blend(Colorc, int, int, int, int, Color)}
+     */
+    public static Color blend(Colorc source, int rd, int gd, int bd, int ad, Color result)
+    {
+        return Engine.blend.blend(source, rd, gd, bd, ad, result);
+    }
     
-    public static Color blend(int rs, int gs, int bs, int as, Colorc dest, Color result)                    { return Engine.blend.blend(rs, gs, bs, as, dest, result); }
+    /**
+     * See {@link Blend#blend(int, int, int, int, Colorc, Color)}
+     */
+    public static Color blend(int rs, int gs, int bs, int as, Colorc dest, Color result)
+    {
+        return Engine.blend.blend(rs, gs, bs, as, dest, result);
+    }
     
-    public static Color blend(Colorc source, Colorc dest, Color result)                                     { return Engine.blend.blend(source, dest, result); }
-    
-    // ---------------------
-    // -- Window Instance --
-    // ---------------------
-    
-    public static Vector2ic monitorSize()             { return Engine.window.monitorSize(); }
-    
-    public static int monitorWidth()                  { return Engine.window.monitorWidth(); }
-    
-    public static int monitorHeight()                 { return Engine.window.monitorHeight(); }
-    
-    public static Vector2ic windowPos()               { return Engine.window.windowPos(); }
-    
-    public static int windowX()                       { return Engine.window.windowX(); }
-    
-    public static int windowY()                       { return Engine.window.windowY(); }
-    
-    public static Vector2ic windowSize()              { return Engine.window.windowSize(); }
-    
-    public static int windowWidth()                   { return Engine.window.windowWidth(); }
-    
-    public static int windowHeight()                  { return Engine.window.windowHeight(); }
-    
-    public static boolean focused()                   { return Engine.window.focused(); }
-    
-    public static boolean fullscreen()                { return Engine.window.fullscreen(); }
-    
-    public static void fullscreen(boolean fullscreen) { Engine.window.fullscreen(fullscreen); }
-    
-    public static boolean vsync()                     { return Engine.window.vsync(); }
-    
-    public static void vsync(boolean vsync)           { Engine.window.vsync(vsync); }
-    
-    public static Vector2ic viewPos()                 { return Engine.window.viewPos(); }
-    
-    public static int viewX()                         { return Engine.window.viewX(); }
-    
-    public static int viewY()                         { return Engine.window.viewY(); }
-    
-    public static Vector2ic viewSize()                { return Engine.window.viewSize(); }
-    
-    public static int viewW()                         { return Engine.window.viewW(); }
-    
-    public static int viewH()                         { return Engine.window.viewH(); }
+    /**
+     * See {@link Blend#blend(Colorc, Colorc, Color)}
+     */
+    public static Color blend(Colorc source, Colorc dest, Color result)
+    {
+        return Engine.blend.blend(source, dest, result);
+    }
     
     // -----------------------
     // -- Renderer Instance --
     // -----------------------
     
-    public static Renderer renderer()                                 { return Engine.renderer; }
+    /**
+     * @return The engine's render instance. This should only be used for {@link Overloads} methods.
+     */
+    public static Renderer renderer()
+    {
+        return Engine.renderer;
+    }
     
-    public static boolean enableBlend()                               { return Engine.renderer.enableBlend(); }
+    /**
+     * See {@link Renderer#enableBlend()}
+     */
+    public static boolean enableBlend()
+    {
+        return Engine.renderer.enableBlend();
+    }
     
-    public static void enableBlend(boolean enableBlend)               { Engine.renderer.enableBlend(enableBlend); }
+    /**
+     * See {@link Renderer#enableBlend(boolean)}
+     */
+    public static void enableBlend(boolean enableBlend)
+    {
+        Engine.renderer.enableBlend(enableBlend);
+    }
     
-    public static Colorc fill()                                       { return Engine.renderer.fill(); }
+    /**
+     * See {@link Renderer#fill()}
+     */
+    public static Colorc fill()
+    {
+        return Engine.renderer.fill();
+    }
     
-    public static void fill(Number r, Number g, Number b, Number a)   { Engine.renderer.fill(r, g, b, a); }
+    /**
+     * See {@link Renderer#fill(Number, Number, Number, Number)}
+     */
+    public static void fill(Number r, Number g, Number b, Number a)
+    {
+        Engine.renderer.fill(r, g, b, a);
+    }
     
-    public static void fill(Number r, Number g, Number b)             { Engine.renderer.fill(r, g, b); }
+    /**
+     * See {@link Renderer#fill(Number, Number, Number)}
+     */
+    public static void fill(Number r, Number g, Number b)
+    {
+        Engine.renderer.fill(r, g, b);
+    }
     
-    public static void fill(Number grey, Number a)                    { Engine.renderer.fill(grey, a); }
+    /**
+     * See {@link Renderer#fill(Number, Number)}
+     */
+    public static void fill(Number grey, Number a)
+    {
+        Engine.renderer.fill(grey, a);
+    }
     
-    public static void fill(Number grey)                              { Engine.renderer.fill(grey); }
+    /**
+     * See {@link Renderer#fill(Number)}
+     */
+    public static void fill(Number grey)
+    {
+        Engine.renderer.fill(grey);
+    }
     
-    public static void fill(Colorc fill)                              { Engine.renderer.fill(fill); }
+    /**
+     * See {@link Renderer#fill(Colorc)}
+     */
+    public static void fill(Colorc fill)
+    {
+        Engine.renderer.fill(fill);
+    }
     
-    public static void noFill()                                       { Engine.renderer.noFill(); }
+    /**
+     * See {@link Renderer#noFill()}
+     */
+    public static void noFill()
+    {
+        Engine.renderer.noFill();
+    }
     
-    public static Colorc stroke()                                     { return Engine.renderer.stroke(); }
+    /**
+     * See {@link Renderer#stroke()}
+     */
+    public static Colorc stroke()
+    {
+        return Engine.renderer.stroke();
+    }
     
-    public static void stroke(Number r, Number g, Number b, Number a) { Engine.renderer.stroke(r, g, b, a); }
+    /**
+     * See {@link Renderer#stroke(Number, Number, Number, Number)}
+     */
+    public static void stroke(Number r, Number g, Number b, Number a)
+    {
+        Engine.renderer.stroke(r, g, b, a);
+    }
     
-    public static void stroke(Number r, Number g, Number b)           { Engine.renderer.stroke(r, g, b); }
+    /**
+     * See {@link Renderer#stroke(Number, Number, Number)}
+     */
+    public static void stroke(Number r, Number g, Number b)
+    {
+        Engine.renderer.stroke(r, g, b);
+    }
     
-    public static void stroke(Number grey, Number a)                  { Engine.renderer.stroke(grey, a); }
+    /**
+     * See {@link Renderer#stroke(Number, Number)}
+     */
+    public static void stroke(Number grey, Number a)
+    {
+        Engine.renderer.stroke(grey, a);
+    }
     
-    public static void stroke(Number grey)                            { Engine.renderer.stroke(grey); }
+    /**
+     * See {@link Renderer#stroke(Number)}
+     */
+    public static void stroke(Number grey)
+    {
+        Engine.renderer.stroke(grey);
+    }
     
-    public static void stroke(Colorc stroke)                          { Engine.renderer.stroke(stroke); }
+    /**
+     * See {@link Renderer#stroke(Colorc)}
+     */
+    public static void stroke(Colorc stroke)
+    {
+        Engine.renderer.stroke(stroke);
+    }
     
-    public static void noStroke()                                     { Engine.renderer.noStroke(); }
+    /**
+     * See {@link Renderer#noStroke()}
+     */
+    public static void noStroke()
+    {
+        Engine.renderer.noStroke();
+    }
     
-    public static double weight()                                     { return Engine.renderer.weight(); }
+    /**
+     * See {@link Renderer#weight()}
+     */
+    public static double weight()
+    {
+        return Engine.renderer.weight();
+    }
     
-    public static void weight(double weight)                          { Engine.renderer.weight(weight); }
+    /**
+     * See {@link Renderer#weight(double)}
+     */
+    public static void weight(double weight)
+    {
+        Engine.renderer.weight(weight);
+    }
     
-    public static RectMode rectMode()                                 { return Engine.renderer.rectMode(); }
+    /**
+     * See {@link Renderer#rectMode()}
+     */
+    public static RectMode rectMode()
+    {
+        return Engine.renderer.rectMode();
+    }
     
-    public static void rectMode(RectMode rectMode)                    { Engine.renderer.rectMode(rectMode); }
+    /**
+     * See {@link Renderer#rectMode(RectMode)}
+     */
+    public static void rectMode(RectMode rectMode)
+    {
+        Engine.renderer.rectMode(rectMode);
+    }
     
-    public static EllipseMode ellipseMode()                           { return Engine.renderer.ellipseMode(); }
+    /**
+     * See {@link Renderer#ellipseMode()}
+     */
+    public static EllipseMode ellipseMode()
+    {
+        return Engine.renderer.ellipseMode();
+    }
     
-    public static void ellipseMode(EllipseMode ellipseMode)           { Engine.renderer.ellipseMode(ellipseMode); }
+    /**
+     * See {@link Renderer#ellipseMode(EllipseMode)}
+     */
+    public static void ellipseMode(EllipseMode ellipseMode)
+    {
+        Engine.renderer.ellipseMode(ellipseMode);
+    }
     
-    public static ArcMode arcMode()                                   { return Engine.renderer.arcMode(); }
+    /**
+     * See {@link Renderer#arcMode()}
+     */
+    public static ArcMode arcMode()
+    {
+        return Engine.renderer.arcMode();
+    }
     
-    public static void arcMode(ArcMode arcMode)                       { Engine.renderer.arcMode(arcMode); }
+    /**
+     * See {@link Renderer#arcMode(ArcMode)}
+     */
+    public static void arcMode(ArcMode arcMode)
+    {
+        Engine.renderer.arcMode(arcMode);
+    }
     
-    public static Font textFont()                                     { return Engine.renderer.textFont(); }
+    /**
+     * See {@link Renderer#textFont()}
+     */
+    public static Font textFont()
+    {
+        return Engine.renderer.textFont();
+    }
     
-    public static void textFont(Font font)                            { Engine.renderer.textFont(font); }
+    /**
+     * See {@link Renderer#textFont(Font)}
+     */
+    public static void textFont(Font font)
+    {
+        Engine.renderer.textFont(font);
+    }
     
-    public static void textFont(String font)                          { Engine.renderer.textFont(font); }
+    /**
+     * See {@link Renderer#textFont(String)}
+     */
+    public static void textFont(String font)
+    {
+        Engine.renderer.textFont(font);
+    }
     
-    public static void textFont(String font, int size)                { Engine.renderer.textFont(font, size); }
+    /**
+     * See {@link Renderer#textFont(String)}
+     */
+    public static void textFont(String font, int size)
+    {
+        Engine.renderer.textFont(font, size);
+    }
     
-    public static int textSize()                                      { return Engine.renderer.textSize(); }
+    /**
+     * See {@link Renderer#textSize()}
+     */
+    public static int textSize()
+    {
+        return Engine.renderer.textSize();
+    }
     
-    public static void textSize(int textSize)                         { Engine.renderer.textSize(textSize); }
+    /**
+     * See {@link Renderer#textSize(int)}
+     */
+    public static void textSize(int textSize)
+    {
+        Engine.renderer.textSize(textSize);
+    }
     
-    public static double textAscent()                                 { return Engine.renderer.textAscent(); }
+    /**
+     * See {@link Renderer#textAscent()}
+     */
+    public static double textAscent()
+    {
+        return Engine.renderer.textAscent();
+    }
     
-    public static double textDescent()                                { return Engine.renderer.textDescent(); }
+    /**
+     * See {@link Renderer#textDescent()}
+     */
+    public static double textDescent()
+    {
+        return Engine.renderer.textDescent();
+    }
     
-    public static TextAlign textAlign()                               { return Engine.renderer.textAlign(); }
+    /**
+     * See {@link Renderer#textAlign()}
+     */
+    public static TextAlign textAlign()
+    {
+        return Engine.renderer.textAlign();
+    }
     
-    public static void textAlign(TextAlign textAlign)                 { Engine.renderer.textAlign(textAlign); }
+    /**
+     * See {@link Renderer#textAlign(TextAlign)}
+     */
+    public static void textAlign(TextAlign textAlign)
+    {
+        Engine.renderer.textAlign(textAlign);
+    }
     
-    public static void identity()                                     { Engine.renderer.identity(); }
+    /**
+     * See {@link Renderer#identity()}
+     */
+    public static void identity()
+    {
+        Engine.renderer.identity();
+    }
     
-    public static void translate(double x, double y)                  { Engine.renderer.translate(x, y); }
+    /**
+     * See {@link Renderer#translate(double, double)}
+     */
+    public static void translate(double x, double y)
+    {
+        Engine.renderer.translate(x, y);
+    }
     
-    public static void rotate(double angle)                           { Engine.renderer.rotate(angle); }
+    /**
+     * See {@link Renderer#rotate(double)}
+     */
+    public static void rotate(double angle)
+    {
+        Engine.renderer.rotate(angle);
+    }
     
-    public static void scale(double x, double y)                      { Engine.renderer.scale(x, y); }
+    /**
+     * See {@link Renderer#scale(double, double)}
+     */
+    public static void scale(double x, double y)
+    {
+        Engine.renderer.scale(x, y);
+    }
     
-    public static void begin()                                        { Engine.renderer.start(); }
+    /**
+     * See {@link Renderer#start()}
+     */
+    public static void start()
+    {
+        Engine.renderer.start();
+    }
     
-    public static void finish()                                       { Engine.renderer.finish(); }
+    /**
+     * See {@link Renderer#finish()}
+     */
+    public static void finish()
+    {
+        Engine.renderer.finish();
+    }
     
-    public static void push()                                         { Engine.renderer.push(); }
+    /**
+     * See {@link Renderer#push()}
+     */
+    public static void push()
+    {
+        Engine.renderer.push();
+    }
     
-    public static void pop()                                          { Engine.renderer.pop(); }
+    /**
+     * See {@link Renderer#pop()}
+     */
+    public static void pop()
+    {
+        Engine.renderer.pop();
+    }
     
-    public static void clear(Number r, Number g, Number b, Number a)  { Engine.renderer.clear(r, g, b, a); }
+    /**
+     * See {@link Renderer#clear()}
+     */
+    public static void clear(Number r, Number g, Number b, Number a)
+    {
+        Engine.renderer.clear(r, g, b, a);
+    }
     
-    public static void clear(Number r, Number g, Number b)            { Engine.renderer.clear(r, g, b); }
+    /**
+     * See {@link Renderer#clear()}
+     */
+    public static void clear(Number r, Number g, Number b)
+    {
+        Engine.renderer.clear(r, g, b);
+    }
     
-    public static void clear(Number grey, Number a)                   { Engine.renderer.clear(grey, a); }
+    /**
+     * See {@link Renderer#clear()}
+     */
+    public static void clear(Number grey, Number a)
+    {
+        Engine.renderer.clear(grey, a);
+    }
     
-    public static void clear(Number grey)                             { Engine.renderer.clear(grey); }
+    /**
+     * See {@link Renderer#clear()}
+     */
+    public static void clear(Number grey)
+    {
+        Engine.renderer.clear(grey);
+    }
     
-    public static void clear()                                        { Engine.renderer.clear(); }
+    /**
+     * See {@link Renderer#clear()}
+     */
+    public static void clear()
+    {
+        Engine.renderer.clear();
+    }
     
-    public static void clear(Colorc color)                            { Engine.renderer.clear(color); }
+    /**
+     * See {@link Renderer#clear()}
+     */
+    public static void clear(Colorc color)
+    {
+        Engine.renderer.clear(color);
+    }
     
+    /**
+     * See {@link Renderer#drawPoint(double, double)}
+     */
     public static void drawPoint(double x, double y)
     {
         Engine.renderer.drawPoint(x, y);
     }
     
+    /**
+     * See {@link Renderer#point(double, double)}
+     */
     public static void point(double x, double y)
     {
         Engine.renderer.point(x, y);
     }
     
+    /**
+     * See {@link Renderer#drawLine(double, double, double, double)}
+     */
     public static void drawLine(double x1, double y1, double x2, double y2)
     {
         Engine.renderer.drawLine(x1, y1, x2, y2);
     }
     
+    /**
+     * See {@link Renderer#line(double, double, double, double)}
+     */
     public static void line(double x1, double y1, double x2, double y2)
     {
         Engine.renderer.line(x1, y1, x2, y2);
     }
     
+    /**
+     * See {@link Renderer#drawBezier(double, double, double, double, double, double)}
+     */
     public static void drawBezier(double x1, double y1, double x2, double y2, double x3, double y3)
     {
         Engine.renderer.drawBezier(x1, y1, x2, y2, x3, y3);
     }
     
+    /**
+     * See {@link Renderer#bezier(double, double, double, double, double, double)}
+     */
     public static void bezier(double x1, double y1, double x2, double y2, double x3, double y3)
     {
         Engine.renderer.bezier(x1, y1, x2, y2, x3, y3);
     }
     
+    /**
+     * See {@link Renderer#drawTriangle(double, double, double, double, double, double)}
+     */
     public static void drawTriangle(double x1, double y1, double x2, double y2, double x3, double y3)
     {
         Engine.renderer.drawTriangle(x1, y1, x2, y2, x3, y3);
     }
     
+    /**
+     * See {@link Renderer#fillTriangle(double, double, double, double, double, double)}
+     */
     public static void fillTriangle(double x1, double y1, double x2, double y2, double x3, double y3)
     {
         Engine.renderer.fillTriangle(x1, y1, x2, y2, x3, y3);
     }
     
+    /**
+     * See {@link Renderer#triangle(double, double, double, double, double, double)}
+     */
     public static void triangle(double x1, double y1, double x2, double y2, double x3, double y3)
     {
         Engine.renderer.triangle(x1, y1, x2, y2, x3, y3);
     }
     
+    /**
+     * See {@link Renderer#drawSquare(double, double, double)}
+     */
     public static void drawSquare(double x, double y, double w)
     {
         Engine.renderer.drawSquare(x, y, w);
     }
     
+    /**
+     * See {@link Renderer#fillSquare(double, double, double)}
+     */
     public static void fillSquare(double x, double y, double w)
     {
         Engine.renderer.fillSquare(x, y, w);
     }
     
+    /**
+     * See {@link Renderer#square(double, double, double)}
+     */
     public static void square(double a, double b, double c)
     {
         Engine.renderer.square(a, b, c);
     }
     
+    /**
+     * See {@link Renderer#drawRect(double, double, double, double)}
+     */
     public static void drawRect(double x, double y, double w, double h)
     {
         Engine.renderer.drawRect(x, y, w, h);
     }
     
+    /**
+     * See {@link Renderer#fillRect(double, double, double, double)}
+     */
     public static void fillRect(double x, double y, double w, double h)
     {
         Engine.renderer.drawRect(x, y, w, h);
     }
     
+    /**
+     * See {@link Renderer#rect(double, double, double, double)}
+     */
     public static void rect(double a, double b, double c, double d)
     {
         Engine.renderer.rect(a, b, c, d);
     }
     
+    /**
+     * See {@link Renderer#drawQuad(double, double, double, double, double, double, double, double)}
+     */
     public static void drawQuad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
     {
         Engine.renderer.drawQuad(x1, y1, x2, y2, x3, y3, x4, y4);
     }
     
+    /**
+     * See {@link Renderer#fillQuad(double, double, double, double, double, double, double, double)}
+     */
     public static void fillQuad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
     {
         Engine.renderer.fillQuad(x1, y1, x2, y2, x3, y3, x4, y4);
     }
     
+    /**
+     * See {@link Renderer#quad(double, double, double, double, double, double, double, double)}
+     */
     public static void quad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
     {
         Engine.renderer.quad(x1, y1, x2, y2, x3, y3, x4, y4);
     }
     
+    /**
+     * See {@link Renderer#drawPolygon(double...)}
+     */
     public static void drawPolygon(double... points)
     {
         Engine.renderer.drawPolygon(points);
     }
     
+    /**
+     * See {@link Renderer#fillPolygon(double...)}
+     */
     public static void fillPolygon(double... points)
     {
         Engine.renderer.fillPolygon(points);
     }
     
+    /**
+     * See {@link Renderer#polygon(double...)}
+     */
     public static void polygon(double... points)
     {
         Engine.renderer.polygon(points);
     }
     
+    /**
+     * See {@link Renderer#drawCircle(double, double, double)}
+     */
     public static void drawCircle(double x, double y, double r)
     {
         Engine.renderer.drawCircle(x, y, r);
     }
     
+    /**
+     * See {@link Renderer#fillCircle(double, double, double)}
+     */
     public static void fillCircle(double x, double y, double r)
     {
         Engine.renderer.fillCircle(x, y, r);
     }
     
+    /**
+     * See {@link Renderer#circle(double, double, double)}
+     */
     public static void circle(double a, double b, double c)
     {
         Engine.renderer.circle(a, b, c);
     }
     
+    /**
+     * See {@link Renderer#drawEllipse(double, double, double, double)}
+     */
     public static void drawEllipse(double x, double y, double rx, double ry)
     {
         Engine.renderer.drawEllipse(x, y, rx, ry);
     }
     
+    /**
+     * See {@link Renderer#fillEllipse(double, double, double, double)}
+     */
     public static void fillEllipse(double x, double y, double rx, double ry)
     {
         Engine.renderer.fillEllipse(x, y, rx, ry);
     }
     
+    /**
+     * See {@link Renderer#ellipse(double, double, double, double)}
+     */
     public static void ellipse(double a, double b, double c, double d)
     {
         Engine.renderer.ellipse(a, b, c, d);
     }
     
+    /**
+     * See {@link Renderer#drawArc(double, double, double, double, double, double)}
+     */
     public static void drawArc(double x, double y, double rx, double ry, double start, double stop)
     {
         Engine.renderer.drawArc(x, y, rx, ry, start, stop);
     }
     
+    /**
+     * See {@link Renderer#fillArc(double, double, double, double, double, double)}
+     */
     public static void fillArc(double x, double y, double rx, double ry, double start, double stop)
     {
         Engine.renderer.fillArc(x, y, rx, ry, start, stop);
     }
     
+    /**
+     * See {@link Renderer#arc(double, double, double, double, double, double)}
+     */
     public static void arc(double a, double b, double c, double d, double start, double stop)
     {
         Engine.renderer.arc(a, b, c, d, start, stop);
     }
     
+    /**
+     * See {@link Renderer#drawTexture(Texture, double, double, double, double, double, double, double, double)}
+     */
     public static void drawTexture(Texture texture, double x, double y, double w, double h, double u, double v, double uw, double vh)
     {
         Engine.renderer.drawTexture(texture, x, y, w, h, u, v, uw, vh);
     }
     
+    /**
+     * See {@link Renderer#texture(Texture, double, double, double, double, double, double, double, double)}
+     */
     public static void texture(Texture texture, double x, double y, double w, double h, double u, double v, double uw, double vh)
     {
         Engine.renderer.texture(texture, x, y, w, h, u, v, uw, vh);
     }
     
+    /**
+     * See {@link Renderer#texture(Texture, double, double, double, double, double, double)}
+     */
     public static void texture(Texture t, double x, double y, double u, double v, double uw, double vh)
     {
         texture(t, x, y, t.width(), t.height(), u, v, uw, vh);
     }
     
+    /**
+     * See {@link Renderer#texture(Texture, double, double, double, double)}
+     */
     public static void texture(Texture t, double x, double y, double w, double h)
     {
         Engine.renderer.texture(t, x, y, w, h);
     }
     
+    /**
+     * See {@link Renderer#texture(Texture, double, double)}
+     */
     public static void texture(Texture t, double x, double y)
     {
         Engine.renderer.texture(t, x, y);
     }
     
+    /**
+     * See {@link Renderer#drawText(String, double, double)}
+     */
     public static void drawText(String text, double x, double y)
     {
         Engine.renderer.drawText(text, x, y);
     }
     
+    /**
+     * See {@link Renderer#text(String, double, double, double, double)}
+     */
     public static void text(String text, double x, double y, double w, double h)
     {
         Engine.renderer.text(text, x, y, w, h);
     }
     
+    /**
+     * See {@link Renderer#text(String, double, double)}
+     */
     public static void text(String text, double x, double y)
     {
         Engine.renderer.text(text, x, y);
     }
     
+    /**
+     * See {@link Renderer#loadPixels()}
+     */
     public static int[] loadPixels()
     {
         return Engine.renderer.loadPixels();
     }
     
+    /**
+     * See {@link Renderer#updatePixels()}
+     */
     public static void updatePixels()
     {
         Engine.renderer.updatePixels();
@@ -954,9 +1991,22 @@ public class Engine
         this.name = name.toString();
     }
     
-    protected void setup()                  { }
+    /**
+     * This method is called once the engine's environment is full setup. This is only called once.
+     * <p>
+     * This is where you call {@link #size} to enable rendering. At which point you can create textures and render to them.
+     */
+    protected void setup() { }
     
+    /**
+     * This method is called once per frame.
+     *
+     * @param elapsedTime The time in seconds since the last frame.
+     */
     protected void draw(double elapsedTime) { }
     
-    protected void destroy()                { }
+    /**
+     * This method is called after the render loop has exited for any reason, exception or otherwise. This is only called once.
+     */
+    protected void destroy() { }
 }

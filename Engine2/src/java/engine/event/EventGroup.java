@@ -3,6 +3,9 @@ package engine.event;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * A group of events. This can be used to filter events from the entire list of events.
+ */
 public class EventGroup
 {
     private final ArrayList<Class<? extends Event>> classes = new ArrayList<>();

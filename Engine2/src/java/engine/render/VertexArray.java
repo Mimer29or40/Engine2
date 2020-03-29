@@ -1,6 +1,9 @@
 package engine.render;
 
+import engine.util.Util;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_INT;
@@ -15,6 +18,9 @@ public class VertexArray
 {
     private final int                vao;
     private final ArrayList<Integer> vboList = new ArrayList<>();
+    private       int                ebo;
+    
+    private int vertexCount, indexCount;
     
     /**
      * Creates a new VertexArray.
@@ -25,6 +31,22 @@ public class VertexArray
     }
     
     /**
+     * @return The number of vertices in the vertex array.
+     */
+    public int getVertexCount()
+    {
+        return this.vertexCount;
+    }
+    
+    /**
+     * @return The number of indices in the vertex array.
+     */
+    public int getIndexCount()
+    {
+        return this.indexCount;
+    }
+    
+    /**
      * Bind the VertexArray for use.
      *
      * @return This instance for call chaining.
@@ -32,7 +54,8 @@ public class VertexArray
     public VertexArray bind()
     {
         glBindVertexArray(this.vao);
-        for (int i = 0, n = this.vboList.size(); i < n; i++) glEnableVertexAttribArray(i);
+        for (int vbo : this.vboList) glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        if (this.ebo > 0) glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.ebo);
         return this;
     }
     
@@ -43,9 +66,9 @@ public class VertexArray
      */
     public VertexArray unbind()
     {
-        glBindVertexArray(this.vao);
-        for (int i = 0, n = this.vboList.size(); i < n; i++) glDisableVertexAttribArray(i);
         glBindVertexArray(0);
+        for (int vbo : this.vboList) glBindBuffer(GL_ARRAY_BUFFER, 0);
+        if (this.ebo > 0) glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         return this;
     }
     
@@ -57,8 +80,7 @@ public class VertexArray
     public VertexArray delete()
     {
         glDeleteVertexArrays(this.vao);
-        for (int vbo : this.vboList) glDeleteBuffers(vbo);
-        return this;
+        return reset();
     }
     
     /**
@@ -70,80 +92,152 @@ public class VertexArray
     {
         for (int vbo : this.vboList) glDeleteBuffers(vbo);
         this.vboList.clear();
+        if (this.ebo > 0) glDeleteBuffers(this.ebo);
         return this;
     }
     
     /**
-     * Adds an int buffer to the Vertex Array
+     * Draws the array in the specified mode. If an element buffer is available, it used it.
      *
-     * @param size  The size of the buffer.
-     * @param data  The data
+     * @param mode The primitive type.
+     * @return This instance for call chaining.
+     */
+    public VertexArray draw(int mode)
+    {
+        if (this.ebo > 0)
+        {
+            glDrawElements(mode, this.indexCount, GL_UNSIGNED_INT, 0);
+        }
+        else
+        {
+            glDrawArrays(mode, 0, this.vertexCount);
+        }
+        return this;
+    }
+    
+    /**
+     * Adds an index array to the Vertex Array
+     *
+     * @param data  The index array
      * @param usage How the data should be used.
      * @return This instance for call chaining.
      */
-    public VertexArray add(int size, int[] data, int usage)
+    public VertexArray addIndices(int[] data, int usage)
     {
-        int vbo = glGenBuffers();
+        if (this.ebo > 0) glDeleteBuffers(this.ebo);
+        this.ebo        = glGenBuffers();
+        this.indexCount = data.length;
         
-        glBindVertexArray(this.vao);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, data, usage);
-        
-        glVertexAttribPointer(this.vboList.size(), size, GL_INT, false, 0, 0);
-        
-        this.vboList.add(vbo);
-        
-        glBindVertexArray(0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.ebo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, data, usage);
         
         return this;
     }
     
     /**
-     * Adds an int buffer to the Vertex Array
+     * Adds an index array to the Vertex Array
      *
-     * @param size The size of the buffer.
-     * @param data The data
+     * @param data The index array
      * @return This instance for call chaining.
      */
-    public VertexArray add(int size, int[] data)
+    public VertexArray addIndices(int[] data)
     {
-        return add(size, data, GL_STATIC_DRAW);
+        return addIndices(data, GL_STATIC_DRAW);
     }
     
     /**
-     * Adds a float buffer to the Vertex Array
+     * Adds a float buffer with many attributes to the Vertex Array.
      *
-     * @param size  The size of the buffer.
-     * @param data  The data
      * @param usage How the data should be used.
+     * @param data The data
+     * @param sizes The attributes lengths
      * @return This instance for call chaining.
      */
-    public VertexArray add(int size, float[] data, int usage)
+    public VertexArray add(int usage, float[] data, int... sizes)
     {
-        int vbo = glGenBuffers();
+        if (sizes.length == 0) throw new RuntimeException("Invalid vertex size: Must have at least one size");
+        int vertexSize = Util.sum(sizes);
+        if (vertexSize == 0) throw new RuntimeException("Invalid vertex size: Vertex length must be > 0");
         
-        glBindVertexArray(this.vao);
+        int count = data.length / vertexSize;
+        if (this.vertexCount > 0 && this.vertexCount != count) throw new RuntimeException(String.format("Vertex Array Mismatch: Array Len: %s Provide Array Len: %s", this.vertexCount, count));
+        this.vertexCount = count;
+    
+        int vbo = glGenBuffers();
+    
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, data, usage);
-        
-        glVertexAttribPointer(this.vboList.size(), size, GL_FLOAT, false, 0, 0);
-        
+    
+        int offset = 0, stride = vertexSize * Float.BYTES;
+        for (int i = 0, n = sizes.length; i < n; i++)
+        {
+            int size = sizes[i];
+            glVertexAttribPointer(this.vboList.size() + i, size, GL_FLOAT, false, stride, offset);
+            glEnableVertexAttribArray(this.vboList.size() + i);
+            offset += size * Float.BYTES;
+        }
+    
         this.vboList.add(vbo);
-        
-        glBindVertexArray(0);
-        
         return this;
     }
     
     /**
-     * Adds a float buffer to the Vertex Array
+     * Adds a float buffer with many attributes to the Vertex Array.
      *
-     * @param size The size of the buffer.
-     * @param data The data
+     * @param data  The data
+     * @param sizes The attributes lengths
      * @return This instance for call chaining.
      */
-    public VertexArray add(int size, float[] data)
+    public VertexArray add(float[] data, int... sizes)
     {
-        return add(size, data, GL_STATIC_DRAW);
+        return add(GL_STATIC_DRAW, data, sizes);
+    }
+    
+    /**
+     * Adds an int buffer with many attributes to the Vertex Array.
+     *
+     * @param usage How the data should be used.
+     * @param data The data
+     * @param sizes The attributes lengths
+     * @return This instance for call chaining.
+     */
+    public VertexArray add(int usage, int[] data, int... sizes)
+    {
+        if (sizes.length == 0) throw new RuntimeException("Invalid vertex size: Must have at least one size");
+        int vertexSize = Util.sum(sizes);
+        if (vertexSize == 0) throw new RuntimeException("Invalid vertex size: Vertex length must be > 0");
+        
+        int count = data.length / vertexSize;
+        if (this.vertexCount > 0 && this.vertexCount != count) throw new RuntimeException(String.format("Vertex Array Mismatch: Array Len: %s Provide Array Len: %s", this.vertexCount, count));
+        this.vertexCount = count;
+    
+        int vbo = glGenBuffers();
+    
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, data, usage);
+    
+        int offset = 0, stride = vertexSize * Float.BYTES;
+        for (int i = 0, n = sizes.length; i < n; i++)
+        {
+            int size = sizes[i];
+            glVertexAttribPointer(this.vboList.size() + i, size, GL_FLOAT, false, stride, offset);
+            glEnableVertexAttribArray(this.vboList.size() + i);
+            offset += size * Float.BYTES;
+        }
+    
+        this.vboList.add(vbo);
+        return this;
+    }
+    
+    /**
+     * Adds an int buffer with many attributes to the Vertex Array.
+     *
+     * @param data  The data
+     * @param sizes The attributes lengths
+     * @return This instance for call chaining.
+     */
+    public VertexArray add(int[] data, int... sizes)
+    {
+        return add(GL_STATIC_DRAW, data, sizes);
     }
 }

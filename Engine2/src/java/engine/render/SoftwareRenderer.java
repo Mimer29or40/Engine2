@@ -40,7 +40,7 @@ public class SoftwareRenderer extends Renderer
     {
         super.finish();
         
-        this.target.upload();
+        this.target.bind().upload();
     }
     
     /**

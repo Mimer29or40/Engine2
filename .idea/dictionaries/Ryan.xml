@@ -3,6 +3,8 @@
     <words>
       <w>glfw</w>
       <w>joml</w>
+      <w>opengl</w>
+      <w>proj</w>
     </words>
   </dictionary>
 </component>

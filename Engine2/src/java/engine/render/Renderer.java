@@ -44,6 +44,11 @@ public abstract class Renderer
             Renderer.LOGGER.debug("Using Software Renderer");
             return new SoftwareRenderer(target);
         }
+        else if (renderer.equals("pixel"))
+        {
+            Renderer.LOGGER.debug("Using Pixel Renderer");
+            return new PixelRenderer(target);
+        }
         else if (renderer.equals("opengl"))
         {
             Renderer.LOGGER.debug("Using OpenGL Renderer");

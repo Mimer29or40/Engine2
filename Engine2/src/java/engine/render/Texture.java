@@ -12,14 +12,12 @@ import java.nio.ByteBuffer;
 
 import static engine.util.Util.getPath;
 import static org.lwjgl.BufferUtils.zeroBuffer;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL30.GL_RG;
-import static org.lwjgl.opengl.GL30.glGenerateMipmap;
+import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.stb.STBImage.*;
 import static org.lwjgl.stb.STBImageWrite.stbi_write_png;
 
 /**
- * A texture that can be drawn to or used to draw to another texture. These can only be created after {@link engine.Engine#size} is called.
+ * A texture that can be drawn to or used to draw to another texture. These can only be created after a window is created.
  */
 public class Texture
 {
@@ -35,8 +33,8 @@ public class Texture
     
     protected final ByteBuffer data;
     
-    protected int wrapS     = GL_REPEAT;
-    protected int wrapT     = GL_REPEAT;
+    protected int wrapS     = GL_CLAMP_TO_EDGE;
+    protected int wrapT     = GL_CLAMP_TO_EDGE;
     protected int minFilter = GL_NEAREST;
     protected int magFilter = GL_NEAREST;
     
@@ -165,6 +163,34 @@ public class Texture
     public ByteBuffer data()
     {
         return this.data;
+    }
+    
+    /**
+     * Sets the wrap mode for the texture.
+     *
+     * @param wrapS The new wrapS mode.
+     * @param wrapT The new wrapT mode.
+     * @return This instance for call chaining.
+     */
+    public Texture wrapMode(int wrapS, int wrapT)
+    {
+        this.wrapS = wrapS;
+        this.wrapT = wrapT;
+        return this;
+    }
+    
+    /**
+     * Sets the filter mode for the texture.
+     *
+     * @param minFilter The new minFilter mode.
+     * @param magFilter The new magFilter mode.
+     * @return This instance for call chaining.
+     */
+    public Texture filterMode(int minFilter, int magFilter)
+    {
+        this.minFilter = minFilter;
+        this.magFilter = magFilter;
+        return this;
     }
     
     /**
@@ -349,8 +375,6 @@ public class Texture
      */
     public Texture upload()
     {
-        bind();
-        
         if (this.data != null)
         {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, this.wrapS);

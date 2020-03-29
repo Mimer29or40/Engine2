@@ -449,4 +449,48 @@ public class Util
         for (double x : array) max = Math.max(max, x);
         return max;
     }
+    
+    /**
+     * @param array The array.
+     * @return The sum of the entire the array.
+     */
+    public static int sum(int... array)
+    {
+        int sum = 0;
+        for (int x : array) sum += x;
+        return sum;
+    }
+    
+    /**
+     * @param array The array.
+     * @return The sum of the entire the array.
+     */
+    public static long sum(long... array)
+    {
+        long sum = 0;
+        for (long x : array) sum += x;
+        return sum;
+    }
+    
+    /**
+     * @param array The array.
+     * @return The sum of the entire array.
+     */
+    public static float sum(float... array)
+    {
+        float sum = 0;
+        for (float x : array) sum += x;
+        return sum;
+    }
+    
+    /**
+     * @param array The array.
+     * @return The sum of the entire array.
+     */
+    public static double sum(double... array)
+    {
+        double sum = 0;
+        for (double x : array) sum += x;
+        return sum;
+    }
 }

@@ -8,6 +8,7 @@ import org.joml.Vector2i;
 import org.joml.Vector2ic;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.opengl.GL;
 
 import java.util.Objects;
 
@@ -277,6 +278,8 @@ public class Window
     {
         if (this.glfwWindow > 0)
         {
+            GL.destroy();
+            
             glfwFreeCallbacks(this.glfwWindow);
             glfwDestroyWindow(this.glfwWindow);
             

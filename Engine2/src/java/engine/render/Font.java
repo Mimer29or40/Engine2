@@ -370,7 +370,7 @@ public class Font
                 textureWidth *= 2;
             }
         }
-        bitmap.upload();
+        bitmap.bind().upload();
         this.bitmapMap.put(this.size, bitmap);
     }
     

@@ -2,6 +2,7 @@ package engine.util;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
@@ -15,7 +16,8 @@ import static engine.util.Util.getCurrentTimeString;
 @SuppressWarnings("unused")
 public class Logger
 {
-    private static final Pattern fsPattern = Pattern.compile("%(\\d+\\$)?([-#+ 0,(<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])"); // Taken from java.lang.Formatter
+    private static final Pattern      PATTERN = Pattern.compile("%(\\d+\\$)?([-#+ 0,(<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])"); // Taken from java.lang.Formatter
+    private static final OutputStream OUT     = new BufferedOutputStream(System.out);
     
     private static Level level = Level.INFO;
     
@@ -37,8 +39,7 @@ public class Logger
         Logger.level = level;
     }
     
-    private final String               name;
-    private final BufferedOutputStream out;
+    private final String name;
     
     /**
      * Creates a new logger whose name is the class path to the file.
@@ -48,7 +49,6 @@ public class Logger
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         
         this.name = elements.length > 2 ? elements[2].getClassName() : "";
-        this.out  = new BufferedOutputStream(System.out);
     }
     
     private void log(Level level, String message)
@@ -57,10 +57,10 @@ public class Logger
         {
             try
             {
-                this.out.write(('[' + getCurrentTimeString() + "] [" + Thread.currentThread().getName() + '/' + level + "]").getBytes());
-                if (!this.name.equals("")) this.out.write((" [" + this.name + "]").getBytes());
-                this.out.write((": " + message + '\n').getBytes());
-                this.out.flush();
+                Logger.OUT.write(('[' + getCurrentTimeString() + "] [" + Thread.currentThread().getName() + '/' + level + "]").getBytes());
+                if (!this.name.equals("")) Logger.OUT.write((" [" + this.name + "]").getBytes());
+                Logger.OUT.write((": " + message + '\n').getBytes());
+                Logger.OUT.flush();
             }
             catch (IOException ignored) { }
         }
@@ -74,12 +74,10 @@ public class Logger
      */
     public void log(Level level, Object... objects)
     {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0, n = objects.length; i < n; i++)
-        {
-            builder.append(objects[i]);
-            if (i + 1 < n) builder.append(' ');
-        }
+        int n = objects.length;
+        if (n == 0) return;
+        StringBuilder builder = new StringBuilder(String.valueOf(objects[0]));
+        for (int i = 1; i < n; i++) builder.append(' ').append(objects[i]);
         log(level, builder.toString());
     }
     
@@ -92,18 +90,14 @@ public class Logger
      */
     public void log(Level level, String format, Object... objects)
     {
-        if (Logger.fsPattern.matcher(format).find())
+        if (Logger.PATTERN.matcher(format).find())
         {
             log(level, String.format(format, objects));
         }
         else
         {
-            StringBuilder builder = new StringBuilder(format).append(' ');
-            for (int i = 0, n = objects.length; i < n; i++)
-            {
-                builder.append(objects[i]);
-                if (i + 1 < n) builder.append(' ');
-            }
+            StringBuilder builder = new StringBuilder(format);
+            for (Object object : objects) builder.append(' ').append(object);
             log(level, builder.toString());
         }
     }

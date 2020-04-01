@@ -3,6 +3,8 @@ package engine.render;
 import engine.Engine;
 import engine.util.Logger;
 
+import java.util.logging.Level;
+
 import static engine.util.Util.map;
 
 public class FontTests extends Engine
@@ -68,6 +70,6 @@ public class FontTests extends Engine
     
     public static void main(String[] args)
     {
-        start(new FontTests(), Logger.Level.DEBUG);
+        start(new FontTests(), Level.FINE);
     }
 }

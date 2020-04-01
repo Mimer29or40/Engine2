@@ -1,5 +1,8 @@
 package engine.util;
 
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import static engine.util.Util.getCurrentTimeString;
@@ -34,7 +37,8 @@ public class Logger
         Logger.level = level;
     }
     
-    private final String className;
+    private final String               name;
+    private final BufferedOutputStream out;
     
     /**
      * Creates a new logger whose name is the class path to the file.
@@ -43,24 +47,22 @@ public class Logger
     {
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         
-        this.className = elements.length > 2 ? elements[2].getClassName() : "";
+        this.name = elements.length > 2 ? elements[2].getClassName() : "";
+        this.out  = new BufferedOutputStream(System.out);
     }
     
     private void log(Level level, String message)
     {
-        if (level.compareTo(Logger.level) <= 0)
+        if (level.intValue() >= Logger.level.intValue())
         {
-            String thread = Thread.currentThread().getName();
-            String line;
-            if (this.className.equals(""))
+            try
             {
-                line = String.format("[%s] [%s/%s]: %s", getCurrentTimeString(), thread, level, message);
+                this.out.write(('[' + getCurrentTimeString() + "] [" + Thread.currentThread().getName() + '/' + level + "]").getBytes());
+                if (!this.name.equals("")) this.out.write((" [" + this.name + "]").getBytes());
+                this.out.write((": " + message + '\n').getBytes());
+                this.out.flush();
             }
-            else
-            {
-                line = String.format("[%s] [%s/%s] [%s]: %s", getCurrentTimeString(), thread, level, this.className, message);
-            }
-            System.out.println(line);
+            catch (IOException ignored) { }
         }
     }
     
@@ -107,70 +109,48 @@ public class Logger
     }
     
     /**
-     * Logs the object at {@link Level#FATAL}.
+     * Logs the object at {@link Level#SEVERE}.
      *
      * @param object The objects to log.
      */
-    public void fatal(Object object) { log(Level.FATAL, String.valueOf(object)); }
+    public void severe(Object object) { log(Level.SEVERE, String.valueOf(object)); }
     
     /**
-     * Logs the objects separated by spaces at {@link Level#FATAL}.
+     * Logs the objects separated by spaces at {@link Level#SEVERE}.
      *
      * @param objects The objects to log.
      */
-    public void fatal(Object... objects) { log(Level.FATAL, objects); }
+    public void severe(Object... objects) { log(Level.SEVERE, objects); }
     
     /**
-     * Logs the objects separated by spaces at {@link Level#FATAL}. If the format string has format characters in it, then it will be used to format the objects.
+     * Logs the objects separated by spaces at {@link Level#SEVERE}. If the format string has format characters in it, then it will be used to format the objects.
      *
      * @param format  The optional format string.
      * @param objects The objects to log.
      */
-    public void fatal(String format, Object... objects) { log(Level.FATAL, format, objects); }
+    public void severe(String format, Object... objects) { log(Level.SEVERE, format, objects); }
     
     /**
-     * Logs the object at {@link Level#ERROR}.
+     * Logs the object at {@link Level#WARNING}.
      *
      * @param object The objects to log.
      */
-    public void error(Object object) { log(Level.ERROR, String.valueOf(object)); }
+    public void warning(Object object) { log(Level.WARNING, String.valueOf(object)); }
     
     /**
-     * Logs the objects separated by spaces at {@link Level#ERROR}.
+     * Logs the objects separated by spaces at {@link Level#WARNING}.
      *
      * @param objects The objects to log.
      */
-    public void error(Object... objects) { log(Level.ERROR, objects); }
+    public void warning(Object... objects) { log(Level.WARNING, objects); }
     
     /**
-     * Logs the objects separated by spaces at {@link Level#ERROR}. If the format string has format characters in it, then it will be used to format the objects.
+     * Logs the objects separated by spaces at {@link Level#WARNING}. If the format string has format characters in it, then it will be used to format the objects.
      *
      * @param format  The optional format string.
      * @param objects The objects to log.
      */
-    public void error(String format, Object... objects) { log(Level.ERROR, format, objects); }
-    
-    /**
-     * Logs the object at {@link Level#WARN}.
-     *
-     * @param object The objects to log.
-     */
-    public void warn(Object object) { log(Level.WARN, String.valueOf(object)); }
-    
-    /**
-     * Logs the objects separated by spaces at {@link Level#WARN}.
-     *
-     * @param objects The objects to log.
-     */
-    public void warn(Object... objects) { log(Level.WARN, objects); }
-    
-    /**
-     * Logs the objects separated by spaces at {@link Level#WARN}. If the format string has format characters in it, then it will be used to format the objects.
-     *
-     * @param format  The optional format string.
-     * @param objects The objects to log.
-     */
-    public void warn(String format, Object... objects) { log(Level.WARN, format, objects); }
+    public void warning(String format, Object... objects) { log(Level.WARNING, format, objects); }
     
     /**
      * Logs the object at {@link Level#INFO}.
@@ -195,48 +175,92 @@ public class Logger
     public void info(String format, Object... objects) { log(Level.INFO, format, objects); }
     
     /**
-     * Logs the object at {@link Level#DEBUG}.
+     * Logs the object at {@link Level#CONFIG}.
      *
      * @param object The objects to log.
      */
-    public void debug(Object object) { log(Level.DEBUG, String.valueOf(object)); }
+    public void config(Object object) { log(Level.CONFIG, String.valueOf(object)); }
     
     /**
-     * Logs the objects separated by spaces at {@link Level#DEBUG}.
+     * Logs the objects separated by spaces at {@link Level#CONFIG}.
      *
      * @param objects The objects to log.
      */
-    public void debug(Object... objects) { log(Level.DEBUG, objects); }
+    public void config(Object... objects) { log(Level.CONFIG, objects); }
     
     /**
-     * Logs the objects separated by spaces at {@link Level#DEBUG}. If the format string has format characters in it, then it will be used to format the objects.
+     * Logs the objects separated by spaces at {@link Level#CONFIG}. If the format string has format characters in it, then it will be used to format the objects.
      *
      * @param format  The optional format string.
      * @param objects The objects to log.
      */
-    public void debug(String format, Object... objects) { log(Level.DEBUG, format, objects); }
+    public void config(String format, Object... objects) { log(Level.CONFIG, format, objects); }
     
     /**
-     * Logs the object at {@link Level#TRACE}.
+     * Logs the object at {@link Level#FINE}.
      *
      * @param object The objects to log.
      */
-    public void trace(Object object) { log(Level.TRACE, String.valueOf(object)); }
+    public void fine(Object object) { log(Level.FINE, String.valueOf(object)); }
     
     /**
-     * Logs the objects separated by spaces at {@link Level#TRACE}.
+     * Logs the objects separated by spaces at {@link Level#FINE}.
      *
      * @param objects The objects to log.
      */
-    public void trace(Object... objects) { log(Level.TRACE, objects); }
+    public void fine(Object... objects) { log(Level.FINE, objects); }
     
     /**
-     * Logs the objects separated by spaces at {@link Level#TRACE}. If the format string has format characters in it, then it will be used to format the objects.
+     * Logs the objects separated by spaces at {@link Level#FINE}. If the format string has format characters in it, then it will be used to format the objects.
      *
      * @param format  The optional format string.
      * @param objects The objects to log.
      */
-    public void trace(String format, Object... objects) { log(Level.TRACE, format, objects); }
+    public void fine(String format, Object... objects) { log(Level.FINE, format, objects); }
+    
+    /**
+     * Logs the object at {@link Level#FINER}.
+     *
+     * @param object The objects to log.
+     */
+    public void finer(Object object) { log(Level.FINER, String.valueOf(object)); }
+    
+    /**
+     * Logs the objects separated by spaces at {@link Level#FINER}.
+     *
+     * @param objects The objects to log.
+     */
+    public void finer(Object... objects) { log(Level.FINER, objects); }
+    
+    /**
+     * Logs the objects separated by spaces at {@link Level#FINER}. If the format string has format characters in it, then it will be used to format the objects.
+     *
+     * @param format  The optional format string.
+     * @param objects The objects to log.
+     */
+    public void finer(String format, Object... objects) { log(Level.FINER, format, objects); }
+    
+    /**
+     * Logs the object at {@link Level#FINEST}.
+     *
+     * @param object The objects to log.
+     */
+    public void finest(Object object) { log(Level.FINEST, String.valueOf(object)); }
+    
+    /**
+     * Logs the objects separated by spaces at {@link Level#FINEST}.
+     *
+     * @param objects The objects to log.
+     */
+    public void finest(Object... objects) { log(Level.FINEST, objects); }
+    
+    /**
+     * Logs the objects separated by spaces at {@link Level#FINEST}. If the format string has format characters in it, then it will be used to format the objects.
+     *
+     * @param format  The optional format string.
+     * @param objects The objects to log.
+     */
+    public void finest(String format, Object... objects) { log(Level.FINEST, format, objects); }
     
     /**
      * Logs the object at {@link Level#ALL}.
@@ -259,9 +283,4 @@ public class Logger
      * @param objects The objects to log.
      */
     public void all(String format, Object... objects) { log(Level.ALL, format, objects); }
-    
-    public enum Level
-    {
-        OFF, FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL
-    }
 }

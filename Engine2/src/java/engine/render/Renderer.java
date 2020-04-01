@@ -41,24 +41,24 @@ public abstract class Renderer
     {
         if (renderer.equals("software"))
         {
-            Renderer.LOGGER.debug("Using Software Renderer");
+            Renderer.LOGGER.fine("Using Software Renderer");
             return new SoftwareRenderer(target);
         }
         else if (renderer.equals("pixel"))
         {
-            Renderer.LOGGER.debug("Using Pixel Renderer");
+            Renderer.LOGGER.fine("Using Pixel Renderer");
             return new PixelRenderer(target);
         }
         else if (renderer.equals("opengl"))
         {
-            Renderer.LOGGER.debug("Using OpenGL Renderer");
+            Renderer.LOGGER.fine("Using OpenGL Renderer");
             return new OpenGLRenderer(target);
         }
         // else
         // {
         //     // TODO - Check for registered renderers?
         // }
-        Renderer.LOGGER.warn("Could not parse renderer. Using Software Renderer");
+        Renderer.LOGGER.warning("Could not parse renderer. Using Software Renderer");
         return new SoftwareRenderer(target);
     }
     
@@ -84,8 +84,8 @@ public abstract class Renderer
     protected       ArcMode        arcMode  = Renderer.DEFAULT_ARC_MODE;
     protected final Stack<ArcMode> arcModes = new Stack<>();
     
-    protected       Font        font  = Renderer.DEFAULT_FONT;
-    protected final Stack<Font> fonts = new Stack<>();
+    protected       Font                  font  = Renderer.DEFAULT_FONT;
+    protected final Stack<Font.FontTuple> fonts = new Stack<>();
     
     protected       TextAlign        textAlign  = Renderer.DEFAULT_TEXT_ALIGN;
     protected final Stack<TextAlign> textAligns = new Stack<>();
@@ -437,7 +437,7 @@ public abstract class Renderer
         this.rectModes.push(this.rectMode);
         this.ellipseModes.push(this.ellipseMode);
         this.arcModes.push(this.arcMode);
-        this.fonts.push(new Font(this.font));
+        this.fonts.push(new Font.FontTuple(this.font));
         this.textAligns.push(this.textAlign);
         this.viewMatrices.push(new Matrix4d(this.viewMatrix));
     }
@@ -453,8 +453,8 @@ public abstract class Renderer
         this.rectMode    = this.rectModes.pop();
         this.ellipseMode = this.ellipseModes.pop();
         this.arcMode     = this.arcModes.pop();
-        this.font        = this.fonts.pop();
-        this.textAlign   = this.textAligns.pop();
+        this.fonts.pop().setFont(this.font);
+        this.textAlign = this.textAligns.pop();
         this.viewMatrix.set(this.viewMatrices.pop());
     }
     

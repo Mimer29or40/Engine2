@@ -41,7 +41,7 @@ public class Profiler
         {
             if (this.started)
             {
-                Profiler.LOGGER.error("Profiler tick already started");
+                Profiler.LOGGER.warning("Profiler tick already started");
             }
             else
             {
@@ -62,7 +62,7 @@ public class Profiler
         {
             if (!this.started)
             {
-                Profiler.LOGGER.error("Profiler tick already ended");
+                Profiler.LOGGER.warning("Profiler tick already ended");
             }
             else
             {
@@ -70,7 +70,7 @@ public class Profiler
                 this.started = false;
                 if (!this.sections.isEmpty())
                 {
-                    Profiler.LOGGER.warn("Profiler tick ended before path was fully popped (remainder: '%s')", this.sections.peek());
+                    Profiler.LOGGER.warning("Profiler tick ended before path was fully popped (remainder: '%s')", this.sections.peek());
                 }
             }
         }
@@ -87,7 +87,7 @@ public class Profiler
         {
             if (!this.started)
             {
-                Profiler.LOGGER.error("Cannot push '%s' to profiler if profiler tick hasn't started", section);
+                Profiler.LOGGER.warning("Cannot push '%s' to profiler if profiler tick hasn't started", section);
             }
             else
             {
@@ -95,7 +95,7 @@ public class Profiler
                 
                 this.sections.push(new Pair<>(parent + section, System.nanoTime()));
                 
-                Profiler.LOGGER.trace("Starting Section: %s", parent + section);
+                Profiler.LOGGER.finest("Starting Section: %s", parent + section);
             }
         }
     }
@@ -109,11 +109,11 @@ public class Profiler
         {
             if (!this.started)
             {
-                Profiler.LOGGER.error("Cannot pop from profiler if profiler tick hasn't started");
+                Profiler.LOGGER.warning("Cannot pop from profiler if profiler tick hasn't started");
             }
             else if (this.sections.isEmpty())
             {
-                Profiler.LOGGER.error("Tried to pop one too many times");
+                Profiler.LOGGER.warning("Tried to pop one too many times");
             }
             else
             {
@@ -124,10 +124,10 @@ public class Profiler
                 this.times.put(section, delta);
                 if (delta > WARN_TIME_THRESHOLD)
                 {
-                    Profiler.LOGGER.warn("Something's taking too long! '%s' took approx %s us", section, delta / 1_000D);
+                    Profiler.LOGGER.warning("Something's taking too long! '%s' took approx %s us", section, delta / 1_000D);
                 }
                 
-                Profiler.LOGGER.trace("Ending Section: %s", section);
+                Profiler.LOGGER.finest("Ending Section: %s", section);
             }
         }
     }

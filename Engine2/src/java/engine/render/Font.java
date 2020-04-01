@@ -1,5 +1,7 @@
 package engine.render;
 
+import engine.util.Tuple;
+import engine.util.Util;
 import org.lwjgl.stb.STBTTAlignedQuad;
 import org.lwjgl.stb.STBTTFontinfo;
 import org.lwjgl.stb.STBTTPackContext;
@@ -11,7 +13,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.HashMap;
 
-import static engine.util.Util.resourceToByteBuffer;
 import static org.lwjgl.stb.STBTruetype.*;
 
 /**
@@ -19,13 +20,15 @@ import static org.lwjgl.stb.STBTruetype.*;
  */
 public class Font
 {
+    private static final HashMap<String, ByteBuffer> FILE_CACHE = new HashMap<>();
+    
     private static final String  DEFAULT_FONT      = "BetterPixels.ttf";
     private static final int     DEFAULT_SIZE      = 12;
     private static final boolean DEFAULT_ALIGNMENT = false;
     
-    protected final String        font;
-    protected final ByteBuffer    data;
-    protected final STBTTFontinfo info;
+    protected String        font;
+    protected ByteBuffer    data;
+    protected STBTTFontinfo info;
     
     private final STBTTAlignedQuad quad;
     
@@ -63,9 +66,9 @@ public class Font
     public Font(String font, int size, boolean pixelAligned)
     {
         this.font = font;
-        this.data = resourceToByteBuffer(font);
+        this.data = Font.FILE_CACHE.computeIfAbsent(this.font, Util::resourceToByteBuffer);
         this.info = STBTTFontinfo.create();
-        if (!stbtt_InitFont(info, this.data)) throw new RuntimeException("Font could not be loaded: " + font);
+        if (!stbtt_InitFont(this.info, this.data)) throw new RuntimeException("Font could not be loaded: " + font);
         
         this.quad = STBTTAlignedQuad.malloc();
         
@@ -165,6 +168,31 @@ public class Font
     public Font(Font other)
     {
         this(other.font, other.size, other.pixelAligned);
+    }
+    
+    /**
+     * @return Gets the font path.
+     */
+    public String getFont()
+    {
+        return this.font;
+    }
+    
+    /**
+     * Sets the font from a ttf file.
+     *
+     * @param font The new font.
+     */
+    public void setFont(String font)
+    {
+        if (this.font.equals(font)) return;
+        
+        this.font = font;
+        this.data = Font.FILE_CACHE.computeIfAbsent(this.font, Util::resourceToByteBuffer);
+        this.info = STBTTFontinfo.create();
+        if (!stbtt_InitFont(this.info, this.data)) throw new RuntimeException("Font could not be loaded: " + font);
+        
+        setup();
     }
     
     /**
@@ -293,9 +321,9 @@ public class Font
     
     /**
      * Renders the text and return an array of screen coordinates and uv coordinates for each character to send to a renderer.
-     *
+     * <p>
      * The format is as follows: <p>
-     *     [x0,y0,w0,h0,u0,v0,uw0,vh0,x1,y1,w1,h1,u1,v1,uw1,vh1,...]
+     * [x0,y0,w0,h0,u0,v0,uw0,vh0,x1,y1,w1,h1,u1,v1,uw1,vh1,...]
      *
      * @param text The text to render.
      * @return The array of coordinates.
@@ -388,5 +416,25 @@ public class Font
         }
         codePoint.put(0, c1);
         return 1;
+    }
+    
+    public static final class FontTuple extends Tuple<String, Integer, Boolean>
+    {
+        /**
+         * Creates a new tuple with the fonts information
+         *
+         * @param font The font object.
+         */
+        public FontTuple(Font font)
+        {
+            super(font.font, font.size, font.pixelAligned);
+        }
+        
+        public void setFont(Font font)
+        {
+            font.setFont(font.font);
+            font.setSize(font.size);
+            font.setPixelAligned(font.pixelAligned);
+        }
     }
 }

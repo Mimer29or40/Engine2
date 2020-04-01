@@ -1,15 +1,49 @@
 package engine.render;
 
 import engine.color.Colorc;
+import engine.util.Logger;
+
+import static org.lwjgl.opengl.GL43.*;
 
 /**
  * Renderer using OpenGL on the GPU.
  */
 public class OpenGLRenderer extends Renderer
 {
+    private static final Logger LOGGER = new Logger();
+    
+    protected final int fbo, rbo;
+    
     protected OpenGLRenderer(Texture target)
     {
         super(target);
+        
+        this.fbo = glGenFramebuffers();
+        glBindFramebuffer(GL_FRAMEBUFFER, this.fbo);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this.target.bind().upload().id(), 0);
+        
+        this.rbo = glGenRenderbuffers();
+        glBindRenderbuffer(GL_RENDERBUFFER, this.rbo);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, this.target.width(), this.target.height());
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, this.rbo); // now actually attach it
+        
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) OpenGLRenderer.LOGGER.severe("Could not create FrameBuffer");
+        
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+    
+    /**
+     * Begins the rendering process.
+     * <p>
+     * This must be called before any draw functions are called.
+     */
+    @Override
+    public void start()
+    {
+        super.start();
+        
+        glBindFramebuffer(GL_FRAMEBUFFER, this.fbo);
+        glViewport(0, 0, this.target.width(), this.target.height());
     }
     
     /**
@@ -22,7 +56,7 @@ public class OpenGLRenderer extends Renderer
     {
         super.finish();
         
-        this.target.download();
+        this.target.bind().download();
     }
     
     /**
@@ -33,7 +67,10 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void clear(Colorc color)
     {
-    
+        makeCurrent();
+        
+        glClearColor(color.rf(), color.gf(), color.bf(), color.af());
+        glClear(GL_COLOR_BUFFER_BIT);
     }
     
     /**
@@ -424,5 +461,11 @@ public class OpenGLRenderer extends Renderer
     public void updatePixels()
     {
     
+    }
+    
+    private void makeCurrent()
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, this.fbo);
+        glViewport(0, 0, this.target.width(), this.target.height());
     }
 }

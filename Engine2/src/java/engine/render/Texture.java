@@ -405,9 +405,7 @@ public class Texture
      */
     public Texture download()
     {
-        bind();
-        
-        if (this.data != null) glGetTexImage(GL_TEXTURE_2D, 0, getFormat(channels), GL_UNSIGNED_BYTE, this.data);
+        if (this.data != null) glGetTexImage(GL_TEXTURE_2D, 0, getFormat(this.channels), GL_UNSIGNED_BYTE, this.data);
         
         return this;
     }
@@ -430,7 +428,7 @@ public class Texture
         }
         catch (IOException e)
         {
-            Texture.LOGGER.error("Texture could not be saved: " + filePath);
+            Texture.LOGGER.severe("Texture could not be saved: " + filePath);
         }
     }
     
@@ -447,7 +445,7 @@ public class Texture
         
         if (!stbi_write_png(filePath, this.width, this.height, this.channels, this.data, this.width * this.channels))
         {
-            Texture.LOGGER.error("Image could not be saved: " + filePath);
+            Texture.LOGGER.severe("Image could not be saved: " + filePath);
         }
     }
     
@@ -473,7 +471,7 @@ public class Texture
         }
         catch (IOException e)
         {
-            Texture.LOGGER.error("Texture could not be loaded: " + filePath);
+            Texture.LOGGER.severe("Texture could not be loaded: " + filePath);
         }
         
         return new Texture(0, 0, 0, (ByteBuffer) null);
@@ -502,7 +500,7 @@ public class Texture
         }
         else
         {
-            Texture.LOGGER.error("Failed to load Texture: " + filePath);
+            Texture.LOGGER.severe("Failed to load Texture: " + filePath);
         }
         
         stbi_set_flip_vertically_on_load(false);

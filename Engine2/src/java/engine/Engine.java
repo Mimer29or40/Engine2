@@ -19,6 +19,7 @@ import java.lang.Math;
 import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 import static engine.util.Util.getCurrentDateTimeString;
 import static engine.util.Util.println;
@@ -97,9 +98,9 @@ public class Engine
      * @param logic The engine instance to use.
      * @param level The level logging is set to.
      */
-    protected static void start(Engine logic, Logger.Level level)
+    protected static void start(Engine logic, Level level)
     {
-        Logger.setLevel(level);
+        // Logger.setLevel(level);
         
         Engine.LOGGER.info("Engine Started");
         
@@ -109,7 +110,7 @@ public class Engine
         Engine.running   = true;
         Engine.startTime = System.nanoTime();
         
-        Engine.LOGGER.debug("Looking for Extensions");
+        Engine.LOGGER.fine("Looking for Extensions");
         
         Reflections reflections = new Reflections("engine");
         for (Class<? extends Extension> ext : reflections.getSubTypesOf(Extension.class))
@@ -131,15 +132,15 @@ public class Engine
         
         try
         {
-            Engine.LOGGER.debug("Extension Pre Setup");
+            Engine.LOGGER.fine("Extension Pre Setup");
             Engine.extensions.values().forEach(Extension::beforeSetup);
             
-            Engine.LOGGER.debug("User Initialization");
+            Engine.LOGGER.fine("User Initialization");
             Engine.logic.setup();
             
             if (Engine.window != null)
             {
-                Engine.LOGGER.debug("Extension Post Setup");
+                Engine.LOGGER.fine("Extension Post Setup");
                 Engine.extensions.values().forEach(Extension::afterSetup);
                 
                 Engine.window.unmakeCurrent();
@@ -212,9 +213,9 @@ public class Engine
                                             {
                                                 Engine.PROFILER.startSection(name);
                                                 {
-                                                    push();
+                                                    Engine.renderer.push();
                                                     Engine.extensions.get(name).beforeDraw(Engine.PROFILER, dt / 1_000_000_000D);
-                                                    pop();
+                                                    Engine.renderer.pop();
                                                 }
                                                 Engine.PROFILER.endSection();
                                             }
@@ -224,9 +225,9 @@ public class Engine
                                     
                                     Engine.PROFILER.startSection("User Update");
                                     {
-                                        push();
+                                        Engine.renderer.push();
                                         Engine.logic.draw(dt / 1_000_000_000D);
-                                        pop();
+                                        Engine.renderer.pop();
                                     }
                                     Engine.PROFILER.endSection();
                                     
@@ -238,9 +239,9 @@ public class Engine
                                             {
                                                 Engine.PROFILER.startSection(name);
                                                 {
-                                                    push();
+                                                    Engine.renderer.push();
                                                     Engine.extensions.get(name).afterDraw(Engine.PROFILER, dt / 1_000_000_000D);
-                                                    pop();
+                                                    Engine.renderer.pop();
                                                 }
                                                 Engine.PROFILER.endSection();
                                             }
@@ -256,6 +257,7 @@ public class Engine
                                     
                                     Engine.PROFILER.startSection("Render");
                                     {
+                                        glBindFramebuffer(GL_FRAMEBUFFER, 0);
                                         if (window.updateViewport())
                                         {
                                             Engine.pixelSize.x = Math.max(Engine.window.viewW() / Engine.screenSize.x, 1);
@@ -265,8 +267,7 @@ public class Engine
                                         Engine.target.bind();
                                         Engine.shader.bind();
                                         Engine.vertexArray.bind();
-                                        
-                                        glDrawArrays(GL_TRIANGLES, 0, 6);
+                                        Engine.vertexArray.draw(GL_TRIANGLES);
                                         
                                         Engine.window.swap();
                                     }
@@ -312,7 +313,7 @@ public class Engine
                                         buf.put(col2, tmp1);
                                     }
                                     
-                                    if (!stbi_write_png(Engine.screenshot, w, h, c, buf, stride)) Engine.LOGGER.error("Could not take screen shot");
+                                    if (!stbi_write_png(Engine.screenshot, w, h, c, buf, stride)) Engine.LOGGER.severe("Could not take screen shot");
                                     
                                     Engine.screenshot = null;
                                 }
@@ -348,13 +349,13 @@ public class Engine
         }
         finally
         {
-            Engine.LOGGER.debug("Extension Pre Destruction");
+            Engine.LOGGER.fine("Extension Pre Destruction");
             Engine.extensions.values().forEach(Extension::beforeDestroy);
             
-            Engine.LOGGER.debug("User Destruction");
+            Engine.LOGGER.fine("User Destruction");
             Engine.logic.destroy();
             
-            Engine.LOGGER.debug("Extension Post Destruction");
+            Engine.LOGGER.fine("Extension Post Destruction");
             Engine.extensions.values().forEach(Extension::afterDestroy);
             
             if (Engine.window != null) Engine.window.destroy();
@@ -368,7 +369,7 @@ public class Engine
      *
      * @param logic The engine instance to use.
      */
-    protected static void start(Engine logic) { start(logic, Logger.Level.INFO); }
+    protected static void start(Engine logic) { start(logic, Level.INFO); }
     
     /**
      * Stops the engine after the current frame. This should be called instead of System.exit() to allow destruction methods to be called.
@@ -389,10 +390,10 @@ public class Engine
     protected static void size(int screenW, int screenH, int pixelW, int pixelH, String renderer)
     {
         Engine.screenSize.set(screenW, screenH);
-        Engine.LOGGER.trace("Screen Size %s", Engine.screenSize);
+        Engine.LOGGER.finest("Screen Size %s", Engine.screenSize);
         
         Engine.pixelSize.set(pixelW, pixelH);
-        Engine.LOGGER.trace("Pixel Dimensions %s", Engine.pixelSize);
+        Engine.LOGGER.finest("Pixel Dimensions %s", Engine.pixelSize);
         
         if (Engine.screenSize.lengthSquared() == 0) throw new RuntimeException("Screen dimension must be > 0");
         if (Engine.pixelSize.lengthSquared() == 0) throw new RuntimeException("Pixel dimension must be > 0");
@@ -414,8 +415,8 @@ public class Engine
         
         glEnable(GL_TEXTURE_2D);
         
-        Engine.vertexArray = new VertexArray();
-        Engine.vertexArray.add(2, new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, -1.0F, 1.0F, 1.0F, -1.0F, 1.0F, 1.0F});
+        Engine.vertexArray = new VertexArray().bind();
+        Engine.vertexArray.add(new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, -1.0F, 1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, 2);
         
         Engine.renderer = Renderer.getRenderer(Engine.target, renderer);
     }

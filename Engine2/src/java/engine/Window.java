@@ -46,17 +46,17 @@ public class Window
     
     public Window(Mouse mouse, Keyboard keyboard)
     {
-        Window.LOGGER.trace("Window Creation Started");
+        Window.LOGGER.finest("Window Creation Started");
         
         screenSize().mul(pixelSize(), this.size);
         
-        Window.LOGGER.trace("Window Size: %s", this.size);
+        Window.LOGGER.finest("Window Size: %s", this.size);
         
-        Window.LOGGER.trace("GLFW: Init");
+        Window.LOGGER.finest("GLFW: Init");
         GLFWErrorCallback.createPrint(System.err).set();
         if (!glfwInit()) throw new IllegalStateException("Unable to initialize GLFW");
         
-        Window.LOGGER.trace("GLFW: Hints");
+        Window.LOGGER.finest("GLFW: Hints");
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
@@ -65,7 +65,7 @@ public class Window
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
         
-        Window.LOGGER.trace("GLFW: Checking Window Size");
+        Window.LOGGER.finest("GLFW: Checking Window Size");
         // TODO - Monitor Class
         GLFWVidMode videoMode = Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor()));
         this.monitorSize.set(videoMode.width(), videoMode.height());
@@ -75,7 +75,7 @@ public class Window
         if (this.size.x > this.monitorSize.x) throw new RuntimeException(String.format("Window width (%s) is greater than Monitor width", this.size.x));
         if (this.size.y > this.monitorSize.y) throw new RuntimeException(String.format("Window height (%s) is greater than Monitor height", this.size.y));
         
-        Window.LOGGER.trace("GLFW: Creating Window");
+        Window.LOGGER.finest("GLFW: Creating Window");
         
         this.glfwWindow = glfwCreateWindow(this.size.x, this.size.y, "", NULL, NULL);
         
@@ -87,7 +87,7 @@ public class Window
         this.pos.y = (this.monitorSize.y - this.size.y) >> 1;
         glfwSetWindowPos(this.glfwWindow, this.pos.x, this.pos.y);
         
-        Window.LOGGER.trace("GLFW: Event Handling");
+        Window.LOGGER.finest("GLFW: Event Handling");
         
         glfwSetWindowCloseCallback(this.glfwWindow, window -> {
             if (window != this.glfwWindow) return;
@@ -143,7 +143,7 @@ public class Window
         
         show();
         
-        Window.LOGGER.debug("Window Created");
+        Window.LOGGER.fine("Window Created");
     }
     
     public Vector2ic monitorSize()             { return this.monitorSize; }
@@ -251,9 +251,9 @@ public class Window
             if (this.viewSize.y > this.size.y) this.viewSize.set((int) (this.size.y * aspect), this.size.y);
             
             this.viewPos.set((this.size.x - this.viewSize.x) >> 1, (this.size.y - this.viewSize.y) >> 1);
-            
-            glViewport(this.viewPos.x, this.viewPos.y, this.viewSize.x, this.viewSize.y);
         }
+        glViewport(this.viewPos.x, this.viewPos.y, this.viewSize.x, this.viewSize.y);
+        
         return this.update;
     }
     

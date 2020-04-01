@@ -146,10 +146,8 @@ public class Framebuffer
         
         // framebuffer configuration
         // -------------------------
-        // int framebufferWidth  = 100;
-        // int framebufferHeight = 100;
-        int framebufferWidth  = SCR_WIDTH / 4;
-        int framebufferHeight = SCR_HEIGHT / 4;
+        int framebufferWidth  = SCR_WIDTH;
+        int framebufferHeight = SCR_HEIGHT / 10;
         int framebuffer       = glGenFramebuffers();
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         // create a color attachment texture

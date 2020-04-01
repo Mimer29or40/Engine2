@@ -6,12 +6,14 @@ import engine.render.RectMode;
 import engine.render.Texture;
 import engine.util.Logger;
 
+import java.util.logging.Level;
+
 import static engine.util.Util.map;
 
 public class EngineTest extends Engine
 {
     Logger  logger = new Logger();
-    int     state  = 8;
+    int     state  = 1;
     Texture texture;
     
     @Override
@@ -19,7 +21,7 @@ public class EngineTest extends Engine
     {
         // size(200, 200, 2, 2);
         // size(100, 100, 8, 8);
-        size(400, 400, 2, 2, "software");
+        size(400, 400, 2, 2, "opengl");
         // size(400, 400, 2, 2, "opengl");
     
         texture = new Texture(30, 30);
@@ -107,7 +109,7 @@ public class EngineTest extends Engine
                 if (keyboard().K2.held()) arcMode(ArcMode.OPEN);
                 if (keyboard().K3.held()) arcMode(ArcMode.CHORD);
                 if (keyboard().K4.held()) arcMode(ArcMode.PIE);
-                clear();
+                clear(Color.GREEN);
                 translate(screenWidth() / 2., screenHeight() / 2.);
                 arc(0, 0, 100, 100, 0, map(mouse().x(), 0, screenWidth() - 1, 0, 2.0 * Math.PI));
                 break;
@@ -148,6 +150,6 @@ public class EngineTest extends Engine
     public static void main(String[] args)
     {
         // enableProfiler();
-        start(new EngineTest(), Logger.Level.DEBUG);
+        start(new EngineTest(), Level.FINE);
     }
 }

@@ -13,7 +13,7 @@ public class Tuple<A, B, C> implements ITuple<A, B, C>
     public C c;
     
     /**
-     * Creates a new pair with two objects.
+     * Creates a new pair with three objects.
      *
      * @param a The first object.
      * @param b The second object.

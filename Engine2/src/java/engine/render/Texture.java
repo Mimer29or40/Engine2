@@ -30,6 +30,7 @@ public class Texture
     protected final int width;
     protected final int height;
     protected final int channels;
+    protected final int format;
     
     protected final ByteBuffer data;
     
@@ -57,6 +58,7 @@ public class Texture
         this.width    = width;
         this.height   = height;
         this.channels = channels;
+        this.format   = getFormat(channels);
         
         this.data = data;
     }
@@ -385,13 +387,13 @@ public class Texture
             
             if (this.firstUpload)
             {
-                glTexImage2D(GL_TEXTURE_2D, 0, getFormat(channels), this.width, this.height, 0, getFormat(channels), GL_UNSIGNED_BYTE, this.data);
+                glTexImage2D(GL_TEXTURE_2D, 0, this.format, this.width, this.height, 0, this.format, GL_UNSIGNED_BYTE, this.data);
                 
                 this.firstUpload = false;
             }
             else
             {
-                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this.width, this.height, getFormat(channels), GL_UNSIGNED_BYTE, this.data);
+                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this.width, this.height, this.format, GL_UNSIGNED_BYTE, this.data);
             }
             glGenerateMipmap(GL_TEXTURE_2D);
         }
@@ -405,7 +407,7 @@ public class Texture
      */
     public Texture download()
     {
-        if (this.data != null) glGetTexImage(GL_TEXTURE_2D, 0, getFormat(this.channels), GL_UNSIGNED_BYTE, this.data);
+        if (this.data != null) glGetTexImage(GL_TEXTURE_2D, 0, this.format, GL_UNSIGNED_BYTE, this.data);
         
         return this;
     }

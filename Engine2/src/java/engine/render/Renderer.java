@@ -3,7 +3,7 @@ package engine.render;
 import engine.color.Color;
 import engine.color.Colorc;
 import engine.util.Logger;
-import org.joml.Matrix4d;
+import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,8 +90,8 @@ public abstract class Renderer
     protected       TextAlign        textAlign  = Renderer.DEFAULT_TEXT_ALIGN;
     protected final Stack<TextAlign> textAligns = new Stack<>();
     
-    protected final Matrix4d        viewMatrix   = new Matrix4d();
-    protected final Stack<Matrix4d> viewMatrices = new Stack<>();
+    protected final Matrix4f        view  = new Matrix4f();
+    protected final Stack<Matrix4f> views = new Stack<>();
     
     protected int[] pixels;
     
@@ -346,7 +346,10 @@ public abstract class Renderer
     /**
      * Resets the view space transformations.
      */
-    public void identity() { this.viewMatrix.identity(); }
+    public void identity()
+    {
+        this.view.identity();
+    }
     
     /**
      * Translates the view space.
@@ -354,14 +357,20 @@ public abstract class Renderer
      * @param x The amount to translate horizontally.
      * @param y The amount to translate vertically.
      */
-    public void translate(double x, double y) { this.viewMatrix.translate(x, y, 0); }
+    public void translate(double x, double y)
+    {
+        this.view.translate((float) x, (float) y, 0);
+    }
     
     /**
      * Rotates the view space.
      *
      * @param angle The angle in radian to rotate by.
      */
-    public void rotate(double angle) { this.viewMatrix.rotate(angle, 0, 0, 1); }
+    public void rotate(double angle)
+    {
+        this.view.rotate((float) angle, 0, 0, 1);
+    }
     
     /**
      * Scales the view space.
@@ -369,7 +378,10 @@ public abstract class Renderer
      * @param x The amount to scale horizontally.
      * @param y The amount to scale vertically.
      */
-    public void scale(double x, double y) { this.viewMatrix.scale(x, y, 1); }
+    public void scale(double x, double y)
+    {
+        this.view.scale((float) x, (float) y, 1);
+    }
     
     // --------------------
     // -- Render Methods --
@@ -410,8 +422,8 @@ public abstract class Renderer
         this.textAlign = Renderer.DEFAULT_TEXT_ALIGN;
         this.textAligns.clear();
         
-        this.viewMatrix.identity();
-        this.viewMatrices.clear();
+        this.view.identity();
+        this.views.clear();
     }
     
     /**
@@ -439,7 +451,7 @@ public abstract class Renderer
         this.arcModes.push(this.arcMode);
         this.fonts.push(new Font.FontTuple(this.font));
         this.textAligns.push(this.textAlign);
-        this.viewMatrices.push(new Matrix4d(this.viewMatrix));
+        this.views.push(new Matrix4f(this.view));
     }
     
     /**
@@ -455,7 +467,7 @@ public abstract class Renderer
         this.arcMode     = this.arcModes.pop();
         this.fonts.pop().setFont(this.font);
         this.textAlign = this.textAligns.pop();
-        this.viewMatrix.set(this.viewMatrices.pop());
+        this.view.set(this.views.pop());
     }
     
     // -------------------

@@ -1,5 +1,7 @@
 package engine.input;
 
+import engine.util.Logger;
+
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -7,6 +9,8 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public abstract class Device<I extends Device.Input>
 {
+    private static final Logger LOGGER = new Logger();
+    
     protected static long holdDelay   = 500_000_000;
     protected static long repeatDelay = 100_000_000;
     protected static long doubleDelay = 100_000_000;

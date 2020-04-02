@@ -45,7 +45,7 @@ public class Util
         return LocalDateTime.now().toLocalDate().format(dateFormat);
     }
     
-    private static final Pattern fsPattern = Pattern.compile("%(\\d+\\$)?([-#+ 0,(<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])"); // Taken from java.lang.Formatter
+    private static final Pattern PATTERN = Pattern.compile("%(\\d+\\$)?([-#+ 0,(<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])"); // Taken from java.lang.Formatter
     
     /**
      * Prints an object to the console.
@@ -64,12 +64,10 @@ public class Util
      */
     public static void print(Object... objects)
     {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0, n = objects.length; i < n; i++)
-        {
-            builder.append(objects[i]);
-            if (i + 1 < n) builder.append(" ");
-        }
+        int n = objects.length;
+        if (n == 0) return;
+        StringBuilder builder = new StringBuilder(String.valueOf(objects[0]));
+        for (int i = 1; i < n; i++) builder.append(' ').append(objects[i]);
         System.out.print(builder.toString());
     }
     
@@ -81,18 +79,14 @@ public class Util
      */
     public static void print(String format, Object... objects)
     {
-        if (Util.fsPattern.matcher(format).find())
+        if (Util.PATTERN.matcher(format).find())
         {
             System.out.print(String.format(format, objects));
         }
         else
         {
-            StringBuilder builder = new StringBuilder(format).append(' ');
-            for (int i = 0, n = objects.length; i < n; i++)
-            {
-                builder.append(objects[i]);
-                if (i + 1 < n) builder.append(' ');
-            }
+            StringBuilder builder = new StringBuilder(format);
+            for (Object object : objects) builder.append(' ').append(object);
             System.out.print(builder.toString());
         }
     }
@@ -114,12 +108,10 @@ public class Util
      */
     public static void println(Object... objects)
     {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0, n = objects.length; i < n; i++)
-        {
-            builder.append(objects[i]);
-            if (i + 1 < n) builder.append(" ");
-        }
+        int n = objects.length;
+        if (n == 0) return;
+        StringBuilder builder = new StringBuilder(String.valueOf(objects[0]));
+        for (int i = 1; i < n; i++) builder.append(' ').append(objects[i]);
         System.out.println(builder.toString());
     }
     
@@ -131,18 +123,14 @@ public class Util
      */
     public static void println(String format, Object... objects)
     {
-        if (Util.fsPattern.matcher(format).find())
+        if (Util.PATTERN.matcher(format).find())
         {
             System.out.println(String.format(format, objects));
         }
         else
         {
-            StringBuilder builder = new StringBuilder(format).append(' ');
-            for (int i = 0, n = objects.length; i < n; i++)
-            {
-                builder.append(objects[i]);
-                if (i + 1 < n) builder.append(' ');
-            }
+            StringBuilder builder = new StringBuilder(format);
+            for (Object object : objects) builder.append(' ').append(object);
             System.out.println(builder.toString());
         }
     }

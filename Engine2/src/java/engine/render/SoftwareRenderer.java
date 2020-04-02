@@ -5,7 +5,7 @@ import engine.color.Color;
 import engine.color.Colorc;
 import engine.util.PairD;
 import engine.util.PairI;
-import org.joml.Vector4d;
+import org.joml.Vector4f;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,7 +21,7 @@ public class SoftwareRenderer extends Renderer
     private static final byte LINE_OVERLAP_MAJOR = 0b01;
     private static final byte LINE_OVERLAP_MINOR = 0b10;
     
-    private static final Vector4d       VECTOR = new Vector4d();
+    private static final Vector4f       VECTOR = new Vector4f();
     private static final Color          COLOR  = new Color();
     private static final HashSet<PairI> POINTS = new HashSet<>();
     
@@ -929,7 +929,7 @@ public class SoftwareRenderer extends Renderer
     
     private PairD transform(double x, double y)
     {
-        this.viewMatrix.transform(SoftwareRenderer.VECTOR.set(x, y, 0, 1));
+        this.view.transform(SoftwareRenderer.VECTOR.set(x, y, 0, 1));
         return new PairD(SoftwareRenderer.VECTOR.x, SoftwareRenderer.VECTOR.y);
     }
 }

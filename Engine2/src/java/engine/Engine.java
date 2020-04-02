@@ -100,7 +100,7 @@ public class Engine
      */
     protected static void start(Engine logic, Level level)
     {
-        // Logger.setLevel(level);
+        Logger.setLevel(level);
         
         Engine.LOGGER.info("Engine Started");
         
@@ -408,10 +408,7 @@ public class Engine
         
         Engine.target = new Texture(screenW, screenH);
         
-        Engine.shader = new Shader();
-        Engine.shader.loadVertexFile("shader/pixel.vert");
-        Engine.shader.loadFragmentFile("shader/pixel.frag");
-        Engine.shader.validate();
+        Engine.shader = new Shader().loadVertexFile("shader/pixel.vert").loadFragmentFile("shader/pixel.frag").validate();
         
         glEnable(GL_TEXTURE_2D);
         

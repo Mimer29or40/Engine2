@@ -2,7 +2,11 @@ package engine.render;
 
 import engine.color.Colorc;
 import engine.util.Logger;
+import org.joml.Matrix4f;
 
+import static engine.Engine.screenHeight;
+import static engine.Engine.screenWidth;
+import static engine.util.Util.max;
 import static org.lwjgl.opengl.GL43.*;
 
 /**
@@ -13,6 +17,18 @@ public class OpenGLRenderer extends Renderer
     private static final Logger LOGGER = new Logger();
     
     protected final int fbo, rbo;
+    
+    protected final Matrix4f proj = new Matrix4f();
+    protected final Matrix4f pv   = new Matrix4f();
+    
+    protected final VertexArray vertexArray;
+    
+    protected final Shader pointShader;
+    protected final Shader lineShader;
+    protected final Shader triangleShader;
+    protected final Shader quadShader;
+    protected final Shader ellipseShader;
+    protected final Shader ellipseOutlineShader;
     
     protected OpenGLRenderer(Texture target)
     {
@@ -30,6 +46,63 @@ public class OpenGLRenderer extends Renderer
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) OpenGLRenderer.LOGGER.severe("Could not create FrameBuffer");
         
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        
+        this.proj.m00(2F / screenWidth());
+        this.proj.m11(2F / screenHeight());
+        this.proj.m22(2F / max(screenWidth() * screenWidth(), screenHeight() * screenHeight()));
+        
+        this.vertexArray = new VertexArray();
+        
+        this.pointShader    = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/point.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.lineShader     = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/line.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.triangleShader = new Shader().loadVertexFile("shader/shared.vert").loadFragmentFile("shader/shared.frag").validate();
+        this.quadShader     = new Shader().loadVertexFile("shader/shared.vert").loadFragmentFile("shader/shared.frag").validate();
+        this.ellipseShader  = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/ellipse.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.ellipseOutlineShader  = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/ellipse.geom").loadFragmentFile("shader/shared.frag").validate();
+    }
+    
+    /**
+     * Resets the view space transformations.
+     */
+    public void identity()
+    {
+        this.view.identity();
+        this.proj.mul(this.view, this.pv);
+    }
+    
+    /**
+     * Translates the view space.
+     *
+     * @param x The amount to translate horizontally.
+     * @param y The amount to translate vertically.
+     */
+    public void translate(double x, double y)
+    {
+        this.view.translate((float) x, (float) y, 0);
+        this.proj.mul(this.view, this.pv);
+    }
+    
+    /**
+     * Rotates the view space.
+     *
+     * @param angle The angle in radian to rotate by.
+     */
+    public void rotate(double angle)
+    {
+        this.view.rotate((float) angle, 0, 0, 1);
+        this.proj.mul(this.view, this.pv);
+    }
+    
+    /**
+     * Scales the view space.
+     *
+     * @param x The amount to scale horizontally.
+     * @param y The amount to scale vertically.
+     */
+    public void scale(double x, double y)
+    {
+        this.view.scale((float) x, (float) y, 1);
+        this.proj.mul(this.view, this.pv);
     }
     
     /**
@@ -44,6 +117,9 @@ public class OpenGLRenderer extends Renderer
         
         glBindFramebuffer(GL_FRAMEBUFFER, this.fbo);
         glViewport(0, 0, this.target.width(), this.target.height());
+        
+        this.view.translate(-screenWidth() / 2f, -screenHeight() / 2f, 0);
+        this.proj.mul(this.view, this.pv);
     }
     
     /**
@@ -84,7 +160,18 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void drawPoint(double x, double y)
     {
-    
+        makeCurrent();
+        
+        this.pointShader.bind();
+        this.pointShader.setMat4("pv", this.pv);
+        this.pointShader.setColor("color", this.stroke);
+        this.pointShader.setVec2("viewport", screenWidth(), screenHeight());
+        this.pointShader.setFloat("thickness", (float) this.weight);
+        
+        this.vertexArray.bind();
+        this.vertexArray.reset();
+        this.vertexArray.add(new float[] {(float) x, (float) y}, 2);
+        this.vertexArray.draw(GL_POINTS);
     }
     
     /**
@@ -100,7 +187,18 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void drawLine(double x1, double y1, double x2, double y2)
     {
-    
+        makeCurrent();
+        
+        this.lineShader.bind();
+        this.lineShader.setMat4("pv", this.pv);
+        this.lineShader.setColor("color", this.stroke);
+        this.lineShader.setVec2("viewport", screenWidth(), screenHeight());
+        this.lineShader.setFloat("thickness", (float) this.weight);
+        
+        this.vertexArray.bind();
+        this.vertexArray.reset();
+        this.vertexArray.add(new float[] {(float) x1, (float) y1, (float) x2, (float) y2}, 2);
+        this.vertexArray.draw(GL_LINES);
     }
     
     /**
@@ -154,7 +252,16 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void fillTriangle(double x1, double y1, double x2, double y2, double x3, double y3)
     {
-    
+        this.triangleShader.bind();
+        this.triangleShader.setMat4("pv", this.pv);
+        this.triangleShader.setColor("color", this.fill);
+        this.triangleShader.setVec2("viewport", screenWidth(), screenHeight());
+        this.triangleShader.setFloat("thickness", (float) this.weight);
+        
+        this.vertexArray.bind();
+        this.vertexArray.reset();
+        this.vertexArray.add(new float[] {(float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3}, 2);
+        this.vertexArray.draw(GL_TRIANGLES);
     }
     
     /**
@@ -184,7 +291,7 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void fillSquare(double x, double y, double w)
     {
-    
+        fillQuad(x, y, x + w, y, x + w, y + w, x, y + w);
     }
     
     /**
@@ -216,7 +323,7 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void fillRect(double x, double y, double w, double h)
     {
-    
+        fillQuad(x, y, x + w, y, x + w, y + h, x, y + h);
     }
     
     /**
@@ -260,7 +367,18 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void fillQuad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
     {
-    
+        makeCurrent();
+        
+        this.quadShader.bind();
+        this.quadShader.setMat4("pv", this.pv);
+        this.quadShader.setColor("color", this.fill);
+        this.quadShader.setVec2("viewport", screenWidth(), screenHeight());
+        this.quadShader.setFloat("thickness", (float) this.weight);
+        
+        this.vertexArray.bind();
+        this.vertexArray.reset();
+        this.vertexArray.add(new float[] {(float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4}, 2);
+        this.vertexArray.draw(GL_QUADS);
     }
     
     /**
@@ -309,7 +427,7 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void drawCircle(double x, double y, double r)
     {
-    
+        drawEllipse(x, y, r, r);
     }
     
     /**
@@ -324,7 +442,7 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void fillCircle(double x, double y, double r)
     {
-    
+        fillEllipse(x, y, r, r);
     }
     
     /**
@@ -340,7 +458,19 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void drawEllipse(double x, double y, double rx, double ry)
     {
+        makeCurrent();
     
+        this.ellipseOutlineShader.bind();
+        this.ellipseOutlineShader.setMat4("pv", this.pv);
+        this.ellipseOutlineShader.setColor("color", this.stroke);
+        this.ellipseOutlineShader.setVec2("radius", (float) rx, (float) ry);
+        this.ellipseOutlineShader.setVec2("viewport", screenWidth(), screenHeight());
+        this.ellipseOutlineShader.setFloat("thickness", (float) this.weight);
+    
+        this.vertexArray.bind();
+        this.vertexArray.reset();
+        this.vertexArray.add(new float[] {(float) x, (float) y}, 2);
+        this.vertexArray.draw(GL_POINTS);
     }
     
     /**
@@ -356,7 +486,17 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void fillEllipse(double x, double y, double rx, double ry)
     {
+        makeCurrent();
     
+        this.ellipseShader.bind();
+        this.ellipseShader.setMat4("pv", this.pv);
+        this.ellipseShader.setColor("color", this.fill);
+        this.ellipseShader.setVec2("radius", (float) rx, (float) ry);
+    
+        this.vertexArray.bind();
+        this.vertexArray.reset();
+        this.vertexArray.add(new float[] {(float) x, (float) y}, 2);
+        this.vertexArray.draw(GL_POINTS);
     }
     
     /**
@@ -449,7 +589,10 @@ public class OpenGLRenderer extends Renderer
     @Override
     public int[] loadPixels()
     {
-        return new int[0];
+        this.target.bind();
+        this.target.download();
+        for (int i = 0, n = this.pixels.length; i < n; i++) this.pixels[i] = this.target.data().get(i) & 0xFF;
+        return this.pixels;
     }
     
     /**
@@ -460,7 +603,9 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void updatePixels()
     {
-    
+        for (int i = 0, n = this.pixels.length; i < n; i++) this.target.data().put(i, (byte) (this.pixels[i] & 0xFF));
+        this.target.bind();
+        this.target.upload();
     }
     
     private void makeCurrent()

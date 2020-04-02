@@ -93,6 +93,7 @@ public class VertexArray
         for (int vbo : this.vboList) glDeleteBuffers(vbo);
         this.vboList.clear();
         if (this.ebo > 0) glDeleteBuffers(this.ebo);
+        this.vertexCount = this.indexCount = 0;
         return this;
     }
     

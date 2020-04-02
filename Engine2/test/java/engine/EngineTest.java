@@ -6,9 +6,11 @@ import engine.render.RectMode;
 import engine.render.Texture;
 import engine.util.Logger;
 
+import java.lang.annotation.Native;
 import java.util.logging.Level;
 
 import static engine.util.Util.map;
+import static engine.util.Util.println;
 
 public class EngineTest extends Engine
 {
@@ -44,13 +46,13 @@ public class EngineTest extends Engine
         {
             case 1:
                 clear();
-            
-                weight(map(mouse().x(), 0, screenHeight(), 1, 15));
-                logger.info(mouse().pos().toString());
-            
+
+                weight(map(mouse().x(), 0, screenHeight(), 1, 50));
+
+                stroke(Color.BLUE);
+                point(mouse().x(), mouse().y());
                 stroke(Color.RED);
                 line(screenWidth() / 2.0, screenHeight() / 2.0, mouse().x(), mouse().y());
-                point(mouse().x(), mouse().y());
                 break;
             case 2:
                 clear();
@@ -68,16 +70,23 @@ public class EngineTest extends Engine
                 break;
             case 4:
                 clear();
+                rectMode(RectMode.CENTER);
                 translate(screenWidth() / 2., screenHeight() / 2.);
-                rotate(time() / 1000000000.);
-                noStroke();
-                circle(0, 0, 50);
+                rotate(timeS() / 2);
+                // noStroke();
+                weight(10);
+                stroke(Color.WHITE);
+                fill(Color.BLUE);
+                square(0, 0, 300);
+                fill(Color.RED);
+                circle(0, 0, 300);
                 break;
             case 5:
                 int[] pixels = loadPixels();
-                for (int i = 0; i < pixels.length; i++)
+                for (int i = 0, n = pixels.length; i < n; i++)
                 {
-                    pixels[i] = nextInt(255);
+                    // pixels[i] = nextInt(255);
+                    pixels[i] = i;
                 }
                 updatePixels();
                 break;
@@ -114,6 +123,12 @@ public class EngineTest extends Engine
                 arc(0, 0, 100, 100, 0, map(mouse().x(), 0, screenWidth() - 1, 0, 2.0 * Math.PI));
                 break;
             case 9:
+                clear();
+                fill(Color.WHITE);
+                translate(screenWidth() / 2., screenHeight() / 2.);
+                rotate(time() / 1000000000.);
+                // noStroke();
+                square(0, 0, 50);
                 break;
             case 10:
                 break;

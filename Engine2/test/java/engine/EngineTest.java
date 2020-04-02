@@ -6,16 +6,14 @@ import engine.render.RectMode;
 import engine.render.Texture;
 import engine.util.Logger;
 
-import java.lang.annotation.Native;
 import java.util.logging.Level;
 
 import static engine.util.Util.map;
-import static engine.util.Util.println;
 
 public class EngineTest extends Engine
 {
     Logger  logger = new Logger();
-    int     state  = 1;
+    int     state  = 4;
     Texture texture;
     
     @Override
@@ -46,9 +44,9 @@ public class EngineTest extends Engine
         {
             case 1:
                 clear();
-
+    
                 weight(map(mouse().x(), 0, screenHeight(), 1, 50));
-
+    
                 stroke(Color.BLUE);
                 point(mouse().x(), mouse().y());
                 stroke(Color.RED);

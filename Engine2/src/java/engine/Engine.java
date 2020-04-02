@@ -291,16 +291,17 @@ public class Engine
                                 
                                 if (Engine.screenshot != null)
                                 {
-                                    if (!Engine.screenshot.endsWith(".png")) Engine.screenshot += ".png";
+                                    String fileName = Engine.screenshot + (!Engine.screenshot.endsWith(".png") ? ".png" : "");
     
                                     int w = Engine.window.frameBufferWidth();
                                     int h = Engine.window.frameBufferHeight();
-                                    int c = 4;
+                                    int c = 3;
     
                                     int stride = w * c;
     
                                     ByteBuffer buf = BufferUtils.createByteBuffer(w * h * c);
-                                    glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, buf);
+                                    glReadBuffer(GL_FRONT);
+                                    glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buf);
     
                                     byte[] tmp1 = new byte[stride], tmp2 = new byte[stride];
                                     for (int i = 0, n = h >> 1, col1, col2; i < n; i++)
@@ -312,8 +313,8 @@ public class Engine
                                         buf.put(col1, tmp2);
                                         buf.put(col2, tmp1);
                                     }
-                                    
-                                    if (!stbi_write_png(Engine.screenshot, w, h, c, buf, stride)) Engine.LOGGER.severe("Could not take screen shot");
+    
+                                    if (!stbi_write_png(fileName, w, h, c, buf, stride)) Engine.LOGGER.severe("Could not take screen shot");
                                     
                                     Engine.screenshot = null;
                                 }

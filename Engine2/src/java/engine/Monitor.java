@@ -80,6 +80,14 @@ public class Monitor
     }
     
     /**
+     * @return The monitor number.
+     */
+    public int index()
+    {
+        return this.index;
+    }
+    
+    /**
      * @return If this monitor is the primary monitor.
      */
     public boolean isPrimary()

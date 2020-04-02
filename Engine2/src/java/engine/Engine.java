@@ -292,16 +292,16 @@ public class Engine
                                 if (Engine.screenshot != null)
                                 {
                                     if (!Engine.screenshot.endsWith(".png")) Engine.screenshot += ".png";
-                                    
-                                    int w = Engine.window.width();
-                                    int h = Engine.window.height();
+    
+                                    int w = Engine.window.frameBufferWidth();
+                                    int h = Engine.window.frameBufferHeight();
                                     int c = 4;
-                                    
+    
                                     int stride = w * c;
-                                    
+    
                                     ByteBuffer buf = BufferUtils.createByteBuffer(w * h * c);
                                     glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, buf);
-                                    
+    
                                     byte[] tmp1 = new byte[stride], tmp2 = new byte[stride];
                                     for (int i = 0, n = h >> 1, col1, col2; i < n; i++)
                                     {

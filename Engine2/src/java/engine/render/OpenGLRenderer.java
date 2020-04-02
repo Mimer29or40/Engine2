@@ -131,8 +131,18 @@ public class OpenGLRenderer extends Renderer
     public void finish()
     {
         super.finish();
-        
+    
         this.target.bind().download();
+    }
+    
+    /**
+     * Returns the renderers properties to the state when {@link #push} was called.
+     */
+    @Override
+    public void pop()
+    {
+        super.pop();
+        this.proj.mul(this.view, this.pv);
     }
     
     /**

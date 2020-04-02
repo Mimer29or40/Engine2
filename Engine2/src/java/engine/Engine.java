@@ -153,7 +153,7 @@ public class Engine
                         GL.createCapabilities();
                         
                         long t, dt;
-                        long lastFrame  = time();
+                        long lastFrame  = nanoseconds();
                         long lastSecond = 0;
                         
                         long frameTime;
@@ -166,7 +166,7 @@ public class Engine
                         
                         while (Engine.running)
                         {
-                            t = time();
+                            t = nanoseconds();
                             
                             dt = t - lastFrame;
                             if (dt >= Engine.frameRate)
@@ -272,8 +272,8 @@ public class Engine
                                         Engine.window.swap();
                                     }
                                     Engine.PROFILER.endSection();
-                                    
-                                    frameTime = time() - t;
+    
+                                    frameTime = nanoseconds() - t;
                                     minTime   = Math.min(minTime, frameTime);
                                     maxTime   = Math.max(maxTime, frameTime);
                                     totalTime += frameTime;
@@ -370,12 +370,18 @@ public class Engine
      *
      * @param logic The engine instance to use.
      */
-    protected static void start(Engine logic) { start(logic, Level.INFO); }
+    protected static void start(Engine logic)
+    {
+        start(logic, Level.INFO);
+    }
     
     /**
      * Stops the engine after the current frame. This should be called instead of System.exit() to allow destruction methods to be called.
      */
-    public static void stop() { Engine.running = false; }
+    public static void stop()
+    {
+        Engine.running = false;
+    }
     
     /**
      * Sets the size of the window and screen pixels and uses the renderer specified. If this function is not called then the engine will not enter the render loop.
@@ -429,7 +435,10 @@ public class Engine
      * @param pixelW  The width of the drawable pixels in actual pixels.
      * @param pixelH  The height of the drawable pixels in actual pixels.
      */
-    protected static void size(int screenW, int screenH, int pixelW, int pixelH) { size(screenW, screenH, pixelW, pixelH, "software"); }
+    protected static void size(int screenW, int screenH, int pixelW, int pixelH)
+    {
+        size(screenW, screenH, pixelW, pixelH, "software");
+    }
     
     
     /**
@@ -441,7 +450,10 @@ public class Engine
      * @param screenH  The height of the screen in drawable pixels.
      * @param renderer The optional renderer to use.
      */
-    protected static void size(int screenW, int screenH, String renderer) { size(screenW, screenH, 4, 4, renderer); }
+    protected static void size(int screenW, int screenH, String renderer)
+    {
+        size(screenW, screenH, 4, 4, renderer);
+    }
     
     /**
      * Sets the size of the window and uses the software renderer If this function is not called then the engine will not enter the render loop.
@@ -451,26 +463,45 @@ public class Engine
      * @param screenW The width of the screen in drawable pixels.
      * @param screenH The height of the screen in drawable pixels.
      */
-    protected static void size(int screenW, int screenH) { size(screenW, screenH, 4, 4, "software"); }
+    protected static void size(int screenW, int screenH)
+    {
+        size(screenW, screenH, 4, 4, "software");
+    }
     
     // ----------------
     // -- Properties --
     // ----------------
     
     /**
-     * @return The time in nano seconds since the engine started
+     * @return The time in nanoseconds since the engine started
      */
-    public static long time()
+    public static long nanoseconds()
     {
         return Engine.startTime > 0 ? System.nanoTime() - Engine.startTime : -1L;
     }
     
     /**
+     * @return The time in microseconds since the engine started
+     */
+    public static double microseconds()
+    {
+        return nanoseconds() / 1_000D;
+    }
+    
+    /**
+     * @return The time in milliseconds since the engine started
+     */
+    public static double milliseconds()
+    {
+        return nanoseconds() / 1_000_000D;
+    }
+    
+    /**
      * @return The time in seconds since the engine started
      */
-    public static double timeS()
+    public static double seconds()
     {
-        return time() / 1_000_000_000D;
+        return nanoseconds() / 1_000_000_000D;
     }
     
     /**

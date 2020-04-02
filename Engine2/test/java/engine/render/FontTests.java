@@ -1,7 +1,6 @@
 package engine.render;
 
 import engine.Engine;
-import engine.util.Logger;
 
 import java.util.logging.Level;
 
@@ -29,7 +28,7 @@ public class FontTests extends Engine
         // textSize(64);
         
         translate(screenWidth() / 2., screenHeight() / 2.);
-        rotate(time() / 4000000000.);
+        rotate(nanoseconds() / 4000000000.);
         
         if (keyboard().F1.held()) textAlign(TextAlign.TOP_LEFT);
         if (keyboard().F2.held()) textAlign(TextAlign.TOP);

@@ -111,19 +111,28 @@ public abstract class Renderer
     /**
      * @return If blend is enabled for the renderer.
      */
-    public boolean enableBlend() { return this.enableBlend; }
+    public boolean enableBlend()
+    {
+        return this.enableBlend;
+    }
     
     /**
      * Sets if the renderer should blend when pixels are drawn.
      *
      * @param enableBlend If blend is enabled.
      */
-    public void enableBlend(boolean enableBlend) { this.enableBlend = enableBlend; }
+    public void enableBlend(boolean enableBlend)
+    {
+        this.enableBlend = enableBlend;
+    }
     
     /**
      * @return The current fill color.
      */
-    public Colorc fill() { return this.fill; }
+    public Colorc fill()
+    {
+        return this.fill;
+    }
     
     /**
      * Sets the fill color.
@@ -133,7 +142,10 @@ public abstract class Renderer
      * @param b The blue value of the color [0-255] [0.0-1.0]
      * @param a The alpha value of the color [0-255] [0.0-1.0]
      */
-    public void fill(Number r, Number g, Number b, Number a) { this.fill.set(r, g, b, a); }
+    public void fill(Number r, Number g, Number b, Number a)
+    {
+        this.fill.set(r, g, b, a);
+    }
     
     /**
      * Sets the fill color.
@@ -142,7 +154,10 @@ public abstract class Renderer
      * @param g The green value of the color [0-255] [0.0-1.0]
      * @param b The blue value of the color [0-255] [0.0-1.0]
      */
-    public void fill(Number r, Number g, Number b) { this.fill.set(r, g, b); }
+    public void fill(Number r, Number g, Number b)
+    {
+        this.fill.set(r, g, b);
+    }
     
     /**
      * Sets the fill color.
@@ -150,31 +165,46 @@ public abstract class Renderer
      * @param grey The red, green and blue value of the color [0-255] [0.0-1.0]
      * @param a    The alpha value of the color [0-255] [0.0-1.0]
      */
-    public void fill(Number grey, Number a) { this.fill.set(grey, a); }
+    public void fill(Number grey, Number a)
+    {
+        this.fill.set(grey, a);
+    }
     
     /**
      * Sets the fill color.
      *
      * @param grey The red, green and blue value of the color [0-255] [0.0-1.0]
      */
-    public void fill(Number grey) { this.fill.set(grey); }
+    public void fill(Number grey)
+    {
+        this.fill.set(grey);
+    }
     
     /**
      * Sets the fill color.
      *
      * @param fill The color to set fill to.
      */
-    public void fill(Colorc fill) { this.fill.set(fill); }
+    public void fill(Colorc fill)
+    {
+        this.fill.set(fill);
+    }
     
     /**
      * Disabled the fill of shapes
      */
-    public void noFill() { this.fill.a(0); }
+    public void noFill()
+    {
+        this.fill.a(0);
+    }
     
     /**
      * @return The current stroke color.
      */
-    public Colorc stroke() { return this.stroke; }
+    public Colorc stroke()
+    {
+        return this.stroke;
+    }
     
     /**
      * Sets the stroke color.
@@ -184,7 +214,10 @@ public abstract class Renderer
      * @param b The blue value of the color [0-255] [0.0-1.0]
      * @param a The alpha value of the color [0-255] [0.0-1.0]
      */
-    public void stroke(Number r, Number g, Number b, Number a) { this.stroke.set(r, g, b, a); }
+    public void stroke(Number r, Number g, Number b, Number a)
+    {
+        this.stroke.set(r, g, b, a);
+    }
     
     /**
      * Sets the stroke color.
@@ -193,7 +226,10 @@ public abstract class Renderer
      * @param g The green value of the color [0-255] [0.0-1.0]
      * @param b The blue value of the color [0-255] [0.0-1.0]
      */
-    public void stroke(Number r, Number g, Number b) { this.stroke.set(r, g, b); }
+    public void stroke(Number r, Number g, Number b)
+    {
+        this.stroke.set(r, g, b);
+    }
     
     /**
      * Sets the stroke color.
@@ -201,43 +237,65 @@ public abstract class Renderer
      * @param grey The red, green and blue value of the color [0-255] [0.0-1.0]
      * @param a    The alpha value of the color [0-255] [0.0-1.0]
      */
-    public void stroke(Number grey, Number a) { this.stroke.set(grey, a); }
+    public void stroke(Number grey, Number a)
+    {
+        this.stroke.set(grey, a);
+    }
     
     /**
      * Sets the stroke color.
      *
      * @param grey The red, green and blue value of the color [0-255] [0.0-1.0]
      */
-    public void stroke(Number grey) { this.stroke.set(grey); }
+    public void stroke(Number grey)
+    {
+        this.stroke.set(grey);
+    }
     
     /**
      * Sets the stroke color.
      *
      * @param stroke The color to set fill to.
      */
-    public void stroke(Colorc stroke) { this.stroke.set(stroke); }
+    public void stroke(Colorc stroke)
+    {
+        this.stroke.set(stroke);
+    }
     
     /**
      * Disabled the stroke of shapes
      */
-    public void noStroke() { this.stroke.a(0); }
+    public void noStroke()
+    {
+        this.stroke.a(0);
+    }
     
     /**
      * @return The stroke weight in pixels.
      */
-    public double weight() { return this.weight; }
+    public double weight()
+    {
+        return this.weight;
+    }
     
     /**
      * Sets the stroke weight.
      *
      * @param weight The new stroke weight in pixels. [1..Double.MAX_VALUE]
      */
-    public void weight(double weight) { this.weight = Math.max(1, weight); }
+    public void weight(double weight)
+    {
+        if (weight < 1) noStroke();
+        this.weight = Math.max(1, weight);
+    }
     
     /**
      * @return The current {@link RectMode}
      */
-    public RectMode rectMode() { return this.rectMode; }
+    public RectMode rectMode()
+    {
+        return this.rectMode;
+    }
     
     /**
      * Sets the {@link RectMode} option.
@@ -246,12 +304,18 @@ public abstract class Renderer
      *
      * @param rectMode The new {@link RectMode} option.
      */
-    public void rectMode(RectMode rectMode) { this.rectMode = rectMode; }
+    public void rectMode(RectMode rectMode)
+    {
+        this.rectMode = rectMode;
+    }
     
     /**
      * @return The current {@link EllipseMode}
      */
-    public EllipseMode ellipseMode() { return this.ellipseMode; }
+    public EllipseMode ellipseMode()
+    {
+        return this.ellipseMode;
+    }
     
     /**
      * Sets the {@link EllipseMode} option.
@@ -260,12 +324,18 @@ public abstract class Renderer
      *
      * @param ellipseMode The new {@link EllipseMode} option.
      */
-    public void ellipseMode(EllipseMode ellipseMode) { this.ellipseMode = ellipseMode; }
+    public void ellipseMode(EllipseMode ellipseMode)
+    {
+        this.ellipseMode = ellipseMode;
+    }
     
     /**
      * @return The current {@link ArcMode}
      */
-    public ArcMode arcMode() { return this.arcMode; }
+    public ArcMode arcMode()
+    {
+        return this.arcMode;
+    }
     
     /**
      * Sets the {@link ArcMode} option.
@@ -274,26 +344,38 @@ public abstract class Renderer
      *
      * @param arcMode The new {@link ArcMode} option.
      */
-    public void arcMode(ArcMode arcMode) { this.arcMode = arcMode; }
+    public void arcMode(ArcMode arcMode)
+    {
+        this.arcMode = arcMode;
+    }
     
     /**
      * @return The current Font
      */
-    public Font textFont() { return this.font; }
+    public Font textFont()
+    {
+        return this.font;
+    }
     
     /**
      * Sets the current Font.
      *
      * @param font The new font.
      */
-    public void textFont(Font font) { this.font = font; }
+    public void textFont(Font font)
+    {
+        this.font = font;
+    }
     
     /**
      * Creates and sets the current Font.
      *
      * @param font The path to the ttf file.
      */
-    public void textFont(String font) { this.font = new Font(font); }
+    public void textFont(String font)
+    {
+        this.font = new Font(font);
+    }
     
     /**
      * Creates and sets the current Font.
@@ -301,34 +383,52 @@ public abstract class Renderer
      * @param font The path to the ttf file.
      * @param size The size of the font in pixels. [4::Integer.MAX_VALUE]
      */
-    public void textFont(String font, int size) { this.font = new Font(font, size); }
+    public void textFont(String font, int size)
+    {
+        this.font = new Font(font, size);
+    }
     
     /**
      * @return The size of the current font in pixels.
      */
-    public int textSize() { return this.font.getSize(); }
+    public int textSize()
+    {
+        return this.font.getSize();
+    }
     
     /**
      * Sets the size of the current Font.
      *
      * @param textSize The new size in pixels [4::Integer.MAX_VALUE]
      */
-    public void textSize(int textSize) { this.font.setSize(textSize); }
+    public void textSize(int textSize)
+    {
+        this.font.setSize(textSize);
+    }
     
     /**
      * @return The size in pixels of the current Font's ascent.
      */
-    public double textAscent() { return this.font.getAscent(); }
+    public double textAscent()
+    {
+        return this.font.getAscent();
+    }
     
     /**
      * @return The size in pixels of the current Font's descent.
      */
-    public double textDescent() { return this.font.getDescent(); }
+    public double textDescent()
+    {
+        return this.font.getDescent();
+    }
     
     /**
      * @return The current {@link TextAlign} value.
      */
-    public TextAlign textAlign() { return this.textAlign; }
+    public TextAlign textAlign()
+    {
+        return this.textAlign;
+    }
     
     /**
      * Sets the {@link TextAlign} option.
@@ -337,7 +437,10 @@ public abstract class Renderer
      *
      * @param textAlign The new {@link TextAlign} option.
      */
-    public void textAlign(TextAlign textAlign) { this.textAlign = textAlign; }
+    public void textAlign(TextAlign textAlign)
+    {
+        this.textAlign = textAlign;
+    }
     
     // ----------------------------
     // -- Transformation Methods --
@@ -482,7 +585,10 @@ public abstract class Renderer
      * @param b The blue value to clear the target to. [0-255] [0.0-1.0]
      * @param a The alpha value to clear the target to. [0-255] [0.0-1.0]
      */
-    public void clear(Number r, Number g, Number b, Number a) { clear(Renderer.CLEAR.set(r, g, b, a)); }
+    public void clear(Number r, Number g, Number b, Number a)
+    {
+        clear(Renderer.CLEAR.set(r, g, b, a));
+    }
     
     /**
      * Clears the render target to the color provided.
@@ -491,7 +597,10 @@ public abstract class Renderer
      * @param g The green value to clear the target to. [0-255] [0.0-1.0]
      * @param b The blue value to clear the target to. [0-255] [0.0-1.0]
      */
-    public void clear(Number r, Number g, Number b) { clear(Renderer.CLEAR.set(r, g, b)); }
+    public void clear(Number r, Number g, Number b)
+    {
+        clear(Renderer.CLEAR.set(r, g, b));
+    }
     
     /**
      * Clears the render target to the color provided.
@@ -499,19 +608,28 @@ public abstract class Renderer
      * @param grey The red, green and blue value to clear the target to. [0-255] [0.0-1.0]
      * @param a    The alpha value to clear the target to. [0-255] [0.0-1.0]
      */
-    public void clear(Number grey, Number a) { clear(Renderer.CLEAR.set(grey, a)); }
+    public void clear(Number grey, Number a)
+    {
+        clear(Renderer.CLEAR.set(grey, a));
+    }
     
     /**
      * Clears the render target to the color provided.
      *
      * @param grey The red, green and blue value to clear the target to. [0-255] [0.0-1.0]
      */
-    public void clear(Number grey) { clear(Renderer.CLEAR.set(grey)); }
+    public void clear(Number grey)
+    {
+        clear(Renderer.CLEAR.set(grey));
+    }
     
     /**
      * Clears the render target to the r: 51, g: 51, b: 51, a: 255
      */
-    public void clear() { clear(Color.BACKGROUND_GREY); }
+    public void clear()
+    {
+        clear(Color.BACKGROUND_GREY);
+    }
     
     /**
      * Clears the render target to the color provided.

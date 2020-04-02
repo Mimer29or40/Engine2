@@ -70,10 +70,11 @@ public class EngineTest extends Engine
                 clear();
                 rectMode(RectMode.CENTER);
                 translate(screenWidth() / 2., screenHeight() / 2.);
-                rotate(timeS() / 2);
+                rotate(seconds() / 2);
                 // noStroke();
-                weight(10);
+                weight(map(mouse().x(), 0, screenHeight(), 1, 50));
                 stroke(Color.WHITE);
+                // noStroke();
                 fill(Color.BLUE);
                 square(0, 0, 300);
                 fill(Color.RED);
@@ -96,7 +97,7 @@ public class EngineTest extends Engine
                 rectMode(RectMode.CENTER);
                 translate(screenWidth() / 2., screenHeight() / 2.);
                 circle(0, 0, 200 * Math.sqrt(2));
-                rotate(time() / 2000000000.);
+                rotate(seconds());
                 // scale(0.5, 2);
                 texture(texture, 0, 0, 200, 200);
                 break;
@@ -116,17 +117,22 @@ public class EngineTest extends Engine
                 if (keyboard().K2.held()) arcMode(ArcMode.OPEN);
                 if (keyboard().K3.held()) arcMode(ArcMode.CHORD);
                 if (keyboard().K4.held()) arcMode(ArcMode.PIE);
-                clear(Color.GREEN);
+                clear();
                 translate(screenWidth() / 2., screenHeight() / 2.);
                 arc(0, 0, 100, 100, 0, map(mouse().x(), 0, screenWidth() - 1, 0, 2.0 * Math.PI));
                 break;
             case 9:
                 clear();
-                fill(Color.WHITE);
+                push();
+                fill(nextColor());
+                rectMode(RectMode.CENTER);
                 translate(screenWidth() / 2., screenHeight() / 2.);
-                rotate(time() / 1000000000.);
+                rotate(seconds());
                 // noStroke();
                 square(0, 0, 50);
+                pop();
+                // fill(Color.WHITE);
+                triangle(0, 0, mouse().x(), mouse().y(), 50, 50);
                 break;
             case 10:
                 break;

@@ -107,14 +107,20 @@ public class Logger
      *
      * @param object The objects to log.
      */
-    public void severe(Object object) { log(Level.SEVERE, String.valueOf(object)); }
+    public void severe(Object object)
+    {
+        log(Level.SEVERE, String.valueOf(object));
+    }
     
     /**
      * Logs the objects separated by spaces at {@link Level#SEVERE}.
      *
      * @param objects The objects to log.
      */
-    public void severe(Object... objects) { log(Level.SEVERE, objects); }
+    public void severe(Object... objects)
+    {
+        log(Level.SEVERE, objects);
+    }
     
     /**
      * Logs the objects separated by spaces at {@link Level#SEVERE}. If the format string has format characters in it, then it will be used to format the objects.
@@ -122,21 +128,30 @@ public class Logger
      * @param format  The optional format string.
      * @param objects The objects to log.
      */
-    public void severe(String format, Object... objects) { log(Level.SEVERE, format, objects); }
+    public void severe(String format, Object... objects)
+    {
+        log(Level.SEVERE, format, objects);
+    }
     
     /**
      * Logs the object at {@link Level#WARNING}.
      *
      * @param object The objects to log.
      */
-    public void warning(Object object) { log(Level.WARNING, String.valueOf(object)); }
+    public void warning(Object object)
+    {
+        log(Level.WARNING, String.valueOf(object));
+    }
     
     /**
      * Logs the objects separated by spaces at {@link Level#WARNING}.
      *
      * @param objects The objects to log.
      */
-    public void warning(Object... objects) { log(Level.WARNING, objects); }
+    public void warning(Object... objects)
+    {
+        log(Level.WARNING, objects);
+    }
     
     /**
      * Logs the objects separated by spaces at {@link Level#WARNING}. If the format string has format characters in it, then it will be used to format the objects.
@@ -144,21 +159,30 @@ public class Logger
      * @param format  The optional format string.
      * @param objects The objects to log.
      */
-    public void warning(String format, Object... objects) { log(Level.WARNING, format, objects); }
+    public void warning(String format, Object... objects)
+    {
+        log(Level.WARNING, format, objects);
+    }
     
     /**
      * Logs the object at {@link Level#INFO}.
      *
      * @param object The objects to log.
      */
-    public void info(Object object) { log(Level.INFO, String.valueOf(object)); }
+    public void info(Object object)
+    {
+        log(Level.INFO, String.valueOf(object));
+    }
     
     /**
      * Logs the objects separated by spaces at {@link Level#INFO}.
      *
      * @param objects The objects to log.
      */
-    public void info(Object... objects) { log(Level.INFO, objects); }
+    public void info(Object... objects)
+    {
+        log(Level.INFO, objects);
+    }
     
     /**
      * Logs the objects separated by spaces at {@link Level#INFO}. If the format string has format characters in it, then it will be used to format the objects.
@@ -166,21 +190,30 @@ public class Logger
      * @param format  The optional format string.
      * @param objects The objects to log.
      */
-    public void info(String format, Object... objects) { log(Level.INFO, format, objects); }
+    public void info(String format, Object... objects)
+    {
+        log(Level.INFO, format, objects);
+    }
     
     /**
      * Logs the object at {@link Level#CONFIG}.
      *
      * @param object The objects to log.
      */
-    public void config(Object object) { log(Level.CONFIG, String.valueOf(object)); }
+    public void config(Object object)
+    {
+        log(Level.CONFIG, String.valueOf(object));
+    }
     
     /**
      * Logs the objects separated by spaces at {@link Level#CONFIG}.
      *
      * @param objects The objects to log.
      */
-    public void config(Object... objects) { log(Level.CONFIG, objects); }
+    public void config(Object... objects)
+    {
+        log(Level.CONFIG, objects);
+    }
     
     /**
      * Logs the objects separated by spaces at {@link Level#CONFIG}. If the format string has format characters in it, then it will be used to format the objects.
@@ -188,21 +221,30 @@ public class Logger
      * @param format  The optional format string.
      * @param objects The objects to log.
      */
-    public void config(String format, Object... objects) { log(Level.CONFIG, format, objects); }
+    public void config(String format, Object... objects)
+    {
+        log(Level.CONFIG, format, objects);
+    }
     
     /**
      * Logs the object at {@link Level#FINE}.
      *
      * @param object The objects to log.
      */
-    public void fine(Object object) { log(Level.FINE, String.valueOf(object)); }
+    public void fine(Object object)
+    {
+        log(Level.FINE, String.valueOf(object));
+    }
     
     /**
      * Logs the objects separated by spaces at {@link Level#FINE}.
      *
      * @param objects The objects to log.
      */
-    public void fine(Object... objects) { log(Level.FINE, objects); }
+    public void fine(Object... objects)
+    {
+        log(Level.FINE, objects);
+    }
     
     /**
      * Logs the objects separated by spaces at {@link Level#FINE}. If the format string has format characters in it, then it will be used to format the objects.
@@ -210,21 +252,30 @@ public class Logger
      * @param format  The optional format string.
      * @param objects The objects to log.
      */
-    public void fine(String format, Object... objects) { log(Level.FINE, format, objects); }
+    public void fine(String format, Object... objects)
+    {
+        log(Level.FINE, format, objects);
+    }
     
     /**
      * Logs the object at {@link Level#FINER}.
      *
      * @param object The objects to log.
      */
-    public void finer(Object object) { log(Level.FINER, String.valueOf(object)); }
+    public void finer(Object object)
+    {
+        log(Level.FINER, String.valueOf(object));
+    }
     
     /**
      * Logs the objects separated by spaces at {@link Level#FINER}.
      *
      * @param objects The objects to log.
      */
-    public void finer(Object... objects) { log(Level.FINER, objects); }
+    public void finer(Object... objects)
+    {
+        log(Level.FINER, objects);
+    }
     
     /**
      * Logs the objects separated by spaces at {@link Level#FINER}. If the format string has format characters in it, then it will be used to format the objects.
@@ -232,21 +283,30 @@ public class Logger
      * @param format  The optional format string.
      * @param objects The objects to log.
      */
-    public void finer(String format, Object... objects) { log(Level.FINER, format, objects); }
+    public void finer(String format, Object... objects)
+    {
+        log(Level.FINER, format, objects);
+    }
     
     /**
      * Logs the object at {@link Level#FINEST}.
      *
      * @param object The objects to log.
      */
-    public void finest(Object object) { log(Level.FINEST, String.valueOf(object)); }
+    public void finest(Object object)
+    {
+        log(Level.FINEST, String.valueOf(object));
+    }
     
     /**
      * Logs the objects separated by spaces at {@link Level#FINEST}.
      *
      * @param objects The objects to log.
      */
-    public void finest(Object... objects) { log(Level.FINEST, objects); }
+    public void finest(Object... objects)
+    {
+        log(Level.FINEST, objects);
+    }
     
     /**
      * Logs the objects separated by spaces at {@link Level#FINEST}. If the format string has format characters in it, then it will be used to format the objects.
@@ -254,21 +314,30 @@ public class Logger
      * @param format  The optional format string.
      * @param objects The objects to log.
      */
-    public void finest(String format, Object... objects) { log(Level.FINEST, format, objects); }
+    public void finest(String format, Object... objects)
+    {
+        log(Level.FINEST, format, objects);
+    }
     
     /**
      * Logs the object at {@link Level#ALL}.
      *
      * @param object The objects to log.
      */
-    public void all(Object object) { log(Level.ALL, String.valueOf(object)); }
+    public void all(Object object)
+    {
+        log(Level.ALL, String.valueOf(object));
+    }
     
     /**
      * Logs the objects separated by spaces at {@link Level#ALL}.
      *
      * @param objects The objects to log.
      */
-    public void all(Object... objects) { log(Level.ALL, objects); }
+    public void all(Object... objects)
+    {
+        log(Level.ALL, objects);
+    }
     
     /**
      * Logs the objects separated by spaces at {@link Level#ALL}. If the format string has format characters in it, then it will be used to format the objects.
@@ -276,5 +345,8 @@ public class Logger
      * @param format  The optional format string.
      * @param objects The objects to log.
      */
-    public void all(String format, Object... objects) { log(Level.ALL, format, objects); }
+    public void all(String format, Object... objects)
+    {
+        log(Level.ALL, format, objects);
+    }
 }

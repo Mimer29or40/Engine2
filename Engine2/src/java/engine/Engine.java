@@ -45,12 +45,12 @@ public class Engine
     private static final Vector2i pixelSize  = new Vector2i();
     
     private static Random random;
-    private static Blend  blend;
     
     private static Mouse    mouse;
     private static Keyboard keyboard;
     private static Window   window;
     
+    private static Blend       blend;
     private static Texture     target;
     private static Shader      shader;
     private static VertexArray vertexArray;
@@ -128,7 +128,6 @@ public class Engine
         }
         
         Engine.random = new Random();
-        Engine.blend  = new Blend();
         
         try
         {
@@ -404,24 +403,26 @@ public class Engine
         
         if (Engine.screenSize.lengthSquared() == 0) throw new RuntimeException("Screen dimension must be > 0");
         if (Engine.pixelSize.lengthSquared() == 0) throw new RuntimeException("Pixel dimension must be > 0");
-        
+    
         Engine.mouse    = new Mouse();
         Engine.keyboard = new Keyboard();
         Engine.window   = new Window(Engine.mouse, Engine.keyboard);
-        
+    
         Engine.window.makeCurrent();
-        
+    
         GL.createCapabilities();
-        
+    
+        Engine.blend = new Blend();
+    
         Engine.target = new Texture(screenW, screenH);
-        
+    
         Engine.shader = new Shader().loadVertexFile("shader/pixel.vert").loadFragmentFile("shader/pixel.frag").validate();
-        
+    
         glEnable(GL_TEXTURE_2D);
-        
+    
         Engine.vertexArray = new VertexArray().bind();
         Engine.vertexArray.add(new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, -1.0F, 1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, 2);
-        
+    
         Engine.renderer = Renderer.getRenderer(Engine.target, renderer);
     }
     

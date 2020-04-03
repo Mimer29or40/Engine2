@@ -25,10 +25,13 @@ public class OpenGLRenderer extends Renderer
     
     protected final Shader pointShader;
     protected final Shader lineShader;
+    protected final Shader linesShader;
     protected final Shader triangleShader;
-    protected final Shader quadShader;
+    protected final Shader polygonShader;
     protected final Shader ellipseShader;
     protected final Shader ellipseOutlineShader;
+    
+    protected final GLFloatBuffer polygonBuffer;
     
     protected OpenGLRenderer(Texture target)
     {
@@ -53,12 +56,26 @@ public class OpenGLRenderer extends Renderer
         
         this.vertexArray = new VertexArray();
         
-        this.pointShader    = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/point.geom").loadFragmentFile("shader/shared.frag").validate();
-        this.lineShader     = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/line.geom").loadFragmentFile("shader/shared.frag").validate();
-        this.triangleShader = new Shader().loadVertexFile("shader/shared.vert").loadFragmentFile("shader/shared.frag").validate();
-        this.quadShader     = new Shader().loadVertexFile("shader/shared.vert").loadFragmentFile("shader/shared.frag").validate();
-        this.ellipseShader  = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/ellipse.geom").loadFragmentFile("shader/shared.frag").validate();
-        this.ellipseOutlineShader  = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/ellipse.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.pointShader          = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/point.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.lineShader           = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/line.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.linesShader          = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/lines.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.triangleShader       = new Shader().loadVertexFile("shader/shared.vert").loadFragmentFile("shader/shared.frag").validate();
+        this.polygonShader        = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/poly.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.ellipseShader        = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/ellipse.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.ellipseOutlineShader = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/ellipseOutline.geom").loadFragmentFile("shader/shared.frag").validate();
+        
+        this.polygonBuffer = new GLFloatBuffer(GL_SHADER_STORAGE_BUFFER).bind().base(1).unbind();
+    }
+    
+    /**
+     * Sets if the renderer should blend when pixels are drawn.
+     *
+     * @param enableBlend If blend is enabled.
+     */
+    public void enableBlend(boolean enableBlend)
+    {
+        super.enableBlend(enableBlend);
+        glEnable(GL_BLEND);
     }
     
     /**
@@ -244,7 +261,20 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void drawTriangle(double x1, double y1, double x2, double y2, double x3, double y3)
     {
+        this.linesShader.bind();
+        this.linesShader.setMat4("pv", this.pv);
+        this.linesShader.setColor("color", this.stroke);
+        this.linesShader.setVec2("viewport", screenWidth(), screenHeight());
+        this.linesShader.setFloat("thickness", (float) this.weight);
     
+        this.vertexArray.bind();
+        this.vertexArray.reset();
+        this.vertexArray.add(new float[] {
+                (float) x3, (float) y3, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3,
+                (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x1, (float) y1,
+                (float) x2, (float) y2, (float) x3, (float) y3, (float) x1, (float) y1, (float) x2, (float) y2
+        }, 2);
+        this.vertexArray.draw(GL_LINES_ADJACENCY);
     }
     
     /**
@@ -265,8 +295,6 @@ public class OpenGLRenderer extends Renderer
         this.triangleShader.bind();
         this.triangleShader.setMat4("pv", this.pv);
         this.triangleShader.setColor("color", this.fill);
-        this.triangleShader.setVec2("viewport", screenWidth(), screenHeight());
-        this.triangleShader.setFloat("thickness", (float) this.weight);
         
         this.vertexArray.bind();
         this.vertexArray.reset();
@@ -286,7 +314,7 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void drawSquare(double x, double y, double w)
     {
-    
+        drawQuad(x, y, x + w, y, x + w, y + w, x, y + w);
     }
     
     /**
@@ -317,7 +345,7 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void drawRect(double x, double y, double w, double h)
     {
-    
+        drawQuad(x, y, x + w, y, x + w, y + h, x, y + h);
     }
     
     /**
@@ -355,7 +383,21 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void drawQuad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
     {
+        this.linesShader.bind();
+        this.linesShader.setMat4("pv", this.pv);
+        this.linesShader.setColor("color", this.stroke);
+        this.linesShader.setVec2("viewport", screenWidth(), screenHeight());
+        this.linesShader.setFloat("thickness", (float) this.weight);
     
+        this.vertexArray.bind();
+        this.vertexArray.reset();
+        this.vertexArray.add(new float[] {
+                (float) x4, (float) y4, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3,
+                (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4,
+                (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4, (float) x1, (float) y1,
+                (float) x3, (float) y3, (float) x4, (float) y4, (float) x1, (float) y1, (float) x2, (float) y2
+        }, 2);
+        this.vertexArray.draw(GL_LINES_ADJACENCY);
     }
     
     /**
@@ -378,13 +420,11 @@ public class OpenGLRenderer extends Renderer
     public void fillQuad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
     {
         makeCurrent();
-        
-        this.quadShader.bind();
-        this.quadShader.setMat4("pv", this.pv);
-        this.quadShader.setColor("color", this.fill);
-        this.quadShader.setVec2("viewport", screenWidth(), screenHeight());
-        this.quadShader.setFloat("thickness", (float) this.weight);
-        
+    
+        this.triangleShader.bind();
+        this.triangleShader.setMat4("pv", this.pv);
+        this.triangleShader.setColor("color", this.fill);
+    
         this.vertexArray.bind();
         this.vertexArray.reset();
         this.vertexArray.add(new float[] {(float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4}, 2);
@@ -405,7 +445,34 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void drawPolygon(double[] points)
     {
+        this.linesShader.bind();
+        this.linesShader.setMat4("pv", this.pv);
+        this.linesShader.setColor("color", this.stroke);
+        this.linesShader.setVec2("viewport", screenWidth(), screenHeight());
+        this.linesShader.setFloat("thickness", (float) this.weight);
     
+        float[] array = new float[points.length * 4];
+        int     index = 0;
+        for (int i = 0, n = points.length >> 1; i < n; i++)
+        {
+            int prev = (i - 1 + n) % n;
+            int next = (i + 1 + n) % n;
+            int four = (i + 2 + n) % n;
+        
+            array[index++] = (float) points[(2 * prev)];
+            array[index++] = (float) points[(2 * prev) + 1];
+            array[index++] = (float) points[(2 * i)];
+            array[index++] = (float) points[(2 * i) + 1];
+            array[index++] = (float) points[(2 * next)];
+            array[index++] = (float) points[(2 * next) + 1];
+            array[index++] = (float) points[(2 * four)];
+            array[index++] = (float) points[(2 * four) + 1];
+        }
+    
+        this.vertexArray.bind();
+        this.vertexArray.reset();
+        this.vertexArray.add(array, 2);
+        this.vertexArray.draw(GL_LINES_ADJACENCY);
     }
     
     /**
@@ -422,7 +489,18 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void fillPolygon(double[] points)
     {
+        this.polygonShader.bind();
+        this.polygonShader.setMat4("pv", this.pv);
+        this.polygonShader.setColor("color", this.fill);
     
+        float[] array = new float[points.length];
+        for (int i = 0, n = points.length; i < n; i++) array[i] = (float) points[i];
+        this.polygonBuffer.bind().set(array, GL_STATIC_DRAW);
+    
+        this.vertexArray.bind();
+        this.vertexArray.reset();
+        this.vertexArray.add(new float[] {(float) points[0], (float) points[1]}, 2);
+        this.vertexArray.draw(GL_POINTS);
     }
     
     /**

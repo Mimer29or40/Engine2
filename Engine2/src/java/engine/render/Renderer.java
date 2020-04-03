@@ -39,25 +39,20 @@ public abstract class Renderer
      */
     public static Renderer getRenderer(Texture target, String renderer)
     {
-        if (renderer.equals("software"))
+        switch (renderer)
         {
-            Renderer.LOGGER.fine("Using Software Renderer");
-            return new SoftwareRenderer(target);
+            case "software":
+                Renderer.LOGGER.fine("Using Software Renderer");
+                return new SoftwareRenderer(target);
+            case "pixel":
+                Renderer.LOGGER.fine("Using Pixel Renderer");
+                return new PixelRenderer(target);
+            case "opengl":
+                Renderer.LOGGER.fine("Using OpenGL Renderer");
+                return new OpenGLRenderer(target);
+            default:
+                // TODO - Check for registered renderers?
         }
-        else if (renderer.equals("pixel"))
-        {
-            Renderer.LOGGER.fine("Using Pixel Renderer");
-            return new PixelRenderer(target);
-        }
-        else if (renderer.equals("opengl"))
-        {
-            Renderer.LOGGER.fine("Using OpenGL Renderer");
-            return new OpenGLRenderer(target);
-        }
-        // else
-        // {
-        //     // TODO - Check for registered renderers?
-        // }
         Renderer.LOGGER.warning("Could not parse renderer. Using Software Renderer");
         return new SoftwareRenderer(target);
     }

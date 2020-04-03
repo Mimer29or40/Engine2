@@ -13,7 +13,7 @@ import static engine.util.Util.map;
 public class EngineTest extends Engine
 {
     Logger  logger = new Logger();
-    int     state  = 4;
+    int     state  = 3;
     Texture texture;
     
     @Override
@@ -21,8 +21,8 @@ public class EngineTest extends Engine
     {
         // size(200, 200, 2, 2);
         // size(100, 100, 8, 8);
+        // size(400, 400, 2, 2, "software");
         size(400, 400, 2, 2, "opengl");
-        // size(400, 400, 2, 2, "opengl");
     
         texture = new Texture(30, 30);
         Color c = new Color();
@@ -45,7 +45,7 @@ public class EngineTest extends Engine
             case 1:
                 clear();
     
-                weight(map(mouse().x(), 0, screenHeight(), 1, 50));
+                weight(map(mouse().x(), 0, screenWidth(), 1, 50));
     
                 stroke(Color.BLUE);
                 point(mouse().x(), mouse().y());
@@ -60,11 +60,18 @@ public class EngineTest extends Engine
             case 3:
                 clear();
                 stroke(255, 0, 0, 100);
-                weight(3);
+                int thick = 80;
+                weight(40);
+                // scale(10, 10);
+                // translate(screenWidth() / 4., screenHeight() / 4.);
+                // translate(5, 5);
                 fill(255);
                 // polygon(mouse().pos(), 99, 75, 75, 75, 50, 25, 25, 75, 0, 75);
                 // polygon(mouse().pos(), 99, 25, 99, 99, 0, 99, 0, 25);
-                polygon(0, 25, 10, 0, 30, 50, 30, 0, 40, 25, 50, 0, 50, 50, 70, 0, 80, 25, 99, 99, mouse().x(), mouse().y());
+                // polygon(0, 25, 10, 0, 30, 50, 30, 0, 40, 25, 50, 0, 50, 50, 70, 0, 80, 25, 99, 99, mouse().x() - screenWidth() / 4., mouse().y() - screenHeight() / 4.);
+                // polygon(0, 25, 10, 0, 30, 50, 30, 0, 40, 25, 50, 0, 50, 50, 70, 0, 80, 25, 99, 99, 0, 99);
+                polygon(thick, thick, screenWidth() - thick, thick, mouse().x(), mouse().y(), thick, screenHeight() - thick);
+                // polygon(thick, thick, screenWidth() - thick, thick, screenWidth() - thick, screenHeight() - thick, thick, screenHeight() - thick);
                 break;
             case 4:
                 clear();
@@ -72,8 +79,8 @@ public class EngineTest extends Engine
                 translate(screenWidth() / 2., screenHeight() / 2.);
                 rotate(seconds() / 2);
                 // noStroke();
-                weight(map(mouse().x(), 0, screenHeight(), 1, 50));
-                stroke(Color.WHITE);
+                stroke(255, 100);
+                weight(map(mouse().x(), 0, screenWidth(), 0, 40));
                 // noStroke();
                 fill(Color.BLUE);
                 square(0, 0, 300);
@@ -132,6 +139,7 @@ public class EngineTest extends Engine
                 square(0, 0, 50);
                 pop();
                 // fill(Color.WHITE);
+                stroke(255, 100);
                 triangle(0, 0, mouse().x(), mouse().y(), 50, 50);
                 break;
             case 10:

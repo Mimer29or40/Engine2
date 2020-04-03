@@ -2540,1544 +2540,1544 @@ public class Overloads
         r.arc(ab.x(), ab.y(), cd.x(), cd.y(), arcLength.x(), arcLength.y());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, double u, double v, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, double u1, double v1, Vector2ic uv2)
     {
-        r.texture(t, a, b, c, d, u, v, texSize.x(), texSize.y());
+        r.texture(t, a, b, c, d, u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, double u, double v, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, double u1, double v1, Vector2fc uv2)
     {
-        r.texture(t, a, b, c, d, u, v, texSize.x(), texSize.y());
+        r.texture(t, a, b, c, d, u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, double u, double v, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, double u1, double v1, Vector2dc uv2)
     {
-        r.texture(t, a, b, c, d, u, v, texSize.x(), texSize.y());
+        r.texture(t, a, b, c, d, u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2ic texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2ic uv1, double u2, double v2)
     {
-        r.texture(t, a, b, c, d, texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, a, b, c, d, uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2fc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2fc uv1, double u2, double v2)
     {
-        r.texture(t, a, b, c, d, texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, a, b, c, d, uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2dc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2dc uv1, double u2, double v2)
     {
-        r.texture(t, a, b, c, d, texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, a, b, c, d, uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2ic texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2ic uv1, Vector2ic uv2)
     {
-        r.texture(t, a, b, c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2ic texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2ic uv1, Vector2fc uv2)
     {
-        r.texture(t, a, b, c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2ic texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2ic uv1, Vector2dc uv2)
     {
-        r.texture(t, a, b, c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2fc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2fc uv1, Vector2ic uv2)
     {
-        r.texture(t, a, b, c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2fc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2fc uv1, Vector2fc uv2)
     {
-        r.texture(t, a, b, c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2fc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2fc uv1, Vector2dc uv2)
     {
-        r.texture(t, a, b, c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2dc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2dc uv1, Vector2ic uv2)
     {
-        r.texture(t, a, b, c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2dc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2dc uv1, Vector2fc uv2)
     {
-        r.texture(t, a, b, c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2dc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, double c, double d, Vector2dc uv1, Vector2dc uv2)
     {
-        r.texture(t, a, b, c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, double u, double v, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, double u1, double v1, Vector2ic uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, double u, double v, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, double u1, double v1, Vector2fc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, double u, double v, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, double u1, double v1, Vector2dc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, double u, double v, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, double u1, double v1, Vector2ic uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, double u, double v, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, double u1, double v1, Vector2fc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, double u, double v, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, double u1, double v1, Vector2dc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, double u, double v, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, double u1, double v1, Vector2ic uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, double u, double v, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, double u1, double v1, Vector2fc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, double u, double v, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, double u1, double v1, Vector2dc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2ic texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2ic uv1, double u2, double v2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2fc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2fc uv1, double u2, double v2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2dc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2dc uv1, double u2, double v2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2ic texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2ic uv1, double u2, double v2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2fc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2fc uv1, double u2, double v2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2dc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2dc uv1, double u2, double v2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, Vector2ic texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, Vector2ic uv1, double u2, double v2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, Vector2fc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, Vector2fc uv1, double u2, double v2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, Vector2dc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, Vector2dc uv1, double u2, double v2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, double u, double v, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, double u1, double v1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, double u, double v, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, double u1, double v1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, double u, double v, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, double u1, double v1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, double u, double v, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, double u1, double v1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, double u, double v, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, double u1, double v1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, double u, double v, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, double u1, double v1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, double u, double v, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, double u1, double v1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, double u, double v, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, double u1, double v1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, double u, double v, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, double u1, double v1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2ic texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2ic uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2fc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2fc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2dc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2dc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2ic texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2ic uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2fc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2fc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2dc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2dc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, Vector2ic texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, Vector2ic uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, Vector2fc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, Vector2fc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, Vector2dc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, Vector2dc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, double u, double v, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, double u1, double v1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, double u, double v, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, double u1, double v1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, double u, double v, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, double u1, double v1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, double u, double v, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, double u1, double v1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, double u, double v, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, double u1, double v1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, double u, double v, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, double u1, double v1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, double u, double v, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, double u1, double v1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, double u, double v, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, double u1, double v1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, double u, double v, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, double u1, double v1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2ic texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2ic uv1, Vector2ic uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2ic texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2ic uv1, Vector2fc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2ic texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2ic uv1, Vector2dc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2fc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2fc uv1, Vector2ic uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2fc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2fc uv1, Vector2fc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2fc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2fc uv1, Vector2dc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2dc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2dc uv1, Vector2ic uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2dc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2dc uv1, Vector2fc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2dc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd, Vector2dc uv1, Vector2dc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2ic texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2ic uv1, Vector2ic uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2ic texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2ic uv1, Vector2fc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2ic texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2ic uv1, Vector2dc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2fc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2fc uv1, Vector2ic uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2fc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2fc uv1, Vector2fc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2fc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2fc uv1, Vector2dc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2dc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2dc uv1, Vector2ic uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2dc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2dc uv1, Vector2fc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2dc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2fc cd, Vector2dc uv1, Vector2dc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, Vector2ic texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, Vector2ic uv1, Vector2ic uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, Vector2ic texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, Vector2ic uv1, Vector2fc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, Vector2ic texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, Vector2ic uv1, Vector2dc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, Vector2fc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, Vector2fc uv1, Vector2ic uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, Vector2fc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, Vector2fc uv1, Vector2fc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, Vector2fc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, Vector2fc uv1, Vector2dc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, Vector2dc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, Vector2dc uv1, Vector2ic uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, Vector2dc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, double a, double b, Vector2dc cd, Vector2dc uv1, Vector2fc uv2)
     {
-        r.texture(t, a, b, cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2ic texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2ic uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2ic texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2ic uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2ic texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2ic uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2fc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2fc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2fc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2fc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2fc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2fc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2dc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2dc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2dc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2dc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2dc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, double c, double d, Vector2dc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2ic texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2ic uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2ic texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2ic uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2ic texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2ic uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2fc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2fc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2fc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2fc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2fc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2fc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2dc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2dc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2dc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2dc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2dc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, double c, double d, Vector2dc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, Vector2ic texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, Vector2ic uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, Vector2ic texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, Vector2ic uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, Vector2ic texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, Vector2ic uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, Vector2fc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, Vector2fc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, Vector2fc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, Vector2fc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, Vector2fc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, Vector2fc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, Vector2dc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, Vector2dc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, Vector2dc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, double c, double d, Vector2dc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), c, d, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, double u, double v, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, double u1, double v1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, double u, double v, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, double u1, double v1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, double u, double v, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, double u1, double v1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, double u, double v, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, double u1, double v1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, double u, double v, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, double u1, double v1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, double u, double v, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, double u1, double v1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, double u, double v, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, double u1, double v1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, double u, double v, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, double u1, double v1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, double u, double v, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, double u1, double v1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, double u, double v, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, double u1, double v1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, double u, double v, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, double u1, double v1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, double u, double v, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, double u1, double v1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, double u, double v, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, double u1, double v1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, double u, double v, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, double u1, double v1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, double u, double v, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, double u1, double v1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, double u, double v, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, double u1, double v1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, double u, double v, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, double u1, double v1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, double u, double v, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, double u1, double v1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, double u, double v, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, double u1, double v1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, double u, double v, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, double u1, double v1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, double u, double v, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, double u1, double v1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, double u, double v, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, double u1, double v1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, double u, double v, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, double u1, double v1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, double u, double v, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, double u1, double v1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, double u, double v, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, double u1, double v1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, double u, double v, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, double u1, double v1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2ic texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2ic uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2fc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2fc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2dc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2dc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2ic texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2ic uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2fc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2fc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2dc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2dc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2ic texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2ic uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2fc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2fc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2dc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2dc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2ic texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2ic uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2fc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2fc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2dc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2dc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2ic texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2ic uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2fc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2fc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2dc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2dc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2ic texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2ic uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2fc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2fc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2dc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2dc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2ic texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2ic uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2fc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2fc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2dc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2dc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2ic texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2ic uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2fc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2fc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2dc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2dc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, Vector2ic texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, Vector2ic uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, Vector2fc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, Vector2fc uv1, double u2, double v2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2ic texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2ic uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2ic texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2ic uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2ic texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2ic uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2fc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2fc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2fc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2fc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2fc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2fc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2dc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2dc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2dc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2dc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2dc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2ic cd, Vector2dc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2ic texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2ic uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2ic texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2ic uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2ic texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2ic uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2fc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2fc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2fc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2fc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2fc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2fc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2dc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2dc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2dc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2dc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2dc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2fc cd, Vector2dc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2ic texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2ic uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2ic texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2ic uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2ic texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2ic uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2fc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2fc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2fc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2fc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2fc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2fc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2dc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2dc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2dc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2dc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2dc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic ab, Vector2dc cd, Vector2dc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2ic texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2ic uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2ic texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2ic uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2ic texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2ic uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2fc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2fc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2fc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2fc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2fc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2fc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2dc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2dc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2dc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2dc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2dc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2ic cd, Vector2dc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2ic texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2ic uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2ic texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2ic uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2ic texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2ic uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2fc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2fc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2fc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2fc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2fc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2fc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2dc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2dc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2dc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2dc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2dc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2fc cd, Vector2dc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2ic texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2ic uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2ic texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2ic uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2ic texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2ic uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2fc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2fc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2fc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2fc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2fc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2fc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2dc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2dc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2dc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2dc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2dc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc ab, Vector2dc cd, Vector2dc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2ic texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2ic uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2ic texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2ic uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2ic texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2ic uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2fc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2fc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2fc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2fc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2fc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2fc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2dc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2dc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2dc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2dc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2dc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2ic cd, Vector2dc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2ic texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2ic uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2ic texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2ic uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2ic texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2ic uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2fc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2fc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2fc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2fc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2fc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2fc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2dc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2dc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2dc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2dc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2dc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2fc cd, Vector2dc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, Vector2ic texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, Vector2ic uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, Vector2ic texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, Vector2ic uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, Vector2ic texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, Vector2ic uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, Vector2fc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, Vector2fc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, Vector2fc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, Vector2fc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, Vector2fc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, Vector2fc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, Vector2dc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, Vector2dc uv1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, Vector2dc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, Vector2dc uv1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, Vector2dc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc ab, Vector2dc cd, Vector2dc uv1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, double x, double y, double u, double v, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, double x, double y, double u1, double v1, Vector2ic uv2)
     {
-        r.texture(t, x, y, u, v, texSize.x(), texSize.y());
+        r.texture(t, x, y, u1, v1, uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, double x, double y, double u, double v, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, double x, double y, double u1, double v1, Vector2fc uv2)
     {
-        r.texture(t, x, y, u, v, texSize.x(), texSize.y());
+        r.texture(t, x, y, u1, v1, uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, double x, double y, double u, double v, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, double x, double y, double u1, double v1, Vector2dc uv2)
     {
-        r.texture(t, x, y, u, v, texSize.x(), texSize.y());
+        r.texture(t, x, y, u1, v1, uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, double x, double y, Vector2ic texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, double x, double y, Vector2ic uv1, double u2, double v2)
     {
-        r.texture(t, x, y, texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, x, y, uv1.x(), uv1.y(), u2, v2);
     }
     
-    public static void texture(Renderer r, Texture t, double x, double y, Vector2fc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, double x, double y, Vector2fc uv1, double u2, double v2)
     {
-        r.texture(t, x, y, texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, x, y, uv1.x(), uv1.y(), u2, v2);
     }
     
-    public static void texture(Renderer r, Texture t, double x, double y, Vector2dc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, double x, double y, Vector2dc uv1, double u2, double v2)
     {
-        r.texture(t, x, y, texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, x, y, uv1.x(), uv1.y(), u2, v2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic pos, double u, double v, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2ic pos, double u1, double v1, double u2, double v2)
     {
-        r.texture(t, pos.x(), pos.y(), u, v, uw, vh);
+        r.texture(t, pos.x(), pos.y(), u1, v1, u2, v2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc pos, double u, double v, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2fc pos, double u1, double v1, double u2, double v2)
     {
-        r.texture(t, pos.x(), pos.y(), u, v, uw, vh);
+        r.texture(t, pos.x(), pos.y(), u1, v1, u2, v2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc pos, double u, double v, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2dc pos, double u1, double v1, double u2, double v2)
     {
-        r.texture(t, pos.x(), pos.y(), u, v, uw, vh);
+        r.texture(t, pos.x(), pos.y(), u1, v1, u2, v2);
     }
     
-    public static void texture(Renderer r, Texture t, double x, double y, Vector2ic texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, double x, double y, Vector2ic uv1, Vector2ic uv2)
     {
-        r.texture(t, x, y, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, x, y, uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, double x, double y, Vector2ic texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, double x, double y, Vector2ic uv1, Vector2fc uv2)
     {
-        r.texture(t, x, y, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, x, y, uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, double x, double y, Vector2ic texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, double x, double y, Vector2ic uv1, Vector2dc uv2)
     {
-        r.texture(t, x, y, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, x, y, uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, double x, double y, Vector2fc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, double x, double y, Vector2fc uv1, Vector2ic uv2)
     {
-        r.texture(t, x, y, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, x, y, uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, double x, double y, Vector2fc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, double x, double y, Vector2fc uv1, Vector2fc uv2)
     {
-        r.texture(t, x, y, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, x, y, uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, double x, double y, Vector2fc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, double x, double y, Vector2fc uv1, Vector2dc uv2)
     {
-        r.texture(t, x, y, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, x, y, uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, double x, double y, Vector2dc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, double x, double y, Vector2dc uv1, Vector2ic uv2)
     {
-        r.texture(t, x, y, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, x, y, uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, double x, double y, Vector2dc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, double x, double y, Vector2dc uv1, Vector2fc uv2)
     {
-        r.texture(t, x, y, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, x, y, uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, double x, double y, Vector2dc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, double x, double y, Vector2dc uv1, Vector2dc uv2)
     {
-        r.texture(t, x, y, texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, x, y, uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic pos, double u, double v, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic pos, double u1, double v1, Vector2ic uv2)
     {
-        r.texture(t, pos.x(), pos.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), u1, v1, uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic pos, double u, double v, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic pos, double u1, double v1, Vector2fc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), u1, v1, uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic pos, double u, double v, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic pos, double u1, double v1, Vector2dc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), u1, v1, uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc pos, double u, double v, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc pos, double u1, double v1, Vector2ic uv2)
     {
-        r.texture(t, pos.x(), pos.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), u1, v1, uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc pos, double u, double v, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc pos, double u1, double v1, Vector2fc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), u1, v1, uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc pos, double u, double v, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc pos, double u1, double v1, Vector2dc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), u1, v1, uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc pos, double u, double v, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc pos, double u1, double v1, Vector2ic uv2)
     {
-        r.texture(t, pos.x(), pos.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), u1, v1, uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc pos, double u, double v, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc pos, double u1, double v1, Vector2fc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), u1, v1, uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc pos, double u, double v, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc pos, double u1, double v1, Vector2dc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), u, v, texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), u1, v1, uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2ic texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2ic uv1, double u2, double v2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), u2, v2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2fc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2fc uv1, double u2, double v2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), u2, v2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2dc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2dc uv1, double u2, double v2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), u2, v2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2ic texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2ic uv1, double u2, double v2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), u2, v2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2fc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2fc uv1, double u2, double v2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), u2, v2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2dc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2dc uv1, double u2, double v2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), u2, v2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2ic texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2ic uv1, double u2, double v2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), u2, v2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2fc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2fc uv1, double u2, double v2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), u2, v2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2dc texPos, double uw, double vh)
+    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2dc uv1, double u2, double v2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), uw, vh);
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), u2, v2);
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2ic texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2ic uv1, Vector2ic uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2ic texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2ic uv1, Vector2fc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2ic texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2ic uv1, Vector2dc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2fc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2fc uv1, Vector2ic uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2fc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2fc uv1, Vector2fc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2fc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2fc uv1, Vector2dc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2dc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2dc uv1, Vector2ic uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2dc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2dc uv1, Vector2fc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2dc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2ic pos, Vector2dc uv1, Vector2dc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2ic texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2ic uv1, Vector2ic uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2ic texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2ic uv1, Vector2fc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2ic texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2ic uv1, Vector2dc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2fc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2fc uv1, Vector2ic uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2fc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2fc uv1, Vector2fc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2fc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2fc uv1, Vector2dc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2dc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2dc uv1, Vector2ic uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2dc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2dc uv1, Vector2fc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2dc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2fc pos, Vector2dc uv1, Vector2dc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2ic texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2ic uv1, Vector2ic uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2ic texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2ic uv1, Vector2fc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2ic texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2ic uv1, Vector2dc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2fc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2fc uv1, Vector2ic uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2fc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2fc uv1, Vector2fc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2fc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2fc uv1, Vector2dc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2dc texPos, Vector2ic texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2dc uv1, Vector2ic uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2dc texPos, Vector2fc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2dc uv1, Vector2fc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2dc texPos, Vector2dc texSize)
+    public static void texture(Renderer r, Texture t, Vector2dc pos, Vector2dc uv1, Vector2dc uv2)
     {
-        r.texture(t, pos.x(), pos.y(), texPos.x(), texPos.y(), texSize.x(), texSize.y());
+        r.texture(t, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
     }
     
     public static void texture(Renderer r, Texture t, double a, double b, Vector2ic cd)

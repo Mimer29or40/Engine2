@@ -371,17 +371,17 @@ public class PixelRenderer extends Renderer
      * The coordinates passed in will be transformed by the view matrix
      *
      * @param texture The texture to draw.
-     * @param x       The top left corner x coordinate of the rectangle.
-     * @param y       The top left corner y coordinate of the rectangle.
-     * @param w       The width of the rectangle.
-     * @param h       The height of the rectangle.
-     * @param u       The top left corner x texture coordinate of the rectangle.
-     * @param v       The top left corner y texture coordinate of the rectangle.
-     * @param uw      The width of the texture rectangle.
-     * @param vh      The height of the texture rectangle.
+     * @param x1      The top left corner x coordinate of the rectangle.
+     * @param y1      The top left corner y coordinate of the rectangle.
+     * @param x2      The width of the rectangle.
+     * @param y2      The height of the rectangle.
+     * @param u1      The top left corner x texture coordinate of the rectangle.
+     * @param v1      The top left corner y texture coordinate of the rectangle.
+     * @param u2      The width of the texture rectangle.
+     * @param v2      The height of the texture rectangle.
      */
     @Override
-    public void drawTexture(Texture texture, double x, double y, double w, double h, double u, double v, double uw, double vh)
+    public void drawTexture(Texture texture, double x1, double y1, double x2, double y2, double u1, double v1, double u2, double v2)
     {
     
     }

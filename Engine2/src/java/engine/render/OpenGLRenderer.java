@@ -30,6 +30,9 @@ public class OpenGLRenderer extends Renderer
     protected final Shader polygonShader;
     protected final Shader ellipseShader;
     protected final Shader ellipseOutlineShader;
+    // protected final Shader arcShader;
+    protected final Shader textureShader;
+    protected final Shader textShader;
     
     protected final GLFloatBuffer polygonBuffer;
     
@@ -63,6 +66,9 @@ public class OpenGLRenderer extends Renderer
         this.polygonShader        = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/poly.geom").loadFragmentFile("shader/shared.frag").validate();
         this.ellipseShader        = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/ellipse.geom").loadFragmentFile("shader/shared.frag").validate();
         this.ellipseOutlineShader = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/ellipseOutline.geom").loadFragmentFile("shader/shared.frag").validate();
+        // this.arcShader            = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/arc.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.textureShader = new Shader().loadVertexFile("shader/texture.vert").loadFragmentFile("shader/texture.frag").validate();
+        this.textShader    = new Shader().loadVertexFile("shader/texture.vert").loadFragmentFile("shader/text.frag").validate();
         
         this.polygonBuffer = new GLFloatBuffer(GL_SHADER_STORAGE_BUFFER).bind().base(1).unbind();
     }
@@ -458,7 +464,7 @@ public class OpenGLRenderer extends Renderer
             int prev = (i - 1 + n) % n;
             int next = (i + 1 + n) % n;
             int four = (i + 2 + n) % n;
-        
+    
             array[index++] = (float) points[(2 * prev)];
             array[index++] = (float) points[(2 * prev) + 1];
             array[index++] = (float) points[(2 * i)];
@@ -629,19 +635,34 @@ public class OpenGLRenderer extends Renderer
      * The coordinates passed in will be transformed by the view matrix
      *
      * @param texture The texture to draw.
-     * @param x       The top left corner x coordinate of the rectangle.
-     * @param y       The top left corner y coordinate of the rectangle.
-     * @param w       The width of the rectangle.
-     * @param h       The height of the rectangle.
-     * @param u       The top left corner x texture coordinate of the rectangle.
-     * @param v       The top left corner y texture coordinate of the rectangle.
-     * @param uw      The width of the texture rectangle.
-     * @param vh      The height of the texture rectangle.
+     * @param x1      The top left corner x coordinate of the rectangle.
+     * @param y1      The top left corner y coordinate of the rectangle.
+     * @param x2      The bottom right corner x coordinate of the rectangle.
+     * @param y2      The bottom right corner y coordinate of the rectangle.
+     * @param u1      The top left corner u texture coordinate of the rectangle.
+     * @param v1      The top left corner v texture coordinate of the rectangle.
+     * @param u2      The bottom right corner u texture coordinate of the rectangle.
+     * @param v2      The bottom right corner v texture coordinate of the rectangle.
      */
     @Override
-    public void drawTexture(Texture texture, double x, double y, double w, double h, double u, double v, double uw, double vh)
+    public void drawTexture(Texture texture, double x1, double y1, double x2, double y2, double u1, double v1, double u2, double v2)
     {
-    
+        makeCurrent();
+        
+        texture.bind().upload();
+        
+        this.textureShader.bind();
+        this.textureShader.setMat4("pv", this.pv);
+        
+        this.vertexArray.bind();
+        this.vertexArray.reset();
+        this.vertexArray.add(new float[] {
+                (float) x1, (float) y1, (float) u1, (float) v1,
+                (float) x1, (float) y2, (float) u1, (float) v2,
+                (float) x2, (float) y2, (float) u2, (float) v2,
+                (float) x2, (float) y1, (float) u2, (float) v1
+        }, 2, 2);
+        this.vertexArray.draw(GL_QUADS);
     }
     
     /**
@@ -660,7 +681,52 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void drawText(String text, double x, double y)
     {
+        makeCurrent();
     
+        this.font.getTexture().bind().upload();
+    
+        this.textShader.bind();
+        this.textShader.setMat4("pv", this.pv);
+        this.textShader.setColor("color", this.fill);
+    
+        float[] data = new float[text.length() * 16];
+    
+        double[] vertices = this.font.renderText(text);
+        for (int i = 0, n = text.length(), index = 0; i < n; i++)
+        {
+            int i8 = i * 8;
+        
+            double x1 = vertices[i8] + x;
+            double y1 = vertices[i8 + 1] + y;
+            double x2 = vertices[i8 + 2];
+            double y2 = vertices[i8 + 3];
+            double u1 = vertices[i8 + 4];
+            double v1 = vertices[i8 + 5];
+            double u2 = vertices[i8 + 6];
+            double v2 = vertices[i8 + 7];
+        
+            data[index++] = (float) x1;
+            data[index++] = (float) y1;
+            data[index++] = (float) u1;
+            data[index++] = (float) v1;
+            data[index++] = (float) x1;
+            data[index++] = (float) y2;
+            data[index++] = (float) u1;
+            data[index++] = (float) v2;
+            data[index++] = (float) x2;
+            data[index++] = (float) y2;
+            data[index++] = (float) u2;
+            data[index++] = (float) v2;
+            data[index++] = (float) x2;
+            data[index++] = (float) y1;
+            data[index++] = (float) u2;
+            data[index++] = (float) v1;
+        }
+    
+        this.vertexArray.bind();
+        this.vertexArray.reset();
+        this.vertexArray.add(data, 2, 2);
+        this.vertexArray.draw(GL_QUADS);
     }
     
     /**

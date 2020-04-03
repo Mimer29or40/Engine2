@@ -40,25 +40,22 @@ public class EngineTest extends Engine
     @Override
     protected void draw(double elapsedTime)
     {
+        clear();
+        push();
         switch (state)
         {
             case 1:
-                clear();
-    
                 weight(map(mouse().x(), 0, screenWidth(), 1, 50));
-    
                 stroke(Color.BLUE);
                 point(mouse().x(), mouse().y());
                 stroke(Color.RED);
                 line(screenWidth() / 2.0, screenHeight() / 2.0, mouse().x(), mouse().y());
                 break;
             case 2:
-                clear();
                 stroke(255);
                 bezier(0, 0, mouse().x(), mouse().y(), screenWidth() - 1, screenHeight() - 1);
                 break;
             case 3:
-                clear();
                 stroke(255, 0, 0, 100);
                 int thick = 80;
                 weight(40);
@@ -74,7 +71,6 @@ public class EngineTest extends Engine
                 // polygon(thick, thick, screenWidth() - thick, thick, screenWidth() - thick, screenHeight() - thick, thick, screenHeight() - thick);
                 break;
             case 4:
-                clear();
                 rectMode(RectMode.CENTER);
                 translate(screenWidth() / 2., screenHeight() / 2.);
                 rotate(seconds() / 2);
@@ -97,7 +93,6 @@ public class EngineTest extends Engine
                 updatePixels();
                 break;
             case 6:
-                // clear();
                 weight(10);
                 stroke(255);
                 fill(255, 0, 0);
@@ -109,7 +104,6 @@ public class EngineTest extends Engine
                 texture(texture, 0, 0, 200, 200);
                 break;
             case 7:
-                clear();
                 stroke(255, 0, 0, 100);
                 weight(3);
                 fill(255);
@@ -124,12 +118,10 @@ public class EngineTest extends Engine
                 if (keyboard().K2.held()) arcMode(ArcMode.OPEN);
                 if (keyboard().K3.held()) arcMode(ArcMode.CHORD);
                 if (keyboard().K4.held()) arcMode(ArcMode.PIE);
-                clear();
                 translate(screenWidth() / 2., screenHeight() / 2.);
                 arc(0, 0, 100, 100, 0, map(mouse().x(), 0, screenWidth() - 1, 0, 2.0 * Math.PI));
                 break;
             case 9:
-                clear();
                 push();
                 fill(nextColor());
                 rectMode(RectMode.CENTER);
@@ -140,7 +132,7 @@ public class EngineTest extends Engine
                 pop();
                 // fill(Color.WHITE);
                 stroke(255, 100);
-                triangle(0, 0, mouse().x(), mouse().y(), 50, 50);
+                triangle(0, 0, mouse().x(), mouse().y(), 0, 50);
                 break;
             case 10:
                 break;
@@ -149,6 +141,10 @@ public class EngineTest extends Engine
             case 12:
                 break;
         }
+        pop();
+        fill(Color.GREEN);
+        textSize(30);
+        text("Frame: " + frameCount(), 0, 0);
         if (keyboard().SPACE.down()) screenShot("screenshot" + frameCount());
         if (keyboard().S.down()) screenShot();
         if (keyboard().F.down()) window().fullscreen(!window().fullscreen());

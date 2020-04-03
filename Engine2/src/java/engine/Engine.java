@@ -1918,33 +1918,33 @@ public class Engine
     /**
      * See {@link Renderer#drawTexture(Texture, double, double, double, double, double, double, double, double)}
      */
-    public static void drawTexture(Texture texture, double x, double y, double w, double h, double u, double v, double uw, double vh)
+    public static void drawTexture(Texture texture, double x1, double y1, double x2, double y2, double u1, double v1, double v2, double u2)
     {
-        Engine.renderer.drawTexture(texture, x, y, w, h, u, v, uw, vh);
+        Engine.renderer.drawTexture(texture, x1, y1, x2, y2, u1, v1, u2, v2);
     }
     
     /**
      * See {@link Renderer#texture(Texture, double, double, double, double, double, double, double, double)}
      */
-    public static void texture(Texture texture, double x, double y, double w, double h, double u, double v, double uw, double vh)
+    public static void texture(Texture texture, double a, double b, double c, double d, double u1, double v1, double v2, double u2)
     {
-        Engine.renderer.texture(texture, x, y, w, h, u, v, uw, vh);
+        Engine.renderer.texture(texture, a, b, c, d, u1, v1, v2, u2);
     }
     
     /**
      * See {@link Renderer#texture(Texture, double, double, double, double, double, double)}
      */
-    public static void texture(Texture t, double x, double y, double u, double v, double uw, double vh)
+    public static void texture(Texture t, double x, double y, double u1, double v1, double v2, double u2)
     {
-        texture(t, x, y, t.width(), t.height(), u, v, uw, vh);
+        Engine.renderer.texture(t, x, y, u1, v1, v2, u2);
     }
     
     /**
      * See {@link Renderer#texture(Texture, double, double, double, double)}
      */
-    public static void texture(Texture t, double x, double y, double w, double h)
+    public static void texture(Texture t, double a, double b, double c, double d)
     {
-        Engine.renderer.texture(t, x, y, w, h);
+        Engine.renderer.texture(t, a, b, c, d);
     }
     
     /**
@@ -1966,9 +1966,9 @@ public class Engine
     /**
      * See {@link Renderer#text(String, double, double, double, double)}
      */
-    public static void text(String text, double x, double y, double w, double h)
+    public static void text(String text, double a, double b, double c, double d)
     {
-        Engine.renderer.text(text, x, y, w, h);
+        Engine.renderer.text(text, a, b, c, d);
     }
     
     /**

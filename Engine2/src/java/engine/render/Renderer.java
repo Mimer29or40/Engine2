@@ -1260,23 +1260,23 @@ public abstract class Renderer
     // ---------------------
     
     /**
-     * Draws a textured rectangle whose top left corner is at {@code (x, y)} and is {@code w} pixels wide and {@code y} tall.
+     * Draws a textured rectangle whose top left corner is at {@code (x1, y1)} and is {@code x2-x1} pixels wide and {@code y2-y1} tall.
      * <p>
      * You can specify the coordinate of the texture to pull from.
      * <p>
      * The coordinates passed in will be transformed by the view matrix
      *
      * @param texture The texture to draw.
-     * @param x       The top left corner x coordinate of the rectangle.
-     * @param y       The top left corner y coordinate of the rectangle.
-     * @param w       The width of the rectangle.
-     * @param h       The height of the rectangle.
-     * @param u       The top left corner x texture coordinate of the rectangle.
-     * @param v       The top left corner y texture coordinate of the rectangle.
-     * @param uw      The width of the texture rectangle.
-     * @param vh      The height of the texture rectangle.
+     * @param x1      The top left corner x coordinate of the rectangle.
+     * @param y1      The top left corner y coordinate of the rectangle.
+     * @param x2      The bottom right corner x coordinate of the rectangle.
+     * @param y2      The bottom right corner y coordinate of the rectangle.
+     * @param u1      The top left corner u texture coordinate of the rectangle.
+     * @param v1      The top left corner v texture coordinate of the rectangle.
+     * @param u2      The bottom right corner u texture coordinate of the rectangle.
+     * @param v2      The bottom right corner v texture coordinate of the rectangle.
      */
-    public abstract void drawTexture(Texture texture, double x, double y, double w, double h, double u, double v, double uw, double vh);
+    public abstract void drawTexture(Texture texture, double x1, double y1, double x2, double y2, double u1, double v1, double u2, double v2);
     
     /**
      * Draws a textured rectangle based on {@link #rectMode()}, with uv coordinates.
@@ -1292,27 +1292,27 @@ public abstract class Renderer
      * @param b       The b value.
      * @param c       The c value.
      * @param d       The d value.
-     * @param u       The top left corner x texture coordinate of the rectangle.
-     * @param v       The top left corner y texture coordinate of the rectangle.
-     * @param uw      The width of the texture rectangle.
-     * @param vh      The height of the texture rectangle.
+     * @param u1      The top left corner x texture coordinate of the rectangle.
+     * @param v1      The top left corner y texture coordinate of the rectangle.
+     * @param u2      The bottom right corner u texture coordinate of the rectangle.
+     * @param v2      The bottom right corner v texture coordinate of the rectangle.
      */
-    public void texture(Texture texture, double a, double b, double c, double d, double u, double v, double uw, double vh)
+    public void texture(Texture texture, double a, double b, double c, double d, double u1, double v1, double v2, double u2)
     {
         switch (this.rectMode)
         {
             case CORNER:
             default:
-                drawTexture(texture, a, b, c, d, u, v, uw, vh);
+                drawTexture(texture, a, b, c - a, d - b, u1, v1, u2, v2);
                 break;
             case CORNERS:
-                drawTexture(texture, a, b, c - a, d - b, u, v, uw, vh);
+                drawTexture(texture, a, b, c, d, u1, v1, u2, v2);
                 break;
             case CENTER:
-                drawTexture(texture, a - c * 0.5, b - d * 0.5, c, d, u, v, uw, vh);
+                drawTexture(texture, a - c * 0.5, b - d * 0.5, a + c * 0.5, b + d * 0.5, u1, v1, u2, v2);
                 break;
             case RADIUS:
-                drawTexture(texture, a - c, b - d, c * 2.0, d * 2.0, u, v, uw, vh);
+                drawTexture(texture, a - c, b - d, a + c, b + d, u1, v1, u2, v2);
                 break;
         }
     }
@@ -1327,14 +1327,14 @@ public abstract class Renderer
      * @param texture The texture to draw.
      * @param x       The top left x coordinate of the textured rectangle.
      * @param y       The top left y coordinate of the textured rectangle.
-     * @param u       The top left corner x texture coordinate of the rectangle.
-     * @param v       The top left corner y texture coordinate of the rectangle.
-     * @param uw      The width of the texture rectangle.
-     * @param vh      The height of the texture rectangle.
+     * @param u1      The top left corner x texture coordinate of the rectangle.
+     * @param v1      The top left corner y texture coordinate of the rectangle.
+     * @param u2      The bottom right corner u texture coordinate of the rectangle.
+     * @param v2      The bottom right corner v texture coordinate of the rectangle.
      */
-    public void texture(Texture texture, double x, double y, double u, double v, double uw, double vh)
+    public void texture(Texture texture, double x, double y, double u1, double v1, double v2, double u2)
     {
-        drawTexture(texture, x, y, texture.width(), texture.height(), u, v, uw, vh);
+        drawTexture(texture, x, y, x + texture.width(), y + texture.height(), u1, v1, u2, v2);
     }
     
     /**
@@ -1366,7 +1366,7 @@ public abstract class Renderer
      */
     public void texture(Texture texture, double x, double y)
     {
-        drawTexture(texture, x, y, texture.width(), texture.height(), 0, 0, 1, 1);
+        drawTexture(texture, x, y, x + texture.width(), y + texture.height(), 0, 0, 1, 1);
     }
     
     // ------------------
@@ -1408,86 +1408,89 @@ public abstract class Renderer
      */
     public void text(String text, double a, double b, double c, double d)
     {
-        List<String> lines;
-        
-        double x = a, y = b;
-        double w = 0, h = 0;
-        
-        if (c > 0 && d > 0)
+        if (this.fill.a() > 0)
         {
-            switch (this.rectMode)
+            List<String> lines;
+        
+            double x = a, y = b;
+            double w = 0, h = 0;
+        
+            if (c > 0 && d > 0)
             {
-                case CORNER:
-                default:
-                    w = c;
-                    h = d;
-                    break;
-                case CORNERS:
-                    w = c - a;
-                    h = d - b;
-                    break;
-                case CENTER:
-                    x = a - c * 0.5;
-                    y = b - d * 0.5;
-                    w = c;
-                    h = d;
-                    break;
-                case RADIUS:
-                    x = a - c;
-                    y = b - d;
-                    w = c * 2.0;
-                    h = d * 2.0;
-                    break;
-            }
-            lines = new ArrayList<>();
-            for (String line : text.split("\n"))
-            {
-                if (this.font.getStringWidth(line) > w)
+                switch (this.rectMode)
                 {
-                    String[]      subLines = line.split(" ");
-                    StringBuilder builder  = new StringBuilder(subLines[0]);
-                    for (int j = 1, n = subLines.length; j < n; j++)
+                    case CORNER:
+                    default:
+                        w = c;
+                        h = d;
+                        break;
+                    case CORNERS:
+                        w = c - a;
+                        h = d - b;
+                        break;
+                    case CENTER:
+                        x = a - c * 0.5;
+                        y = b - d * 0.5;
+                        w = c;
+                        h = d;
+                        break;
+                    case RADIUS:
+                        x = a - c;
+                        y = b - d;
+                        w = c * 2.0;
+                        h = d * 2.0;
+                        break;
+                }
+                lines = new ArrayList<>();
+                for (String line : text.split("\n"))
+                {
+                    if (this.font.getStringWidth(line) > w)
                     {
-                        if (this.font.getStringWidth(builder.toString() + " " + subLines[j]) > w)
+                        String[]      subLines = line.split(" ");
+                        StringBuilder builder  = new StringBuilder(subLines[0]);
+                        for (int j = 1, n = subLines.length; j < n; j++)
                         {
-                            if (this.font.getStringWidth(builder.toString()) > w) break;
-                            if ((lines.size() + 1) * this.font.getSize() > h) break;
-                            lines.add(builder.toString());
-                            builder.setLength(0);
-                            builder.append(subLines[j]);
-                            continue;
+                            if (this.font.getStringWidth(builder.toString() + " " + subLines[j]) > w)
+                            {
+                                if (this.font.getStringWidth(builder.toString()) > w) break;
+                                if ((lines.size() + 1) * this.font.getSize() > h) break;
+                                lines.add(builder.toString());
+                                builder.setLength(0);
+                                builder.append(subLines[j]);
+                                continue;
+                            }
+                            builder.append(" ").append(subLines[j]);
                         }
-                        builder.append(" ").append(subLines[j]);
+                        if (this.font.getStringWidth(builder.toString()) > w) break;
+                        if ((lines.size() + 1) * this.font.getSize() > h) break;
+                        lines.add(builder.toString());
                     }
-                    if (this.font.getStringWidth(builder.toString()) > w) break;
-                    if ((lines.size() + 1) * this.font.getSize() > h) break;
-                    lines.add(builder.toString());
-                }
-                else
-                {
-                    if ((lines.size() + 1) * this.font.getSize() > h) break;
-                    lines.add(line);
+                    else
+                    {
+                        if ((lines.size() + 1) * this.font.getSize() > h) break;
+                        lines.add(line);
+                    }
                 }
             }
-        }
-        else
-        {
-            lines = Arrays.asList(text.split("\n"));
-        }
+            else
+            {
+                lines = Arrays.asList(text.split("\n"));
+            }
         
-        double actualHeight = lines.size() * this.font.getSize();
+            double actualHeight = lines.size() * this.font.getSize();
         
-        int    hPos    = this.textAlign.getHorizontal();
-        int    vPos    = this.textAlign.getVertical();
-        double yOffset = vPos == -1 ? 0 : vPos == 0 ? 0.5 * (h - actualHeight) : h - actualHeight;
-        for (String line : lines)
-        {
-            double lineWidth = this.font.getStringWidth(line);
-            double xOffset   = hPos == -1 ? 0 : hPos == 0 ? 0.5 * (w - lineWidth) : w - lineWidth;
+            int    hPos    = this.textAlign.getHorizontal();
+            int    vPos    = this.textAlign.getVertical();
+            double yOffset = vPos == -1 ? 0 : vPos == 0 ? 0.5 * (h - actualHeight) : h - actualHeight;
+            for (String line : lines)
+            {
+                double lineWidth = this.font.getStringWidth(line);
+                double xOffset   = hPos == -1 ? 0 : hPos == 0 ? 0.5 * (w - lineWidth) : w - lineWidth;
             
-            drawText(line, x + xOffset, y + yOffset);
+                drawText(line, x + xOffset, y + yOffset);
             
-            yOffset += this.font.getSize();
+                yOffset += this.font.getSize();
+            }
         }
     }
     

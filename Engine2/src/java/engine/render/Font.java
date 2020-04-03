@@ -54,7 +54,7 @@ public class Font
     protected final HashMap<Integer, Double> descentMap = new HashMap<>();
     protected final HashMap<Integer, Double> lineGapMap = new HashMap<>();
     
-    protected final HashMap<Integer, Texture> bitmapMap = new HashMap<>();
+    protected final HashMap<Integer, Texture> textureMap = new HashMap<>();
     
     /**
      * Creates a new font from a ttf file.
@@ -267,9 +267,9 @@ public class Font
     /**
      * @return Gets the texture map of the font.
      */
-    public Texture getBitmap()
+    public Texture getTexture()
     {
-        return this.bitmapMap.get(this.size);
+        return this.textureMap.get(this.size);
     }
     
     /**
@@ -323,7 +323,7 @@ public class Font
      * Renders the text and return an array of screen coordinates and uv coordinates for each character to send to a renderer.
      * <p>
      * The format is as follows: <p>
-     * [x0,y0,w0,h0,u0,v0,uw0,vh0,x1,y1,w1,h1,u1,v1,uw1,vh1,...]
+     * [x10,y10,x20,y20,u10,v10,u20,v20,x11,y11,x21,y21,u11,v11,u21,v21,...]
      *
      * @param text The text to render.
      * @return The array of coordinates.
@@ -331,16 +331,16 @@ public class Font
     public double[] renderText(String text)
     {
         int n = text.length();
-        
+    
         STBTTPackedchar.Buffer charData = this.charDataMap.get(this.size);
-        
-        int width  = this.bitmapMap.get(this.size).width();
-        int height = this.bitmapMap.get(this.size).height();
-        
+    
+        int width  = this.textureMap.get(this.size).width();
+        int height = this.textureMap.get(this.size).height();
+    
         double ascent = this.ascentMap.get(this.size);
-        
+    
         double[] vertices = new double[n * 8];
-        
+    
         int  index;
         char character;
         this.x.put(0, 0);
@@ -353,12 +353,12 @@ public class Font
             if (character == ' ') continue;
             vertices[index]     = this.quad.x0();
             vertices[index + 1] = this.quad.y0() + ascent;
-            vertices[index + 2] = this.quad.x1() - this.quad.x0();
-            vertices[index + 3] = this.quad.y1() - this.quad.y0();
+            vertices[index + 2] = this.quad.x1();
+            vertices[index + 3] = this.quad.y1() + ascent;
             vertices[index + 4] = this.quad.s0();
             vertices[index + 5] = this.quad.t0();
-            vertices[index + 6] = this.quad.s1() - this.quad.s0();
-            vertices[index + 7] = this.quad.t1() - this.quad.t0();
+            vertices[index + 6] = this.quad.s1();
+            vertices[index + 7] = this.quad.t1();
         }
         return vertices;
     }
@@ -378,8 +378,8 @@ public class Font
         this.ascentMap.put(this.size, this.ascentIntBuffer.get(0) * scale);
         this.descentMap.put(this.size, this.descentIntBuffer.get(0) * scale);
         this.lineGapMap.put(this.size, this.lineGapIntBuffer.get(0) * scale);
-        
-        Texture bitmap       = null;
+    
+        Texture texture      = null;
         boolean success      = false;
         int     textureWidth = 32;
         int     sampleSize   = 2;
@@ -387,19 +387,19 @@ public class Font
         {
             try (STBTTPackContext pc = STBTTPackContext.malloc())
             {
-                bitmap = new Texture(textureWidth * this.size, this.size * sampleSize, 1);
-                stbtt_PackBegin(pc, bitmap.data(), bitmap.width(), bitmap.height(), 0, 2, MemoryUtil.NULL);
+                texture = new Texture(textureWidth * this.size, this.size * sampleSize, 1);
+                stbtt_PackBegin(pc, texture.data(), texture.width(), texture.height(), 0, 2, MemoryUtil.NULL);
                 charData.position(32);
                 stbtt_PackSetOversampling(pc, sampleSize, sampleSize);
                 success = stbtt_PackFontRange(pc, this.data, 0, (float) this.size, 32, charData);
                 charData.clear();
-                bitmap.data().clear();
+                texture.data().clear();
                 stbtt_PackEnd(pc);
                 textureWidth *= 2;
             }
         }
-        bitmap.bind().upload();
-        this.bitmapMap.put(this.size, bitmap);
+        texture.bind().upload();
+        this.textureMap.put(this.size, texture);
     }
     
     private static int getCP(String text, int to, int i, IntBuffer codePoint)

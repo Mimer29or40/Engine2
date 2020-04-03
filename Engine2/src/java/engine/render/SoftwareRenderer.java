@@ -518,32 +518,34 @@ public class SoftwareRenderer extends Renderer
     }
     
     /**
-     * Draws a textured rectangle whose top left corner is at {@code (x, y)} and is {@code w} pixels wide and {@code y} tall.
+     * Draws a textured rectangle whose top left corner is at {@code (x1, y)} and is {@code w} pixels wide and {@code y} tall.
      * <p>
      * You can specify the coordinate of the texture to pull from.
      * <p>
      * The coordinates passed in will be transformed by the view matrix
      *
      * @param texture The texture to draw.
-     * @param x       The top left corner x coordinate of the rectangle.
-     * @param y       The top left corner y coordinate of the rectangle.
-     * @param w       The width of the rectangle.
-     * @param h       The height of the rectangle.
-     * @param u       The top left corner x texture coordinate of the rectangle.
-     * @param v       The top left corner y texture coordinate of the rectangle.
-     * @param uw      The width of the texture rectangle.
-     * @param vh      The height of the texture rectangle.
+     * @param x1      The top left corner x1 coordinate of the rectangle.
+     * @param y1      The top left corner y coordinate of the rectangle.
+     * @param x2      The width of the rectangle.
+     * @param y2      The height of the rectangle.
+     * @param u1      The top left corner x1 texture coordinate of the rectangle.
+     * @param v1      The top left corner y texture coordinate of the rectangle.
+     * @param u2      The width of the texture rectangle.
+     * @param v2      The height of the texture rectangle.
      */
     @Override
-    public void drawTexture(Texture texture, double x, double y, double w, double h, double u, double v, double uw, double vh)
+    public void drawTexture(Texture texture, double x1, double y1, double x2, double y2, double u1, double v1, double u2, double v2)
     {
-        if (w <= 0 || h <= 0 || uw <= 0 || vh <= 0) return;
-        
-        PairD topLeft     = transform(x, y);
-        PairD topRight    = transform(x + w, y);
-        PairD bottomLeft  = transform(x, y + h);
-        PairD bottomRight = transform(x + w, y + h);
-        
+        if (x2 <= 0 || y2 <= 0 || u2 <= 0 || v2 <= 0) return;
+    
+        texture.bind().download();
+    
+        PairD topLeft     = transform(x1, y1);
+        PairD topRight    = transform(x2, y1);
+        PairD bottomLeft  = transform(x1, y2);
+        PairD bottomRight = transform(x2, y2);
+    
         int topLeftX     = (int) round(topLeft.a());
         int topLeftY     = (int) round(topLeft.b());
         int topRightX    = (int) round(topRight.a());
@@ -552,18 +554,18 @@ public class SoftwareRenderer extends Renderer
         int bottomLeftY  = (int) round(bottomLeft.b());
         int bottomRightX = (int) round(bottomRight.a());
         int bottomRightY = (int) round(bottomRight.b());
-        
-        int ui  = (int) round(u * texture.width());
-        int vi  = (int) round(v * texture.height());
-        int uwi = (int) round(uw * texture.width());
-        int vhi = (int) round(vh * texture.height());
-        
+    
+        int u1i = (int) round(u1 * texture.width());
+        int v1i = (int) round(v1 * texture.height());
+        int u2i = (int) round(u2 * texture.width());
+        int v2i = (int) round(v2 * texture.height());
+    
         lineImpl(topLeftX, topLeftY, topRightX, topRightY, 1, LINE_OVERLAP_NONE);
         lineImpl(topRightX, topRightY, bottomRightX, bottomRightY, 1, LINE_OVERLAP_NONE);
         lineImpl(bottomRightX, bottomRightY, bottomLeftX, bottomLeftY, 1, LINE_OVERLAP_NONE);
         lineImpl(bottomLeftX, bottomLeftY, topLeftX, topLeftY, 1, LINE_OVERLAP_NONE);
         fillBetweenLines();
-        
+    
         int xAxisX   = topRightX - topLeftX;
         int xAxisY   = topRightY - topLeftY;
         int yAxisX   = bottomLeftX - topLeftX;
@@ -577,8 +579,8 @@ public class SoftwareRenderer extends Renderer
         {
             int dx    = point.a() - topLeftX;
             int dy    = point.b() - topLeftY;
-            int textX = ui + ((dx * xAxisX + dy * xAxisY) * uwi / xAxisLen);
-            int textY = vi + ((dx * yAxisX + dy * yAxisY) * vhi / yAxisLen);
+            int textX = u1i + ((dx * xAxisX + dy * xAxisY) * (u2i - u1i) / xAxisLen);
+            int textY = v1i + ((dx * yAxisX + dy * yAxisY) * (v2i - v1i) / yAxisLen);
             pointImpl(point.a(), point.b(), texture.getPixel(textX, textY));
         }
         SoftwareRenderer.POINTS.clear();
@@ -604,21 +606,21 @@ public class SoftwareRenderer extends Renderer
         for (int i = 0, lineSize = text.length(); i < lineSize; i++)
         {
             int index = i * 8;
-            
-            double xPos = vertices[index] + x;
-            double yPos = vertices[index + 1] + y;
-            double w    = vertices[index + 2];
-            double h    = vertices[index + 3];
-            double u    = vertices[index + 4];
-            double v    = vertices[index + 5];
-            double uw   = vertices[index + 6];
-            double vh   = vertices[index + 7];
-            
-            PairD topLeft     = transform(xPos, yPos);
-            PairD topRight    = transform(xPos + w, yPos);
-            PairD bottomLeft  = transform(xPos, yPos + h);
-            PairD bottomRight = transform(xPos + w, yPos + h);
-            
+    
+            double x1 = vertices[index] + x;
+            double y1 = vertices[index + 1] + y;
+            double x2 = vertices[index + 2];
+            double y2 = vertices[index + 3];
+            double u1 = vertices[index + 4];
+            double v1 = vertices[index + 5];
+            double u2 = vertices[index + 6];
+            double v2 = vertices[index + 7];
+    
+            PairD topLeft     = transform(x1, y1);
+            PairD topRight    = transform(x2, y1);
+            PairD bottomLeft  = transform(x1, y2);
+            PairD bottomRight = transform(x2, y2);
+    
             int topLeftX     = (int) round(topLeft.a());
             int topLeftY     = (int) round(topLeft.b());
             int topRightX    = (int) round(topRight.a());
@@ -627,18 +629,18 @@ public class SoftwareRenderer extends Renderer
             int bottomLeftY  = (int) round(bottomLeft.b());
             int bottomRightX = (int) round(bottomRight.a());
             int bottomRightY = (int) round(bottomRight.b());
-            
-            int ui  = (int) round(u * this.font.getBitmap().width());
-            int vi  = (int) round(v * this.font.getBitmap().height());
-            int uwi = (int) round(uw * this.font.getBitmap().width());
-            int vhi = (int) round(vh * this.font.getBitmap().height());
-            
+    
+            int u1i = (int) round(u1 * this.font.getTexture().width());
+            int v1i = (int) round(v1 * this.font.getTexture().height());
+            int u2i = (int) round(u2 * this.font.getTexture().width());
+            int v2i = (int) round(v2 * this.font.getTexture().height());
+    
             lineImpl(topLeftX, topLeftY, topRightX, topRightY, 1, LINE_OVERLAP_NONE);
             lineImpl(topRightX, topRightY, bottomRightX, bottomRightY, 1, LINE_OVERLAP_NONE);
             lineImpl(bottomRightX, bottomRightY, bottomLeftX, bottomLeftY, 1, LINE_OVERLAP_NONE);
             lineImpl(bottomLeftX, bottomLeftY, topLeftX, topLeftY, 1, LINE_OVERLAP_NONE);
             fillBetweenLines();
-            
+    
             int xAxisX   = topRightX - topLeftX;
             int xAxisY   = topRightY - topLeftY;
             int yAxisX   = bottomLeftX - topLeftX;
@@ -652,9 +654,9 @@ public class SoftwareRenderer extends Renderer
             {
                 int dx    = point.a() - topLeftX;
                 int dy    = point.b() - topLeftY;
-                int textX = ui + ((dx * xAxisX + dy * xAxisY) * uwi / xAxisLen);
-                int textY = vi + ((dx * yAxisX + dy * yAxisY) * vhi / yAxisLen);
-                int red   = this.font.getBitmap().getPixel(textX, textY).r();
+                int textX = u1i + ((dx * xAxisX + dy * xAxisY) * (u2i - u1i) / xAxisLen);
+                int textY = v1i + ((dx * yAxisX + dy * yAxisY) * (v2i - v1i) / yAxisLen);
+                int red   = this.font.getTexture().getPixel(textX, textY).r();
                 if (red > 0) pointImpl(point.a(), point.b(), SoftwareRenderer.COLOR.set(this.fill).scale((double) red / 255, true));
             }
             SoftwareRenderer.POINTS.clear();

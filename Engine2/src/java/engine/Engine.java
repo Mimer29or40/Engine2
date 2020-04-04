@@ -1308,6 +1308,22 @@ public class Engine
     }
     
     /**
+     * See {@link Renderer#enableBlend()}
+     */
+    public boolean enableDebug()
+    {
+        return Engine.renderer.enableDebug();
+    }
+    
+    /**
+     * See {@link Renderer#enableDebug(boolean)}
+     */
+    public void enableDebug(boolean enableDebug)
+    {
+        Engine.renderer.enableDebug(enableDebug);
+    }
+    
+    /**
      * See {@link Renderer#fill()}
      */
     public static Colorc fill()

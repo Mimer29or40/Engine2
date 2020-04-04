@@ -32,17 +32,20 @@ void main(void)
     vec2 v1 = p[2].xy - p[1].xy;
     vec2 v2 = p[3].xy - p[2].xy;
     
-    vec2 v0u = normalize(p[1].xy - p[0].xy);
-    vec2 v1u = normalize(p[2].xy - p[1].xy);
-    vec2 v2u = normalize(p[3].xy - p[2].xy);
+    if (length(v0) < 0.000001) v0 = v1;
+    if (length(v2) < 0.000001) v2 = v1;
+    
+    vec2 v0u = normalize(v0);
+    vec2 v1u = normalize(v1);
+    vec2 v2u = normalize(v2);
     
     vec2 n0u = vec2(-v0u.y, v0u.x);
     vec2 n1u = vec2(-v1u.y, v1u.x);
     vec2 n2u = vec2(-v2u.y, v2u.x);
     
-    vec2 n0 = thickness * vec2(-v0u.y, v0u.x);
-    vec2 n1 = thickness * vec2(-v1u.y, v1u.x);
-    vec2 n2 = thickness * vec2(-v2u.y, v2u.x);
+    vec2 n0 = thickness * n0u;
+    vec2 n1 = thickness * n1u;
+    vec2 n2 = thickness * n2u;
     
     vec2 t1 = normalize(v0u + v1u);
     vec2 t2 = normalize(v1u + v2u);

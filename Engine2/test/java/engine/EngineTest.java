@@ -13,7 +13,7 @@ import static engine.util.Util.map;
 public class EngineTest extends Engine
 {
     Logger  logger = new Logger();
-    int     state  = 3;
+    int     state  = 8;
     Texture texture;
     
     @Override
@@ -118,8 +118,9 @@ public class EngineTest extends Engine
                 if (keyboard().K2.held()) arcMode(ArcMode.OPEN);
                 if (keyboard().K3.held()) arcMode(ArcMode.CHORD);
                 if (keyboard().K4.held()) arcMode(ArcMode.PIE);
+                weight(5);
                 translate(screenWidth() / 2., screenHeight() / 2.);
-                arc(0, 0, 100, 100, 0, map(mouse().x(), 0, screenWidth() - 1, 0, 2.0 * Math.PI));
+                arc(0, 0, 300, 100, 0, map(mouse().x(), 0, screenWidth() - 1, 0, 2.0 * Math.PI));
                 break;
             case 9:
                 push();
@@ -147,6 +148,7 @@ public class EngineTest extends Engine
         text("Frame: " + frameCount(), 0, 0);
         if (keyboard().SPACE.down()) screenShot("screenshot" + frameCount());
         if (keyboard().S.down()) screenShot();
+        if (keyboard().D.down()) enableDebug(!enableDebug());
         if (keyboard().F.down()) window().fullscreen(!window().fullscreen());
         if (keyboard().V.down()) window().vsync(!window().vsync());
     
@@ -162,6 +164,8 @@ public class EngineTest extends Engine
         if (keyboard().F10.down()) state = 10;
         if (keyboard().F11.down()) state = 11;
         if (keyboard().F12.down()) state = 12;
+    
+        if (keyboard().ESCAPE.down()) stop();
     }
     
     @Override

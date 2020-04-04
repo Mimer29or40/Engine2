@@ -12,14 +12,12 @@ in vec2 position[1];
 
 void main(void)
 {
-    const int segments = max(16, min(int(max(radius.x, radius.y)) >> 1, 48));
+    int segments = max(16, min(int(max(radius.x, radius.y)) >> 1, 48));
+    float scale = 2 * PI / float(segments);
     
     for (int i = 0; i < segments; i++) {
-        float angle = ceil(i / 2.0) * 2.0 * PI / float(segments);
-        angle *= (i % 2 == 0 ? 1. : -1.);
-        
-        vec2 off = radius * vec2(cos(angle), sin(angle));
-        gl_Position = pv * vec4(position[0].xy + off, 0.0, 1.0);
+        float angle = ceil(i / 2.0) * scale * ((i & 1) == 0 ? 1 : -1);
+        gl_Position = pv * vec4(position[0].xy + radius * vec2(cos(angle), sin(angle)), 0.0, 1.0);
         EmitVertex();
     }
     EndPrimitive();

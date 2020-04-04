@@ -30,7 +30,8 @@ public class OpenGLRenderer extends Renderer
     protected final Shader polygonShader;
     protected final Shader ellipseShader;
     protected final Shader ellipseOutlineShader;
-    // protected final Shader arcShader;
+    protected final Shader arcShader;
+    protected final Shader arcOutlineShader;
     protected final Shader textureShader;
     protected final Shader textShader;
     
@@ -66,9 +67,10 @@ public class OpenGLRenderer extends Renderer
         this.polygonShader        = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/poly.geom").loadFragmentFile("shader/shared.frag").validate();
         this.ellipseShader        = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/ellipse.geom").loadFragmentFile("shader/shared.frag").validate();
         this.ellipseOutlineShader = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/ellipseOutline.geom").loadFragmentFile("shader/shared.frag").validate();
-        // this.arcShader            = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/arc.geom").loadFragmentFile("shader/shared.frag").validate();
-        this.textureShader = new Shader().loadVertexFile("shader/texture.vert").loadFragmentFile("shader/texture.frag").validate();
-        this.textShader    = new Shader().loadVertexFile("shader/texture.vert").loadFragmentFile("shader/text.frag").validate();
+        this.arcShader            = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/arc.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.arcOutlineShader     = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/arcOutline.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.textureShader        = new Shader().loadVertexFile("shader/texture.vert").loadFragmentFile("shader/texture.frag").validate();
+        this.textShader           = new Shader().loadVertexFile("shader/texture.vert").loadFragmentFile("shader/text.frag").validate();
         
         this.polygonBuffer = new GLFloatBuffer(GL_SHADER_STORAGE_BUFFER).bind().base(1).unbind();
     }
@@ -137,12 +139,14 @@ public class OpenGLRenderer extends Renderer
     public void start()
     {
         super.start();
-        
+    
         glBindFramebuffer(GL_FRAMEBUFFER, this.fbo);
         glViewport(0, 0, this.target.width(), this.target.height());
-        
+    
         this.view.translate(-screenWidth() / 2f, -screenHeight() / 2f, 0);
         this.proj.mul(this.view, this.pv);
+    
+        if (this.enableDebug) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
     
     /**
@@ -156,6 +160,8 @@ public class OpenGLRenderer extends Renderer
         super.finish();
     
         this.target.bind().download();
+    
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
     
     /**
@@ -608,7 +614,21 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void drawArc(double x, double y, double rx, double ry, double start, double stop)
     {
+        makeCurrent();
     
+        this.arcOutlineShader.bind();
+        this.arcOutlineShader.setMat4("pv", this.pv);
+        this.arcOutlineShader.setColor("color", this.stroke);
+        this.arcOutlineShader.setVec2("radius", (float) rx, (float) ry);
+        this.arcOutlineShader.setVec2("viewport", screenWidth(), screenHeight());
+        this.arcOutlineShader.setFloat("thickness", (float) this.weight);
+        this.arcOutlineShader.setVec2("bounds", (float) start, (float) stop);
+        this.arcOutlineShader.setInt("mode", this.arcMode.ordinal());
+    
+        this.vertexArray.bind();
+        this.vertexArray.reset();
+        this.vertexArray.add(new float[] {(float) x, (float) y}, 2);
+        this.vertexArray.draw(GL_POINTS);
     }
     
     /**
@@ -624,7 +644,19 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void fillArc(double x, double y, double rx, double ry, double start, double stop)
     {
+        makeCurrent();
     
+        this.arcShader.bind();
+        this.arcShader.setMat4("pv", this.pv);
+        this.arcShader.setColor("color", this.fill);
+        this.arcShader.setVec2("radius", (float) rx, (float) ry);
+        this.arcShader.setVec2("bounds", (float) start, (float) stop);
+        this.arcShader.setInt("mode", this.arcMode.ordinal());
+    
+        this.vertexArray.bind();
+        this.vertexArray.reset();
+        this.vertexArray.add(new float[] {(float) x, (float) y}, 2);
+        this.vertexArray.draw(GL_POINTS);
     }
     
     /**
@@ -695,7 +727,7 @@ public class OpenGLRenderer extends Renderer
         for (int i = 0, n = text.length(), index = 0; i < n; i++)
         {
             int i8 = i * 8;
-        
+    
             double x1 = vertices[i8] + x;
             double y1 = vertices[i8 + 1] + y;
             double x2 = vertices[i8 + 2];
@@ -704,7 +736,7 @@ public class OpenGLRenderer extends Renderer
             double v1 = vertices[i8 + 5];
             double u2 = vertices[i8 + 6];
             double v2 = vertices[i8 + 7];
-        
+    
             data[index++] = (float) x1;
             data[index++] = (float) y1;
             data[index++] = (float) u1;

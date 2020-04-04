@@ -60,6 +60,7 @@ public abstract class Renderer
     protected final Texture target;
     
     protected boolean enableBlend = false;
+    protected boolean enableDebug = false;
     
     protected final Color        fill  = new Color(Renderer.DEFAULT_FILL);
     protected final Stack<Color> fills = new Stack<>();
@@ -119,6 +120,24 @@ public abstract class Renderer
     public void enableBlend(boolean enableBlend)
     {
         this.enableBlend = enableBlend;
+    }
+    
+    /**
+     * @return If debug is enabled for the renderer.
+     */
+    public boolean enableDebug()
+    {
+        return this.enableDebug;
+    }
+    
+    /**
+     * Sets if the renderer is in debug mode.
+     *
+     * @param enableDebug If debug is enabled.
+     */
+    public void enableDebug(boolean enableDebug)
+    {
+        this.enableDebug = enableDebug;
     }
     
     /**

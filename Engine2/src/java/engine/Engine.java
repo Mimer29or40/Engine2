@@ -288,6 +288,7 @@ public class Engine
                                 
                                 if (Engine.PROFILER.enabled && Engine.printFrame != null)
                                 {
+                                    // TODO - Add profiler output to screen with stb_easy_font
                                     String parent = Engine.printFrame.equals("") ? null : Engine.printFrame;
                                     println(Engine.PROFILER.getFormattedData(parent));
                                     Engine.printFrame = null;

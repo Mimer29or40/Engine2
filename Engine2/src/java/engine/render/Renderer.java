@@ -5,16 +5,15 @@ import engine.color.Colorc;
 import engine.util.Logger;
 import org.joml.Matrix4f;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
+import java.util.function.Supplier;
 
 import static engine.Engine.*;
 
 /**
  * Abstract Renderer to draw things to a texture.
  */
+@SuppressWarnings("unused")
 public abstract class Renderer
 {
     private static final Logger LOGGER = new Logger();
@@ -29,6 +28,13 @@ public abstract class Renderer
     private static final TextAlign   DEFAULT_TEXT_ALIGN   = TextAlign.TOP_LEFT;
     
     protected static final Color CLEAR = new Color();
+    
+    private static final HashMap<String, Supplier<Renderer>> RENDERERS = new HashMap<>();
+    
+    public static void registerRenderer(String renderer, Supplier<Renderer> supplier)
+    {
+        Renderer.RENDERERS.put(renderer, supplier);
+    }
     
     /**
      * Gets a new renderer instance for the target texture based on the string passed in.
@@ -54,6 +60,7 @@ public abstract class Renderer
                 return new PixelRenderer(target);
             default:
                 // TODO - Check for registered renderers?
+                if (Renderer.RENDERERS.containsKey(renderer)) return Renderer.RENDERERS.get(renderer).get();
         }
         Renderer.LOGGER.warning("Could not parse renderer. Using Software Renderer");
         return new SoftwareRenderer(target);
@@ -1432,10 +1439,10 @@ public abstract class Renderer
         if (this.fill.a() > 0)
         {
             List<String> lines;
-        
+    
             double x = a, y = b;
             double w = 0, h = 0;
-        
+    
             if (c > 0 && d > 0)
             {
                 switch (this.rectMode)
@@ -1497,9 +1504,9 @@ public abstract class Renderer
             {
                 lines = Arrays.asList(text.split("\n"));
             }
-        
+    
             double actualHeight = lines.size() * this.font.getSize();
-        
+    
             int    hPos    = this.textAlign.getHorizontal();
             int    vPos    = this.textAlign.getVertical();
             double yOffset = vPos == -1 ? 0 : vPos == 0 ? 0.5 * (h - actualHeight) : h - actualHeight;
@@ -1507,9 +1514,9 @@ public abstract class Renderer
             {
                 double lineWidth = this.font.getStringWidth(line);
                 double xOffset   = hPos == -1 ? 0 : hPos == 0 ? 0.5 * (w - lineWidth) : w - lineWidth;
-            
+    
                 drawText(line, x + xOffset, y + yOffset);
-            
+    
                 yOffset += this.font.getSize();
             }
         }

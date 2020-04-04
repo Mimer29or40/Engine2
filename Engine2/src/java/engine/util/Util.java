@@ -156,7 +156,7 @@ public class Util
      * @param values The double values.
      * @return The pair of number.
      */
-    public static PairI getFormatNumbers(double[] values)
+    public static PairI getFormatNumbers(double... values)
     {
         int numI = 1, numD = 0;
         for (double val : values)
@@ -178,9 +178,8 @@ public class Util
      */
     public static String format(double x, int numI, int numD)
     {
-        // TODO - Negative Numbers
         String I  = String.valueOf((int) x);
-        String D  = numD > 0 ? String.valueOf((int) Math.round((x - (int) x) * Math.pow(10, numD))) : "";
+        String D  = numD > 0 ? String.valueOf((int) Math.round(Math.abs(x - (int) x) * Math.pow(10, numD))) : "";
         String fI = numI > I.length() ? "%" + (numI - I.length()) + "s" : "%s";
         String fD = numD > D.length() ? "%" + (numD - D.length()) + "s" : "%s";
         return String.format(fI + "%s%s%s" + fD, "", I, numD > 0 ? "." : "", D, "");
@@ -210,10 +209,10 @@ public class Util
     public static String join(Collection<?> collection, String between, String prefix, String suffix)
     {
         if (collection.size() == 0) return "";
-        Object[]      array = collection.toArray();
-        StringBuilder b     = new StringBuilder(prefix);
-        b.append(array[0]);
-        for (int i = 1, n = array.length; i < n; i++) b.append(between).append(array[i]);
+        Object[]      a = collection.toArray();
+        StringBuilder b = new StringBuilder(prefix);
+        b.append(a[0]);
+        for (int i = 1, n = a.length; i < n; i++) b.append(between).append(a[i]);
         return b.append(suffix).toString();
     }
     

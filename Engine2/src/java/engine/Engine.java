@@ -181,7 +181,7 @@ public class Engine
                                 {
                                     Engine.PROFILER.startSection("Events");
                                     {
-                                        Events.clear(); // TODO - Have a way to have events persist and be consumable.
+                                        Events.clear();
                                         
                                         Engine.PROFILER.startSection("Mouse Events");
                                         {
@@ -2044,7 +2044,7 @@ public class Engine
     }
     
     /**
-     * This method is called once the engine's environment is full setup. This is only called once.
+     * This method is called once the engine's environment is fully setup. This is only called once.
      * <p>
      * This is where you call {@link #size} to enable rendering. At which point you can create textures and render to them.
      */

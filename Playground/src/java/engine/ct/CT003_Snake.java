@@ -8,14 +8,15 @@ import java.util.ArrayList;
 
 import static engine.util.Util.println;
 
+@SuppressWarnings("unused")
 public class CT003_Snake extends Engine
 {
     class Snake
     {
-        Vector2i            pos  = new Vector2i(0, 0);
-        Vector2i            dir  = new Vector2i(1, 0);
-        int                 total;
-        ArrayList<Vector2i> tail = new ArrayList<>();
+        final Vector2i pos = new Vector2i(0, 0);
+        final Vector2i dir = new Vector2i(1, 0);
+        int total;
+        final ArrayList<Vector2i> tail = new ArrayList<>();
         
         boolean eat(Vector2ic pos)
         {
@@ -70,12 +71,12 @@ public class CT003_Snake extends Engine
     
     void pickLocation()
     {
-        food = new Vector2i(nextInt(screenWidth() / scale) * scale, nextInt(screenHeight() / scale) * scale);
+        food.set(nextInt(screenWidth() / scale) * scale, nextInt(screenHeight() / scale) * scale);
     }
     
-    int      scale = 20;
-    Snake    snake = new Snake();
-    Vector2i food  = new Vector2i();
+    final int      scale = 20;
+    final Snake    snake = new Snake();
+    final Vector2i food  = new Vector2i();
     
     @Override
     protected void setup()

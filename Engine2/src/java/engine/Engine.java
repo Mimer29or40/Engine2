@@ -26,6 +26,7 @@ import static engine.util.Util.println;
 import static org.lwjgl.opengl.GL43.*;
 import static org.lwjgl.stb.STBImageWrite.stbi_write_png;
 
+@SuppressWarnings({"EmptyMethod", "unused"})
 public class Engine
 {
     private static final String   TITLE    = "Engine - %s - FPS(%s) SPF(Avg: %s us, Min: %s us, Max: %s us)";
@@ -213,7 +214,7 @@ public class Engine
                                     {
                                         for (String name : Engine.extensions.keySet())
                                         {
-                                            if (Engine.extensions.get(name).isEnabled())
+                                            if (Engine.extensions.get(name).enabled())
                                             {
                                                 Engine.PROFILER.startSection(name);
                                                 {
@@ -239,7 +240,7 @@ public class Engine
                                     {
                                         for (String name : Engine.extensions.keySet())
                                         {
-                                            if (Engine.extensions.get(name).isEnabled())
+                                            if (Engine.extensions.get(name).enabled())
                                             {
                                                 Engine.PROFILER.startSection(name);
                                                 {
@@ -276,7 +277,7 @@ public class Engine
                                         Engine.window.swap();
                                     }
                                     Engine.PROFILER.endSection();
-    
+                                    
                                     frameTime = nanoseconds() - t;
                                     minTime   = Math.min(minTime, frameTime);
                                     maxTime   = Math.max(maxTime, frameTime);
@@ -297,17 +298,17 @@ public class Engine
                                 if (Engine.screenshot != null)
                                 {
                                     String fileName = Engine.screenshot + (!Engine.screenshot.endsWith(".png") ? ".png" : "");
-    
+                                    
                                     int w = Engine.window.frameBufferWidth();
                                     int h = Engine.window.frameBufferHeight();
                                     int c = 3;
-    
+                                    
                                     int stride = w * c;
-    
+                                    
                                     ByteBuffer buf = BufferUtils.createByteBuffer(w * h * c);
                                     glReadBuffer(GL_FRONT);
                                     glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buf);
-    
+                                    
                                     byte[] tmp1 = new byte[stride], tmp2 = new byte[stride];
                                     for (int i = 0, n = h >> 1, col1, col2; i < n; i++)
                                     {
@@ -318,7 +319,7 @@ public class Engine
                                         buf.put(col1, tmp2);
                                         buf.put(col2, tmp1);
                                     }
-    
+                                    
                                     if (!stbi_write_png(fileName, w, h, c, buf, stride)) Engine.LOGGER.severe("Could not take screen shot");
                                     
                                     Engine.screenshot = null;
@@ -349,7 +350,7 @@ public class Engine
                         Engine.running = false;
                     }
                 }, "render").start();
-    
+                
                 if (Engine.window != null)
                 {
                     while (Engine.running)
@@ -416,26 +417,26 @@ public class Engine
         
         if (Engine.screenSize.lengthSquared() == 0) throw new RuntimeException("Screen dimension must be > 0");
         if (Engine.pixelSize.lengthSquared() == 0) throw new RuntimeException("Pixel dimension must be > 0");
-    
+        
         Engine.mouse    = new Mouse();
         Engine.keyboard = new Keyboard();
         Engine.window   = new Window(Engine.mouse, Engine.keyboard);
-    
+        
         Engine.window.makeCurrent();
-    
+        
         GL.createCapabilities();
-    
+        
         Engine.blend = new Blend();
-    
+        
         Engine.target = new Texture(screenW, screenH);
-    
+        
         Engine.shader = new Shader().loadVertexFile("shader/pixel.vert").loadFragmentFile("shader/pixel.frag").validate();
-    
+        
         glEnable(GL_TEXTURE_2D);
-    
+        
         Engine.vertexArray = new VertexArray().bind();
         Engine.vertexArray.add(new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, -1.0F, 1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, 2);
-    
+        
         Engine.renderer = Renderer.getRenderer(Engine.target, renderer);
     }
     

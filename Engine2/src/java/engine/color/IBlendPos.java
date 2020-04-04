@@ -3,6 +3,7 @@ package engine.color;
 /**
  * An interface to provide function to blend two colors together based on the position of the pixel in a texture and store the results in a {@code Color} instance.
  */
+@SuppressWarnings("unused")
 public interface IBlendPos extends IBlend
 {
     /**

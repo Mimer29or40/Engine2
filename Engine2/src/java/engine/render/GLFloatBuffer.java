@@ -1,6 +1,5 @@
 package engine.render;
 
-import static org.lwjgl.opengl.GL15.glGetBufferSubData;
 import static org.lwjgl.opengl.GL46.*;
 
 /**

@@ -5,6 +5,7 @@ import engine.color.Colorc;
 /**
  * Non-transformable renderer meant for small canvases.
  */
+@SuppressWarnings("unused")
 public class PixelRenderer extends Renderer
 {
     protected PixelRenderer(Texture target)
@@ -354,8 +355,8 @@ public class PixelRenderer extends Renderer
      * @param y     The center y coordinate of the ellipse.
      * @param rx    The radius of the ellipse along the x axis.
      * @param ry    The radius of the ellipse along the y axis.
-     * @param start
-     * @param stop
+     * @param start The start angle in radians
+     * @param stop  The end angle in radians
      */
     @Override
     public void fillArc(double x, double y, double rx, double ry, double start, double stop)

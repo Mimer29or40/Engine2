@@ -4,6 +4,7 @@ import engine.event.*;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+@SuppressWarnings("unused")
 public class Keyboard extends Device<Keyboard.Key>
 {
     public final Key NONE = new Key("NONE", GLFW_KEY_UNKNOWN, 0, 0);

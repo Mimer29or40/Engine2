@@ -13,7 +13,6 @@ import static engine.Engine.*;
 /**
  * Abstract Renderer to draw things to a texture.
  */
-@SuppressWarnings("unused")
 public abstract class Renderer
 {
     private static final Logger LOGGER = new Logger();
@@ -31,6 +30,7 @@ public abstract class Renderer
     
     private static final HashMap<String, Supplier<Renderer>> RENDERERS = new HashMap<>();
     
+    @SuppressWarnings("unused")
     public static void registerRenderer(String renderer, Supplier<Renderer> supplier)
     {
         Renderer.RENDERERS.put(renderer, supplier);
@@ -59,7 +59,6 @@ public abstract class Renderer
                 Renderer.LOGGER.fine("Using Pixel Renderer");
                 return new PixelRenderer(target);
             default:
-                // TODO - Check for registered renderers?
                 if (Renderer.RENDERERS.containsKey(renderer)) return Renderer.RENDERERS.get(renderer).get();
         }
         Renderer.LOGGER.warning("Could not parse renderer. Using Software Renderer");
@@ -98,7 +97,7 @@ public abstract class Renderer
     protected final Matrix4f        view  = new Matrix4f();
     protected final Stack<Matrix4f> views = new Stack<>();
     
-    protected int[] pixels;
+    protected final int[] pixels;
     
     private boolean drawing = false;
     
@@ -1231,10 +1230,12 @@ public abstract class Renderer
      * <p>
      * The coordinates passed in will be transformed by the view matrix
      *
-     * @param x  The center x coordinate of the ellipse.
-     * @param y  The center y coordinate of the ellipse.
-     * @param rx The radius of the ellipse along the x axis.
-     * @param ry The radius of the ellipse along the y axis.
+     * @param x     The center x coordinate of the ellipse.
+     * @param y     The center y coordinate of the ellipse.
+     * @param rx    The radius of the ellipse along the x axis.
+     * @param ry    The radius of the ellipse along the y axis.
+     * @param start The start angle in radians
+     * @param stop  The end angle in radians
      */
     public abstract void fillArc(double x, double y, double rx, double ry, double start, double stop);
     

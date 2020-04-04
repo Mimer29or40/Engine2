@@ -338,18 +338,18 @@ public class Color implements Colorc
      * Blends the supplied <code>(r, g, b, a)</code> (source) with <code>this</code> (backdrop) according
      * to the blend function and stores these values in <code>dest</code>.
      *
-     * @param r    the r component of source
-     * @param g    the g component of source
-     * @param b    the b component of source
-     * @param a    the a component of source
-     * @param func the function to blend the colors
-     * @param dest will hold the result
+     * @param r      the r component of source
+     * @param g      the g component of source
+     * @param b      the b component of source
+     * @param a      the a component of source
+     * @param func   the function to blend the colors
+     * @param result will hold the result
      * @return dest
      */
     @Override
-    public Color blend(int r, int g, int b, int a, IBlend func, Color dest)
+    public Color blend(int r, int g, int b, int a, IBlend func, Color result)
     {
-        return null;
+        return func.blend(this, r, g, b, a, result);
     }
     
     /**
@@ -535,18 +535,18 @@ public class Color implements Colorc
     /**
      * Scales this color and stores the result in <code>dest</code>.
      *
-     * @param x     scale
-     * @param alpha flag to scale the alpha (default: false)
-     * @param dest  will hold the result
+     * @param x      scale
+     * @param alpha  flag to scale the alpha (default: false)
+     * @param result will hold the result
      * @return dest
      */
-    public Color scale(double x, boolean alpha, Color dest)
+    public Color scale(double x, boolean alpha, Color result)
     {
-        dest.r((int) (r() * x));
-        dest.g((int) (g() * x));
-        dest.b((int) (b() * x));
-        if (alpha) dest.a((int) (a() * x));
-        return dest;
+        result.r((int) (r() * x));
+        result.g((int) (g() * x));
+        result.b((int) (b() * x));
+        if (alpha) result.a((int) (a() * x));
+        return result;
     }
     
     /**
@@ -600,10 +600,10 @@ public class Color implements Colorc
      * Returns a color that is brighter than this by a factor.
      *
      * @param factor the factor
-     * @param dest   the dest
+     * @param result the dest
      * @return dest
      */
-    public Color brighter(double factor, Color dest)
+    public Color brighter(double factor, Color result)
     {
         int r = r();
         int g = g();
@@ -611,13 +611,13 @@ public class Color implements Colorc
         int a = a();
         
         int i = (int) (1.0 / (1.0 - factor));
-        if (r == 0 && g == 0 && b == 0) return dest.set(i, i, i, a);
+        if (r == 0 && g == 0 && b == 0) return result.set(i, i, i, a);
         
         if (0 < r && r < i) r = i;
         if (0 < g && g < i) g = i;
         if (0 < b && b < i) b = i;
         
-        return dest.set(Math.min((int) (r / factor), 255), Math.min((int) (g / factor), 255), Math.min((int) (b / factor), 255), a);
+        return result.set(Math.min((int) (r / factor), 255), Math.min((int) (g / factor), 255), Math.min((int) (b / factor), 255), a);
     }
     
     /**
@@ -635,12 +635,12 @@ public class Color implements Colorc
      * Returns a color that is darker than this by a factor.
      *
      * @param factor the factor
-     * @param dest   the dest
+     * @param result the dest
      * @return dest
      */
-    public Color darker(double factor, Color dest)
+    public Color darker(double factor, Color result)
     {
-        return dest.set(Math.max((int) (r() * factor), 0), Math.max((int) (g() * factor), 0), Math.max((int) (b() * factor), 0), a());
+        return result.set(Math.max((int) (r() * factor), 0), Math.max((int) (g() * factor), 0), Math.max((int) (b() * factor), 0), a());
     }
     
     /**

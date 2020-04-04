@@ -11,13 +11,13 @@ import java.nio.file.Files;
 import java.util.HashMap;
 
 import static engine.util.Util.getPath;
-import static org.lwjgl.opengl.GL11.GL_TRUE;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
 
 /**
  * A shader that can be used to render things.
  */
+@SuppressWarnings("unused")
 public class Shader
 {
     private final int id;
@@ -177,7 +177,7 @@ public class Shader
     }
     
     /**
-     * Sets a flaot uniform in the shader.
+     * Sets a float uniform in the shader.
      *
      * @param name  The uniform name.
      * @param value The value.

@@ -112,78 +112,78 @@ public interface Colorc
     
     /**
      * Blends the supplied <code>(r, g, b, a)</code> (source) with <code>this</code> (backdrop) according
-     * to the blend function and stores these values in <code>dest</code>.
+     * to the blend function and stores these values in <code>result</code>.
      *
-     * @param r    the r component of source
-     * @param g    the g component of source
-     * @param b    the b component of source
-     * @param a    the a component of source
-     * @param func the function to blend the colors
-     * @param dest will hold the result
-     * @return dest
+     * @param r      the r component of source
+     * @param g      the g component of source
+     * @param b      the b component of source
+     * @param a      the a component of source
+     * @param func   the function to blend the colors
+     * @param result will hold the result
+     * @return result
      */
-    Color blend(int r, int g, int b, int a, IBlend func, Color dest);
+    Color blend(int r, int g, int b, int a, IBlend func, Color result);
     
     /**
      * Blends the supplied <code>(r, g, b, 255)</code> (source) with <code>this</code> (backdrop) according
-     * to the blend function and stores these values in <code>dest</code>. Source a is assumed to
+     * to the blend function and stores these values in <code>result</code>. Source a is assumed to
      * be 255.
      *
-     * @param r    the r component of source
-     * @param g    the g component of source
-     * @param b    the b component of source
-     * @param func the function to blend the colors
-     * @param dest will hold the result
-     * @return dest
+     * @param r      the r component of source
+     * @param g      the g component of source
+     * @param b      the b component of source
+     * @param func   the function to blend the colors
+     * @param result will hold the result
+     * @return result
      */
-    default Color blend(int r, int g, int b, IBlend func, Color dest)
+    default Color blend(int r, int g, int b, IBlend func, Color result)
     {
-        return blend(r, g, b, 255, func, dest);
+        return blend(r, g, b, 255, func, result);
     }
     
     /**
      * Blends the supplied <code>(g, g, g, a)</code> (source) with <code>this</code> (backdrop)
-     * according to the blend function and stores these values in <code>dest</code>. Source a is assumed to
+     * according to the blend function and stores these values in <code>result</code>. Source a is assumed to
      * be 255.
      *
-     * @param grey the r, g, and b component of source
-     * @param a    the a component of source
-     * @param func the function to blend the colors
-     * @param dest will hold the result
-     * @return dest
+     * @param grey   the r, g, and b component of source
+     * @param a      the a component of source
+     * @param func   the function to blend the colors
+     * @param result will hold the result
+     * @return result
      */
-    default Color blend(int grey, int a, IBlend func, Color dest)
+    default Color blend(int grey, int a, IBlend func, Color result)
     {
-        return blend(grey, grey, grey, a, func, dest);
+        return blend(grey, grey, grey, a, func, result);
     }
     
     /**
      * Blends the supplied <code>(g, g, g, 255)</code> (source) with <code>this</code> (backdrop)
-     * according to the blend function and stores these values in <code>dest</code>. Source a is assumed to
+     * according to the blend function and stores these values in <code>result</code>. Source a is assumed to
      * be 255.
      *
-     * @param grey the r, g, and b component of source
-     * @param func the function to blend the colors
-     * @param dest will hold the result
-     * @return dest
+     * @param grey   the r, g, and b component of source
+     * @param func   the function to blend the colors
+     * @param result will hold the result
+     * @return result
      */
-    default Color blend(int grey, IBlend func, Color dest)
+    default Color blend(int grey, IBlend func, Color result)
     {
-        return blend(grey, grey, grey, 255, func, dest);
+        return blend(grey, grey, grey, 255, func, result);
     }
     
     /**
      * Blends the supplied color (source) with <code>this</code> (backdrop) according to the blend
-     * function and stores these values in <code>dest</code>.
+     * function and stores these values in <code>result</code>.
      *
      * @param source the source color
      * @param func   the function to blend the colors
-     * @param dest   will hold the result
-     * @return dest
+     * @param result will hold the result
+     * @return result
      */
-    default Color blend(Colorc source, IBlend func, Color dest)
+    default Color blend(Colorc source, IBlend func, Color result)
     {
-        return blend(source.r(), source.g(), source.b(), source.a(), func, dest);
+        return blend(source.r(), source.g(), source.b(), source.a(), func, result);
     }
     
     /**
@@ -257,26 +257,26 @@ public interface Colorc
     Color negate(Color dest);
     
     /**
-     * Scales this color and stores the result in <code>dest</code>.
+     * Scales this color and stores the result in <code>result</code>.
      *
-     * @param x    scale
-     * @param dest will hold the result
-     * @return dest
+     * @param x      scale
+     * @param result will hold the result
+     * @return result
      */
-    default Color scale(double x, Color dest)
+    default Color scale(double x, Color result)
     {
-        return scale(x, false, dest);
+        return scale(x, false, result);
     }
     
     /**
-     * Scales this color and stores the result in <code>dest</code>.
+     * Scales this color and stores the result in <code>result</code>.
      *
-     * @param x     scale
-     * @param alpha flag to scale the alpha (default: false)
-     * @param dest  will hold the result
-     * @return dest
+     * @param x      scale
+     * @param alpha  flag to scale the alpha (default: false)
+     * @param result will hold the result
+     * @return result
      */
-    Color scale(double x, boolean alpha, Color dest);
+    Color scale(double x, boolean alpha, Color result);
     
     /**
      * Blend this color with another color and store the result in <code>result</code>.
@@ -304,17 +304,17 @@ public interface Colorc
      * Returns a color that is brighter than this by a factor.
      *
      * @param factor the factor
-     * @param dest   the dest
-     * @return dest
+     * @param result the result
+     * @return result
      */
-    Color brighter(double factor, Color dest);
+    Color brighter(double factor, Color result);
     
     /**
      * Returns a color that is darker than this by a factor.
      *
      * @param factor the factor
-     * @param dest   the dest
-     * @return dest
+     * @param result the result
+     * @return result
      */
-    Color darker(double factor, Color dest);
+    Color darker(double factor, Color result);
 }

@@ -2,32 +2,33 @@ package engine;
 
 import engine.util.Profiler;
 
+@SuppressWarnings("unused")
 public abstract class Extension
 {
     protected boolean enabled = true;
     
     /**
-     * Enables this extension
-     */
-    public void enable()
-    {
-        this.enabled = true;
-    }
-    
-    /**
-     * Disables this extension
-     */
-    public void disable()
-    {
-        this.enabled = false;
-    }
-    
-    /**
      * @return If this extension is enabled.
      */
-    public boolean isEnabled()
+    public boolean enabled()
     {
         return this.enabled;
+    }
+    
+    /**
+     * Sets the extension enabled or not.
+     */
+    public void enabled(boolean enabled)
+    {
+        this.enabled = enabled;
+    }
+    
+    /**
+     * Toggles if the extension is enabled or not.
+     */
+    public void toggleEnabled()
+    {
+        this.enabled = !this.enabled;
     }
     
     /**

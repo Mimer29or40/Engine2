@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+@SuppressWarnings("unused")
 public class Util
 {
     private static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("uuuu-MMM-dd HH.mm.ss.SSS");

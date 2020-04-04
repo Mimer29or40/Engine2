@@ -5,6 +5,7 @@ import engine.input.Keyboard;
 /**
  * This event is generated when ever a key is pressed then released quickly, with the key that was pressed and if it was a double press or not.
  */
+@SuppressWarnings("unused")
 public class EventKeyboardKeyPressed extends Event
 {
     public EventKeyboardKeyPressed(Object[] values)

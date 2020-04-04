@@ -11,6 +11,7 @@ import java.util.function.Consumer;
  * <p>
  * Events do not get consumed, so they can be processed more than once.
  */
+@SuppressWarnings("unused")
 public class Events
 {
     public static final EventGroup WINDOW_EVENTS   = new EventGroup(EventWindowFocused.class,

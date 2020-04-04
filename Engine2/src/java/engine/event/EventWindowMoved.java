@@ -6,6 +6,7 @@ import org.joml.Vector2ic;
 /**
  * This event is generated whenever the window is moved, with the current window position.
  */
+@SuppressWarnings("unused")
 public class EventWindowMoved extends Event
 {
     public EventWindowMoved(Object[] values)

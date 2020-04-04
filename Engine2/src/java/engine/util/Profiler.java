@@ -101,7 +101,7 @@ public class Profiler
     }
     
     /**
-     * Ends a section and records the time since {@link #startSection} was called. Must be paired with {@link #endSection()}.
+     * Ends a section and records the time since {@link #startSection} was called. Must be paired with {@link #startSection}.
      */
     public void endSection()
     {

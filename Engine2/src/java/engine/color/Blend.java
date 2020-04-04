@@ -6,6 +6,7 @@ import static org.lwjgl.opengl.GL14.*;
  * An object to blend colors in a similar way to OpenGL.
  * The blend functions happens in integer space because I wanted repeatability.
  */
+@SuppressWarnings("unused")
 public class Blend implements IBlend
 {
     private Func     srcFactor;

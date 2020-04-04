@@ -18,6 +18,7 @@ import static org.lwjgl.stb.STBTruetype.*;
 /**
  * This class turns a TrueType Font into a texture that can be used to render text to the screen.
  */
+@SuppressWarnings("unused")
 public class Font
 {
     private static final HashMap<String, ByteBuffer> FILE_CACHE = new HashMap<>();

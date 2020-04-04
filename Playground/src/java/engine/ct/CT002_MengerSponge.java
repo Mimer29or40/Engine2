@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import static engine.util.Util.sum;
 
+@SuppressWarnings("unused")
 public class CT002_MengerSponge extends Engine
 {
     final int[] xRange = new int[] {-1, 0, 1};
@@ -57,8 +58,6 @@ public class CT002_MengerSponge extends Engine
         }
     }
     
-    double a = 0;
-    
     ArrayList<Box> sponge = new ArrayList<>();
     
     @Override
@@ -90,8 +89,6 @@ public class CT002_MengerSponge extends Engine
         {
             box.show();
         }
-        
-        a += 0.01;
     }
     
     @Override

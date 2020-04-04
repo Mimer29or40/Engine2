@@ -1,13 +1,14 @@
 package engine.event;
 
+import engine.input.Mouse;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
-import engine.input.Mouse;
 
 /**
  * This event is generated when ever a mouse button is held and the mouse is moved, with the
  * held button, the start of the drag, the current mouse position and the relative mouse movement.
  */
+@SuppressWarnings("unused")
 public class EventMouseButtonDragged extends Event
 {
     public EventMouseButtonDragged(Object[] values)

@@ -12,6 +12,7 @@ import static org.lwjgl.opengl.GL43.*;
 /**
  * Renderer using OpenGL on the GPU.
  */
+@SuppressWarnings("unused")
 public class OpenGLRenderer extends Renderer
 {
     private static final Logger LOGGER = new Logger();
@@ -636,10 +637,12 @@ public class OpenGLRenderer extends Renderer
      * <p>
      * The coordinates passed in will be transformed by the view matrix
      *
-     * @param x  The center x coordinate of the ellipse.
-     * @param y  The center y coordinate of the ellipse.
-     * @param rx The radius of the ellipse along the x axis.
-     * @param ry The radius of the ellipse along the y axis.
+     * @param x     The center x coordinate of the ellipse.
+     * @param y     The center y coordinate of the ellipse.
+     * @param rx    The radius of the ellipse along the x axis.
+     * @param ry    The radius of the ellipse along the y axis.
+     * @param start The start angle in radians
+     * @param stop  The end angle in radians
      */
     @Override
     public void fillArc(double x, double y, double rx, double ry, double start, double stop)

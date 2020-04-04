@@ -3,6 +3,7 @@ package engine.event;
 /**
  * This event is generated when ever the mouse enters or exits the window, with if its in window or not.
  */
+@SuppressWarnings("unused")
 public class EventMouseEntered extends Event
 {
     public EventMouseEntered(Object[] values)

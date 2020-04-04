@@ -6,6 +6,7 @@ import org.joml.Vector2ic;
 /**
  * This event is generated whenever the window is resized, with the current window size.
  */
+@SuppressWarnings("unused")
 public class EventWindowResized extends Event
 {
     public EventWindowResized(Object[] values)

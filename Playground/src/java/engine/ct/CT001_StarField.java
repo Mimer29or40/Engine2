@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import static engine.util.Util.map;
 
+@SuppressWarnings("unused")
 public class CT001_StarField extends Engine
 {
     final class Star
@@ -21,7 +22,7 @@ public class CT001_StarField extends Engine
             prevZ = pos.z = nextDouble(screenWidth());
         }
         
-        void update(double elapsedTime)
+        void update()
         {
             pos.z -= speed;
             if (pos.z < 1)
@@ -35,37 +36,37 @@ public class CT001_StarField extends Engine
         void show()
         {
             double alpha = map(pos.z, 0, screenWidth(), 1, 0.1);
-    
+            
             fill(255, alpha);
             noStroke();
-    
+            
             double sx = map(pos.x / pos.z, 0, 1, 0, screenWidth() / 2.);
             double sy = map(pos.y / pos.z, 0, 1, 0, screenHeight() / 2.);
             double r  = map(pos.z, 0, screenWidth(), 8, 0);
             circle(sx, sy, r);
-    
+            
             stroke(255, alpha);
             weight(r);
-    
+            
             double px = map(pos.x / prevZ, 0, 1, 0, screenWidth() / 2.);
             double py = map(pos.y / prevZ, 0, 1, 0, screenHeight() / 2.);
             line(px, py, sx, sy);
-    
+            
             prevZ = pos.z;
         }
     }
     
     double speed = 0;
-    ArrayList<Star> stars = new ArrayList<>();
+    final ArrayList<Star> stars = new ArrayList<>();
     
     @Override
     protected void setup()
     {
         size(400, 400, 1, 1, OPENGL);
-    
+        
         frameRate(60);
         enableBlend(true);
-    
+        
         for (int i = 0; i < 100; i++) stars.add(new Star());
     }
     
@@ -80,7 +81,7 @@ public class CT001_StarField extends Engine
         
         for (Star s : stars)
         {
-            s.update(elapsedTime);
+            s.update();
             s.show();
         }
     }

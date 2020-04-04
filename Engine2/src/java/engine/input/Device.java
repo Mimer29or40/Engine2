@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+@SuppressWarnings("unused")
 public abstract class Device<I extends Device.Input>
 {
     private static final Logger LOGGER = new Logger();

@@ -6,6 +6,7 @@ import org.joml.Vector2ic;
 /**
  * This event is generated whenever the window's frame buffer is resized, with the current frame buffer size.
  */
+@SuppressWarnings("unused")
 public class EventFrameBufferResized extends Event
 {
     public EventFrameBufferResized(Object[] values)

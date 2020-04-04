@@ -13,8 +13,9 @@ import java.util.HashSet;
 import static engine.util.Util.*;
 
 /**
- * Renderer using the CPU. This should only be used for small textures. Or ones that dont change often.
+ * Renderer using the CPU. This should only be used for small textures. Or ones that don't change often.
  */
+@SuppressWarnings("unused")
 public class SoftwareRenderer extends Renderer
 {
     private static final byte LINE_OVERLAP_NONE  = 0b00;
@@ -133,8 +134,8 @@ public class SoftwareRenderer extends Renderer
         
         PairD p3  = transform(x3, y3);
         int   x3i = (int) round(p3.a()), y3i = (int) round(p3.b());
-        
-        int width = (int) this.weight;
+    
+        // int width = (int) this.weight;
         
         // TODO - Have a width
         // TODO - http://members.chello.at/~easyfilter/bresenham.html
@@ -491,10 +492,12 @@ public class SoftwareRenderer extends Renderer
      * <p>
      * The coordinates passed in will be transformed by the view matrix
      *
-     * @param x  The center x coordinate of the ellipse.
-     * @param y  The center y coordinate of the ellipse.
-     * @param rx The radius of the ellipse along the x axis.
-     * @param ry The radius of the ellipse along the y axis.
+     * @param x     The center x coordinate of the ellipse.
+     * @param y     The center y coordinate of the ellipse.
+     * @param rx    The radius of the ellipse along the x axis.
+     * @param ry    The radius of the ellipse along the y axis.
+     * @param start The start angle in radians
+     * @param stop  The end angle in radians
      */
     @Override
     public void fillArc(double x, double y, double rx, double ry, double start, double stop)

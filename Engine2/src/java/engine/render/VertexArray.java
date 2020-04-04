@@ -3,17 +3,13 @@ package engine.render;
 import engine.util.Util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL11.GL_INT;
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
 /**
  * A wrapper class for OpenGL's vertex arrays. This class adds helper functions that make it easy to send data to the buffers.
  */
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class VertexArray
 {
     private final int                vao;

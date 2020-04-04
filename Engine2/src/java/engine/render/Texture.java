@@ -19,6 +19,7 @@ import static org.lwjgl.stb.STBImageWrite.stbi_write_png;
 /**
  * A texture that can be drawn to or used to draw to another texture. These can only be created after a window is created.
  */
+@SuppressWarnings({"UnusedReturnValue", "unused"})
 public class Texture
 {
     protected static final Logger LOGGER = new Logger();

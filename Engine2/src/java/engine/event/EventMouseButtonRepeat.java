@@ -1,12 +1,13 @@
 package engine.event;
 
+import engine.input.Mouse;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
-import engine.input.Mouse;
 
 /**
  * This event is generated when ever a mouse button is repeated, with the mouse button that was repeated and the position of the mouse.
  */
+@SuppressWarnings("unused")
 public class EventMouseButtonRepeat extends Event
 {
     public EventMouseButtonRepeat(Object[] values)

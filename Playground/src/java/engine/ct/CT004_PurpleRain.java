@@ -7,13 +7,14 @@ import java.util.ArrayList;
 
 import static engine.util.Util.map;
 
+@SuppressWarnings("unused")
 public class CT004_PurpleRain extends Engine
 {
-    class Drop
+    static class Drop
     {
-        Vector3d pos = new Vector3d(nextDouble(screenWidth()), nextDouble(-500, -50), nextDouble(20));
-        double   len = map(pos.z, 0, 20, 10, 20);
-        double   vel = map(pos.z, 0, 20, 1, 20);
+        final Vector3d pos = new Vector3d(nextDouble(screenWidth()), nextDouble(-500, -50), nextDouble(20));
+        final double   len = map(pos.z, 0, 20, 10, 20);
+        double vel = map(pos.z, 0, 20, 1, 20);
         
         void fall()
         {
@@ -36,7 +37,7 @@ public class CT004_PurpleRain extends Engine
         }
     }
     
-    ArrayList<Drop> drops = new ArrayList<>();
+    final ArrayList<Drop> drops = new ArrayList<>();
     
     @Override
     protected void setup()

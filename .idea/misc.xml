@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="EntryPointsManager">
+    <pattern value="engine.render.VertexArray" method="add" />
+    <pattern value="engine.render.VertexArray" method="getIndexCount" />
+    <pattern value="engine.render.VertexArray" method="getVertexCount" />
+    <pattern value="engine.render.VertexArray" />
+  </component>
   <component name="JavaScriptSettings">
     <option name="languageLevel" value="ES6" />
   </component>

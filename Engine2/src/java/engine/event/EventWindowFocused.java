@@ -3,6 +3,7 @@ package engine.event;
 /**
  * This event is generated whenever the window loosed or gains focus, with if its focused or not.
  */
+@SuppressWarnings("unused")
 public class EventWindowFocused extends Event
 {
     public EventWindowFocused(Object[] values)

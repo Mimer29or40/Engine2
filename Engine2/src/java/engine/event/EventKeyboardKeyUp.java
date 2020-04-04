@@ -5,6 +5,7 @@ import engine.input.Keyboard;
 /**
  * This event is generated when ever a key is released, with the key that was released.
  */
+@SuppressWarnings("unused")
 public class EventKeyboardKeyUp extends Event
 {
     public EventKeyboardKeyUp(Object[] values)

@@ -23,10 +23,13 @@ public class Window
 {
     private static final Logger LOGGER = new Logger();
     
-    private final long handle;
-    
     private Monitor[] monitors;
     private Monitor   monitor;
+    
+    private final Mouse    mouse;
+    private final Keyboard keyboard;
+    
+    private final long handle;
     
     private final Vector2i pos     = new Vector2i();
     private final Vector2i newPos  = new Vector2i();
@@ -71,22 +74,25 @@ public class Window
         screenSize().mul(pixelSize(), this.size);
         if (this.fullscreen) this.size.set(this.monitor.size());
         Window.LOGGER.finest("Window Size: %s", this.size);
-        
+    
         if (this.size.x > this.monitor.width()) throw new RuntimeException(String.format("Window width (%s) is greater than Monitor width", this.size.x));
         if (this.size.y > this.monitor.height()) throw new RuntimeException(String.format("Window height (%s) is greater than Monitor height", this.size.y));
-        
+    
         Window.LOGGER.finest("GLFW: Creating Window");
-        
+    
         this.handle = glfwCreateWindow(this.size.x, this.size.y, "", NULL, NULL);
-        
+    
+        this.mouse    = mouse;
+        this.keyboard = keyboard;
+    
         glfwSetWindowSizeLimits(this.handle, screenWidth(), screenHeight(), GLFW_DONT_CARE, GLFW_DONT_CARE);
-        
+    
         if (this.handle == NULL) throw new RuntimeException("Failed to create the GLFW window");
-        
+    
         this.pos.x = (this.monitor.width() - this.size.x) >> 1;
         this.pos.y = (this.monitor.height() - this.size.y) >> 1;
         glfwSetWindowPos(this.handle, this.pos.x, this.pos.y);
-        
+    
         Window.LOGGER.finest("GLFW: Event Handling");
         
         glfwSetMonitorCallback((monitor, event) -> {
@@ -118,7 +124,7 @@ public class Window
         
         glfwSetWindowSizeCallback(this.handle, (window, w, h) -> {
             if (window != this.handle) return;
-            this.newSize.set(w, h);
+            this.newSize.set((int) (w / this.monitor.scaleX()), (int) (h / this.monitor.scaleY()));
         });
         
         glfwSetWindowFocusCallback(this.handle, (window, focused) -> {
@@ -133,34 +139,34 @@ public class Window
         
         glfwSetCursorEnterCallback(this.handle, (window, entered) -> {
             if (window != this.handle) return;
-            mouse.enteredCallback(entered);
+            this.mouse.enteredCallback(entered);
         });
         
         glfwSetCursorPosCallback(this.handle, (window, x, y) -> {
             if (window != this.handle) return;
             x = (x - this.viewPos.x) * (double) screenWidth() / (double) this.viewSize.x;
             y = (y - this.viewPos.y) * (double) screenHeight() / (double) this.viewSize.y;
-            mouse.positionCallback(x, y);
+            this.mouse.positionCallback(x, y);
         });
         
         glfwSetScrollCallback(this.handle, (window, x, y) -> {
             if (window != this.handle) return;
-            mouse.scrollCallback(x, y);
+            this.mouse.scrollCallback(x, y);
         });
         
         glfwSetMouseButtonCallback(this.handle, (window, button, action, mods) -> {
             if (window != this.handle) return;
-            mouse.stateCallback(button, action);
+            this.mouse.stateCallback(button, action);
         });
         
         glfwSetKeyCallback(this.handle, (window, key, scancode, action, mods) -> {
             if (window != this.handle) return;
-            keyboard.stateCallback(key, action);
+            this.keyboard.stateCallback(key, action);
         });
         
         glfwSetCharCallback(this.handle, (window, codePoint) -> {
             if (window != this.handle) return;
-            keyboard.charCallback(codePoint);
+            this.keyboard.charCallback(codePoint);
         });
         
         show();
@@ -357,6 +363,14 @@ public class Window
     }
     
     /**
+     * Toggles the fullscreen state.
+     */
+    public void toggleFullscreen()
+    {
+        this.newFullscreen = !this.fullscreen;
+    }
+    
+    /**
      * @return If the window is locking the frame rate to the refresh rate of the current monitor.
      */
     public boolean vsync()
@@ -372,6 +386,14 @@ public class Window
     public void vsync(boolean vsync)
     {
         this.newVsync = vsync;
+    }
+    
+    /**
+     * Toggles the vsync state.
+     */
+    public void toggleVsync()
+    {
+        this.newVsync = !this.vsync;
     }
     
     /**
@@ -567,6 +589,8 @@ public class Window
     public void pollEvents()
     {
         glfwPollEvents();
+    
+        glfwSetInputMode(this.handle, GLFW_CURSOR, this.mouse.captured() ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
     }
     
     /**

@@ -348,8 +348,15 @@ public class Engine
                         Engine.running = false;
                     }
                 }, "render").start();
-                
-                if (Engine.window != null) while (Engine.running) Engine.window.pollEvents();
+    
+                if (Engine.window != null)
+                {
+                    while (Engine.running)
+                    {
+                        Engine.window.pollEvents();
+                        Thread.yield();
+                    }
+                }
             }
         }
         finally

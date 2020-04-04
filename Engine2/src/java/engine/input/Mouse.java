@@ -1,6 +1,7 @@
 package engine.input;
 
 import engine.event.*;
+import engine.util.Vector;
 import org.joml.Vector2d;
 import org.joml.Vector2dc;
 
@@ -20,16 +21,44 @@ public class Mouse extends Device<Mouse.Button>
     public final Button SEVEN  = new Button("SEVEN", GLFW_MOUSE_BUTTON_7);
     public final Button EIGHT  = new Button("EIGHT", GLFW_MOUSE_BUTTON_8);
     
+    private boolean captured, newCaptured;
     private boolean entered, newEntered;
     
     private final Vector2d pos       = new Vector2d();
     private final Vector2d newPos    = new Vector2d();
+    private final Vector2d capPos    = new Vector2d();
     private final Vector2d rel       = new Vector2d();
     private final Vector2d scroll    = new Vector2d();
     private final Vector2d newScroll = new Vector2d();
     
     private       Button   drag;
     private final Vector2d dragPos = new Vector2d();
+    
+    /**
+     * @return If the mouse captured by the window.
+     */
+    public boolean captured()
+    {
+        return this.captured;
+    }
+    
+    /**
+     * Sets if the mouse is captured or not.
+     *
+     * @param captured The new captured state.
+     */
+    public void captured(boolean captured)
+    {
+        this.newCaptured = captured;
+    }
+    
+    /**
+     * Toggles the captured state.
+     */
+    public void toggleCaptured()
+    {
+        this.newCaptured = !this.captured;
+    }
     
     /**
      * @return If the mouse is in the window.
@@ -61,6 +90,16 @@ public class Mouse extends Device<Mouse.Button>
     public double y()
     {
         return this.pos.y;
+    }
+    
+    /**
+     * Sets the y position of the window.
+     *
+     * @param y The new y position.
+     */
+    public void y(double y)
+    {
+        this.newPos.y = y;
     }
     
     /**
@@ -129,20 +168,29 @@ public class Mouse extends Device<Mouse.Button>
     @Override
     public void handleEvents(long time, long delta)
     {
+        if (this.captured != this.newCaptured)
+        {
+            this.captured = this.newCaptured;
+            // this.newPos.set(this.pos.set(screenWidth() / 2.0, screenHeight() / 2.0));
+            if (this.captured) this.capPos.set(this.pos);
+            if (!this.captured) this.newPos.set(this.pos.set(this.capPos));
+            Events.post(EventMouseCaptured.class, this.captured);
+        }
+    
         if (this.entered != this.newEntered)
         {
             this.entered = this.newEntered;
             Events.post(EventMouseEntered.class, this.entered);
         }
-        
-        if (!this.pos.equals(this.newPos))
+    
+        if (Double.compare(this.pos.x, this.newPos.x) != 0 || Double.compare(this.pos.y, this.newPos.y) != 0)
         {
             this.newPos.sub(this.pos, this.rel);
             this.pos.set(this.newPos);
-            Events.post(EventMouseMoved.class, this.pos, this.rel);
+            Events.post(EventMouseMoved.class, this.captured ? Vector.ZERO2d : this.pos, this.rel);
         }
-        
-        if (!this.scroll.equals(this.newScroll))
+    
+        if (Double.compare(this.scroll.x, this.newScroll.x) != 0 || Double.compare(this.scroll.y, this.newScroll.y) != 0)
         {
             this.scroll.set(this.newScroll);
             this.newScroll.set(0);
@@ -234,12 +282,6 @@ public class Mouse extends Device<Mouse.Button>
     public void scrollCallback(double x, double y)
     {
         this.newScroll.add(x, y);
-    }
-    
-    // TODO - Capture Mouse
-    public void captureCallback(boolean captured)
-    {
-        if (captured) this.newPos.set(this.pos.set(screenWidth() / 2.0, screenHeight() / 2.0));
     }
     
     /**

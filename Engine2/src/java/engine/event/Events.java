@@ -24,7 +24,10 @@ public class Events
                                                                     EventMouseButtonHeld.class,
                                                                     EventMouseButtonRepeat.class,
                                                                     EventMouseButtonUp.class);
-    public static final EventGroup MOUSE_EVENTS    = new EventGroup(EventMouseEntered.class, EventMouseMoved.class, EventMouseScrolled.class).addFromGroups(BUTTON_EVENTS);
+    public static final EventGroup MOUSE_EVENTS    = new EventGroup(EventMouseCaptured.class,
+                                                                    EventMouseEntered.class,
+                                                                    EventMouseMoved.class,
+                                                                    EventMouseScrolled.class).addFromGroups(BUTTON_EVENTS);
     public static final EventGroup KEY_EVENTS      = new EventGroup(EventKeyboardKeyPressed.class,
                                                                     EventKeyboardKeyDown.class,
                                                                     EventKeyboardKeyHeld.class,

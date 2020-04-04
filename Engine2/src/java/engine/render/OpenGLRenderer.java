@@ -730,8 +730,8 @@ public class OpenGLRenderer extends Renderer
     
             double x1 = vertices[i8] + x;
             double y1 = vertices[i8 + 1] + y;
-            double x2 = vertices[i8 + 2];
-            double y2 = vertices[i8 + 3];
+            double x2 = vertices[i8 + 2] + x;
+            double y2 = vertices[i8 + 3] + y;
             double u1 = vertices[i8 + 4];
             double v1 = vertices[i8 + 5];
             double u2 = vertices[i8 + 6];

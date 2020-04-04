@@ -609,8 +609,8 @@ public class SoftwareRenderer extends Renderer
     
             double x1 = vertices[index] + x;
             double y1 = vertices[index + 1] + y;
-            double x2 = vertices[index + 2];
-            double y2 = vertices[index + 3];
+            double x2 = vertices[index + 2] + x;
+            double y2 = vertices[index + 3] + y;
             double u1 = vertices[index + 4];
             double v1 = vertices[index + 5];
             double u2 = vertices[index + 6];

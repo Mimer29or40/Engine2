@@ -395,7 +395,7 @@ public class Texture
             {
                 glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this.width, this.height, this.format, GL_UNSIGNED_BYTE, this.data);
             }
-            glGenerateMipmap(GL_TEXTURE_2D);
+            // glGenerateMipmap(GL_TEXTURE_2D);
         }
         return this;
     }

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import static engine.util.Util.map;
 
-public class StarField extends Engine
+public class CT001_StarField extends Engine
 {
     final class Star
     {
@@ -16,39 +16,41 @@ public class StarField extends Engine
         
         Star()
         {
-            pos.x = nextDouble(-screenWidth() / 20., screenWidth() / 20.);
-            pos.y = nextDouble(-screenHeight() / 20., screenHeight() / 20.);
-            prevZ = pos.z = nextDouble(screenWidth() / 2.);
+            pos.x = nextDouble(-screenWidth() / 2., screenWidth() / 2.);
+            pos.y = nextDouble(-screenHeight() / 2., screenHeight() / 2.);
+            prevZ = pos.z = nextDouble(screenWidth());
         }
         
-        void update()
+        void update(double elapsedTime)
         {
             pos.z -= speed;
             if (pos.z < 1)
             {
-                pos.x = nextDouble(-screenWidth() / 20., screenWidth() / 20.);
-                pos.y = nextDouble(-screenHeight() / 20., screenHeight() / 20.);
-                prevZ = pos.z = nextDouble(screenWidth() / 2.);
+                pos.x = nextDouble(-screenWidth() / 2., screenWidth() / 2.);
+                pos.y = nextDouble(-screenHeight() / 2., screenHeight() / 2.);
+                prevZ = pos.z = nextDouble(screenWidth());
             }
         }
         
         void show()
         {
-            fill(255);
+            double alpha = map(pos.z, 0, screenWidth(), 1, 0.1);
+    
+            fill(255, alpha);
             noStroke();
-            
+    
             double sx = map(pos.x / pos.z, 0, 1, 0, screenWidth() / 2.);
             double sy = map(pos.y / pos.z, 0, 1, 0, screenHeight() / 2.);
-            double r = map(pos.z, 0, screenWidth() / 2., 16, 0);
+            double r  = map(pos.z, 0, screenWidth(), 8, 0);
             circle(sx, sy, r);
-            
-            stroke(255);
-            weight(1);
+    
+            stroke(255, alpha);
+            weight(r);
     
             double px = map(pos.x / prevZ, 0, 1, 0, screenWidth() / 2.);
             double py = map(pos.y / prevZ, 0, 1, 0, screenHeight() / 2.);
             line(px, py, sx, sy);
-            
+    
             prevZ = pos.z;
         }
     }
@@ -59,9 +61,12 @@ public class StarField extends Engine
     @Override
     protected void setup()
     {
-        size(400, 400, 1, 1, "software");
+        size(400, 400, 1, 1, OPENGL);
     
-        for (int i = 0; i < 50; i++) stars.add(new Star());
+        frameRate(60);
+        enableBlend(true);
+    
+        for (int i = 0; i < 100; i++) stars.add(new Star());
     }
     
     @Override
@@ -75,7 +80,7 @@ public class StarField extends Engine
         
         for (Star s : stars)
         {
-            s.update();
+            s.update(elapsedTime);
             s.show();
         }
     }
@@ -88,6 +93,6 @@ public class StarField extends Engine
     
     public static void main(String[] args)
     {
-        start(new StarField());
+        start(new CT001_StarField());
     }
 }

@@ -58,16 +58,16 @@ public class EngineTest extends Engine
             case 3:
                 stroke(255, 0, 0, 100);
                 int thick = 80;
-                weight(40);
+                weight(5);
                 // scale(10, 10);
                 // translate(screenWidth() / 4., screenHeight() / 4.);
                 // translate(5, 5);
                 fill(255);
                 // polygon(mouse().pos(), 99, 75, 75, 75, 50, 25, 25, 75, 0, 75);
                 // polygon(mouse().pos(), 99, 25, 99, 99, 0, 99, 0, 25);
-                // polygon(0, 25, 10, 0, 30, 50, 30, 0, 40, 25, 50, 0, 50, 50, 70, 0, 80, 25, 99, 99, mouse().x() - screenWidth() / 4., mouse().y() - screenHeight() / 4.);
+                polygon(0, 25, 10, 0, 30, 50, 30, 0, 40, 25, 50, 0, 50, 50, 70, 0, 80, 25, 99, 99, mouse().x(), mouse().y());
                 // polygon(0, 25, 10, 0, 30, 50, 30, 0, 40, 25, 50, 0, 50, 50, 70, 0, 80, 25, 99, 99, 0, 99);
-                polygon(thick, thick, screenWidth() - thick, thick, mouse().x(), mouse().y(), thick, screenHeight() - thick);
+                // polygon(thick, thick, screenWidth() - thick, thick, mouse().x(), mouse().y(), thick, screenHeight() - thick);
                 // polygon(thick, thick, screenWidth() - thick, thick, screenWidth() - thick, screenHeight() - thick, thick, screenHeight() - thick);
                 break;
             case 4:
@@ -75,7 +75,7 @@ public class EngineTest extends Engine
                 translate(screenWidth() / 2., screenHeight() / 2.);
                 rotate(seconds() / 2);
                 // noStroke();
-                stroke(255, 100);
+                stroke(255, 225);
                 weight(map(mouse().x(), 0, screenWidth(), 0, 40));
                 // noStroke();
                 fill(Color.BLUE);
@@ -124,7 +124,11 @@ public class EngineTest extends Engine
                 break;
             case 9:
                 push();
-                fill(nextColor());
+                stroke(255, 100);
+                triangle(0, 0, mouse().x(), mouse().y(), 0, screenHeight() / 2.);
+                pop();
+                push();
+                fill(nextColor(true));
                 rectMode(RectMode.CENTER);
                 translate(screenWidth() / 2., screenHeight() / 2.);
                 rotate(seconds());
@@ -132,8 +136,6 @@ public class EngineTest extends Engine
                 square(0, 0, 50);
                 pop();
                 // fill(Color.WHITE);
-                stroke(255, 100);
-                triangle(0, 0, mouse().x(), mouse().y(), 0, 50);
                 break;
             case 10:
                 break;

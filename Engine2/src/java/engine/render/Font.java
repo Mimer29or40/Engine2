@@ -22,7 +22,7 @@ public class Font
 {
     private static final HashMap<String, ByteBuffer> FILE_CACHE = new HashMap<>();
     
-    private static final String  DEFAULT_FONT      = "BetterPixels.ttf";
+    private static final String  DEFAULT_FONT      = "Arial.ttf";
     private static final int     DEFAULT_SIZE      = 12;
     private static final boolean DEFAULT_ALIGNMENT = false;
     

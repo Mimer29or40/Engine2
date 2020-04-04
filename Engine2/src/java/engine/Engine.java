@@ -59,6 +59,11 @@ public class Engine
     private static String printFrame;
     private static String screenshot;
     
+    public static final String SOFTWARE = "software";
+    public static final String OPENGL   = "opengl";
+    public static final String PIXEL    = "pixel";
+    public static final String DEFAULT  = SOFTWARE;
+    
     // ----------------------
     // -- Engine Functions --
     // ----------------------
@@ -438,7 +443,7 @@ public class Engine
      */
     protected static void size(int screenW, int screenH, int pixelW, int pixelH)
     {
-        size(screenW, screenH, pixelW, pixelH, "software");
+        size(screenW, screenH, pixelW, pixelH, DEFAULT);
     }
     
     
@@ -466,7 +471,7 @@ public class Engine
      */
     protected static void size(int screenW, int screenH)
     {
-        size(screenW, screenH, 4, 4, "software");
+        size(screenW, screenH, 4, 4, DEFAULT);
     }
     
     // ----------------
@@ -1310,7 +1315,7 @@ public class Engine
     /**
      * See {@link Renderer#enableBlend()}
      */
-    public boolean enableDebug()
+    public static boolean enableDebug()
     {
         return Engine.renderer.enableDebug();
     }
@@ -1318,7 +1323,7 @@ public class Engine
     /**
      * See {@link Renderer#enableDebug(boolean)}
      */
-    public void enableDebug(boolean enableDebug)
+    public static void enableDebug(boolean enableDebug)
     {
         Engine.renderer.enableDebug(enableDebug);
     }

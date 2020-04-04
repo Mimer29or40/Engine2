@@ -1,6 +1,7 @@
 package engine.render;
 
 import engine.Engine;
+import engine.color.Color;
 
 import java.util.logging.Level;
 
@@ -13,8 +14,9 @@ public class FontTests extends Engine
     @Override
     protected void setup()
     {
-        size(800, 800, 1, 1, "software");
-        
+        // size(800, 800, 1, 1, "software");
+        size(800, 800, 1, 1, "opengl");
+    
         // font = new Font("demo/FiraSans.ttf", 24, false);
         font = new Font("BetterPixels.ttf", 24, false);
     }
@@ -44,14 +46,15 @@ public class FontTests extends Engine
         if (keyboard().K2.held()) rectMode(RectMode.CORNERS);
         if (keyboard().K3.held()) rectMode(RectMode.CENTER);
         if (keyboard().K4.held()) rectMode(RectMode.RADIUS);
-        
-        fill(nextColor());
+    
+        fill(Color.DARK_GREEN);
         
         String text;
         text = "This is a String.";
         text = "This is a\nMultiline String.";
         if (keyboard().SPACE.held())
         {
+            rectMode(RectMode.CENTER);
             rect(0, 0, 400, 400);
             text(text, 0, 0, 400, 400);
         }

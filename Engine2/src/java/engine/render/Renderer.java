@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
+import static engine.Engine.*;
+
 /**
  * Abstract Renderer to draw things to a texture.
  */
@@ -41,15 +43,15 @@ public abstract class Renderer
     {
         switch (renderer)
         {
-            case "software":
+            case SOFTWARE:
                 Renderer.LOGGER.fine("Using Software Renderer");
                 return new SoftwareRenderer(target);
-            case "pixel":
-                Renderer.LOGGER.fine("Using Pixel Renderer");
-                return new PixelRenderer(target);
-            case "opengl":
+            case OPENGL:
                 Renderer.LOGGER.fine("Using OpenGL Renderer");
                 return new OpenGLRenderer(target);
+            case PIXEL:
+                Renderer.LOGGER.fine("Using Pixel Renderer");
+                return new PixelRenderer(target);
             default:
                 // TODO - Check for registered renderers?
         }

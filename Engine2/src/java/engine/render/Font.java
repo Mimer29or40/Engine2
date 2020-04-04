@@ -332,16 +332,16 @@ public class Font
     public double[] renderText(String text)
     {
         int n = text.length();
-    
+        
         STBTTPackedchar.Buffer charData = this.charDataMap.get(this.size);
-    
+        
         int width  = this.textureMap.get(this.size).width();
         int height = this.textureMap.get(this.size).height();
-    
+        
         double ascent = this.ascentMap.get(this.size);
-    
+        
         double[] vertices = new double[n * 8];
-    
+        
         int  index;
         char character;
         this.x.put(0, 0);
@@ -379,7 +379,7 @@ public class Font
         this.ascentMap.put(this.size, this.ascentIntBuffer.get(0) * scale);
         this.descentMap.put(this.size, this.descentIntBuffer.get(0) * scale);
         this.lineGapMap.put(this.size, this.lineGapIntBuffer.get(0) * scale);
-    
+        
         Texture texture      = null;
         boolean success      = false;
         int     textureWidth = 32;

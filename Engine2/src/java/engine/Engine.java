@@ -127,10 +127,7 @@ public class Engine
                 Engine.extensions.put(name, ext.getConstructor().newInstance());
                 Engine.LOGGER.info("Loaded: %s", name);
             }
-            catch (ReflectiveOperationException ignored)
-            {
-            
-            }
+            catch (ReflectiveOperationException ignored) { }
         }
         
         Engine.random = new Random();

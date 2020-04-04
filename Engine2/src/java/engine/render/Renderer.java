@@ -1440,10 +1440,10 @@ public abstract class Renderer
         if (this.fill.a() > 0)
         {
             List<String> lines;
-    
+            
             double x = a, y = b;
             double w = 0, h = 0;
-    
+            
             if (c > 0 && d > 0)
             {
                 switch (this.rectMode)
@@ -1505,9 +1505,9 @@ public abstract class Renderer
             {
                 lines = Arrays.asList(text.split("\n"));
             }
-    
+            
             double actualHeight = lines.size() * this.font.getSize();
-    
+            
             int    hPos    = this.textAlign.getHorizontal();
             int    vPos    = this.textAlign.getVertical();
             double yOffset = vPos == -1 ? 0 : vPos == 0 ? 0.5 * (h - actualHeight) : h - actualHeight;
@@ -1515,9 +1515,9 @@ public abstract class Renderer
             {
                 double lineWidth = this.font.getStringWidth(line);
                 double xOffset   = hPos == -1 ? 0 : hPos == 0 ? 0.5 * (w - lineWidth) : w - lineWidth;
-    
+                
                 drawText(line, x + xOffset, y + yOffset);
-    
+                
                 yOffset += this.font.getSize();
             }
         }

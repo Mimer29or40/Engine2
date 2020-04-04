@@ -146,7 +146,7 @@ public class VertexArray
      * Adds a float buffer with many attributes to the Vertex Array.
      *
      * @param usage How the data should be used.
-     * @param data The data
+     * @param data  The data
      * @param sizes The attributes lengths
      * @return This instance for call chaining.
      */
@@ -159,12 +159,12 @@ public class VertexArray
         int count = data.length / vertexSize;
         if (this.vertexCount > 0 && this.vertexCount != count) throw new RuntimeException(String.format("Vertex Array Mismatch: Array Len: %s Provide Array Len: %s", this.vertexCount, count));
         this.vertexCount = count;
-    
+        
         int vbo = glGenBuffers();
-    
+        
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, data, usage);
-    
+        
         int offset = 0, stride = vertexSize * Float.BYTES;
         for (int i = 0, n = sizes.length; i < n; i++)
         {
@@ -173,7 +173,7 @@ public class VertexArray
             glEnableVertexAttribArray(this.vboList.size() + i);
             offset += size * Float.BYTES;
         }
-    
+        
         this.vboList.add(vbo);
         return this;
     }
@@ -194,7 +194,7 @@ public class VertexArray
      * Adds an int buffer with many attributes to the Vertex Array.
      *
      * @param usage How the data should be used.
-     * @param data The data
+     * @param data  The data
      * @param sizes The attributes lengths
      * @return This instance for call chaining.
      */
@@ -207,12 +207,12 @@ public class VertexArray
         int count = data.length / vertexSize;
         if (this.vertexCount > 0 && this.vertexCount != count) throw new RuntimeException(String.format("Vertex Array Mismatch: Array Len: %s Provide Array Len: %s", this.vertexCount, count));
         this.vertexCount = count;
-    
+        
         int vbo = glGenBuffers();
-    
+        
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, data, usage);
-    
+        
         int offset = 0, stride = vertexSize * Float.BYTES;
         for (int i = 0, n = sizes.length; i < n; i++)
         {
@@ -221,7 +221,7 @@ public class VertexArray
             glEnableVertexAttribArray(this.vboList.size() + i);
             offset += size * Float.BYTES;
         }
-    
+        
         this.vboList.add(vbo);
         return this;
     }

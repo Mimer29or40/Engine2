@@ -105,10 +105,7 @@ public class Events
                 function.accept(event);
             }
         }
-        catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ignored)
-        {
-        
-        }
+        catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ignored) { }
     }
     
     /**

@@ -74,25 +74,25 @@ public class Window
         screenSize().mul(pixelSize(), this.size);
         if (this.fullscreen) this.size.set(this.monitor.size());
         Window.LOGGER.finest("Window Size: %s", this.size);
-    
+        
         if (this.size.x > this.monitor.width()) throw new RuntimeException(String.format("Window width (%s) is greater than Monitor width", this.size.x));
         if (this.size.y > this.monitor.height()) throw new RuntimeException(String.format("Window height (%s) is greater than Monitor height", this.size.y));
-    
+        
         Window.LOGGER.finest("GLFW: Creating Window");
-    
+        
         this.handle = glfwCreateWindow(this.size.x, this.size.y, "", NULL, NULL);
-    
+        
         this.mouse    = mouse;
         this.keyboard = keyboard;
-    
+        
         glfwSetWindowSizeLimits(this.handle, screenWidth(), screenHeight(), GLFW_DONT_CARE, GLFW_DONT_CARE);
-    
+        
         if (this.handle == NULL) throw new RuntimeException("Failed to create the GLFW window");
-    
+        
         this.pos.x = (this.monitor.width() - this.size.x) >> 1;
         this.pos.y = (this.monitor.height() - this.size.y) >> 1;
         glfwSetWindowPos(this.handle, this.pos.x, this.pos.y);
-    
+        
         Window.LOGGER.finest("GLFW: Event Handling");
         
         glfwSetMonitorCallback((monitor, event) -> {
@@ -589,7 +589,7 @@ public class Window
     public void pollEvents()
     {
         glfwPollEvents();
-    
+        
         glfwSetInputMode(this.handle, GLFW_CURSOR, this.mouse.captured() ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
     }
     

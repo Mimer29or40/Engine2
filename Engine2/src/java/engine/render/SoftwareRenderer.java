@@ -134,7 +134,7 @@ public class SoftwareRenderer extends Renderer
         
         PairD p3  = transform(x3, y3);
         int   x3i = (int) round(p3.a()), y3i = (int) round(p3.b());
-    
+        
         // int width = (int) this.weight;
         
         // TODO - Have a width
@@ -541,14 +541,14 @@ public class SoftwareRenderer extends Renderer
     public void drawTexture(Texture texture, double x1, double y1, double x2, double y2, double u1, double v1, double u2, double v2)
     {
         if (x2 <= 0 || y2 <= 0 || u2 <= 0 || v2 <= 0) return;
-    
+        
         texture.bind().download();
-    
+        
         PairD topLeft     = transform(x1, y1);
         PairD topRight    = transform(x2, y1);
         PairD bottomLeft  = transform(x1, y2);
         PairD bottomRight = transform(x2, y2);
-    
+        
         int topLeftX     = (int) round(topLeft.a());
         int topLeftY     = (int) round(topLeft.b());
         int topRightX    = (int) round(topRight.a());
@@ -557,18 +557,18 @@ public class SoftwareRenderer extends Renderer
         int bottomLeftY  = (int) round(bottomLeft.b());
         int bottomRightX = (int) round(bottomRight.a());
         int bottomRightY = (int) round(bottomRight.b());
-    
+        
         int u1i = (int) round(u1 * texture.width());
         int v1i = (int) round(v1 * texture.height());
         int u2i = (int) round(u2 * texture.width());
         int v2i = (int) round(v2 * texture.height());
-    
+        
         lineImpl(topLeftX, topLeftY, topRightX, topRightY, 1, LINE_OVERLAP_NONE);
         lineImpl(topRightX, topRightY, bottomRightX, bottomRightY, 1, LINE_OVERLAP_NONE);
         lineImpl(bottomRightX, bottomRightY, bottomLeftX, bottomLeftY, 1, LINE_OVERLAP_NONE);
         lineImpl(bottomLeftX, bottomLeftY, topLeftX, topLeftY, 1, LINE_OVERLAP_NONE);
         fillBetweenLines();
-    
+        
         int xAxisX   = topRightX - topLeftX;
         int xAxisY   = topRightY - topLeftY;
         int yAxisX   = bottomLeftX - topLeftX;
@@ -609,7 +609,7 @@ public class SoftwareRenderer extends Renderer
         for (int i = 0, lineSize = text.length(); i < lineSize; i++)
         {
             int index = i * 8;
-    
+            
             double x1 = vertices[index] + x;
             double y1 = vertices[index + 1] + y;
             double x2 = vertices[index + 2] + x;
@@ -618,12 +618,12 @@ public class SoftwareRenderer extends Renderer
             double v1 = vertices[index + 5];
             double u2 = vertices[index + 6];
             double v2 = vertices[index + 7];
-    
+            
             PairD topLeft     = transform(x1, y1);
             PairD topRight    = transform(x2, y1);
             PairD bottomLeft  = transform(x1, y2);
             PairD bottomRight = transform(x2, y2);
-    
+            
             int topLeftX     = (int) round(topLeft.a());
             int topLeftY     = (int) round(topLeft.b());
             int topRightX    = (int) round(topRight.a());
@@ -632,18 +632,18 @@ public class SoftwareRenderer extends Renderer
             int bottomLeftY  = (int) round(bottomLeft.b());
             int bottomRightX = (int) round(bottomRight.a());
             int bottomRightY = (int) round(bottomRight.b());
-    
+            
             int u1i = (int) round(u1 * this.font.getTexture().width());
             int v1i = (int) round(v1 * this.font.getTexture().height());
             int u2i = (int) round(u2 * this.font.getTexture().width());
             int v2i = (int) round(v2 * this.font.getTexture().height());
-    
+            
             lineImpl(topLeftX, topLeftY, topRightX, topRightY, 1, LINE_OVERLAP_NONE);
             lineImpl(topRightX, topRightY, bottomRightX, bottomRightY, 1, LINE_OVERLAP_NONE);
             lineImpl(bottomRightX, bottomRightY, bottomLeftX, bottomLeftY, 1, LINE_OVERLAP_NONE);
             lineImpl(bottomLeftX, bottomLeftY, topLeftX, topLeftY, 1, LINE_OVERLAP_NONE);
             fillBetweenLines();
-    
+            
             int xAxisX   = topRightX - topLeftX;
             int xAxisY   = topRightY - topLeftY;
             int yAxisX   = bottomLeftX - topLeftX;

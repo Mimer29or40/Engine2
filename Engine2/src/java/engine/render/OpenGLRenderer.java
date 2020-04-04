@@ -140,13 +140,13 @@ public class OpenGLRenderer extends Renderer
     public void start()
     {
         super.start();
-    
+        
         glBindFramebuffer(GL_FRAMEBUFFER, this.fbo);
         glViewport(0, 0, this.target.width(), this.target.height());
-    
+        
         this.view.translate(-screenWidth() / 2f, -screenHeight() / 2f, 0);
         this.proj.mul(this.view, this.pv);
-    
+        
         if (this.enableDebug) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
     
@@ -159,9 +159,9 @@ public class OpenGLRenderer extends Renderer
     public void finish()
     {
         super.finish();
-    
+        
         this.target.bind().download();
-    
+        
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
     
@@ -279,7 +279,7 @@ public class OpenGLRenderer extends Renderer
         this.linesShader.setColor("color", this.stroke);
         this.linesShader.setVec2("viewport", screenWidth(), screenHeight());
         this.linesShader.setFloat("thickness", (float) this.weight);
-    
+        
         this.vertexArray.bind();
         this.vertexArray.reset();
         this.vertexArray.add(new float[] {
@@ -401,7 +401,7 @@ public class OpenGLRenderer extends Renderer
         this.linesShader.setColor("color", this.stroke);
         this.linesShader.setVec2("viewport", screenWidth(), screenHeight());
         this.linesShader.setFloat("thickness", (float) this.weight);
-    
+        
         this.vertexArray.bind();
         this.vertexArray.reset();
         this.vertexArray.add(new float[] {
@@ -433,11 +433,11 @@ public class OpenGLRenderer extends Renderer
     public void fillQuad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
     {
         makeCurrent();
-    
+        
         this.triangleShader.bind();
         this.triangleShader.setMat4("pv", this.pv);
         this.triangleShader.setColor("color", this.fill);
-    
+        
         this.vertexArray.bind();
         this.vertexArray.reset();
         this.vertexArray.add(new float[] {(float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4}, 2);
@@ -463,7 +463,7 @@ public class OpenGLRenderer extends Renderer
         this.linesShader.setColor("color", this.stroke);
         this.linesShader.setVec2("viewport", screenWidth(), screenHeight());
         this.linesShader.setFloat("thickness", (float) this.weight);
-    
+        
         float[] array = new float[points.length * 4];
         int     index = 0;
         for (int i = 0, n = points.length >> 1; i < n; i++)
@@ -471,7 +471,7 @@ public class OpenGLRenderer extends Renderer
             int prev = (i - 1 + n) % n;
             int next = (i + 1 + n) % n;
             int four = (i + 2 + n) % n;
-    
+            
             array[index++] = (float) points[(2 * prev)];
             array[index++] = (float) points[(2 * prev) + 1];
             array[index++] = (float) points[(2 * i)];
@@ -481,7 +481,7 @@ public class OpenGLRenderer extends Renderer
             array[index++] = (float) points[(2 * four)];
             array[index++] = (float) points[(2 * four) + 1];
         }
-    
+        
         this.vertexArray.bind();
         this.vertexArray.reset();
         this.vertexArray.add(array, 2);
@@ -505,11 +505,11 @@ public class OpenGLRenderer extends Renderer
         this.polygonShader.bind();
         this.polygonShader.setMat4("pv", this.pv);
         this.polygonShader.setColor("color", this.fill);
-    
+        
         float[] array = new float[points.length];
         for (int i = 0, n = points.length; i < n; i++) array[i] = (float) points[i];
         this.polygonBuffer.bind().set(array, GL_STATIC_DRAW);
-    
+        
         this.vertexArray.bind();
         this.vertexArray.reset();
         this.vertexArray.add(new float[] {(float) points[0], (float) points[1]}, 2);
@@ -560,14 +560,14 @@ public class OpenGLRenderer extends Renderer
     public void drawEllipse(double x, double y, double rx, double ry)
     {
         makeCurrent();
-    
+        
         this.ellipseOutlineShader.bind();
         this.ellipseOutlineShader.setMat4("pv", this.pv);
         this.ellipseOutlineShader.setColor("color", this.stroke);
         this.ellipseOutlineShader.setVec2("radius", (float) rx, (float) ry);
         this.ellipseOutlineShader.setVec2("viewport", screenWidth(), screenHeight());
         this.ellipseOutlineShader.setFloat("thickness", (float) this.weight);
-    
+        
         this.vertexArray.bind();
         this.vertexArray.reset();
         this.vertexArray.add(new float[] {(float) x, (float) y}, 2);
@@ -588,12 +588,12 @@ public class OpenGLRenderer extends Renderer
     public void fillEllipse(double x, double y, double rx, double ry)
     {
         makeCurrent();
-    
+        
         this.ellipseShader.bind();
         this.ellipseShader.setMat4("pv", this.pv);
         this.ellipseShader.setColor("color", this.fill);
         this.ellipseShader.setVec2("radius", (float) rx, (float) ry);
-    
+        
         this.vertexArray.bind();
         this.vertexArray.reset();
         this.vertexArray.add(new float[] {(float) x, (float) y}, 2);
@@ -616,7 +616,7 @@ public class OpenGLRenderer extends Renderer
     public void drawArc(double x, double y, double rx, double ry, double start, double stop)
     {
         makeCurrent();
-    
+        
         this.arcOutlineShader.bind();
         this.arcOutlineShader.setMat4("pv", this.pv);
         this.arcOutlineShader.setColor("color", this.stroke);
@@ -625,7 +625,7 @@ public class OpenGLRenderer extends Renderer
         this.arcOutlineShader.setFloat("thickness", (float) this.weight);
         this.arcOutlineShader.setVec2("bounds", (float) start, (float) stop);
         this.arcOutlineShader.setInt("mode", this.arcMode.ordinal());
-    
+        
         this.vertexArray.bind();
         this.vertexArray.reset();
         this.vertexArray.add(new float[] {(float) x, (float) y}, 2);
@@ -648,14 +648,14 @@ public class OpenGLRenderer extends Renderer
     public void fillArc(double x, double y, double rx, double ry, double start, double stop)
     {
         makeCurrent();
-    
+        
         this.arcShader.bind();
         this.arcShader.setMat4("pv", this.pv);
         this.arcShader.setColor("color", this.fill);
         this.arcShader.setVec2("radius", (float) rx, (float) ry);
         this.arcShader.setVec2("bounds", (float) start, (float) stop);
         this.arcShader.setInt("mode", this.arcMode.ordinal());
-    
+        
         this.vertexArray.bind();
         this.vertexArray.reset();
         this.vertexArray.add(new float[] {(float) x, (float) y}, 2);
@@ -717,20 +717,20 @@ public class OpenGLRenderer extends Renderer
     public void drawText(String text, double x, double y)
     {
         makeCurrent();
-    
+        
         this.font.getTexture().bind();
-    
+        
         this.textShader.bind();
         this.textShader.setMat4("pv", this.pv);
         this.textShader.setColor("color", this.fill);
-    
+        
         float[] data = new float[text.length() * 16];
-    
+        
         double[] vertices = this.font.renderText(text);
         for (int i = 0, n = text.length(), index = 0; i < n; i++)
         {
             int i8 = i * 8;
-    
+            
             double x1 = vertices[i8] + x;
             double y1 = vertices[i8 + 1] + y;
             double x2 = vertices[i8 + 2] + x;
@@ -739,7 +739,7 @@ public class OpenGLRenderer extends Renderer
             double v1 = vertices[i8 + 5];
             double u2 = vertices[i8 + 6];
             double v2 = vertices[i8 + 7];
-    
+            
             data[index++] = (float) x1;
             data[index++] = (float) y1;
             data[index++] = (float) u1;
@@ -757,7 +757,7 @@ public class OpenGLRenderer extends Renderer
             data[index++] = (float) u2;
             data[index++] = (float) v1;
         }
-    
+        
         this.vertexArray.bind();
         this.vertexArray.reset();
         this.vertexArray.add(data, 2, 2);

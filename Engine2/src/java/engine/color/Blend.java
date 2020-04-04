@@ -88,12 +88,12 @@ public class Blend implements IBlend
         int sg = this.srcFactor.func.apply(gs, as, gd, ad);
         int sb = this.srcFactor.func.apply(bs, as, bd, ad);
         int sa = this.srcFactor.func.apply(as, as, ad, ad);
-    
+        
         int dr = this.dstFactor.func.apply(rs, as, rd, ad);
         int dg = this.dstFactor.func.apply(gs, as, gd, ad);
         int db = this.dstFactor.func.apply(bs, as, bd, ad);
         int da = this.dstFactor.func.apply(as, as, ad, ad);
-    
+        
         return result.r(this.blendEq.func.apply(rs * sr, rd * dr) / 255)
                      .g(this.blendEq.func.apply(gs * sg, gd * dg) / 255)
                      .b(this.blendEq.func.apply(bs * sb, bd * db) / 255)

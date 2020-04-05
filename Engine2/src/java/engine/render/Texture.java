@@ -3,15 +3,15 @@ package engine.render;
 import engine.color.Color;
 import engine.color.Colorc;
 import engine.util.Logger;
-import org.lwjgl.BufferUtils;
+import org.lwjgl.system.MemoryUtil;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 import static engine.util.Util.getPath;
-import static org.lwjgl.BufferUtils.zeroBuffer;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.stb.STBImage.*;
 import static org.lwjgl.stb.STBImageWrite.stbi_write_png;
@@ -22,7 +22,18 @@ import static org.lwjgl.stb.STBImageWrite.stbi_write_png;
 @SuppressWarnings({"UnusedReturnValue", "unused"})
 public class Texture
 {
-    protected static final Logger LOGGER = new Logger();
+    private static final Logger             LOGGER   = new Logger();
+    private static final ArrayList<Texture> TEXTURES = new ArrayList<>();
+    
+    public static void destroyAll()
+    {
+        for (Texture texture : Texture.TEXTURES)
+        {
+            glDeleteTextures(texture.id);
+            if (texture.data != null) MemoryUtil.memFree(texture.data);
+        }
+        Texture.TEXTURES.clear();
+    }
     
     protected final Color tempColor = new Color();
     
@@ -39,8 +50,6 @@ public class Texture
     protected int wrapT     = GL_CLAMP_TO_EDGE;
     protected int minFilter = GL_NEAREST;
     protected int magFilter = GL_NEAREST;
-    
-    private boolean firstUpload = true;
     
     /**
      * Creates a texture from an existing buffer. This is only used internally by {@link #loadImage} and {@link #loadTexture}
@@ -62,6 +71,18 @@ public class Texture
         this.format   = getFormat(channels);
         
         this.data = data;
+        
+        bind();
+        
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, this.wrapS);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, this.wrapT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this.minFilter);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, this.magFilter);
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        
+        glTexImage2D(GL_TEXTURE_2D, 0, this.format, this.width, this.height, 0, this.format, GL_UNSIGNED_BYTE, this.data);
+        
+        Texture.TEXTURES.add(this);
     }
     
     /**
@@ -74,7 +95,7 @@ public class Texture
      */
     public Texture(int width, int height, int channels, Colorc initial)
     {
-        this(width, height, channels, BufferUtils.createByteBuffer(width * height * channels));
+        this(width, height, channels, MemoryUtil.memAlloc(width * height * channels));
         
         if (this.channels == 4)
         {
@@ -177,8 +198,8 @@ public class Texture
      */
     public Texture wrapMode(int wrapS, int wrapT)
     {
-        this.wrapS = wrapS;
-        this.wrapT = wrapT;
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, this.wrapS = wrapS);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, this.wrapT = wrapT);
         return this;
     }
     
@@ -191,8 +212,8 @@ public class Texture
      */
     public Texture filterMode(int minFilter, int magFilter)
     {
-        this.minFilter = minFilter;
-        this.magFilter = magFilter;
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this.minFilter = minFilter);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, this.magFilter = magFilter);
         return this;
     }
     
@@ -205,17 +226,7 @@ public class Texture
     {
         if (this.width != other.width || this.height != other.height || this.channels != other.channels) throw new RuntimeException("Sprites are not same size.");
         
-        if (this.channels == 4)
-        {
-            for (int i = 0; i < this.width * this.height; i++)
-            {
-                other.data.putInt(i * this.channels, this.data.getInt(i * this.channels));
-            }
-        }
-        else
-        {
-            for (int i = 0, n = this.width * this.height * this.channels; i < n; i++) other.data.put(i, this.data.get(i));
-        }
+        MemoryUtil.memCopy(this.data, other.data);
     }
     
     /**
@@ -320,7 +331,7 @@ public class Texture
     {
         if (this.data != null)
         {
-            zeroBuffer(this.data);
+            MemoryUtil.memSet(this.data, 0);
             this.data.clear();
         }
     }
@@ -372,45 +383,35 @@ public class Texture
     }
     
     /**
-     * Uploads the color data to the GPU.
+     * Uploads the color data to the GPU. Make sure to bind the texture first.
      *
      * @return This instance for call chaining.
      */
     public Texture upload()
     {
-        if (this.data != null)
-        {
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, this.wrapS);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, this.wrapT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this.minFilter);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, this.magFilter);
-            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-            
-            if (this.firstUpload)
-            {
-                glTexImage2D(GL_TEXTURE_2D, 0, this.format, this.width, this.height, 0, this.format, GL_UNSIGNED_BYTE, this.data);
-                
-                this.firstUpload = false;
-            }
-            else
-            {
-                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this.width, this.height, this.format, GL_UNSIGNED_BYTE, this.data);
-            }
-            // glGenerateMipmap(GL_TEXTURE_2D);
-        }
+        if (this.data != null) glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this.width, this.height, this.format, GL_UNSIGNED_BYTE, this.data);
         return this;
     }
     
     /**
-     * Downloads the texture from the GPU and stores it into the buffer.
+     * Downloads the texture from the GPU and stores it into the buffer. Make sure to bind the texture first.
      *
      * @return This instance for call chaining.
      */
     public Texture download()
     {
         if (this.data != null) glGetTexImage(GL_TEXTURE_2D, 0, this.format, GL_UNSIGNED_BYTE, this.data);
-        
         return this;
+    }
+    
+    /**
+     * Destroys the texture and free's it memory.
+     */
+    public void destroy()
+    {
+        glDeleteTextures(this.id);
+        if (this.data != null) MemoryUtil.memFree(this.data);
+        Texture.TEXTURES.remove(this);
     }
     
     /**
@@ -466,7 +467,7 @@ public class Texture
             int height   = in.read();
             int channels = in.read();
             
-            ByteBuffer data = BufferUtils.createByteBuffer(width * height * channels);
+            ByteBuffer data = MemoryUtil.memAlloc(width * height * channels);
             
             for (int i = 0; in.available() > 0; i++) data.put(i, (byte) in.read());
             

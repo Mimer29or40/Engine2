@@ -26,7 +26,7 @@ public class EventTests extends Engine
     protected void setup()
     {
         size(800, 400, 2, 2, OPENGL);
-        frameRate(60);
+        frameRate(10);
         enableBlend(true);
         enableProfiler();
         

@@ -1,6 +1,6 @@
 package engine.util;
 
-import org.lwjgl.BufferUtils;
+import org.lwjgl.system.MemoryUtil;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -292,7 +292,7 @@ public class Util
     {
         try (SeekableByteChannel fc = Files.newByteChannel(getPath(resource)))
         {
-            ByteBuffer buffer = BufferUtils.createByteBuffer((int) fc.size() + 1);
+            ByteBuffer buffer = MemoryUtil.memAlloc((int) fc.size() + 1);
             while (fc.read(buffer) != -1) { }
             buffer.flip();
             return buffer.slice();

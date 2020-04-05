@@ -11,9 +11,9 @@ import engine.util.Logger;
 import engine.util.Profiler;
 import engine.util.Random;
 import org.joml.*;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
 import org.reflections.Reflections;
 
 import java.lang.Math;
@@ -149,8 +149,8 @@ public class Engine
                 Engine.LOGGER.fine("Extension Post Setup");
                 Engine.extensions.values().forEach(Extension::afterSetup);
                 
-                GL.setCapabilities(null);
                 Engine.window.unmakeCurrent();
+                GL.setCapabilities(null);
                 
                 final CountDownLatch latch = new CountDownLatch(1);
                 
@@ -324,48 +324,6 @@ public class Engine
                                 }
                                 Engine.PROFILER.endFrame();
                                 
-                                if (Engine.PROFILER.enabled && Engine.printFrame != null)
-                                {
-                                    // TODO - Add profiler output to screen with stb_easy_font
-                                    String parent = Engine.printFrame.equals("") ? null : Engine.printFrame;
-                                    
-                                    String text = Engine.PROFILER.getFormattedData(parent);
-                                    // ByteBuffer charBuffer = BufferUtils.createByteBuffer(text.length() * 270);
-                                    // stb_easy_font_print(0, 0, text, null, charBuffer);
-                                    // glVertexPointer(2, GL_FLOAT, 16, charBuffer);
-                                    
-                                    hudShader.bind();
-                                    hudShader.setMat4("mMVP", MVP);
-                                    
-                                    int x = 2;
-                                    int y = 2;
-                                    for (String line : text.split("\n"))
-                                    {
-                                        try (MemoryStack frame = stackPush())
-                                        {
-                                            ByteBuffer textBuffer = frame.malloc(12 * 1024);
-                                            // ByteBuffer textBuffer = frame.malloc(270 * line.length());
-                                            int quads = stb_easy_font_print(x, y, line, null, textBuffer);
-                                            textBuffer.limit(quads * 4 * 16);
-                                            
-                                            glBindBuffer(GL_ARRAY_BUFFER, vboPerf);
-                                            glBufferSubData(GL_ARRAY_BUFFER, 0, textBuffer);
-                                            
-                                            glVertexAttribPointer(0, 2, GL_FLOAT, false, 4 * 4, 0);
-                                            // glVertexAttrib4f(1, 1.0f, 0.0f, 0.0f, 1.0f);
-                                            glDrawArrays(GL_QUADS, 0, quads * 6);
-                                            
-                                            y += stb_easy_font_height(line);
-                                        }
-                                    }
-                                    // glDisableVertexAttribArray(0);
-                                    // glBindBuffer(GL_ARRAY_BUFFER, 0);
-                                    
-                                    // glUseProgram(0);
-                                    
-                                    Engine.printFrame = null;
-                                }
-                                
                                 if (Engine.screenshot != null)
                                 {
                                     String fileName = Engine.screenshot + (!Engine.screenshot.endsWith(".png") ? ".png" : "");
@@ -376,7 +334,7 @@ public class Engine
                                     
                                     int stride = w * c;
                                     
-                                    ByteBuffer buf = BufferUtils.createByteBuffer(w * h * c);
+                                    ByteBuffer buf = MemoryUtil.memAlloc(w * h * c);
                                     glReadBuffer(GL_FRONT);
                                     glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buf);
                                     
@@ -392,6 +350,7 @@ public class Engine
                                     }
                                     
                                     if (!stbi_write_png(fileName, w, h, c, buf, stride)) Engine.LOGGER.severe("Could not take screen shot");
+                                    MemoryUtil.memFree(buf);
                                     
                                     Engine.screenshot = null;
                                 }
@@ -412,14 +371,56 @@ public class Engine
                                 maxTime = Long.MIN_VALUE;
                                 
                                 totalFrames = 0;
+    
+                                if (Engine.PROFILER.enabled && Engine.printFrame != null)
+                                {
+                                    // TODO - Add profiler output to screen with stb_easy_font
+                                    String parent = Engine.printFrame.equals("") ? null : Engine.printFrame;
+        
+                                    String text = Engine.PROFILER.getFormattedData(parent);
+        
+                                    hudShader.bind();
+                                    hudShader.setMat4("mMVP", MVP);
+        
+                                    int x = 2;
+                                    int y = 2;
+                                    for (String line : text.split("\n"))
+                                    {
+                                        try (MemoryStack frame = stackPush())
+                                        {
+                                            ByteBuffer textBuffer = frame.malloc(12 * 1024);
+                                            // ByteBuffer textBuffer = frame.malloc(270 * line.length());
+                                            int quads = stb_easy_font_print(x, y, line, null, textBuffer);
+                                            textBuffer.limit(quads * 4 * 16);
+                
+                                            glBindBuffer(GL_ARRAY_BUFFER, vboPerf);
+                                            glBufferSubData(GL_ARRAY_BUFFER, 0, textBuffer);
+                
+                                            glVertexAttribPointer(0, 2, GL_FLOAT, false, 4 * 4, 0);
+                                            // glVertexAttrib4f(1, 1.0f, 0.0f, 0.0f, 1.0f);
+                                            glDrawArrays(GL_QUADS, 0, quads * 6);
+                
+                                            y += stb_easy_font_height(line);
+                                        }
+                                    }
+                                    // glDisableVertexAttribArray(0);
+                                    // glBindBuffer(GL_ARRAY_BUFFER, 0);
+        
+                                    // glUseProgram(0);
+        
+                                    Engine.printFrame = null;
+                                }
                             }
                         }
                     }
                     finally
                     {
+                        Font.destroyAll();
+                        Texture.destroyAll();
+    
+                        Engine.window.unmakeCurrent();
                         GL.destroy();
                         GL.setCapabilities(null);
-                        Engine.window.unmakeCurrent();
                         
                         Engine.running = false;
                         
@@ -450,10 +451,13 @@ public class Engine
             Engine.LOGGER.fine("Extension Post Destruction");
             Engine.extensions.values().forEach(Extension::afterDestroy);
             
-            GL.destroy();
-            GL.setCapabilities(null);
-            
-            if (Engine.window != null) Engine.window.destroy();
+            if (Engine.window != null)
+            {
+                GL.destroy();
+                GL.setCapabilities(null);
+                
+                Engine.window.destroy();
+            }
         }
         
         Engine.LOGGER.info("Engine Finished");

@@ -55,6 +55,7 @@ public class Window
     private boolean update = true;
     
     private String title = "", newTitle = "";
+    private boolean capturedState;
     
     public Window(Mouse mouse, Keyboard keyboard)
     {
@@ -598,7 +599,13 @@ public class Window
     {
         glfwPollEvents();
         
-        glfwSetInputMode(this.handle, GLFW_CURSOR, this.mouse.captured() ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+        boolean newCapturedState = this.mouse.captured();
+        
+        if (newCapturedState != this.capturedState)
+        {
+            this.capturedState = newCapturedState;
+            glfwSetInputMode(this.handle, GLFW_CURSOR, this.capturedState ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+        }
         
         if (!this.title.equals(this.newTitle))
         {

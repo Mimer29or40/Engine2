@@ -12,6 +12,7 @@ import org.lwjgl.system.MemoryUtil;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static org.lwjgl.stb.STBTruetype.*;
@@ -23,6 +24,24 @@ import static org.lwjgl.stb.STBTruetype.*;
 public class Font
 {
     private static final HashMap<String, ByteBuffer> FILE_CACHE = new HashMap<>();
+    private static final ArrayList<Font>             FONTS      = new ArrayList<>();
+    
+    public static void destroyAll()
+    {
+        for (ByteBuffer buffer : Font.FILE_CACHE.values()) MemoryUtil.memFree(buffer);
+        for (Font font : Font.FONTS)
+        {
+            font.info.free();
+            for (STBTTPackedchar.Buffer buffer : font.charDataMap.values()) MemoryUtil.memFree(buffer);
+            font.charDataMap.clear();
+            font.scaleMap.clear();
+            font.descentMap.clear();
+            font.lineGapMap.clear();
+            for (Texture texture : font.textureMap.values()) texture.destroy();
+            font.textureMap.clear();
+        }
+        Font.FONTS.clear();
+    }
     
     private static final String  DEFAULT_FONT      = "BetterPixels.ttf";
     private static final int     DEFAULT_SIZE      = 12;
@@ -56,7 +75,7 @@ public class Font
     {
         this.font = font;
         this.data = Font.FILE_CACHE.computeIfAbsent(this.font, Util::resourceToByteBuffer);
-        this.info = STBTTFontinfo.create();
+        this.info = STBTTFontinfo.malloc();
         if (!stbtt_InitFont(this.info, this.data)) throw new RuntimeException("Font could not be loaded: " + font);
         
         this.size = Math.max(4, size);
@@ -64,6 +83,8 @@ public class Font
         this.pixelAligned = pixelAligned;
         
         setup();
+        
+        Font.FONTS.add(this);
     }
     
     /**
@@ -269,13 +290,13 @@ public class Font
                 {
                     i += getCP(text, n, i, cpBuffer);
                     int cp = cpBuffer.get(0);
-                    stbtt_GetCodepointHMetrics(info, cp, advBuffer, bearingBuffer);
+                    stbtt_GetCodepointHMetrics(this.info, cp, advBuffer, bearingBuffer);
                     width += advBuffer.get(0);
                     
                     if (i < n)
                     {
                         getCP(text, n, i, cpBuffer);
-                        width += stbtt_GetCodepointKernAdvance(info, cp, cpBuffer.get(0));
+                        width += stbtt_GetCodepointKernAdvance(this.info, cp, cpBuffer.get(0));
                     }
                 }
                 return width * this.scaleMap.get(this.size);
@@ -351,6 +372,22 @@ public class Font
             }
         }
         return vertices;
+    }
+    
+    /**
+     * Destroys the Font and free's it memory.
+     */
+    public void destroy()
+    {
+        this.info.free();
+        for (STBTTPackedchar.Buffer buffer : this.charDataMap.values()) MemoryUtil.memFree(buffer);
+        this.charDataMap.clear();
+        this.scaleMap.clear();
+        this.descentMap.clear();
+        this.lineGapMap.clear();
+        for (Texture texture : this.textureMap.values()) texture.destroy();
+        this.textureMap.clear();
+        Font.FONTS.remove(this);
     }
     
     private void setup()

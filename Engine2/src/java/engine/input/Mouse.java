@@ -172,7 +172,6 @@ public class Mouse extends Device<Mouse.Button>
         if (this.captured != this.newCaptured)
         {
             this.captured = this.newCaptured;
-            // this.newPos.set(this.pos.set(screenWidth() / 2.0, screenHeight() / 2.0));
             if (this.captured) this.capPos.set(this.pos);
             if (!this.captured) this.newPos.set(this.pos.set(this.capPos));
             Events.post(EventMouseCaptured.class, this.captured);

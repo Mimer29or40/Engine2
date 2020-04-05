@@ -10,7 +10,8 @@ out vec4 FragColor;
 
 void main(void)
 {
-    float pixel = texture(tex, texCord).r;
-    if (pixel == 0) discard;
-    FragColor = pixel * color;
+    float alpha = texture(tex, texCord).r;
+    if (alpha == 0) discard;
+    FragColor = color;
+    FragColor.a *= alpha;
 }

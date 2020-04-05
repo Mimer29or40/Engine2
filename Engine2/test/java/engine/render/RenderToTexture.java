@@ -128,7 +128,7 @@ public class RenderToTexture extends OpenGLDemo
         this.shader.setFloat("material.shininess", 10.0f);
         
         this.vertexArray = new VertexArray();
-        this.vertexArray.add(24, new float[] {
+        this.vertexArray.add(new float[] {
                 1.0f, 1.0f, -1.0f,  // Green
                 -1.0f, 1.0f, -1.0f, // Green
                 -1.0f, 1.0f, 1.0f,  // Green
@@ -153,8 +153,8 @@ public class RenderToTexture extends OpenGLDemo
                 1.0f, 1.0f, 1.0f,   // Magenta
                 1.0f, -1.0f, 1.0f,  // Magenta
                 1.0f, -1.0f, -1.0f  // Magenta
-        });
-        this.vertexArray.add(24, new float[] {
+        }, 24);
+        this.vertexArray.add(new float[] {
                 0.0f, 1.0f, 0.0f,  // Green
                 0.0f, 1.0f, 0.0f,  // Green
                 0.0f, 1.0f, 0.0f,  // Green
@@ -179,8 +179,8 @@ public class RenderToTexture extends OpenGLDemo
                 1.0f, 0.0f, 0.0f,  // Magenta
                 1.0f, 0.0f, 0.0f,  // Magenta
                 1.0f, 0.0f, 0.0f,  // Magenta
-        });
-        this.vertexArray.add(24, new float[] {
+        }, 24);
+        this.vertexArray.add(new float[] {
                 0.0f, 1.0f, 0.0f, // Green
                 0.0f, 1.0f, 0.0f, // Green
                 0.0f, 1.0f, 0.0f, // Green
@@ -205,8 +205,8 @@ public class RenderToTexture extends OpenGLDemo
                 1.0f, 0.0f, 1.0f, // Magenta
                 1.0f, 0.0f, 1.0f, // Magenta
                 1.0f, 0.0f, 1.0f, // Magenta
-        });
-        this.vertexArray.add(24, new float[] {
+        }, 24);
+        this.vertexArray.add(new float[] {
                 0.0f, 0.0f, // Green
                 0.0f, 1.0f, // Green
                 1.0f, 1.0f, // Green
@@ -231,7 +231,7 @@ public class RenderToTexture extends OpenGLDemo
                 0.0f, 1.0f, // Magenta
                 1.0f, 1.0f, // Magenta
                 1.0f, 0.0f, // Magenta
-        });
+        }, 24);
         
         int[] indices = new int[36];
         for (int i = 0, v = 0, n = 6 * 4; v < n; v += 4)
@@ -245,7 +245,7 @@ public class RenderToTexture extends OpenGLDemo
             indices[i++] = v + 2;
             indices[i++] = v + 3;
         }
-        this.vertexArray.addIndices(indices);
+        this.vertexArray.addIndices(indices, GL_STATIC_DRAW);
         
         this.view.identity();
         

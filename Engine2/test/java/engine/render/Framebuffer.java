@@ -68,7 +68,7 @@ public class Framebuffer
         // set up vertex data (and buffer(s)) and configure vertex attributes
         // ------------------------------------------------------------------
         VertexArray cubeArray = new VertexArray().bind();
-        cubeArray.add(GL_STATIC_DRAW, new float[] {
+        cubeArray.add(new float[] {
                 -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
                 0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
                 0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
@@ -105,30 +105,29 @@ public class Framebuffer
                 0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
                 -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
                 -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
-        }, 3, 2);
-        cubeArray.unbind();
+        }, GL_STATIC_DRAW, 3, 2).unbind();
         
         // plane VAO
         VertexArray planeArray = new VertexArray().bind();
-        planeArray.add(GL_STATIC_DRAW, new float[] {
+        planeArray.add(new float[] {
                 5.0f, -0.5f, 5.0f, 2.0f, 0.0f,
                 -5.0f, -0.5f, 5.0f, 0.0f, 0.0f,
                 -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
                 5.0f, -0.5f, 5.0f, 2.0f, 0.0f,
                 -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
                 5.0f, -0.5f, -5.0f, 2.0f, 2.0f
-        }, 3, 2);
+        }, GL_STATIC_DRAW, 3, 2);
         planeArray.unbind();
         
         // screen quad VAO
         VertexArray quadArray = new VertexArray().bind();
-        quadArray.add(GL_STATIC_DRAW, new float[] {
+        quadArray.add(new float[] {
                 -1.0f, 1.0f, 0.0f, 1.0f,
                 -1.0f, -1.0f, 0.0f, 0.0f,
                 1.0f, -1.0f, 1.0f, 0.0f,
                 1.0f, 1.0f, 1.0f, 1.0f
-        }, 2, 2);
-        quadArray.addIndices(new int[] {0, 1, 2, 0, 2, 3});
+        }, GL_STATIC_DRAW, 2, 2);
+        quadArray.addIndices(new int[] {0, 1, 2, 0, 2, 3}, GL_STATIC_DRAW);
         quadArray.unbind();
         
         // load textures
@@ -146,8 +145,8 @@ public class Framebuffer
         
         // framebuffer configuration
         // -------------------------
-        int framebufferWidth  = SCR_WIDTH;
-        int framebufferHeight = SCR_HEIGHT / 10;
+        int framebufferWidth  = SCR_WIDTH / 1;
+        int framebufferHeight = SCR_HEIGHT / 1;
         int framebuffer       = glGenFramebuffers();
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         // create a color attachment texture

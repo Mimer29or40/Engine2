@@ -22,21 +22,45 @@ public class OpenGLRenderer extends Renderer
     protected final Matrix4f proj = new Matrix4f();
     protected final Matrix4f pv   = new Matrix4f();
     
-    protected final VertexArray vertexArray;
+    protected final Shader      pointShader;
+    protected final VertexArray pointVAO;
     
-    protected final Shader pointShader;
-    protected final Shader lineShader;
+    protected final Shader      lineShader;
+    protected final VertexArray lineVAO;
+    
     protected final Shader linesShader;
-    protected final Shader triangleShader;
-    protected final Shader polygonShader;
-    protected final Shader ellipseShader;
-    protected final Shader ellipseOutlineShader;
-    protected final Shader arcShader;
-    protected final Shader arcOutlineShader;
-    protected final Shader textureShader;
-    protected final Shader textShader;
     
-    protected final GLFloatBuffer polygonBuffer;
+    protected final VertexArray triangleLinesVAO;
+    protected final Shader      triangleShader;
+    protected final VertexArray triangleVAO;
+    
+    protected final VertexArray quadLinesVAO;
+    protected final Shader      quadShader;
+    protected final VertexArray quadVAO;
+    
+    protected final VertexArray polygonLinesVAO;
+    protected final Shader      polygonShader;
+    protected final VertexArray polygonVAO;
+    protected final GLBuffer    polygonSSBO;
+    
+    protected final Shader      ellipseOutlineShader;
+    protected final VertexArray ellipseOutlineVAO;
+    
+    protected final Shader      ellipseShader;
+    protected final VertexArray ellipseVAO;
+    
+    protected final Shader      arcOutlineShader;
+    protected final VertexArray arcOutlineVAO;
+    
+    protected final Shader      arcShader;
+    protected final VertexArray arcVAO;
+    
+    protected final Shader      textureShader;
+    protected final VertexArray textureVAO;
+    
+    protected final Shader      textShader;
+    protected final VertexArray textVAO;
+    
     
     protected OpenGLRenderer(Texture target)
     {
@@ -59,21 +83,44 @@ public class OpenGLRenderer extends Renderer
         this.proj.m11(2F / screenHeight());
         this.proj.m22(2F / max(screenWidth() * screenWidth(), screenHeight() * screenHeight()));
         
-        this.vertexArray = new VertexArray();
+        this.pointShader = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/point.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.pointVAO    = new VertexArray().bind().add(GL_FLOAT, new GLBuffer(GL_ARRAY_BUFFER).bind().resize(2, GL_DYNAMIC_DRAW).unbind(), 2).unbind();
         
-        this.pointShader          = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/point.geom").loadFragmentFile("shader/shared.frag").validate();
-        this.lineShader           = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/line.geom").loadFragmentFile("shader/shared.frag").validate();
-        this.linesShader          = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/lines.geom").loadFragmentFile("shader/shared.frag").validate();
-        this.triangleShader       = new Shader().loadVertexFile("shader/shared.vert").loadFragmentFile("shader/shared.frag").validate();
-        this.polygonShader        = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/poly.geom").loadFragmentFile("shader/shared.frag").validate();
-        this.ellipseShader        = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/ellipse.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.lineShader = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/line.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.lineVAO    = new VertexArray().bind().add(GL_FLOAT, new GLBuffer(GL_ARRAY_BUFFER).bind().resize(4, GL_DYNAMIC_DRAW).unbind(), 2).unbind();
+        
+        this.linesShader = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/lines.geom").loadFragmentFile("shader/shared.frag").validate();
+        
+        this.triangleLinesVAO = new VertexArray().bind().add(GL_FLOAT, new GLBuffer(GL_ARRAY_BUFFER).bind().resize(24, GL_DYNAMIC_DRAW).unbind(), 2).unbind();
+        this.triangleShader   = new Shader().loadVertexFile("shader/shared.vert").loadFragmentFile("shader/shared.frag").validate();
+        this.triangleVAO      = new VertexArray().bind().add(GL_FLOAT, new GLBuffer(GL_ARRAY_BUFFER).bind().resize(6, GL_DYNAMIC_DRAW).unbind(), 2).unbind();
+        
+        this.quadLinesVAO = new VertexArray().bind().add(GL_FLOAT, new GLBuffer(GL_ARRAY_BUFFER).bind().resize(32, GL_DYNAMIC_DRAW).unbind(), 2).unbind();
+        this.quadShader   = new Shader().loadVertexFile("shader/shared.vert").loadFragmentFile("shader/shared.frag").validate();
+        this.quadVAO      = new VertexArray().bind().add(GL_FLOAT, new GLBuffer(GL_ARRAY_BUFFER).bind().resize(8, GL_DYNAMIC_DRAW).unbind(), 2).unbind();
+        
+        this.polygonLinesVAO = new VertexArray().bind().add(GL_FLOAT, new GLBuffer(GL_ARRAY_BUFFER), 2).unbind();
+        this.polygonShader   = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/poly.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.polygonVAO      = new VertexArray().bind().add(GL_FLOAT, new GLBuffer(GL_ARRAY_BUFFER).bind().resize(2, GL_DYNAMIC_DRAW).unbind(), 2).unbind();
+        this.polygonSSBO     = new GLBuffer(GL_SHADER_STORAGE_BUFFER).bind().base(1).unbind();
+        
         this.ellipseOutlineShader = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/ellipseOutline.geom").loadFragmentFile("shader/shared.frag").validate();
-        this.arcShader            = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/arc.geom").loadFragmentFile("shader/shared.frag").validate();
-        this.arcOutlineShader     = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/arcOutline.geom").loadFragmentFile("shader/shared.frag").validate();
-        this.textureShader        = new Shader().loadVertexFile("shader/texture.vert").loadFragmentFile("shader/texture.frag").validate();
-        this.textShader           = new Shader().loadVertexFile("shader/texture.vert").loadFragmentFile("shader/text.frag").validate();
+        this.ellipseOutlineVAO    = new VertexArray().bind().add(GL_FLOAT, new GLBuffer(GL_ARRAY_BUFFER).bind().resize(2, GL_DYNAMIC_DRAW).unbind(), 2).unbind();
         
-        this.polygonBuffer = new GLFloatBuffer(GL_SHADER_STORAGE_BUFFER).bind().base(1).unbind();
+        this.ellipseShader = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/ellipse.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.ellipseVAO    = new VertexArray().bind().add(GL_FLOAT, new GLBuffer(GL_ARRAY_BUFFER).bind().resize(2, GL_DYNAMIC_DRAW).unbind(), 2).unbind();
+        
+        this.arcOutlineShader = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/arcOutline.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.arcOutlineVAO    = new VertexArray().bind().add(GL_FLOAT, new GLBuffer(GL_ARRAY_BUFFER).bind().resize(2, GL_DYNAMIC_DRAW).unbind(), 2).unbind();
+        
+        this.arcShader = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/arc.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.arcVAO    = new VertexArray().bind().add(GL_FLOAT, new GLBuffer(GL_ARRAY_BUFFER).bind().resize(2, GL_DYNAMIC_DRAW).unbind(), 2).unbind();
+        
+        this.textureShader = new Shader().loadVertexFile("shader/texture.vert").loadFragmentFile("shader/texture.frag").validate();
+        this.textureVAO    = new VertexArray().bind().add(GL_FLOAT, new GLBuffer(GL_ARRAY_BUFFER).bind().resize(16, GL_DYNAMIC_DRAW).unbind(), 2, 2).unbind();
+        
+        this.textShader = new Shader().loadVertexFile("shader/texture.vert").loadFragmentFile("shader/text.frag").validate();
+        this.textVAO    = new VertexArray().bind().add(GL_FLOAT, new GLBuffer(GL_ARRAY_BUFFER), 2, 2).unbind();
     }
     
     /**
@@ -208,10 +255,8 @@ public class OpenGLRenderer extends Renderer
         this.pointShader.setVec2("viewport", screenWidth(), screenHeight());
         this.pointShader.setFloat("thickness", (float) this.weight);
         
-        this.vertexArray.bind();
-        this.vertexArray.reset();
-        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {(float) x, (float) y}, 2);
-        this.vertexArray.draw(GL_POINTS);
+        this.pointVAO.bind().getVertexBuffer(0).bind().set(new float[] {(float) x, (float) y}, GL_DYNAMIC_DRAW).unbind();
+        this.pointVAO.draw(GL_POINTS).unbind();
     }
     
     /**
@@ -235,10 +280,8 @@ public class OpenGLRenderer extends Renderer
         this.lineShader.setVec2("viewport", screenWidth(), screenHeight());
         this.lineShader.setFloat("thickness", (float) this.weight);
         
-        this.vertexArray.bind();
-        this.vertexArray.reset();
-        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {(float) x1, (float) y1, (float) x2, (float) y2}, 2);
-        this.vertexArray.draw(GL_LINES);
+        this.lineVAO.bind().getVertexBuffer(0).bind().set(new float[] {(float) x1, (float) y1, (float) x2, (float) y2}, GL_DYNAMIC_DRAW).unbind();
+        this.lineVAO.draw(GL_LINES).unbind();
     }
     
     /**
@@ -282,14 +325,12 @@ public class OpenGLRenderer extends Renderer
         this.linesShader.setVec2("viewport", screenWidth(), screenHeight());
         this.linesShader.setFloat("thickness", (float) this.weight);
         
-        this.vertexArray.bind();
-        this.vertexArray.reset();
-        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {
+        this.triangleLinesVAO.bind().getVertexBuffer(0).bind().set(new float[] {
                 (float) x3, (float) y3, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3,
                 (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x1, (float) y1,
                 (float) x2, (float) y2, (float) x3, (float) y3, (float) x1, (float) y1, (float) x2, (float) y2
-        }, 2);
-        this.vertexArray.draw(GL_LINES_ADJACENCY);
+        }, GL_DYNAMIC_DRAW).unbind();
+        this.triangleLinesVAO.draw(GL_LINES_ADJACENCY).unbind();
     }
     
     /**
@@ -313,10 +354,8 @@ public class OpenGLRenderer extends Renderer
         this.triangleShader.setMat4("pv", this.pv);
         this.triangleShader.setColor("color", this.fill);
         
-        this.vertexArray.bind();
-        this.vertexArray.reset();
-        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {(float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3}, 2);
-        this.vertexArray.draw(GL_TRIANGLES);
+        this.triangleVAO.bind().getVertexBuffer(0).bind().set(new float[] {(float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3}, GL_DYNAMIC_DRAW).unbind();
+        this.triangleVAO.draw(GL_TRIANGLES).unbind();
     }
     
     /**
@@ -408,15 +447,13 @@ public class OpenGLRenderer extends Renderer
         this.linesShader.setVec2("viewport", screenWidth(), screenHeight());
         this.linesShader.setFloat("thickness", (float) this.weight);
         
-        this.vertexArray.bind();
-        this.vertexArray.reset();
-        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {
+        this.quadLinesVAO.bind().getVertexBuffer(0).bind().set(new float[] {
                 (float) x4, (float) y4, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3,
                 (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4,
                 (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4, (float) x1, (float) y1,
                 (float) x3, (float) y3, (float) x4, (float) y4, (float) x1, (float) y1, (float) x2, (float) y2
-        }, 2);
-        this.vertexArray.draw(GL_LINES_ADJACENCY);
+        }, GL_DYNAMIC_DRAW).unbind();
+        this.quadLinesVAO.draw(GL_LINES_ADJACENCY).unbind();
     }
     
     /**
@@ -440,14 +477,12 @@ public class OpenGLRenderer extends Renderer
     {
         makeCurrent();
         
-        this.triangleShader.bind();
-        this.triangleShader.setMat4("pv", this.pv);
-        this.triangleShader.setColor("color", this.fill);
+        this.quadShader.bind();
+        this.quadShader.setMat4("pv", this.pv);
+        this.quadShader.setColor("color", this.fill);
         
-        this.vertexArray.bind();
-        this.vertexArray.reset();
-        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {(float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4}, 2);
-        this.vertexArray.draw(GL_QUADS);
+        this.quadVAO.bind().getVertexBuffer(0).bind().set(new float[] {(float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4}, GL_DYNAMIC_DRAW).unbind();
+        this.quadVAO.draw(GL_QUADS).unbind();
     }
     
     /**
@@ -490,10 +525,8 @@ public class OpenGLRenderer extends Renderer
             array[index++] = (float) points[(2 * four) + 1];
         }
         
-        this.vertexArray.bind();
-        this.vertexArray.reset();
-        this.vertexArray.add(GL_DYNAMIC_DRAW, array, 2);
-        this.vertexArray.draw(GL_LINES_ADJACENCY);
+        this.polygonLinesVAO.bind().getVertexBuffer(0).bind().set(array, GL_DYNAMIC_DRAW).unbind();
+        this.polygonLinesVAO.resize().draw(GL_LINES_ADJACENCY).unbind();
     }
     
     /**
@@ -518,12 +551,9 @@ public class OpenGLRenderer extends Renderer
         
         float[] array = new float[points.length];
         for (int i = 0, n = points.length; i < n; i++) array[i] = (float) points[i];
-        this.polygonBuffer.bind().set(array, GL_STATIC_DRAW);
+        this.polygonSSBO.bind().set(array, GL_STATIC_DRAW).unbind();
         
-        this.vertexArray.bind();
-        this.vertexArray.reset();
-        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {(float) points[0], (float) points[1]}, 2);
-        this.vertexArray.draw(GL_POINTS);
+        this.polygonVAO.bind().draw(GL_POINTS).unbind();
     }
     
     /**
@@ -578,10 +608,8 @@ public class OpenGLRenderer extends Renderer
         this.ellipseOutlineShader.setVec2("viewport", screenWidth(), screenHeight());
         this.ellipseOutlineShader.setFloat("thickness", (float) this.weight);
         
-        this.vertexArray.bind();
-        this.vertexArray.reset();
-        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {(float) x, (float) y}, 2);
-        this.vertexArray.draw(GL_POINTS);
+        this.ellipseOutlineVAO.bind().getVertexBuffer(0).bind().set(new float[] {(float) x, (float) y}, GL_DYNAMIC_DRAW).unbind();
+        this.ellipseOutlineVAO.draw(GL_POINTS).unbind();
     }
     
     /**
@@ -604,10 +632,8 @@ public class OpenGLRenderer extends Renderer
         this.ellipseShader.setColor("color", this.fill);
         this.ellipseShader.setVec2("radius", (float) rx, (float) ry);
         
-        this.vertexArray.bind();
-        this.vertexArray.reset();
-        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {(float) x, (float) y}, 2);
-        this.vertexArray.draw(GL_POINTS);
+        this.ellipseVAO.bind().getVertexBuffer(0).bind().set(new float[] {(float) x, (float) y}, GL_DYNAMIC_DRAW).unbind();
+        this.ellipseVAO.draw(GL_POINTS).unbind();
     }
     
     /**
@@ -636,10 +662,8 @@ public class OpenGLRenderer extends Renderer
         this.arcOutlineShader.setVec2("bounds", (float) start, (float) stop);
         this.arcOutlineShader.setInt("mode", this.arcMode.ordinal());
         
-        this.vertexArray.bind();
-        this.vertexArray.reset();
-        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {(float) x, (float) y}, 2);
-        this.vertexArray.draw(GL_POINTS);
+        this.arcOutlineVAO.bind().getVertexBuffer(0).bind().set(new float[] {(float) x, (float) y}, GL_DYNAMIC_DRAW).unbind();
+        this.arcOutlineVAO.draw(GL_POINTS).unbind();
     }
     
     /**
@@ -666,10 +690,8 @@ public class OpenGLRenderer extends Renderer
         this.arcShader.setVec2("bounds", (float) start, (float) stop);
         this.arcShader.setInt("mode", this.arcMode.ordinal());
         
-        this.vertexArray.bind();
-        this.vertexArray.reset();
-        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {(float) x, (float) y}, 2);
-        this.vertexArray.draw(GL_POINTS);
+        this.arcVAO.bind().getVertexBuffer(0).bind().set(new float[] {(float) x, (float) y}, GL_DYNAMIC_DRAW).unbind();
+        this.arcVAO.draw(GL_POINTS).unbind();
     }
     
     /**
@@ -699,15 +721,13 @@ public class OpenGLRenderer extends Renderer
         this.textureShader.bind();
         this.textureShader.setMat4("pv", this.pv);
         
-        this.vertexArray.bind();
-        this.vertexArray.reset();
-        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {
+        this.textureVAO.bind().getVertexBuffer(0).bind().set(new float[] {
                 (float) x1, (float) y1, (float) u1, (float) v1,
                 (float) x1, (float) y2, (float) u1, (float) v2,
                 (float) x2, (float) y2, (float) u2, (float) v2,
                 (float) x2, (float) y1, (float) u2, (float) v1
-        }, 2, 2);
-        this.vertexArray.draw(GL_QUADS);
+        }, GL_DYNAMIC_DRAW).unbind();
+        this.textureVAO.draw(GL_QUADS).unbind();
     }
     
     /**
@@ -767,11 +787,9 @@ public class OpenGLRenderer extends Renderer
             data[index++] = (float) u2;
             data[index++] = (float) v1;
         }
-        
-        this.vertexArray.bind();
-        this.vertexArray.reset();
-        this.vertexArray.add(GL_DYNAMIC_DRAW, data, 2, 2);
-        this.vertexArray.draw(GL_QUADS);
+    
+        this.textVAO.bind().getVertexBuffer(0).bind().set(data, GL_DYNAMIC_DRAW).unbind();
+        this.textVAO.resize().draw(GL_QUADS).unbind();
     }
     
     /**

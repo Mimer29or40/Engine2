@@ -121,9 +121,7 @@ public class Engine
         Engine.startTime = System.nanoTime();
         
         Engine.LOGGER.fine("Looking for Extensions");
-        
-        Reflections reflections = new Reflections("engine");
-        for (Class<? extends Extension> ext : reflections.getSubTypesOf(Extension.class))
+        for (Class<? extends Extension> ext : new Reflections("engine").getSubTypesOf(Extension.class))
         {
             try
             {
@@ -148,7 +146,8 @@ public class Engine
             {
                 Engine.LOGGER.fine("Extension Post Setup");
                 Engine.extensions.values().forEach(Extension::afterSetup);
-                
+    
+                Engine.LOGGER.finest("Preparing Context for Thread Swap");
                 Engine.window.unmakeCurrent();
                 GL.setCapabilities(null);
                 
@@ -184,7 +183,6 @@ public class Engine
                                                                                  "}\n"
                                                                                 ).validate();
                         
-                        int vboHUD  = glGenBuffers();
                         int vboPerf = glGenBuffers();
                         glBindBuffer(GL_ARRAY_BUFFER, vboPerf);
                         glBufferData(GL_ARRAY_BUFFER, 12 * 1024, GL_DYNAMIC_DRAW);
@@ -519,7 +517,7 @@ public class Engine
         glEnable(GL_TEXTURE_2D);
         
         Engine.vertexArray = new VertexArray().bind();
-        Engine.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, -1.0F, 1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, 2);
+        Engine.vertexArray.add(new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, -1.0F, 1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, GL_DYNAMIC_DRAW, 2);
         
         Engine.renderer = Renderer.getRenderer(Engine.target, renderer);
     }

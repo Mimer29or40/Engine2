@@ -53,17 +53,15 @@ public class Logger
     
     private void log(Level level, String message)
     {
-        if (level.intValue() >= Logger.level.intValue())
+        if (level.intValue() < Logger.level.intValue()) return;
+        try
         {
-            try
-            {
-                Logger.OUT.write(('[' + getCurrentTimeString() + "] [" + Thread.currentThread().getName() + '/' + level + "]").getBytes());
-                if (!this.name.equals("")) Logger.OUT.write((" [" + this.name + "]").getBytes());
-                Logger.OUT.write((": " + message + '\n').getBytes());
-                Logger.OUT.flush();
-            }
-            catch (IOException ignored) { }
+            Logger.OUT.write(('[' + getCurrentTimeString() + "] [" + Thread.currentThread().getName() + '/' + level + "]").getBytes());
+            if (!this.name.equals("")) Logger.OUT.write((" [" + this.name + "]").getBytes());
+            Logger.OUT.write((": " + message + '\n').getBytes());
+            Logger.OUT.flush();
         }
+        catch (IOException ignored) { }
     }
     
     /**
@@ -74,6 +72,7 @@ public class Logger
      */
     public void log(Level level, Object... objects)
     {
+        if (level.intValue() < Logger.level.intValue()) return;
         int n = objects.length;
         if (n == 0) return;
         StringBuilder builder = new StringBuilder(String.valueOf(objects[0]));
@@ -90,6 +89,7 @@ public class Logger
      */
     public void log(Level level, String format, Object... objects)
     {
+        if (level.intValue() < Logger.level.intValue()) return;
         if (Logger.PATTERN.matcher(format).find())
         {
             log(level, String.format(format, objects));

@@ -245,7 +245,7 @@ public class RenderToTexture extends OpenGLDemo
             indices[i++] = v + 2;
             indices[i++] = v + 3;
         }
-        this.vertexArray.addIndices(indices, GL_STATIC_DRAW);
+        this.vertexArray.addEBO(indices, GL_STATIC_DRAW);
         
         this.view.identity();
         

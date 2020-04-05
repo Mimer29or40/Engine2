@@ -127,7 +127,7 @@ public class Framebuffer
                 1.0f, -1.0f, 1.0f, 0.0f,
                 1.0f, 1.0f, 1.0f, 1.0f
         }, GL_STATIC_DRAW, 2, 2);
-        quadArray.addIndices(new int[] {0, 1, 2, 0, 2, 3}, GL_STATIC_DRAW);
+        quadArray.addEBO(new int[] {0, 1, 2, 0, 2, 3}, GL_STATIC_DRAW);
         quadArray.unbind();
         
         // load textures

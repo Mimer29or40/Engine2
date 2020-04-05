@@ -3,6 +3,7 @@ package engine.render;
 import engine.util.Logger;
 
 import java.nio.*;
+import java.util.Objects;
 
 import static org.lwjgl.opengl.GL43.*;
 
@@ -25,6 +26,27 @@ public class GLBuffer
     {
         this.id   = glGenBuffers();
         this.type = type;
+    }
+    
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GLBuffer that = (GLBuffer) o;
+        return this.id == that.id;
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(this.id);
+    }
+    
+    @Override
+    public String toString()
+    {
+        return "GLBuffer{" + "type=" + this.type + ", id=" + this.id + ", size=" + this.size + '}';
     }
     
     /**

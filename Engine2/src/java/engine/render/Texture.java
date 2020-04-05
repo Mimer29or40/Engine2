@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static engine.util.Util.getPath;
 import static org.lwjgl.opengl.GL30.*;
@@ -147,6 +148,27 @@ public class Texture
     public Texture(int width, int height)
     {
         this(width, height, 4, Color.BLACK);
+    }
+    
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Texture texture = (Texture) o;
+        return this.id == texture.id;
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(this.id);
+    }
+    
+    @Override
+    public String toString()
+    {
+        return "Texture{" + "id=" + this.id + ", width=" + this.width + ", height=" + this.height + ", channels=" + this.channels + '}';
     }
     
     /**
@@ -383,23 +405,29 @@ public class Texture
     }
     
     /**
-     * Uploads the color data to the GPU. Make sure to bind the texture first.
+     * Uploads the color data to the GPU.
+     * <p>
+     * Make sure to bind the texture first.
      *
      * @return This instance for call chaining.
      */
     public Texture upload()
     {
+        // TODO - Check if the ByteBuffer has been modified.
         if (this.data != null) glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this.width, this.height, this.format, GL_UNSIGNED_BYTE, this.data);
         return this;
     }
     
     /**
-     * Downloads the texture from the GPU and stores it into the buffer. Make sure to bind the texture first.
+     * Downloads the texture from the GPU and stores it into the buffer.
+     * <p>
+     * Make sure to bind the texture first.
      *
      * @return This instance for call chaining.
      */
     public Texture download()
     {
+        // TODO - Check if the GL texture has been modified.
         if (this.data != null) glGetTexImage(GL_TEXTURE_2D, 0, this.format, GL_UNSIGNED_BYTE, this.data);
         return this;
     }

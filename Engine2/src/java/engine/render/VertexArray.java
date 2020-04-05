@@ -1,9 +1,11 @@
 package engine.render;
 
+import engine.util.Logger;
 import engine.util.Util;
 
 import java.nio.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static org.lwjgl.opengl.GL30.*;
 
@@ -13,11 +15,15 @@ import static org.lwjgl.opengl.GL30.*;
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class VertexArray
 {
+    private static final Logger LOGGER = new Logger();
+    
     private final int id;
     
-    private final ArrayList<GLBuffer>           vertexBuffers = new ArrayList<>();
-    private       GLBuffer                      indexBuffer   = null;
-    private final ArrayList<ArrayList<Integer>> attributes    = new ArrayList<>();
+    private final ArrayList<GLBuffer> vertexBuffers = new ArrayList<>();
+    
+    private GLBuffer indexBuffer = null;
+    
+    private final ArrayList<ArrayList<Integer>> attributes = new ArrayList<>();
     
     private int vertexCount;
     
@@ -27,6 +33,27 @@ public class VertexArray
     public VertexArray()
     {
         this.id = glGenVertexArrays();
+    }
+    
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VertexArray that = (VertexArray) o;
+        return this.id == that.id;
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(this.id);
+    }
+    
+    @Override
+    public String toString()
+    {
+        return "VertexArray{" + "id=" + this.id + ", VBOs=" + this.vertexBuffers + ", EBO=" + this.indexBuffer + '}';
     }
     
     /**
@@ -83,6 +110,8 @@ public class VertexArray
      */
     public VertexArray bind()
     {
+        VertexArray.LOGGER.finest("Binding VertexArray: %s", this.id);
+        
         glBindVertexArray(this.id);
         if (this.indexBuffer != null) this.indexBuffer.bind();
         return this;
@@ -95,6 +124,8 @@ public class VertexArray
      */
     public VertexArray unbind()
     {
+        VertexArray.LOGGER.finest("Unbinding VertexArray: %s", this.id);
+        
         glBindVertexArray(0);
         if (this.indexBuffer != null) this.indexBuffer.unbind();
         return this;
@@ -107,6 +138,8 @@ public class VertexArray
      */
     public VertexArray delete()
     {
+        VertexArray.LOGGER.finest("Deleting VertexArray: %s", this.id);
+        
         glDeleteVertexArrays(this.id);
         return reset();
     }
@@ -120,10 +153,12 @@ public class VertexArray
      */
     public VertexArray reset()
     {
+        VertexArray.LOGGER.finest("Resetting VertexArray: %s", this.id);
+        
         for (GLBuffer vbo : this.vertexBuffers) vbo.delete();
         this.vertexBuffers.clear();
         if (this.indexBuffer != null) this.indexBuffer.delete();
-    
+        
         int i = 0;
         for (ArrayList<Integer> bufferAttributes : this.attributes)
         {
@@ -143,6 +178,8 @@ public class VertexArray
      */
     public VertexArray resize()
     {
+        VertexArray.LOGGER.finest("Resizing VertexArray: %s", this.id);
+        
         this.vertexCount = Integer.MAX_VALUE;
         for (int i = 0, n = this.vertexBuffers.size(); i < n; i++)
         {
@@ -165,25 +202,31 @@ public class VertexArray
     {
         if (this.indexBuffer != null)
         {
+            VertexArray.LOGGER.finest("Drawing indices for VertexArray: %s", this.id);
+            
             if (this.indexBuffer.size() > 0) glDrawElements(mode, this.indexBuffer.size(), GL_UNSIGNED_INT, 0);
         }
         else
         {
+            VertexArray.LOGGER.finest("Drawing vertices for VertexArray: %s", this.id);
+            
             if (this.vertexCount > 0) glDrawArrays(mode, 0, this.vertexCount);
         }
         return this;
     }
     
     /**
-     * Adds an index array buffer to the Vertex Array. The buffer object will be managed by the VertexArray object.
+     * Adds an element array buffer to the Vertex Array. The buffer object will be managed by the VertexArray object.
      * <p>
      * Make sure to bind the vertex array first.
      *
      * @param buffer The index array buffer
      * @return This instance for call chaining.
      */
-    public VertexArray addIndices(GLBuffer buffer)
+    public VertexArray addEBO(GLBuffer buffer)
     {
+        VertexArray.LOGGER.finest("Adding EBO (%s) into VertexArray: %s", buffer, this.id);
+    
         if (this.indexBuffer != null) this.indexBuffer.delete();
         this.indexBuffer = buffer;
         return this;
@@ -198,9 +241,9 @@ public class VertexArray
      * @param usage How the data should be used.
      * @return This instance for call chaining.
      */
-    public VertexArray addIndices(int[] data, int usage)
+    public VertexArray addEBO(int[] data, int usage)
     {
-        return addIndices(new GLBuffer(GL_ELEMENT_ARRAY_BUFFER).bind().set(data, usage));
+        return addEBO(new GLBuffer(GL_ELEMENT_ARRAY_BUFFER).bind().set(data, usage));
     }
     
     /**
@@ -212,9 +255,9 @@ public class VertexArray
      * @param usage How the data should be used.
      * @return This instance for call chaining.
      */
-    public VertexArray addIndices(IntBuffer data, int usage)
+    public VertexArray addEBO(IntBuffer data, int usage)
     {
-        return addIndices(new GLBuffer(GL_ELEMENT_ARRAY_BUFFER).bind().set(data, usage));
+        return addEBO(new GLBuffer(GL_ELEMENT_ARRAY_BUFFER).bind().set(data, usage));
     }
     
     /**
@@ -229,6 +272,8 @@ public class VertexArray
      */
     public VertexArray add(int type, GLBuffer buffer, int... sizes)
     {
+        VertexArray.LOGGER.finest("Adding VBO (%s) of type %s into VertexArray: %s", buffer, type, this.id);
+    
         if (sizes.length == 0) throw new RuntimeException("Invalid vertex size: Must have at least one size");
         int bufferAttributesSize = Util.sum(sizes);
         if (bufferAttributesSize == 0) throw new RuntimeException("Invalid vertex size: Vertex length must be > 0");

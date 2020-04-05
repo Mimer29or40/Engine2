@@ -110,7 +110,7 @@ public class Framebuffer
         
         // plane VAO
         VertexArray planeArray = new VertexArray().bind();
-        planeArray.add(new float[] {
+        planeArray.add(GL_STATIC_DRAW, new float[] {
                 5.0f, -0.5f, 5.0f, 2.0f, 0.0f,
                 -5.0f, -0.5f, 5.0f, 0.0f, 0.0f,
                 -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
@@ -122,7 +122,7 @@ public class Framebuffer
         
         // screen quad VAO
         VertexArray quadArray = new VertexArray().bind();
-        quadArray.add(new float[] {
+        quadArray.add(GL_STATIC_DRAW, new float[] {
                 -1.0f, 1.0f, 0.0f, 1.0f,
                 -1.0f, -1.0f, 0.0f, 0.0f,
                 1.0f, -1.0f, 1.0f, 0.0f,

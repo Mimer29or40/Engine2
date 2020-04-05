@@ -6,6 +6,7 @@ import org.lwjgl.stb.STBTTAlignedQuad;
 import org.lwjgl.stb.STBTTFontinfo;
 import org.lwjgl.stb.STBTTPackContext;
 import org.lwjgl.stb.STBTTPackedchar;
+import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
@@ -30,19 +31,6 @@ public class Font
     protected String        font;
     protected ByteBuffer    data;
     protected STBTTFontinfo info;
-    
-    private final STBTTAlignedQuad quad;
-    
-    private final FloatBuffer x;
-    private final FloatBuffer y;
-    
-    private final IntBuffer cpBuffer;
-    private final IntBuffer advancedBuffer;
-    private final IntBuffer bearingBuffer;
-    
-    private final IntBuffer ascentIntBuffer;
-    private final IntBuffer descentIntBuffer;
-    private final IntBuffer lineGapIntBuffer;
     
     protected int size;
     
@@ -70,19 +58,6 @@ public class Font
         this.data = Font.FILE_CACHE.computeIfAbsent(this.font, Util::resourceToByteBuffer);
         this.info = STBTTFontinfo.create();
         if (!stbtt_InitFont(this.info, this.data)) throw new RuntimeException("Font could not be loaded: " + font);
-        
-        this.quad = STBTTAlignedQuad.malloc();
-        
-        this.x = MemoryUtil.memAllocFloat(1);
-        this.y = MemoryUtil.memAllocFloat(1);
-        
-        this.cpBuffer       = MemoryUtil.memAllocInt(1);
-        this.advancedBuffer = MemoryUtil.memAllocInt(1);
-        this.bearingBuffer  = MemoryUtil.memAllocInt(1);
-        
-        this.ascentIntBuffer  = MemoryUtil.memAllocInt(1);
-        this.descentIntBuffer = MemoryUtil.memAllocInt(1);
-        this.lineGapIntBuffer = MemoryUtil.memAllocInt(1);
         
         this.size = Math.max(4, size);
         
@@ -284,20 +259,27 @@ public class Font
         double   width = 0;
         if (lines.length == 1)
         {
-            for (int i = 0, n = text.length(); i < n; )
+            try (MemoryStack stack = MemoryStack.stackPush())
             {
-                i += getCP(text, n, i, this.cpBuffer);
-                int cp = this.cpBuffer.get(0);
-                stbtt_GetCodepointHMetrics(info, cp, this.advancedBuffer, this.bearingBuffer);
-                width += this.advancedBuffer.get(0);
+                IntBuffer cpBuffer      = stack.mallocInt(1);
+                IntBuffer advBuffer     = stack.mallocInt(1);
+                IntBuffer bearingBuffer = stack.mallocInt(1);
                 
-                if (i < n)
+                for (int i = 0, n = text.length(); i < n; )
                 {
-                    getCP(text, n, i, this.cpBuffer);
-                    width += stbtt_GetCodepointKernAdvance(info, cp, this.cpBuffer.get(0));
+                    i += getCP(text, n, i, cpBuffer);
+                    int cp = cpBuffer.get(0);
+                    stbtt_GetCodepointHMetrics(info, cp, advBuffer, bearingBuffer);
+                    width += advBuffer.get(0);
+                    
+                    if (i < n)
+                    {
+                        getCP(text, n, i, cpBuffer);
+                        width += stbtt_GetCodepointKernAdvance(info, cp, cpBuffer.get(0));
+                    }
                 }
+                return width * this.scaleMap.get(this.size);
             }
-            return width * this.scaleMap.get(this.size);
         }
         else
         {
@@ -341,25 +323,32 @@ public class Font
         double ascent = this.ascentMap.get(this.size);
         
         double[] vertices = new double[n * 8];
-        
-        int  index;
-        char character;
-        this.x.put(0, 0);
-        this.y.put(0, 0);
-        for (int i = 0; i < n; i++)
+        try (MemoryStack stack = MemoryStack.stackPush())
         {
-            index     = i * 8;
-            character = text.charAt(i);
-            stbtt_GetPackedQuad(charData, width, height, character, this.x, this.y, this.quad, this.pixelAligned);
-            if (character == ' ') continue;
-            vertices[index]     = this.quad.x0();
-            vertices[index + 1] = this.quad.y0() + ascent;
-            vertices[index + 2] = this.quad.x1();
-            vertices[index + 3] = this.quad.y1() + ascent;
-            vertices[index + 4] = this.quad.s0();
-            vertices[index + 5] = this.quad.t0();
-            vertices[index + 6] = this.quad.s1();
-            vertices[index + 7] = this.quad.t1();
+            FloatBuffer x = stack.mallocFloat(1);
+            FloatBuffer y = stack.mallocFloat(1);
+            
+            STBTTAlignedQuad quad = STBTTAlignedQuad.mallocStack(stack);
+            
+            int  index;
+            char character;
+            x.put(0, 0);
+            y.put(0, 0);
+            for (int i = 0; i < n; i++)
+            {
+                index     = i * 8;
+                character = text.charAt(i);
+                stbtt_GetPackedQuad(charData, width, height, character, x, y, quad, this.pixelAligned);
+                if (character == ' ') continue;
+                vertices[index]     = quad.x0();
+                vertices[index + 1] = quad.y0() + ascent;
+                vertices[index + 2] = quad.x1();
+                vertices[index + 3] = quad.y1() + ascent;
+                vertices[index + 4] = quad.s0();
+                vertices[index + 5] = quad.t0();
+                vertices[index + 6] = quad.s1();
+                vertices[index + 7] = quad.t1();
+            }
         }
         return vertices;
     }
@@ -374,11 +363,18 @@ public class Font
         double scale = stbtt_ScaleForPixelHeight(this.info, this.size);
         this.scaleMap.put(this.size, scale);
         
-        stbtt_GetFontVMetrics(this.info, this.ascentIntBuffer, this.descentIntBuffer, this.lineGapIntBuffer);
-        
-        this.ascentMap.put(this.size, this.ascentIntBuffer.get(0) * scale);
-        this.descentMap.put(this.size, this.descentIntBuffer.get(0) * scale);
-        this.lineGapMap.put(this.size, this.lineGapIntBuffer.get(0) * scale);
+        try (MemoryStack stack = MemoryStack.stackPush())
+        {
+            IntBuffer ascent  = stack.mallocInt(1);
+            IntBuffer descent = stack.mallocInt(1);
+            IntBuffer lineGap = stack.mallocInt(1);
+            
+            stbtt_GetFontVMetrics(this.info, ascent, descent, lineGap);
+            
+            this.ascentMap.put(this.size, ascent.get(0) * scale);
+            this.descentMap.put(this.size, descent.get(0) * scale);
+            this.lineGapMap.put(this.size, lineGap.get(0) * scale);
+        }
         
         Texture texture      = null;
         boolean success      = false;

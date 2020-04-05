@@ -197,7 +197,7 @@ public class Keyboard extends Device<Keyboard.Key>
      */
     public class Key extends Device.Input
     {
-        private final int  scancode;
+        // private final int  scancode;
         private final char baseChar;
         private final char shiftChar;
         
@@ -205,18 +205,18 @@ public class Keyboard extends Device<Keyboard.Key>
         {
             super(Keyboard.this, name, reference);
             
-            this.scancode  = reference > 0 ? glfwGetKeyScancode(reference) : 0;
+            // this.scancode  = reference > 0 ? glfwGetKeyScancode(reference) : 0;
             this.baseChar  = (char) baseChar;
             this.shiftChar = (char) shiftChar;
         }
         
-        /**
-         * @return The keyboard scancode that represents this Key.
-         */
-        public int scancode()
-        {
-            return this.scancode;
-        }
+        // /**
+        //  * @return The keyboard scancode that represents this Key.
+        //  */
+        // public int scancode()
+        // {
+        //     return this.scancode;
+        // }
         
         /**
          * @return The baseChar of the keyboard.

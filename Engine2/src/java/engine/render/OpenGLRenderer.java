@@ -210,7 +210,7 @@ public class OpenGLRenderer extends Renderer
         
         this.vertexArray.bind();
         this.vertexArray.reset();
-        this.vertexArray.add(new float[] {(float) x, (float) y}, 2);
+        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {(float) x, (float) y}, 2);
         this.vertexArray.draw(GL_POINTS);
     }
     
@@ -237,7 +237,7 @@ public class OpenGLRenderer extends Renderer
         
         this.vertexArray.bind();
         this.vertexArray.reset();
-        this.vertexArray.add(new float[] {(float) x1, (float) y1, (float) x2, (float) y2}, 2);
+        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {(float) x1, (float) y1, (float) x2, (float) y2}, 2);
         this.vertexArray.draw(GL_LINES);
     }
     
@@ -274,6 +274,8 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void drawTriangle(double x1, double y1, double x2, double y2, double x3, double y3)
     {
+        makeCurrent();
+        
         this.linesShader.bind();
         this.linesShader.setMat4("pv", this.pv);
         this.linesShader.setColor("color", this.stroke);
@@ -282,7 +284,7 @@ public class OpenGLRenderer extends Renderer
         
         this.vertexArray.bind();
         this.vertexArray.reset();
-        this.vertexArray.add(new float[] {
+        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {
                 (float) x3, (float) y3, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3,
                 (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x1, (float) y1,
                 (float) x2, (float) y2, (float) x3, (float) y3, (float) x1, (float) y1, (float) x2, (float) y2
@@ -305,13 +307,15 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void fillTriangle(double x1, double y1, double x2, double y2, double x3, double y3)
     {
+        makeCurrent();
+        
         this.triangleShader.bind();
         this.triangleShader.setMat4("pv", this.pv);
         this.triangleShader.setColor("color", this.fill);
         
         this.vertexArray.bind();
         this.vertexArray.reset();
-        this.vertexArray.add(new float[] {(float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3}, 2);
+        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {(float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3}, 2);
         this.vertexArray.draw(GL_TRIANGLES);
     }
     
@@ -396,6 +400,8 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void drawQuad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
     {
+        makeCurrent();
+        
         this.linesShader.bind();
         this.linesShader.setMat4("pv", this.pv);
         this.linesShader.setColor("color", this.stroke);
@@ -404,7 +410,7 @@ public class OpenGLRenderer extends Renderer
         
         this.vertexArray.bind();
         this.vertexArray.reset();
-        this.vertexArray.add(new float[] {
+        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {
                 (float) x4, (float) y4, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3,
                 (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4,
                 (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4, (float) x1, (float) y1,
@@ -440,7 +446,7 @@ public class OpenGLRenderer extends Renderer
         
         this.vertexArray.bind();
         this.vertexArray.reset();
-        this.vertexArray.add(new float[] {(float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4}, 2);
+        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {(float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4}, 2);
         this.vertexArray.draw(GL_QUADS);
     }
     
@@ -458,6 +464,8 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void drawPolygon(double[] points)
     {
+        makeCurrent();
+        
         this.linesShader.bind();
         this.linesShader.setMat4("pv", this.pv);
         this.linesShader.setColor("color", this.stroke);
@@ -484,7 +492,7 @@ public class OpenGLRenderer extends Renderer
         
         this.vertexArray.bind();
         this.vertexArray.reset();
-        this.vertexArray.add(array, 2);
+        this.vertexArray.add(GL_DYNAMIC_DRAW, array, 2);
         this.vertexArray.draw(GL_LINES_ADJACENCY);
     }
     
@@ -502,6 +510,8 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void fillPolygon(double[] points)
     {
+        makeCurrent();
+        
         this.polygonShader.bind();
         this.polygonShader.setMat4("pv", this.pv);
         this.polygonShader.setColor("color", this.fill);
@@ -512,7 +522,7 @@ public class OpenGLRenderer extends Renderer
         
         this.vertexArray.bind();
         this.vertexArray.reset();
-        this.vertexArray.add(new float[] {(float) points[0], (float) points[1]}, 2);
+        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {(float) points[0], (float) points[1]}, 2);
         this.vertexArray.draw(GL_POINTS);
     }
     
@@ -570,7 +580,7 @@ public class OpenGLRenderer extends Renderer
         
         this.vertexArray.bind();
         this.vertexArray.reset();
-        this.vertexArray.add(new float[] {(float) x, (float) y}, 2);
+        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {(float) x, (float) y}, 2);
         this.vertexArray.draw(GL_POINTS);
     }
     
@@ -596,7 +606,7 @@ public class OpenGLRenderer extends Renderer
         
         this.vertexArray.bind();
         this.vertexArray.reset();
-        this.vertexArray.add(new float[] {(float) x, (float) y}, 2);
+        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {(float) x, (float) y}, 2);
         this.vertexArray.draw(GL_POINTS);
     }
     
@@ -628,7 +638,7 @@ public class OpenGLRenderer extends Renderer
         
         this.vertexArray.bind();
         this.vertexArray.reset();
-        this.vertexArray.add(new float[] {(float) x, (float) y}, 2);
+        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {(float) x, (float) y}, 2);
         this.vertexArray.draw(GL_POINTS);
     }
     
@@ -658,7 +668,7 @@ public class OpenGLRenderer extends Renderer
         
         this.vertexArray.bind();
         this.vertexArray.reset();
-        this.vertexArray.add(new float[] {(float) x, (float) y}, 2);
+        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {(float) x, (float) y}, 2);
         this.vertexArray.draw(GL_POINTS);
     }
     
@@ -684,14 +694,14 @@ public class OpenGLRenderer extends Renderer
     {
         makeCurrent();
         
-        texture.bind().upload();
+        texture.bind();
         
         this.textureShader.bind();
         this.textureShader.setMat4("pv", this.pv);
         
         this.vertexArray.bind();
         this.vertexArray.reset();
-        this.vertexArray.add(new float[] {
+        this.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {
                 (float) x1, (float) y1, (float) u1, (float) v1,
                 (float) x1, (float) y2, (float) u1, (float) v2,
                 (float) x2, (float) y2, (float) u2, (float) v2,
@@ -760,7 +770,7 @@ public class OpenGLRenderer extends Renderer
         
         this.vertexArray.bind();
         this.vertexArray.reset();
-        this.vertexArray.add(data, 2, 2);
+        this.vertexArray.add(GL_DYNAMIC_DRAW, data, 2, 2);
         this.vertexArray.draw(GL_QUADS);
     }
     

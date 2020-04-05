@@ -10,13 +10,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="lwjgl" level="application" />
-    <orderEntry type="library" name="lwjgl-opengl" level="application" />
-    <orderEntry type="library" name="lwjgl-stb" level="application" />
-    <orderEntry type="library" name="lwjgl-glfw" level="application" />
-    <orderEntry type="library" name="org.joml:joml:1.9.20" level="application" />
+    <orderEntry type="library" name="Joml" level="application" />
     <orderEntry type="module-library">
-      <library name="org.reflections:reflections:0.9.12" type="repository">
+      <library name="Reflections" type="repository">
         <properties maven-id="org.reflections:reflections:0.9.12" />
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../../lib/reflections-0.9.12.jar!/" />
@@ -32,5 +28,10 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="library" name="lwjgl" level="application" />
+    <orderEntry type="library" name="lwjgl-glfw" level="application" />
+    <orderEntry type="library" name="lwjgl-opengl" level="application" />
+    <orderEntry type="library" name="lwjgl-stb" level="application" />
+    <orderEntry type="library" name="lwjglx-debug" level="application" />
   </component>
 </module>

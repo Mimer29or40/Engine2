@@ -28,6 +28,7 @@ public class EventTests extends Engine
         size(800, 400, 2, 2, OPENGL);
         frameRate(60);
         enableBlend(true);
+        enableProfiler();
         
         textSize(20);
         
@@ -41,6 +42,7 @@ public class EventTests extends Engine
     @Override
     protected void draw(double elapsedTime)
     {
+        if (keyboard().P.held()) printFrameData("");
         if (keyboard().SPACE.down()) window().toggleFullscreen();
         if (keyboard().C.down()) mouse().toggleCaptured();
         

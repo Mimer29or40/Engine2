@@ -8,7 +8,7 @@ import org.joml.Vector2i;
 import org.joml.Vector2ic;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.opengl.GL;
+import org.lwjgl.glfw.GLFWMonitorCallback;
 
 import java.util.Objects;
 
@@ -22,6 +22,8 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class Window
 {
     private static final Logger LOGGER = new Logger();
+    
+    private final GLFWMonitorCallback glfwMonitorCallback;
     
     private Monitor[] monitors;
     private Monitor   monitor;
@@ -51,6 +53,8 @@ public class Window
     private final Vector2i viewSize = new Vector2i();
     
     private boolean update = true;
+    
+    private String title = "", newTitle = "";
     
     public Window(Mouse mouse, Keyboard keyboard)
     {
@@ -95,21 +99,25 @@ public class Window
         
         Window.LOGGER.finest("GLFW: Event Handling");
         
-        glfwSetMonitorCallback((monitor, event) -> {
-            PointerBuffer buffer = Objects.requireNonNull(glfwGetMonitors(), "No monitors found.");
-            this.monitors = new Monitor[buffer.limit()];
-            double next, max = 0.0;
-            for (int i = 0, n = this.monitors.length; i < n; i++)
+        glfwSetMonitorCallback(this.glfwMonitorCallback = new GLFWMonitorCallback() {
+            @Override
+            public void invoke(long monitor, int event)
             {
-                this.monitors[i] = new Monitor(buffer.get(), i);
-                if ((next = this.monitors[i].isWindowIn(this)) > max)
+                PointerBuffer buffer = Objects.requireNonNull(glfwGetMonitors(), "No monitors found.");
+                Window.this.monitors = new Monitor[buffer.limit()];
+                double next, max = 0.0;
+                for (int i = 0, n = Window.this.monitors.length; i < n; i++)
                 {
-                    max          = next;
-                    this.monitor = this.monitors[i];
+                    Window.this.monitors[i] = new Monitor(buffer.get(), i);
+                    if ((next = Window.this.monitors[i].isWindowIn(Window.this)) > max)
+                    {
+                        max          = next;
+                        Window.this.monitor = Window.this.monitors[i];
+                    }
                 }
+                Window.this.newPos.x = (Window.this.monitor.width() - Window.this.size.x) >> 1;
+                Window.this.newPos.y = (Window.this.monitor.height() - Window.this.size.y) >> 1;
             }
-            this.newPos.x = (this.monitor.width() - this.size.x) >> 1;
-            this.newPos.y = (this.monitor.height() - this.size.y) >> 1;
         });
         
         glfwSetWindowCloseCallback(this.handle, window -> {
@@ -451,7 +459,7 @@ public class Window
      */
     public void title(String title)
     {
-        glfwSetWindowTitle(this.handle, title);
+        this.newTitle = title;
     }
     
     /**
@@ -591,6 +599,12 @@ public class Window
         glfwPollEvents();
         
         glfwSetInputMode(this.handle, GLFW_CURSOR, this.mouse.captured() ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+        
+        if (!this.title.equals(this.newTitle))
+        {
+            this.title = this.newTitle;
+            glfwSetWindowTitle(this.handle, this.title);
+        }
     }
     
     /**
@@ -609,15 +623,15 @@ public class Window
      */
     public void destroy()
     {
+        this.glfwMonitorCallback.free();
+        
         if (this.handle > 0)
         {
-            GL.destroy();
-            
             glfwFreeCallbacks(this.handle);
             glfwDestroyWindow(this.handle);
-            
-            glfwTerminate();
-            glfwSetErrorCallback(null);
         }
+        
+        Objects.requireNonNull(glfwSetErrorCallback(null)).free();
+        glfwTerminate();
     }
 }

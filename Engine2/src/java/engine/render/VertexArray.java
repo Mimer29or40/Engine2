@@ -103,11 +103,11 @@ public class VertexArray
     {
         if (this.ebo > 0)
         {
-            glDrawElements(mode, this.indexCount, GL_UNSIGNED_INT, 0);
+            if (this.indexCount > 0) glDrawElements(mode, this.indexCount, GL_UNSIGNED_INT, 0);
         }
         else
         {
-            glDrawArrays(mode, 0, this.vertexCount);
+            if (this.vertexCount > 0) glDrawArrays(mode, 0, this.vertexCount);
         }
         return this;
     }
@@ -179,18 +179,6 @@ public class VertexArray
     }
     
     /**
-     * Adds a float buffer with many attributes to the Vertex Array.
-     *
-     * @param data  The data
-     * @param sizes The attributes lengths
-     * @return This instance for call chaining.
-     */
-    public VertexArray add(float[] data, int... sizes)
-    {
-        return add(GL_STATIC_DRAW, data, sizes);
-    }
-    
-    /**
      * Adds an int buffer with many attributes to the Vertex Array.
      *
      * @param usage How the data should be used.
@@ -224,17 +212,5 @@ public class VertexArray
         
         this.vboList.add(vbo);
         return this;
-    }
-    
-    /**
-     * Adds an int buffer with many attributes to the Vertex Array.
-     *
-     * @param data  The data
-     * @param sizes The attributes lengths
-     * @return This instance for call chaining.
-     */
-    public VertexArray add(int[] data, int... sizes)
-    {
-        return add(GL_STATIC_DRAW, data, sizes);
     }
 }

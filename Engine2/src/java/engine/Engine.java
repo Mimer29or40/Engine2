@@ -13,18 +13,22 @@ import engine.util.Random;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.system.MemoryStack;
 import org.reflections.Reflections;
 
 import java.lang.Math;
 import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 
 import static engine.util.Util.getCurrentDateTimeString;
-import static engine.util.Util.println;
 import static org.lwjgl.opengl.GL43.*;
+import static org.lwjgl.stb.STBEasyFont.stb_easy_font_height;
+import static org.lwjgl.stb.STBEasyFont.stb_easy_font_print;
 import static org.lwjgl.stb.STBImageWrite.stbi_write_png;
+import static org.lwjgl.system.MemoryStack.stackPush;
 
 @SuppressWarnings({"EmptyMethod", "unused"})
 public class Engine
@@ -145,14 +149,50 @@ public class Engine
                 Engine.LOGGER.fine("Extension Post Setup");
                 Engine.extensions.values().forEach(Extension::afterSetup);
                 
+                GL.setCapabilities(null);
                 Engine.window.unmakeCurrent();
+                
+                final CountDownLatch latch = new CountDownLatch(1);
                 
                 new Thread(() -> {
                     try
                     {
                         Engine.window.makeCurrent();
-                        
                         GL.createCapabilities();
+                        
+                        Shader hudShader = new Shader().loadVertex("#version 330\n" +
+                                                                   "\n" +
+                                                                   "uniform mat4 mMVP;\n" +
+                                                                   "\n" +
+                                                                   "layout(location = 0) in vec2 iPosition;\n" +
+                                                                   "//layout(location = 1) in vec4 iColor;\n" +
+                                                                   "\n" +
+                                                                   "out vec4 vColor;\n" +
+                                                                   "\n" +
+                                                                   "void main(void) {\n" +
+                                                                   "  gl_Position = mMVP * vec4(iPosition, 0.0, 1.0);\n" +
+                                                                   "  vColor = vec4(1, 1, 1, 1);\n" +
+                                                                   "}\n"
+                                                                  ).loadFragment("#version 330\n" +
+                                                                                 "\n" +
+                                                                                 "in vec4 vColor;\n" +
+                                                                                 "\n" +
+                                                                                 "layout(location = 0) out vec4 oColor;\n" +
+                                                                                 "\n" +
+                                                                                 "void main(void) {\n" +
+                                                                                 "  oColor = vColor;\n" +
+                                                                                 "}\n"
+                                                                                ).validate();
+                        
+                        int vboHUD  = glGenBuffers();
+                        int vboPerf = glGenBuffers();
+                        glBindBuffer(GL_ARRAY_BUFFER, vboPerf);
+                        glBufferData(GL_ARRAY_BUFFER, 12 * 1024, GL_DYNAMIC_DRAW);
+                        glBindBuffer(GL_ARRAY_BUFFER, 0);
+                        
+                        Matrix4f MVP = new Matrix4f().setOrtho(0F, screenWidth() * 2, screenHeight() * 2, 0F, -1F, 1F)
+                                                     .translate(4F, 4F, 0F)
+                                                     .scale(2F, 2F, 1F);
                         
                         long t, dt;
                         long lastFrame  = nanoseconds();
@@ -288,7 +328,41 @@ public class Engine
                                 {
                                     // TODO - Add profiler output to screen with stb_easy_font
                                     String parent = Engine.printFrame.equals("") ? null : Engine.printFrame;
-                                    println(Engine.PROFILER.getFormattedData(parent));
+                                    
+                                    String text = Engine.PROFILER.getFormattedData(parent);
+                                    // ByteBuffer charBuffer = BufferUtils.createByteBuffer(text.length() * 270);
+                                    // stb_easy_font_print(0, 0, text, null, charBuffer);
+                                    // glVertexPointer(2, GL_FLOAT, 16, charBuffer);
+                                    
+                                    hudShader.bind();
+                                    hudShader.setMat4("mMVP", MVP);
+                                    
+                                    int x = 2;
+                                    int y = 2;
+                                    for (String line : text.split("\n"))
+                                    {
+                                        try (MemoryStack frame = stackPush())
+                                        {
+                                            ByteBuffer textBuffer = frame.malloc(12 * 1024);
+                                            // ByteBuffer textBuffer = frame.malloc(270 * line.length());
+                                            int quads = stb_easy_font_print(x, y, line, null, textBuffer);
+                                            textBuffer.limit(quads * 4 * 16);
+                                            
+                                            glBindBuffer(GL_ARRAY_BUFFER, vboPerf);
+                                            glBufferSubData(GL_ARRAY_BUFFER, 0, textBuffer);
+                                            
+                                            glVertexAttribPointer(0, 2, GL_FLOAT, false, 4 * 4, 0);
+                                            // glVertexAttrib4f(1, 1.0f, 0.0f, 0.0f, 1.0f);
+                                            glDrawArrays(GL_QUADS, 0, quads * 6);
+                                            
+                                            y += stb_easy_font_height(line);
+                                        }
+                                    }
+                                    // glDisableVertexAttribArray(0);
+                                    // glBindBuffer(GL_ARRAY_BUFFER, 0);
+                                    
+                                    // glUseProgram(0);
+                                    
                                     Engine.printFrame = null;
                                 }
                                 
@@ -343,8 +417,13 @@ public class Engine
                     }
                     finally
                     {
+                        GL.destroy();
+                        GL.setCapabilities(null);
                         Engine.window.unmakeCurrent();
+                        
                         Engine.running = false;
+                        
+                        latch.countDown();
                     }
                 }, "render").start();
                 
@@ -355,9 +434,11 @@ public class Engine
                         Engine.window.pollEvents();
                         Thread.yield();
                     }
+                    latch.await();
                 }
             }
         }
+        catch (InterruptedException ignored) { }
         finally
         {
             Engine.LOGGER.fine("Extension Pre Destruction");
@@ -368,6 +449,9 @@ public class Engine
             
             Engine.LOGGER.fine("Extension Post Destruction");
             Engine.extensions.values().forEach(Extension::afterDestroy);
+            
+            GL.destroy();
+            GL.setCapabilities(null);
             
             if (Engine.window != null) Engine.window.destroy();
         }
@@ -420,7 +504,6 @@ public class Engine
         Engine.window   = new Window(Engine.mouse, Engine.keyboard);
         
         Engine.window.makeCurrent();
-        
         GL.createCapabilities();
         
         Engine.blend = new Blend();
@@ -432,7 +515,7 @@ public class Engine
         glEnable(GL_TEXTURE_2D);
         
         Engine.vertexArray = new VertexArray().bind();
-        Engine.vertexArray.add(new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, -1.0F, 1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, 2);
+        Engine.vertexArray.add(GL_DYNAMIC_DRAW, new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, -1.0F, 1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, 2);
         
         Engine.renderer = Renderer.getRenderer(Engine.target, renderer);
     }

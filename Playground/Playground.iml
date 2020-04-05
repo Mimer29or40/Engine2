@@ -10,7 +10,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="Engine2" />
-    <orderEntry type="library" name="org.joml:joml:1.9.20" level="application" />
+    <orderEntry type="module" module-name="Engine2" scope="PROVIDED" />
+    <orderEntry type="library" scope="PROVIDED" name="Joml" level="application" />
   </component>
 </module>

@@ -187,8 +187,6 @@ public class Engine
                         VertexArray hudVertexArray = new VertexArray().bind().add(new GLBuffer(GL_ARRAY_BUFFER).bind().resize(12 * 1024, GL_DYNAMIC_DRAW).unbind(), GL_FLOAT, 3, GL_UNSIGNED_BYTE, 4).unbind();
                         
                         Matrix4f MVP = new Matrix4f().setOrtho(0F, Engine.window.width(), Engine.window.height(), 0F, -1F, 1F);
-                                                     // .translate(4F, 4F, 0F);
-                                                     // .scale(2F, 2F, 1F);
                         
                         long t, dt;
                         long lastFrame  = nanoseconds();
@@ -369,7 +367,7 @@ public class Engine
                                             // ByteBuffer textBuffer = frame.malloc(270 * line.length());
                                             int quads = stb_easy_font_print(x, y, line, null, textBuffer);
     
-                                            hudVertexArray.bind().getVertexBuffer(0).bind().set(textBuffer/*.limit(quads * 64)*/, GL_DYNAMIC_DRAW).unbind();
+                                            hudVertexArray.bind().getBuffer(0).bind().set(textBuffer/*.limit(quads * 64)*/, GL_DYNAMIC_DRAW).unbind();
                                             // ByteBuffer data = hudVertexArray.getVertexBuffer(0).bind().getByteBuffer();
                                             // while (data.remaining() > 0)
                                             // {
@@ -377,7 +375,7 @@ public class Engine
                                             // }
                                             // data.rewind();
                                             // println();
-                                            hudVertexArray.getVertexBuffer(0).unbind();
+                                            hudVertexArray.getBuffer(0).unbind();
                                             hudVertexArray/*.resize()*/.draw(GL_QUADS).unbind();
                                             // glBindBuffer.(GL_ARRAY_BUFFER, vboPerf);
                                             // glBufferSubData(GL_ARRAY_BUFFER, 0, textBuffer);

@@ -73,7 +73,7 @@ public class VertexArray
      * @param index The index.
      * @return The GLBuffer
      */
-    public GLBuffer getVertexBuffer(int index)
+    public GLBuffer getBuffer(int index)
     {
         return this.vertexBuffers.get(index);
     }
@@ -267,7 +267,7 @@ public class VertexArray
      * Make sure to bind the vertex array first.
      *
      * @param buffer  The buffer object;
-     * @param formats The types and sizes pairs for how the buffer is organized.
+     * @param formats The type and size pairs for how the buffer is organized.
      * @return This instance for call chaining.
      */
     public VertexArray add(GLBuffer buffer, int... formats)
@@ -317,42 +317,6 @@ public class VertexArray
     }
     
     /**
-     * Adds a buffer object with any number of attributes to the Vertex Array. The VertexArray object will manage the buffer.
-     * <p>
-     * Make sure to bind the vertex array first.
-     *
-     * @param type   The OpenGL data type
-     * @param buffer Teh buffer object;
-     * @param sizes  The attributes lengths
-     * @return This instance for call chaining.
-     */
-    public VertexArray add(int type, GLBuffer buffer, int... sizes)
-    {
-        VertexArray.LOGGER.finest("Adding VBO (%s) of type %s into VertexArray: %s", buffer, type, this.id);
-        
-        if (sizes.length == 0) throw new RuntimeException("Invalid vertex size: Must have at least one size");
-        int bufferAttributesSize = sum(sizes);
-        if (bufferAttributesSize == 0) throw new RuntimeException("Invalid vertex size: Vertex length must be > 0");
-        
-        this.vertexCount = Math.min(this.vertexCount > 0 ? this.vertexCount : Integer.MAX_VALUE, buffer.size() / bufferAttributesSize);
-        
-        ArrayList<Integer> bufferAttributes = new ArrayList<>();
-        
-        buffer.bind();
-        int attributeCount = attributeCount(), offset = 0, bytes = getBytes(type), stride = bufferAttributesSize * bytes;
-        for (int size : sizes)
-        {
-            bufferAttributes.add(size);
-            glVertexAttribPointer(attributeCount, size, type, false, stride, offset);
-            glEnableVertexAttribArray(attributeCount++);
-            offset += size * bytes;
-        }
-        this.vertexBuffers.add(buffer.unbind());
-        this.attributes.add(bufferAttributes);
-        return this;
-    }
-    
-    /**
      * Adds a buffer with any number of attributes to the Vertex Array.
      * <p>
      * Make sure to bind the vertex array first.
@@ -364,7 +328,7 @@ public class VertexArray
      */
     public VertexArray add(short[] data, int usage, int... sizes)
     {
-        return add(GL_UNSIGNED_SHORT, new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), sizes);
+        return add(new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL_SHORT));
     }
     
     /**
@@ -379,7 +343,7 @@ public class VertexArray
      */
     public VertexArray add(int[] data, int usage, int... sizes)
     {
-        return add(GL_UNSIGNED_INT, new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), sizes);
+        return add(new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL_INT));
     }
     
     /**
@@ -394,7 +358,7 @@ public class VertexArray
      */
     public VertexArray add(float[] data, int usage, int... sizes)
     {
-        return add(GL_FLOAT, new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), sizes);
+        return add(new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL_FLOAT));
     }
     
     /**
@@ -409,7 +373,7 @@ public class VertexArray
      */
     public VertexArray add(double[] data, int usage, int... sizes)
     {
-        return add(GL_DOUBLE, new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), sizes);
+        return add(new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL_DOUBLE));
     }
     
     /**
@@ -419,12 +383,12 @@ public class VertexArray
      *
      * @param data  The data
      * @param usage How the data should be used.
-     * @param sizes The attributes lengths
+     * @param formats The type and size pairs for how the buffer is organized.
      * @return This instance for call chaining.
      */
-    public VertexArray add(ByteBuffer data, int usage, int... sizes)
+    public VertexArray add(ByteBuffer data, int usage, int... formats)
     {
-        return add(GL_UNSIGNED_BYTE, new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), sizes);
+        return add(new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), formats);
     }
     
     /**
@@ -439,7 +403,7 @@ public class VertexArray
      */
     public VertexArray add(ShortBuffer data, int usage, int... sizes)
     {
-        return add(GL_UNSIGNED_SHORT, new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), sizes);
+        return add(new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL_UNSIGNED_SHORT));
     }
     
     /**
@@ -454,7 +418,7 @@ public class VertexArray
      */
     public VertexArray add(IntBuffer data, int usage, int... sizes)
     {
-        return add(GL_UNSIGNED_INT, new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), sizes);
+        return add(new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL_UNSIGNED_INT));
     }
     
     /**
@@ -469,7 +433,7 @@ public class VertexArray
      */
     public VertexArray add(FloatBuffer data, int usage, int... sizes)
     {
-        return add(GL_FLOAT, new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), sizes);
+        return add(new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL_FLOAT));
     }
     
     /**
@@ -484,7 +448,19 @@ public class VertexArray
      */
     public VertexArray add(DoubleBuffer data, int usage, int... sizes)
     {
-        return add(GL_DOUBLE, new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), sizes);
+        return add(new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL_DOUBLE));
+    }
+    
+    private int[] getFormatArray(int[] sizes, int type)
+    {
+        int   n      = sizes.length;
+        int[] format = new int[n << 1];
+        for (int i = 0, index = 0; i < n; i++)
+        {
+            format[index++] = type;
+            format[index++] = sizes[i];
+        }
+        return format;
     }
     
     private int getBytes(int type)

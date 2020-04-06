@@ -6,7 +6,7 @@ import org.lwjgl.BufferUtils;
 import java.nio.*;
 import java.util.Objects;
 
-import static org.lwjgl.opengl.GL43.*;
+import static org.lwjgl.opengl.GL45.*;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class GLBuffer

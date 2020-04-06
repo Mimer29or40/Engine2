@@ -3,6 +3,7 @@ package engine.util;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
@@ -16,10 +17,15 @@ import static engine.util.Util.getCurrentTimeString;
 @SuppressWarnings("unused")
 public class Logger
 {
+    private static final Logger LOGGER = new Logger();
+    
     private static final Pattern      PATTERN = Pattern.compile("%(\\d+\\$)?([-#+ 0,(<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])"); // Taken from java.lang.Formatter
     private static final OutputStream OUT     = new BufferedOutputStream(System.out);
     
     private static Level level = Level.INFO;
+    
+    private static final HashMap<String, Pattern> WHITELIST = new HashMap<>();
+    private static final HashMap<String, Pattern> BLACKLIST = new HashMap<>();
     
     /**
      * @return The global logging level.
@@ -36,7 +42,74 @@ public class Logger
      */
     public static void setLevel(Level level)
     {
+        Logger.LOGGER.finest("Setting Global Log Level", level);
+        
         Logger.level = level;
+    }
+    
+    /**
+     * Adds a filter to the loggers. Only Loggers in this filter will be logged.
+     *
+     * @param regex The filter string.
+     */
+    public static void addWhitelistFilter(String regex)
+    {
+        Logger.LOGGER.finest("Adding filter the Whitelist", regex);
+        
+        Logger.WHITELIST.put(regex, Pattern.compile(regex));
+    }
+    
+    /**
+     * Removes the filter from the Whitelist.
+     *
+     * @param regex The filter String.
+     */
+    public static void removeWhitelistFilter(String regex)
+    {
+        Logger.LOGGER.finest("Removing filter from the Whitelist", regex);
+        
+        Logger.WHITELIST.remove(regex);
+    }
+    
+    /**
+     * Adds a filter to the loggers. Only Loggers not in this filter will be logged.
+     *
+     * @param regex The filter string.
+     */
+    public static void addBlacklistFilter(String regex)
+    {
+        Logger.LOGGER.finest("Adding filter to the Blacklist", regex);
+        
+        Logger.BLACKLIST.put(regex, Pattern.compile(regex));
+    }
+    
+    /**
+     * Removes the filter from the Blacklist.
+     *
+     * @param regex The filter String.
+     */
+    public static void removeBlacklistFilter(String regex)
+    {
+        Logger.LOGGER.finest("Removing filter from the Blacklist", regex);
+        
+        Logger.BLACKLIST.remove(regex);
+    }
+    
+    private static boolean applyFilters(String name)
+    {
+        for (Pattern pattern : Logger.BLACKLIST.values())
+        {
+            if (pattern.matcher(name).find()) return true;
+        }
+        if (Logger.WHITELIST.size() > 0)
+        {
+            for (Pattern pattern : Logger.WHITELIST.values())
+            {
+                if (pattern.matcher(name).find()) return false;
+            }
+            return true;
+        }
+        return false;
     }
     
     private final String name;
@@ -54,6 +127,7 @@ public class Logger
     private void log(Level level, String message)
     {
         if (level.intValue() < Logger.level.intValue()) return;
+        if (applyFilters(this.name)) return;
         try
         {
             Logger.OUT.write(('[' + getCurrentTimeString() + "] [" + Thread.currentThread().getName() + '/' + level + "]").getBytes());
@@ -73,6 +147,7 @@ public class Logger
     public void log(Level level, Object... objects)
     {
         if (level.intValue() < Logger.level.intValue()) return;
+        if (applyFilters(this.name)) return;
         int n = objects.length;
         if (n == 0) return;
         StringBuilder builder = new StringBuilder(String.valueOf(objects[0]));
@@ -90,6 +165,7 @@ public class Logger
     public void log(Level level, String format, Object... objects)
     {
         if (level.intValue() < Logger.level.intValue()) return;
+        if (applyFilters(this.name)) return;
         if (Logger.PATTERN.matcher(format).find())
         {
             log(level, String.format(format, objects));

@@ -21,6 +21,7 @@ public class PixelRenderer extends Renderer
     @Override
     public void clear(Colorc color)
     {
+        super.clear(color);
     
     }
     

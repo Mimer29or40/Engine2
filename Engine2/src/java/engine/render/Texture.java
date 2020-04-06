@@ -96,6 +96,7 @@ public class Texture
      */
     public Texture(int width, int height, int channels, Colorc initial)
     {
+        // TODO - Should be BufferUtils (ByteBuffer.allocateDirect) so GC can control when memory is released.
         this(width, height, channels, MemoryUtil.memAlloc(width * height * channels));
         
         if (this.channels == 4)

@@ -1,5 +1,6 @@
 package engine.render;
 
+import engine.util.Logger;
 import engine.util.Tuple;
 import engine.util.Util;
 import org.lwjgl.stb.STBTTAlignedQuad;
@@ -15,6 +16,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static engine.util.Util.resourceToByteBuffer;
 import static org.lwjgl.stb.STBTruetype.*;
 
 /**
@@ -23,12 +25,15 @@ import static org.lwjgl.stb.STBTruetype.*;
 @SuppressWarnings("unused")
 public class Font
 {
+    private static final Logger LOGGER = new Logger();
+    
     private static final HashMap<String, ByteBuffer> FILE_CACHE = new HashMap<>();
     private static final ArrayList<Font>             FONTS      = new ArrayList<>();
     
     public static void destroyAll()
     {
         for (ByteBuffer buffer : Font.FILE_CACHE.values()) MemoryUtil.memFree(buffer);
+        Font.FILE_CACHE.clear();
         for (Font font : Font.FONTS)
         {
             font.info.free();
@@ -73,8 +78,12 @@ public class Font
      */
     public Font(String font, int size, boolean pixelAligned)
     {
+        // TODO - Buffers should be BufferUtils (ByteBuffer.allocateDirect) so GC can control when memory is released.
         this.font = font;
-        this.data = Font.FILE_CACHE.computeIfAbsent(this.font, Util::resourceToByteBuffer);
+        this.data = Font.FILE_CACHE.computeIfAbsent(this.font, r -> {
+            Font.LOGGER.finer("Loading new Font file:", r);
+            return resourceToByteBuffer(r);
+        });
         this.info = STBTTFontinfo.malloc();
         if (!stbtt_InitFont(this.info, this.data)) throw new RuntimeException("Font could not be loaded: " + font);
         
@@ -165,6 +174,12 @@ public class Font
     public Font(Font other)
     {
         this(other.font, other.size, other.pixelAligned);
+    }
+    
+    @Override
+    public String toString()
+    {
+        return "Font{" + "font='" + this.font + '\'' + ", size=" + this.size + '}';
     }
     
     /**
@@ -392,7 +407,12 @@ public class Font
     
     private void setup()
     {
-        if (this.charDataMap.containsKey(this.size)) return;
+        if (this.charDataMap.containsKey(this.size))
+        {
+            Font.LOGGER.finest("Font States already cached for size=", this.size);
+            return;
+        }
+        Font.LOGGER.finer("Generating new font size for size=", this.size);
         
         STBTTPackedchar.Buffer charData = STBTTPackedchar.malloc(128);
         this.charDataMap.put(this.size, charData);

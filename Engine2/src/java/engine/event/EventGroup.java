@@ -10,6 +10,12 @@ public class EventGroup
 {
     private final ArrayList<Class<? extends Event>> classes = new ArrayList<>();
     
+    @Override
+    public String toString()
+    {
+        return "EventGroup{" + "classes=" + this.classes + '}';
+    }
+    
     @SafeVarargs
     public EventGroup(Class<? extends Event>... eventTypes)
     {

@@ -1,12 +1,15 @@
 package engine.input;
 
 import engine.event.*;
+import engine.util.Logger;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 @SuppressWarnings("unused")
 public class Keyboard extends Device<Keyboard.Key>
 {
+    private static final Logger LOGGER = new Logger();
+    
     public final Key NONE = new Key("NONE", GLFW_KEY_UNKNOWN, 0, 0);
     
     public final Key A = new Key("A", GLFW_KEY_A, 'a', 'A');
@@ -144,6 +147,8 @@ public class Keyboard extends Device<Keyboard.Key>
     @Override
     public void handleEvents(long time, long delta)
     {
+        Keyboard.LOGGER.finer("Handling Keyboard Events");
+        
         for (int i = 0, n = this.capturedText.length(); i < n; i++)
         {
             Events.post(EventKeyboardKeyTyped.class, this.capturedText.charAt(i));
@@ -163,6 +168,8 @@ public class Keyboard extends Device<Keyboard.Key>
     @Override
     protected void postEvents(Key input, long time, long delta)
     {
+        Keyboard.LOGGER.finer("Posting Keyboard Events");
+        
         if (input.down) Events.post(EventKeyboardKeyDown.class, input);
         if (input.up)
         {
@@ -189,6 +196,8 @@ public class Keyboard extends Device<Keyboard.Key>
      */
     public void charCallback(int codePoint)
     {
+        Keyboard.LOGGER.finest("Keyboard Char Callback:", codePoint);
+        
         capturedText += Character.toString(codePoint);
     }
     
@@ -197,7 +206,7 @@ public class Keyboard extends Device<Keyboard.Key>
      */
     public class Key extends Device.Input
     {
-        // private final int  scancode;
+        private final int  scancode;
         private final char baseChar;
         private final char shiftChar;
         
@@ -205,18 +214,18 @@ public class Keyboard extends Device<Keyboard.Key>
         {
             super(Keyboard.this, name, reference);
             
-            // this.scancode  = reference > 0 ? glfwGetKeyScancode(reference) : 0;
+            this.scancode  = reference > 0 ? glfwGetKeyScancode(reference) : 0;
             this.baseChar  = (char) baseChar;
             this.shiftChar = (char) shiftChar;
         }
         
-        // /**
-        //  * @return The keyboard scancode that represents this Key.
-        //  */
-        // public int scancode()
-        // {
-        //     return this.scancode;
-        // }
+        /**
+         * @return The keyboard scancode that represents this Key.
+         */
+        public int scancode()
+        {
+            return this.scancode;
+        }
         
         /**
          * @return The baseChar of the keyboard.

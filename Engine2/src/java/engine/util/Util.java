@@ -199,6 +199,25 @@ public class Util
     }
     
     /**
+     * Joins an array of objects together into a string separated by a provided string.
+     *
+     * @param array   The array of objects.
+     * @param between The string between each object.
+     * @param prefix  The string before any objects.
+     * @param suffix  The string after all the objects.
+     * @return The string.
+     */
+    public static String join(Object[] array, String between, String prefix, String suffix)
+    {
+        int n = array.length;
+        if (array.length == 0) return "";
+        StringBuilder b = new StringBuilder(prefix);
+        b.append(array[0]);
+        for (int i = 1; i < n; i++) b.append(between).append(array[i]);
+        return b.append(suffix).toString();
+    }
+    
+    /**
      * Joins a collection of objects together into a string separated by a provided string.
      *
      * @param collection The collection of objects.
@@ -209,12 +228,19 @@ public class Util
      */
     public static String join(Collection<?> collection, String between, String prefix, String suffix)
     {
-        if (collection.size() == 0) return "";
-        Object[]      a = collection.toArray();
-        StringBuilder b = new StringBuilder(prefix);
-        b.append(a[0]);
-        for (int i = 1, n = a.length; i < n; i++) b.append(between).append(a[i]);
-        return b.append(suffix).toString();
+        return join(collection.toArray(), between, prefix, suffix);
+    }
+    
+    /**
+     * Joins an array of objects together into a string separated by a provided string.
+     *
+     * @param array   The array of objects.
+     * @param between The string between each object.
+     * @return The string.
+     */
+    public static String join(Object[] array, String between)
+    {
+        return join(array, between, "", "");
     }
     
     /**
@@ -226,7 +252,18 @@ public class Util
      */
     public static String join(Collection<?> collection, String between)
     {
-        return join(collection, between, "", "");
+        return join(collection.toArray(), between, "", "");
+    }
+    
+    /**
+     * Joins an array of objects together into a string separated by a space.
+     *
+     * @param array The collection of objects.
+     * @return The string.
+     */
+    public static String join(Object... array)
+    {
+        return join(array, ", ", "", "");
     }
     
     /**
@@ -237,7 +274,7 @@ public class Util
      */
     public static String join(Collection<?> collection)
     {
-        return join(collection, ", ", "", "");
+        return join(collection.toArray(), ", ", "", "");
     }
     
     /**

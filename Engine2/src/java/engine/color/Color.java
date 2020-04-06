@@ -1,10 +1,14 @@
 package engine.color;
 
+import engine.util.Logger;
+
 import java.util.Objects;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class Color implements Colorc
 {
+    private static final Logger LOGGER = new Logger();
+    
     public static final Colorc WHITE      = new Color(255, 255, 255);
     public static final Colorc LIGHT_GREY = new Color(191, 191, 191);
     public static final Colorc GREY       = new Color(127, 127, 127);

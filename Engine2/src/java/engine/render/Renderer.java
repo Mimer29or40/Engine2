@@ -33,6 +33,8 @@ public abstract class Renderer
     @SuppressWarnings("unused")
     public static void registerRenderer(String renderer, Supplier<Renderer> supplier)
     {
+        Renderer.LOGGER.fine("Renderer Registered:", renderer);
+        
         Renderer.RENDERERS.put(renderer, supplier);
     }
     
@@ -127,6 +129,8 @@ public abstract class Renderer
      */
     public void enableBlend(boolean enableBlend)
     {
+        Renderer.LOGGER.finest("Setting Blend State:", enableBlend);
+        
         this.enableBlend = enableBlend;
     }
     
@@ -145,6 +149,8 @@ public abstract class Renderer
      */
     public void enableDebug(boolean enableDebug)
     {
+        Renderer.LOGGER.finest("Setting Debug State:", enableDebug);
+        
         this.enableDebug = enableDebug;
     }
     
@@ -167,6 +173,8 @@ public abstract class Renderer
     public void fill(Number r, Number g, Number b, Number a)
     {
         this.fill.set(r, g, b, a);
+        
+        Renderer.LOGGER.finest("Setting Fill Color:", this.fill);
     }
     
     /**
@@ -179,6 +187,8 @@ public abstract class Renderer
     public void fill(Number r, Number g, Number b)
     {
         this.fill.set(r, g, b);
+        
+        Renderer.LOGGER.finest("Setting Fill Color:", this.fill);
     }
     
     /**
@@ -190,6 +200,8 @@ public abstract class Renderer
     public void fill(Number grey, Number a)
     {
         this.fill.set(grey, a);
+        
+        Renderer.LOGGER.finest("Setting Fill Color:", this.fill);
     }
     
     /**
@@ -200,6 +212,8 @@ public abstract class Renderer
     public void fill(Number grey)
     {
         this.fill.set(grey);
+        
+        Renderer.LOGGER.finest("Setting Fill Color:", this.fill);
     }
     
     /**
@@ -210,6 +224,8 @@ public abstract class Renderer
     public void fill(Colorc fill)
     {
         this.fill.set(fill);
+        
+        Renderer.LOGGER.finest("Setting Fill Color:", this.fill);
     }
     
     /**
@@ -218,6 +234,8 @@ public abstract class Renderer
     public void noFill()
     {
         this.fill.a(0);
+        
+        Renderer.LOGGER.finest("Setting No Fill");
     }
     
     /**
@@ -239,6 +257,8 @@ public abstract class Renderer
     public void stroke(Number r, Number g, Number b, Number a)
     {
         this.stroke.set(r, g, b, a);
+        
+        Renderer.LOGGER.finest("Setting Stroke Color:", this.stroke);
     }
     
     /**
@@ -251,6 +271,8 @@ public abstract class Renderer
     public void stroke(Number r, Number g, Number b)
     {
         this.stroke.set(r, g, b);
+        
+        Renderer.LOGGER.finest("Setting Stroke Color:", this.stroke);
     }
     
     /**
@@ -262,6 +284,8 @@ public abstract class Renderer
     public void stroke(Number grey, Number a)
     {
         this.stroke.set(grey, a);
+        
+        Renderer.LOGGER.finest("Setting Stroke Color:", this.stroke);
     }
     
     /**
@@ -272,6 +296,8 @@ public abstract class Renderer
     public void stroke(Number grey)
     {
         this.stroke.set(grey);
+        
+        Renderer.LOGGER.finest("Setting Stroke Color:", this.stroke);
     }
     
     /**
@@ -282,6 +308,8 @@ public abstract class Renderer
     public void stroke(Colorc stroke)
     {
         this.stroke.set(stroke);
+        
+        Renderer.LOGGER.finest("Setting Stroke Color:", this.stroke);
     }
     
     /**
@@ -290,6 +318,8 @@ public abstract class Renderer
     public void noStroke()
     {
         this.stroke.a(0);
+        
+        Renderer.LOGGER.finest("Setting No Stroke");
     }
     
     /**
@@ -309,6 +339,8 @@ public abstract class Renderer
     {
         if (weight < 1) noStroke();
         this.weight = Math.max(1, weight);
+        
+        Renderer.LOGGER.finest("Setting Stroke Weight:", this.weight);
     }
     
     /**
@@ -328,6 +360,8 @@ public abstract class Renderer
      */
     public void rectMode(RectMode rectMode)
     {
+        Renderer.LOGGER.finest("Setting RectMode:", rectMode);
+        
         this.rectMode = rectMode;
     }
     
@@ -348,6 +382,8 @@ public abstract class Renderer
      */
     public void ellipseMode(EllipseMode ellipseMode)
     {
+        Renderer.LOGGER.finest("Setting EllipseMode:", ellipseMode);
+        
         this.ellipseMode = ellipseMode;
     }
     
@@ -368,6 +404,8 @@ public abstract class Renderer
      */
     public void arcMode(ArcMode arcMode)
     {
+        Renderer.LOGGER.finest("Setting ArcMode:", arcMode);
+        
         this.arcMode = arcMode;
     }
     
@@ -397,6 +435,8 @@ public abstract class Renderer
     public void textFont(String font)
     {
         this.font = new Font(font);
+        
+        Renderer.LOGGER.finest("Setting Font:", this.font);
     }
     
     /**
@@ -408,6 +448,8 @@ public abstract class Renderer
     public void textFont(String font, int size)
     {
         this.font = new Font(font, size);
+        
+        Renderer.LOGGER.finest("Setting Font:", this.font);
     }
     
     /**
@@ -425,6 +467,8 @@ public abstract class Renderer
      */
     public void textSize(int textSize)
     {
+        Renderer.LOGGER.finest("Setting Font Size:", textSize);
+        
         this.font.setSize(textSize);
     }
     
@@ -461,6 +505,8 @@ public abstract class Renderer
      */
     public void textAlign(TextAlign textAlign)
     {
+        Renderer.LOGGER.finest("Setting Text Align:", textAlign);
+        
         this.textAlign = textAlign;
     }
     
@@ -473,6 +519,8 @@ public abstract class Renderer
      */
     public void identity()
     {
+        Renderer.LOGGER.finest("Resetting View");
+        
         this.view.identity();
     }
     
@@ -484,6 +532,8 @@ public abstract class Renderer
      */
     public void translate(double x, double y)
     {
+        Renderer.LOGGER.finest("Translating View:", x, y);
+        
         this.view.translate((float) x, (float) y, 0);
     }
     
@@ -494,6 +544,8 @@ public abstract class Renderer
      */
     public void rotate(double angle)
     {
+        Renderer.LOGGER.finest("Rotating View:", angle);
+        
         this.view.rotate((float) angle, 0, 0, 1);
     }
     
@@ -505,6 +557,8 @@ public abstract class Renderer
      */
     public void scale(double x, double y)
     {
+        Renderer.LOGGER.finest("Scaling View:", x, y);
+        
         this.view.scale((float) x, (float) y, 1);
     }
     
@@ -519,6 +573,8 @@ public abstract class Renderer
      */
     public void start()
     {
+        Renderer.LOGGER.finer("Begin Rendering");
+        
         if (this.drawing) throw new RuntimeException("Renderer was never finished");
         
         this.drawing = true;
@@ -558,6 +614,8 @@ public abstract class Renderer
      */
     public void finish()
     {
+        Renderer.LOGGER.finer("Rendering Finished");
+        
         if (!this.drawing) throw new RuntimeException("Renderer was never started");
         
         this.drawing = false;
@@ -568,6 +626,8 @@ public abstract class Renderer
      */
     public void push()
     {
+        Renderer.LOGGER.finer("Pushing Renderer State");
+        
         this.fills.push(new Color(this.fill));
         this.strokes.push(new Color(this.stroke));
         this.weights.push(this.weight);
@@ -584,6 +644,8 @@ public abstract class Renderer
      */
     public void pop()
     {
+        Renderer.LOGGER.finer("Popping Renderer State");
+        
         this.fill.set(this.fills.pop());
         this.stroke.set(this.strokes.pop());
         this.weight      = this.weights.pop();
@@ -658,7 +720,10 @@ public abstract class Renderer
      *
      * @param color The color to set the target to.
      */
-    public abstract void clear(Colorc color);
+    public void clear(Colorc color)
+    {
+        Renderer.LOGGER.finest("Clearing Render Target to", color);
+    }
     
     // -------------------
     // -- Point Methods --
@@ -686,6 +751,8 @@ public abstract class Renderer
      */
     public void point(double x, double y)
     {
+        Renderer.LOGGER.finer("Drawing Point", x, y);
+        
         if (this.stroke.a() > 0) drawPoint(x, y);
     }
     
@@ -719,6 +786,8 @@ public abstract class Renderer
      */
     public void line(double x1, double y1, double x2, double y2)
     {
+        Renderer.LOGGER.finer("Drawing Line", x1, y1, x2, y2);
+        
         if (this.stroke.a() > 0) drawLine(x1, y1, x2, y2);
     }
     
@@ -756,6 +825,8 @@ public abstract class Renderer
      */
     public void bezier(double x1, double y1, double x2, double y2, double x3, double y3)
     {
+        Renderer.LOGGER.finer("Drawing Bezier", x1, y1, x2, y2, x3, y3);
+        
         if (this.stroke.a() > 0) drawBezier(x1, y1, x2, y2, x3, y3);
     }
     
@@ -810,6 +881,8 @@ public abstract class Renderer
      */
     public void triangle(double x1, double y1, double x2, double y2, double x3, double y3)
     {
+        Renderer.LOGGER.finer("Drawing Triangle", x1, y1, x2, y2, x3, y3);
+        
         if (this.fill.a() > 0) fillTriangle(x1, y1, x2, y2, x3, y3);
         if (this.stroke.a() > 0) drawTriangle(x1, y1, x2, y2, x3, y3);
     }
@@ -858,6 +931,8 @@ public abstract class Renderer
      */
     public void square(double a, double b, double c)
     {
+        Renderer.LOGGER.finer("Drawing Square", a, b, c);
+        
         switch (this.rectMode)
         {
             case CORNER:
@@ -928,6 +1003,8 @@ public abstract class Renderer
      */
     public void rect(double a, double b, double c, double d)
     {
+        Renderer.LOGGER.finer("Drawing Rectangle", a, b, c, d);
+        
         switch (this.rectMode)
         {
             case CORNER:
@@ -1012,6 +1089,8 @@ public abstract class Renderer
      */
     public void quad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
     {
+        Renderer.LOGGER.finer("Drawing Quad", x1, y1, x2, y2, x3, y3, x4, y4);
+        
         if (this.fill.a() > 0) fillQuad(x1, y1, x2, y2, x3, y3, x4, y4);
         if (this.stroke.a() > 0) drawQuad(x1, y1, x2, y2, x3, y3, x4, y4);
     }
@@ -1061,6 +1140,8 @@ public abstract class Renderer
      */
     public void polygon(double... points)
     {
+        Renderer.LOGGER.finer("Drawing Polygon", Arrays.toString(points));
+        
         int n = points.length;
         
         if ((n & 1) == 1) throw new RuntimeException("Invalid coordinates. Must be an even number");
@@ -1114,6 +1195,8 @@ public abstract class Renderer
      */
     public void circle(double a, double b, double c)
     {
+        Renderer.LOGGER.finer("Drawing Circle", a, b, c);
+        
         switch (this.ellipseMode)
         {
             case CENTER:
@@ -1182,6 +1265,8 @@ public abstract class Renderer
      */
     public void ellipse(double a, double b, double c, double d)
     {
+        Renderer.LOGGER.finer("Drawing Ellipse", a, b, c, d);
+        
         switch (this.ellipseMode)
         {
             case CENTER:
@@ -1259,6 +1344,8 @@ public abstract class Renderer
      */
     public void arc(double a, double b, double c, double d, double start, double stop)
     {
+        Renderer.LOGGER.finer("Drawing Arc", a, b, c, d, start, stop);
+        
         switch (this.ellipseMode)
         {
             case CENTER:
@@ -1328,6 +1415,8 @@ public abstract class Renderer
      */
     public void texture(Texture texture, double a, double b, double c, double d, double u1, double v1, double v2, double u2)
     {
+        Renderer.LOGGER.finer("Drawing Texture", a, b, c, d, u1, v1, u2, v2);
+        
         switch (this.rectMode)
         {
             case CORNER:
@@ -1363,6 +1452,8 @@ public abstract class Renderer
      */
     public void texture(Texture texture, double x, double y, double u1, double v1, double v2, double u2)
     {
+        Renderer.LOGGER.finer("Drawing Texture", x, y, u1, v1, u2, v2);
+        
         drawTexture(texture, x, y, x + texture.width(), y + texture.height(), u1, v1, u2, v2);
     }
     
@@ -1395,6 +1486,8 @@ public abstract class Renderer
      */
     public void texture(Texture texture, double x, double y)
     {
+        Renderer.LOGGER.finer("Drawing Texture", x, y);
+        
         drawTexture(texture, x, y, x + texture.width(), y + texture.height(), 0, 0, 1, 1);
     }
     
@@ -1437,6 +1530,8 @@ public abstract class Renderer
      */
     public void text(String text, double a, double b, double c, double d)
     {
+        Renderer.LOGGER.finer("Drawing Text", a, b, c, d);
+        
         if (this.fill.a() > 0)
         {
             List<String> lines;

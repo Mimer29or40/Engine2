@@ -1,6 +1,7 @@
 package engine.input;
 
 import engine.event.*;
+import engine.util.Logger;
 import engine.util.Vector;
 import org.joml.Vector2d;
 import org.joml.Vector2dc;
@@ -12,6 +13,8 @@ import static org.lwjgl.glfw.GLFW.*;
 @SuppressWarnings("unused")
 public class Mouse extends Device<Mouse.Button>
 {
+    private static final Logger LOGGER = new Logger();
+    
     public final Button NONE   = new Button("NONE", -1);
     public final Button LEFT   = new Button("LEFT", GLFW_MOUSE_BUTTON_LEFT);
     public final Button RIGHT  = new Button("RIGHT", GLFW_MOUSE_BUTTON_RIGHT);
@@ -169,6 +172,8 @@ public class Mouse extends Device<Mouse.Button>
     @Override
     public void handleEvents(long time, long delta)
     {
+        Mouse.LOGGER.finer("Handling Mouse Events");
+        
         if (this.captured != this.newCaptured)
         {
             this.captured = this.newCaptured;
@@ -210,6 +215,8 @@ public class Mouse extends Device<Mouse.Button>
     @Override
     protected void postEvents(Button input, long time, long delta)
     {
+        Mouse.LOGGER.finer("Posting Mouse Events");
+        
         if (input.down)
         {
             Events.post(EventMouseButtonDown.class, input, this.pos);
@@ -259,6 +266,8 @@ public class Mouse extends Device<Mouse.Button>
      */
     public void enteredCallback(boolean entered)
     {
+        Mouse.LOGGER.finest("Mouse Entered Callback:", entered);
+        
         this.newEntered = entered;
     }
     
@@ -270,6 +279,8 @@ public class Mouse extends Device<Mouse.Button>
      */
     public void positionCallback(double x, double y)
     {
+        Mouse.LOGGER.finest("Mouse Moved Callback:", x, y);
+        
         this.newPos.set(Math.max(0, Math.min(x, screenWidth() - 1)), Math.max(0, Math.min(y, screenHeight() - 1)));
     }
     
@@ -281,6 +292,8 @@ public class Mouse extends Device<Mouse.Button>
      */
     public void scrollCallback(double x, double y)
     {
+        Mouse.LOGGER.finest("Mouse Scrolled Callback:", x, y);
+        
         this.newScroll.add(x, y);
     }
     

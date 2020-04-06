@@ -31,6 +31,8 @@ public abstract class Device<I extends Device.Input>
      */
     public static void holdDelay(double holdDelay)
     {
+        Device.LOGGER.finest("Setting Device Hold Delay:", holdDelay);
+        
         Device.holdDelay = (long) (holdDelay * 1_000_000_000L);
     }
     
@@ -49,6 +51,8 @@ public abstract class Device<I extends Device.Input>
      */
     public static void repeatDelay(double repeatDelay)
     {
+        Device.LOGGER.finest("Setting Device Repeat Delay:", holdDelay);
+        
         Device.repeatDelay = (long) (repeatDelay * 1_000_000_000L);
     }
     
@@ -67,6 +71,8 @@ public abstract class Device<I extends Device.Input>
      */
     public static void doubleDelay(double doubleDelay)
     {
+        Device.LOGGER.finest("Setting Device Double Delay:", holdDelay);
+        
         Device.doubleDelay = (long) (doubleDelay * 1_000_000_000L);
     }
     
@@ -101,6 +107,8 @@ public abstract class Device<I extends Device.Input>
      */
     public void handleEvents(long time, long delta)
     {
+        Device.LOGGER.finest("Handling Device Events:", getClass().getSimpleName());
+        
         for (I input : inputs())
         {
             input.down   = false;
@@ -150,6 +158,8 @@ public abstract class Device<I extends Device.Input>
      */
     public void stateCallback(int reference, int state)
     {
+        Device.LOGGER.finest("Device(%s) Input State Callback: %s %s", getClass().getSimpleName(), reference, state);
+        
         get(reference).state = state;
     }
     

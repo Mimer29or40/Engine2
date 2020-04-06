@@ -2,6 +2,7 @@ package engine.render;
 
 import engine.color.Color;
 import engine.color.Colorc;
+import engine.util.Logger;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 
@@ -20,6 +21,8 @@ import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
 @SuppressWarnings("unused")
 public class Shader
 {
+    private static final Logger LOGGER = new Logger();
+    
     private final int id;
     
     private final HashMap<String, Integer> shaders  = new HashMap<>();
@@ -38,6 +41,12 @@ public class Shader
         this.id = glCreateProgram();
     }
     
+    @Override
+    public String toString()
+    {
+        return "Shader{" + "id=" + this.id + '}';
+    }
+    
     /**
      * Loads a Vertex Shader from a string and attaches it to the program.
      *
@@ -46,6 +55,8 @@ public class Shader
      */
     public Shader loadVertex(String source)
     {
+        Shader.LOGGER.finer("Loading Vertex Shader from String", source);
+        
         return load("Vertex", GL_VERTEX_SHADER, source);
     }
     
@@ -57,6 +68,8 @@ public class Shader
      */
     public Shader loadVertexFile(String file)
     {
+        Shader.LOGGER.finer("Loading Vertex Shader from File", file);
+    
         return loadFile("Vertex", GL_VERTEX_SHADER, file);
     }
     
@@ -68,6 +81,8 @@ public class Shader
      */
     public Shader loadGeometry(String source)
     {
+        Shader.LOGGER.finer("Loading Geometry Shader from String", source);
+        
         return load("Geometry", GL_GEOMETRY_SHADER, source);
     }
     
@@ -79,6 +94,8 @@ public class Shader
      */
     public Shader loadGeometryFile(String file)
     {
+        Shader.LOGGER.finer("Loading Geometry Shader from File", file);
+    
         return loadFile("Geometry", GL_GEOMETRY_SHADER, file);
     }
     
@@ -90,6 +107,8 @@ public class Shader
      */
     public Shader loadFragment(String source)
     {
+        Shader.LOGGER.finer("Loading Fragment Shader from String", source);
+        
         return load("Fragment", GL_FRAGMENT_SHADER, source);
     }
     
@@ -101,6 +120,8 @@ public class Shader
      */
     public Shader loadFragmentFile(String file)
     {
+        Shader.LOGGER.finer("Loading Fragment Shader from File", file);
+    
         return loadFile("Fragment", GL_FRAGMENT_SHADER, file);
     }
     
@@ -111,6 +132,8 @@ public class Shader
      */
     public Shader validate()
     {
+        Shader.LOGGER.finer("Validating Shader Program", this.id);
+    
         glLinkProgram(this.id);
         if (glGetProgrami(this.id, GL_LINK_STATUS) != GL_TRUE) throw new RuntimeException("Link failure: \n" + glGetProgramInfoLog(this.id));
         
@@ -127,6 +150,8 @@ public class Shader
      */
     public Shader bind()
     {
+        Shader.LOGGER.finest("Binding Shader Program", this.id);
+    
         glUseProgram(this.id);
         return this;
     }
@@ -138,6 +163,8 @@ public class Shader
      */
     public Shader unbind()
     {
+        Shader.LOGGER.finest("Unbinding Shader Program", this.id);
+    
         glUseProgram(0);
         return this;
     }
@@ -149,6 +176,8 @@ public class Shader
      */
     public Shader delete()
     {
+        Shader.LOGGER.finest("Deleting Shader Program", this.id);
+    
         for (int shader : this.shaders.values()) glDetachShader(this.id, shader);
         glDeleteProgram(this.id);
         return this;
@@ -162,6 +191,8 @@ public class Shader
      */
     public void setInt(final String name, int value)
     {
+        Shader.LOGGER.finest("Setting int Uniform: %s=%s", name, value);
+    
         glUniform1i(getUniform(name), value);
     }
     
@@ -173,6 +204,8 @@ public class Shader
      */
     public void setBool(final String name, boolean value)
     {
+        Shader.LOGGER.finest("Setting bool Uniform: %s=%s", name, value);
+    
         glUniform1i(getUniform(name), value ? 1 : 0);
     }
     
@@ -184,6 +217,8 @@ public class Shader
      */
     public void setFloat(final String name, float value)
     {
+        Shader.LOGGER.finest("Setting float Uniform: %s=%s", name, value);
+    
         glUniform1f(getUniform(name), value);
     }
     
@@ -196,6 +231,8 @@ public class Shader
      */
     public void setVec2(final String name, float x, float y)
     {
+        Shader.LOGGER.finest("Setting vec2 Uniform: %s=(%s, %s)", name, x, y);
+    
         glUniform2f(getUniform(name), x, y);
     }
     
@@ -220,6 +257,8 @@ public class Shader
      */
     public void setVec3(final String name, float x, float y, float z)
     {
+        Shader.LOGGER.finest("Setting vec3 Uniform: %s=(%s, %s, %s)", name, x, y, z);
+    
         glUniform3f(getUniform(name), x, y, z);
     }
     
@@ -245,6 +284,8 @@ public class Shader
      */
     public void setVec4(final String name, float x, float y, float z, float w)
     {
+        Shader.LOGGER.finest("Setting vec3 Uniform: %s=(%s, %s, %s, %s)", name, x, y, z, w);
+    
         glUniform4f(getUniform(name), x, y, z, w);
     }
     
@@ -267,6 +308,8 @@ public class Shader
      */
     public void setColor(final String name, Colorc color)
     {
+        Shader.LOGGER.finest("Setting Color (vec4) Uniform: %s=%s", name, color);
+    
         glUniform4f(getUniform(name), color.rf(), color.gf(), color.bf(), color.af());
     }
     
@@ -328,6 +371,8 @@ public class Shader
      */
     public void setMat2(final String name, Matrix2fc mat)
     {
+        Shader.LOGGER.finest("Setting mat2 Uniform: %s=%s", name, mat);
+    
         glUniformMatrix2fv(getUniform(name), false, mat.get(this.m2Buf));
     }
     
@@ -339,6 +384,8 @@ public class Shader
      */
     public void setMat3(final String name, Matrix3fc mat)
     {
+        Shader.LOGGER.finest("Setting mat3 Uniform: %s=%s", name, mat);
+    
         glUniformMatrix3fv(getUniform(name), false, mat.get(this.m3Buf));
     }
     
@@ -350,12 +397,14 @@ public class Shader
      */
     public void setMat4(final String name, Matrix4fc mat)
     {
+        Shader.LOGGER.finest("Setting mat4 Uniform: %s=%s", name, mat);
+    
         glUniformMatrix4fv(getUniform(name), false, mat.get(this.m4Buf));
     }
     
     private int getUniform(String uniform)
     {
-        return this.uniforms.computeIfAbsent(uniform, (u) -> glGetUniformLocation(this.id, u));
+        return this.uniforms.computeIfAbsent(uniform, u -> glGetUniformLocation(this.id, u));
     }
     
     private Shader loadFile(String shaderName, int shaderType, String file)

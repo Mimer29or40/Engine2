@@ -4,6 +4,7 @@ import engine.Engine;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import static engine.util.Util.map;
 
@@ -79,6 +80,6 @@ public class EventTests extends Engine
     
     public static void main(String[] args)
     {
-        start(new EventTests());
+        start(new EventTests(), Level.FINEST);
     }
 }

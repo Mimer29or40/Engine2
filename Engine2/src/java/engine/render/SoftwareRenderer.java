@@ -52,6 +52,8 @@ public class SoftwareRenderer extends Renderer
     @Override
     public void clear(Colorc color)
     {
+        super.clear(color);
+        
         this.target.clear(color);
     }
     

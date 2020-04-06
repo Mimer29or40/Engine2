@@ -1,5 +1,7 @@
 package engine.color;
 
+import engine.util.Logger;
+
 import static org.lwjgl.opengl.GL14.*;
 
 /**
@@ -9,6 +11,8 @@ import static org.lwjgl.opengl.GL14.*;
 @SuppressWarnings("unused")
 public class Blend implements IBlend
 {
+    private static final Logger LOGGER = new Logger();
+    
     private Func     srcFactor;
     private Func     dstFactor;
     private Equation blendEq;
@@ -17,6 +21,12 @@ public class Blend implements IBlend
     {
         blendFunc(Func.SRC_ALPHA, Func.ONE_MINUS_SRC_ALPHA);
         blendEquation(Equation.ADD);
+    }
+    
+    @Override
+    public String toString()
+    {
+        return "Blend{" + "srcFactor=" + this.srcFactor + ", dstFactor=" + this.dstFactor + ", blendEq=" + this.blendEq + '}';
     }
     
     /**
@@ -36,15 +46,17 @@ public class Blend implements IBlend
     }
     
     /**
-     * @param sourceFactor The new function to modify the source color values.
-     * @param destFactor   The new function to modify the destination color values.
+     * @param srcFactor The new function to modify the source color values.
+     * @param dstFactor The new function to modify the destination color values.
      * @return This instance for call chaining.
      */
-    public Blend blendFunc(Func sourceFactor, Func destFactor)
+    public Blend blendFunc(Func srcFactor, Func dstFactor)
     {
-        this.srcFactor = sourceFactor;
-        this.dstFactor = destFactor;
-        glBlendFunc(sourceFactor.gl, destFactor.gl);
+        Blend.LOGGER.finest("Setting Blend Functions:", srcFactor, dstFactor);
+        
+        this.srcFactor = srcFactor;
+        this.dstFactor = dstFactor;
+        glBlendFunc(srcFactor.gl, dstFactor.gl);
         return this;
     }
     
@@ -62,6 +74,8 @@ public class Blend implements IBlend
      */
     public Blend blendEquation(Equation blendEquation)
     {
+        Blend.LOGGER.finest("Setting Blend Equation:", blendEquation);
+    
         this.blendEq = blendEquation;
         glBlendEquation(blendEquation.gl);
         return this;

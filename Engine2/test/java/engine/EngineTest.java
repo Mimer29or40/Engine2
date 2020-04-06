@@ -180,6 +180,6 @@ public class EngineTest extends Engine
     public static void main(String[] args)
     {
         // enableProfiler();
-        start(new EngineTest(), Level.FINE);
+        start(new EngineTest(), Level.FINEST);
     }
 }

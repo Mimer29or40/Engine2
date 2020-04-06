@@ -1,10 +1,14 @@
 package engine.event;
 
+import engine.util.Logger;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.function.Consumer;
+
+import static engine.util.Util.join;
 
 /**
  * This class handles the posting and getting of events. Events only exist during the current frame.
@@ -14,6 +18,8 @@ import java.util.function.Consumer;
 @SuppressWarnings("unused")
 public class Events
 {
+    private static final Logger LOGGER = new Logger();
+    
     public static final EventGroup WINDOW_EVENTS   = new EventGroup(EventWindowFocused.class,
                                                                     EventWindowFullscreen.class,
                                                                     EventWindowMoved.class,
@@ -46,6 +52,8 @@ public class Events
      */
     public static Iterable<Event> get()
     {
+        Events.LOGGER.finest("Getting all Events");
+        
         ArrayList<Event> events = new ArrayList<>();
         Events.EVENTS.values().forEach(events::addAll);
         return events;
@@ -58,6 +66,8 @@ public class Events
     @SafeVarargs
     public static Iterable<Event> get(Class<? extends Event>... eventTypes)
     {
+        Events.LOGGER.finest("Getting Events for types", join(eventTypes, ", ", "[", "]"));
+        
         ArrayList<Event> events = new ArrayList<>();
         for (Class<? extends Event> eventType : eventTypes)
         {
@@ -73,6 +83,8 @@ public class Events
      */
     public static Iterable<Event> get(EventGroup... eventGroups)
     {
+        Events.LOGGER.finest("Getting Events for groups", join(eventGroups, ", ", "[", "]"));
+        
         ArrayList<Event> events = new ArrayList<>();
         for (EventGroup eventGroup : eventGroups)
         {
@@ -99,9 +111,13 @@ public class Events
             Event event = eventType.getDeclaredConstructor(Object[].class).newInstance(new Object[] {arguments});
             Events.EVENTS.get(eventType).add(event);
             
+            Events.LOGGER.finer("Event Posted:", event);
+            
             Events.SUBSCRIPTIONS.computeIfAbsent(eventType, e -> new HashSet<>());
             for (Consumer<Event> function : Events.SUBSCRIPTIONS.get(eventType))
             {
+                Events.LOGGER.finest("Event Subscription Found:", event);
+                
                 function.accept(event);
             }
         }
@@ -116,6 +132,8 @@ public class Events
      */
     public static void subscribe(Class<? extends Event> eventType, Consumer<Event> function)
     {
+        Events.LOGGER.finer("Event Subscription for type:", eventType);
+        
         Events.SUBSCRIPTIONS.computeIfAbsent(eventType, e -> new HashSet<>());
         Events.SUBSCRIPTIONS.get(eventType).add(function);
     }
@@ -128,11 +146,7 @@ public class Events
      */
     public static void subscribe(EventGroup eventGroup, Consumer<Event> function)
     {
-        for (Class<? extends Event> eventType : eventGroup.getClasses())
-        {
-            Events.SUBSCRIPTIONS.computeIfAbsent(eventType, e -> new HashSet<>());
-            Events.SUBSCRIPTIONS.get(eventType).add(function);
-        }
+        for (Class<? extends Event> eventType : eventGroup.getClasses()) subscribe(eventGroup, function);
     }
     
     /**
@@ -140,6 +154,8 @@ public class Events
      */
     public static void clear()
     {
+        Events.LOGGER.finest("Events Cleared");
+        
         Events.EVENTS.clear();
     }
 }

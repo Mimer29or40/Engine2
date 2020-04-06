@@ -230,6 +230,8 @@ public class OpenGLRenderer extends Renderer
     @Override
     public void clear(Colorc color)
     {
+        super.clear(color);
+        
         makeCurrent();
         
         glClearColor(color.rf(), color.gf(), color.bf(), color.af());

@@ -120,7 +120,7 @@ public class GLBuffer
     }
     
     /**
-     * Resizes the buffer.
+     * Reallocates the Buffer at a specific size.
      * <p>
      * Make sure to bind the buffer first.
      *
@@ -128,7 +128,7 @@ public class GLBuffer
      * @param usage How the data will be used.
      * @return This instance for call chaining.
      */
-    public GLBuffer resize(int size, int usage)
+    public GLBuffer set(int size, int usage)
     {
         this.size = size;
         

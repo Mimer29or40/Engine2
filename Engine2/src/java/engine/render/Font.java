@@ -266,6 +266,7 @@ public class Font
     /**
      * Calculates the width in pixels of the string. If the string contains line breaks, then it calculates the widest line and returns it.
      *
+     * @param text The text.
      * @return The width in pixels of the string.
      */
     public double getStringWidth(String text)
@@ -309,6 +310,7 @@ public class Font
     /**
      * Calculates the height in pixels of the string. If the string contains line breaks, then it calculates the total height of all lines.
      *
+     * @param text The text.
      * @return The height in pixels of the string.
      */
     public double getStringHeight(String text)

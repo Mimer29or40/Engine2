@@ -10,15 +10,16 @@ import engine.render.*;
 import engine.util.Logger;
 import engine.util.Profiler;
 import engine.util.Random;
+import engine.util.Tuple;
 import org.joml.*;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.system.MemoryUtil;
 import org.reflections.Reflections;
 
 import java.lang.Math;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
@@ -57,12 +58,19 @@ public class Engine
     private static Keyboard keyboard;
     private static Window   window;
     
-    private static Blend       blend;
-    private static Texture     target;
-    private static Shader      shader;
-    private static VertexArray vertexArray;
-    public static  Renderer    renderer;
+    private static Blend blend;
     
+    private static Texture     screen;
+    private static Shader      screenShader;
+    private static VertexArray screenVAO;
+    
+    private static Shader      debugShader;
+    private static VertexArray debugVAO;
+    private static Matrix4f    debugView;
+    
+    private static Renderer renderer;
+    
+    private static final ArrayList<Tuple<Integer, Integer, String>> debugLines = new ArrayList<>();
     private static String printFrame;
     private static String screenshot;
     
@@ -161,32 +169,6 @@ public class Engine
                         Engine.window.makeCurrent();
                         GL.createCapabilities();
                         
-                        Shader hudShader = new Shader().loadVertex("#version 330\n" +
-                                                                   "\n" +
-                                                                   "uniform mat4 mMVP;\n" +
-                                                                   "\n" +
-                                                                   "layout(location = 0) in vec2 iPosition;\n" +
-                                                                   "//layout(location = 1) in int iColor;\n" +
-                                                                   "\n" +
-                                                                   "out vec4 vColor;\n" +
-                                                                   "\n" +
-                                                                   "void main(void) {\n" +
-                                                                   "  gl_Position = mMVP * vec4(iPosition, 0.0, 1.0);\n" +
-                                                                   "  vColor = vec4(1, 1, 1, 1);\n" +
-                                                                   "}\n"
-                                                                  ).loadFragment("#version 330\n" +
-                                                                                 "\n" +
-                                                                                 "in vec4 vColor;\n" +
-                                                                                 "\n" +
-                                                                                 "layout(location = 0) out vec4 oColor;\n" +
-                                                                                 "\n" +
-                                                                                 "void main(void) {\n" +
-                                                                                 "  oColor = vColor;\n" +
-                                                                                 "}\n"
-                                                                                ).validate();
-                        VertexArray hudVertexArray = new VertexArray().bind().add(new GLBuffer(GL_ARRAY_BUFFER).bind().resize(12 * 1024, GL_DYNAMIC_DRAW).unbind(), GL_FLOAT, 3, GL_UNSIGNED_BYTE, 4).unbind();
-                        
-                        Matrix4f MVP = new Matrix4f().setOrtho(0F, Engine.window.width(), Engine.window.height(), 0F, -1F, 1F);
                         
                         long t, dt;
                         long lastFrame  = nanoseconds();
@@ -291,7 +273,7 @@ public class Engine
                                     }
                                     Engine.PROFILER.endSection();
                                     
-                                    Engine.PROFILER.startSection("Render");
+                                    Engine.PROFILER.startSection("Render Screen");
                                     {
                                         glBindFramebuffer(GL_FRAMEBUFFER, 0);
                                         if (window.updateViewport())
@@ -300,10 +282,32 @@ public class Engine
                                             Engine.pixelSize.y = Math.max(Engine.window.viewH() / Engine.screenSize.y, 1);
                                         }
                                         
-                                        Engine.target.bind();
-                                        Engine.shader.bind();
-                                        Engine.vertexArray.bind();
-                                        Engine.vertexArray.draw(GL_TRIANGLES);
+                                        Engine.screen.bind();
+                                        Engine.screenShader.bind();
+                                        Engine.screenVAO.bind().draw(GL_QUADS).unbind();
+                                    }
+                                    Engine.PROFILER.endSection();
+                                    
+                                    Engine.PROFILER.startSection("Debug Render");
+                                    {
+                                        Engine.debugShader.bind();
+                                        Engine.debugShader.setMat4("pv", Engine.debugView.setOrtho(0F, Engine.window.viewW(), Engine.window.viewH(), 0F, -1F, 1F));
+                                        Engine.debugShader.setColor("color", Color.WHITE);
+    
+                                        Engine.debugVAO.bind();
+                                        for (Tuple<Integer, Integer, String> line : Engine.debugLines)
+                                        {
+                                            try (MemoryStack frame = stackPush())
+                                            {
+                                                ByteBuffer textBuffer = frame.malloc(12 * 1024);
+                                                stb_easy_font_print(line.a, line.b, line.c, null, textBuffer);
+    
+                                                Engine.debugVAO.set(0, textBuffer);
+                                                Engine.debugVAO.draw(GL_QUADS);
+                                            }
+                                        }
+                                        Engine.debugVAO.unbind();
+                                        Engine.debugLines.clear();
                                     }
                                     Engine.PROFILER.endSection();
                                     
@@ -316,20 +320,44 @@ public class Engine
                                 }
                                 Engine.PROFILER.endFrame();
                                 
-                                if (Engine.screenshot != null)
+                                if (Engine.PROFILER.enabled)
                                 {
-                                    String fileName = Engine.screenshot + (!Engine.screenshot.endsWith(".png") ? ".png" : "");
+                                    String parent = "".equals(Engine.printFrame) ? null : Engine.printFrame;
                                     
-                                    int w = Engine.window.frameBufferWidth();
-                                    int h = Engine.window.frameBufferHeight();
-                                    int c = 3;
+                                    // TODO - Make profiler take averages over an amount of frames.
+                                    String text = Engine.PROFILER.getFormattedData(parent);
                                     
-                                    int stride = w * c;
+                                    int x = 2;
+                                    int y = 2;
+                                    for (String line : text.split("\n"))
+                                    {
+                                        drawDebugText(x, y, line);
+    
+                                        y += stb_easy_font_height(line);
+                                    }
                                     
-                                    ByteBuffer buf = MemoryUtil.memAlloc(w * h * c);
+                                    Engine.printFrame = null;
+                                }
+                                
+                                Engine.window.swap();
+                            }
+    
+                            if (Engine.screenshot != null)
+                            {
+                                String fileName = Engine.screenshot + (!Engine.screenshot.endsWith(".png") ? ".png" : "");
+        
+                                int w = Engine.window.frameBufferWidth();
+                                int h = Engine.window.frameBufferHeight();
+                                int c = 3;
+        
+                                int stride = w * c;
+        
+                                try(MemoryStack stack = MemoryStack.stackPush())
+                                {
+                                    ByteBuffer buf = stack.malloc(w * h * c);
                                     glReadBuffer(GL_FRONT);
                                     glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buf);
-                                    
+    
                                     byte[] tmp1 = new byte[stride], tmp2 = new byte[stride];
                                     for (int i = 0, n = h >> 1, col1, col2; i < n; i++)
                                     {
@@ -340,62 +368,11 @@ public class Engine
                                         buf.put(col1, tmp2);
                                         buf.put(col2, tmp1);
                                     }
-                                    
+    
                                     if (!stbi_write_png(fileName, w, h, c, buf, stride)) Engine.LOGGER.severe("Could not take screen shot");
-                                    MemoryUtil.memFree(buf);
-                                    
-                                    Engine.screenshot = null;
                                 }
-    
-                                if (Engine.PROFILER.enabled)
-                                {
-                                    // TODO - Add profiler output to screen with stb_easy_font
-                                    String parent = "".equals(Engine.printFrame) ? null : Engine.printFrame;
         
-                                    String text = Engine.PROFILER.getFormattedData(parent);
-        
-                                    hudShader.bind();
-                                    hudShader.setMat4("mMVP", MVP);
-        
-                                    int x = 2;
-                                    int y = 2;
-                                    for (String line : text.split("\n"))
-                                    {
-                                        try (MemoryStack frame = stackPush())
-                                        {
-                                            ByteBuffer textBuffer = frame.malloc(12 * 1024);
-                                            // ByteBuffer textBuffer = frame.malloc(270 * line.length());
-                                            int quads = stb_easy_font_print(x, y, line, null, textBuffer);
-    
-                                            hudVertexArray.bind().getBuffer(0).bind().set(textBuffer/*.limit(quads * 64)*/, GL_DYNAMIC_DRAW).unbind();
-                                            // ByteBuffer data = hudVertexArray.getVertexBuffer(0).bind().getByteBuffer();
-                                            // while (data.remaining() > 0)
-                                            // {
-                                            //     print(data.get(), "");
-                                            // }
-                                            // data.rewind();
-                                            // println();
-                                            hudVertexArray.getBuffer(0).unbind();
-                                            hudVertexArray/*.resize()*/.draw(GL_QUADS).unbind();
-                                            // glBindBuffer.(GL_ARRAY_BUFFER, vboPerf);
-                                            // glBufferSubData(GL_ARRAY_BUFFER, 0, textBuffer);
-                                            //
-                                            // glVertexAttribPointer(0, 2, GL_FLOAT, false, 4 * 4, 0);
-                                            // // glVertexAttrib4f(1, 1.0f, 0.0f, 0.0f, 1.0f);
-                                            // glDrawArrays(GL_QUADS, 0, quads * 6);
-                
-                                            y += stb_easy_font_height(line);
-                                        }
-                                    }
-                                    // glDisableVertexAttribArray(0);
-                                    // glBindBuffer(GL_ARRAY_BUFFER, 0);
-        
-                                    // glUseProgram(0);
-        
-                                    Engine.printFrame = null;
-                                }
-    
-                                Engine.window.swap();
+                                Engine.screenshot = null;
                             }
                             
                             dt = t - lastSecond;
@@ -502,7 +479,7 @@ public class Engine
         
         if (Engine.screenSize.lengthSquared() == 0) throw new RuntimeException("Screen dimension must be > 0");
         if (Engine.pixelSize.lengthSquared() == 0) throw new RuntimeException("Pixel dimension must be > 0");
-    
+        
         Engine.LOGGER.finest("GLFW: Init");
         GLFWErrorCallback.createPrint(System.err).set();
         if (!glfwInit()) throw new IllegalStateException("Unable to initialize GLFW");
@@ -512,18 +489,19 @@ public class Engine
         Engine.window.makeCurrent();
         GL.createCapabilities();
         
-        Engine.blend = new Blend();
-        
-        Engine.target = new Texture(screenW, screenH);
-        
-        Engine.shader = new Shader().loadVertexFile("shader/pixel.vert").loadFragmentFile("shader/pixel.frag").validate();
-        
         glEnable(GL_TEXTURE_2D);
         
-        Engine.vertexArray = new VertexArray().bind();
-        Engine.vertexArray.add(new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, -1.0F, 1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, GL_DYNAMIC_DRAW, 2);
+        Engine.blend = new Blend();
         
-        Engine.renderer = Renderer.getRenderer(Engine.target, renderer);
+        Engine.screen       = new Texture(screenW, screenH);
+        Engine.screenShader = new Shader().loadVertexFile("shader/pixel.vert").loadFragmentFile("shader/pixel.frag").validate().unbind();
+        Engine.screenVAO    = new VertexArray().bind().add(new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, GL_DYNAMIC_DRAW, 2);
+        
+        Engine.debugShader = new Shader().bind().loadVertexFile("shader/debug.vert").loadFragmentFile("shader/debug.frag").validate().unbind();
+        Engine.debugVAO    = new VertexArray().bind().add(12 * 1024, GL_DYNAMIC_DRAW, GL_FLOAT, 3, GL_UNSIGNED_BYTE, 4).unbind();
+        Engine.debugView   = new Matrix4f().setOrtho(0F, Engine.window.viewW(), Engine.window.height(), 0F, -1F, 1F);
+        
+        Engine.renderer = Renderer.getRenderer(Engine.screen, renderer);
     }
     
     /**
@@ -751,6 +729,18 @@ public class Engine
         screenShot(null);
     }
     
+    /**
+     * Draws Debug text to the screen. The coordinates passed in will not be affected by any transformations.
+     *
+     * @param x The x coordinate of the top left point if the text.
+     * @param y The y coordinate of the top left point if the text.
+     * @param text The text to render.
+     */
+    public static void drawDebugText(int x, int y, String text)
+    {
+        Engine.debugLines.add(new Tuple<>(x, y, text));
+    }
+    
     // ---------------------
     // -- Random Instance --
     // ---------------------
@@ -934,8 +924,7 @@ public class Engine
     }
     
     /**
-     * See {@link Random#}
-     * public static <T> T nextFrom(T...)
+     * See {@link Random#nextFrom(T...)}
      */
     @SafeVarargs
     public static <T> T nextFrom(T... array)

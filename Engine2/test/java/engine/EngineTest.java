@@ -119,7 +119,7 @@ public class EngineTest extends Engine
                 if (keyboard().K2.held()) arcMode(ArcMode.OPEN);
                 if (keyboard().K3.held()) arcMode(ArcMode.CHORD);
                 if (keyboard().K4.held()) arcMode(ArcMode.PIE);
-                weight(5);
+                weight(10);
                 translate(screenWidth() / 2., screenHeight() / 2.);
                 arc(0, 0, 300, 100, 0, map(mouse().x(), 0, screenWidth() - 1, 0, 2.0 * Math.PI));
                 break;

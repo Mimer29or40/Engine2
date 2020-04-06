@@ -3,13 +3,13 @@ package engine.render;
 import engine.color.Color;
 import engine.color.Colorc;
 import engine.util.Logger;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.system.MemoryUtil;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.Objects;
 
 import static engine.util.Util.getPath;
@@ -23,18 +23,7 @@ import static org.lwjgl.stb.STBImageWrite.stbi_write_png;
 @SuppressWarnings({"UnusedReturnValue", "unused"})
 public class Texture
 {
-    private static final Logger             LOGGER   = new Logger();
-    private static final ArrayList<Texture> TEXTURES = new ArrayList<>();
-    
-    public static void destroyAll()
-    {
-        for (Texture texture : Texture.TEXTURES)
-        {
-            glDeleteTextures(texture.id);
-            if (texture.data != null) MemoryUtil.memFree(texture.data);
-        }
-        Texture.TEXTURES.clear();
-    }
+    private static final Logger LOGGER = new Logger();
     
     protected final Color tempColor = new Color();
     
@@ -82,8 +71,6 @@ public class Texture
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         
         glTexImage2D(GL_TEXTURE_2D, 0, this.format, this.width, this.height, 0, this.format, GL_UNSIGNED_BYTE, this.data);
-        
-        Texture.TEXTURES.add(this);
     }
     
     /**
@@ -96,8 +83,7 @@ public class Texture
      */
     public Texture(int width, int height, int channels, Colorc initial)
     {
-        // TODO - Should be BufferUtils (ByteBuffer.allocateDirect) so GC can control when memory is released.
-        this(width, height, channels, MemoryUtil.memAlloc(width * height * channels));
+        this(width, height, channels, BufferUtils.createByteBuffer(width * height * channels));
         
         if (this.channels == 4)
         {
@@ -354,7 +340,7 @@ public class Texture
     {
         if (this.data != null)
         {
-            MemoryUtil.memSet(this.data, 0);
+            BufferUtils.zeroBuffer(this.data);
             this.data.clear();
         }
     }
@@ -439,8 +425,7 @@ public class Texture
     public void destroy()
     {
         glDeleteTextures(this.id);
-        if (this.data != null) MemoryUtil.memFree(this.data);
-        Texture.TEXTURES.remove(this);
+        BufferUtils.zeroBuffer(this.data);
     }
     
     /**
@@ -496,7 +481,7 @@ public class Texture
             int height   = in.read();
             int channels = in.read();
             
-            ByteBuffer data = MemoryUtil.memAlloc(width * height * channels);
+            ByteBuffer data = BufferUtils.createByteBuffer(width * height * channels);
             
             for (int i = 0; in.available() > 0; i++) data.put(i, (byte) in.read());
             

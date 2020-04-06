@@ -7,7 +7,6 @@ import engine.util.Logger;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 import org.lwjgl.PointerBuffer;
-import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWMonitorCallback;
 
 import java.util.Objects;
@@ -60,10 +59,6 @@ public class Window
     public Window(Mouse mouse, Keyboard keyboard)
     {
         Window.LOGGER.finest("Window Creation Started");
-        
-        Window.LOGGER.finest("GLFW: Init");
-        GLFWErrorCallback.createPrint(System.err).set();
-        if (!glfwInit()) throw new IllegalStateException("Unable to initialize GLFW");
         
         Window.LOGGER.finest("GLFW: Hints");
         glfwDefaultWindowHints();

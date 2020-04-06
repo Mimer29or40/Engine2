@@ -2,7 +2,6 @@ package engine.render;
 
 import engine.util.Logger;
 import engine.util.Tuple;
-import engine.util.Util;
 import org.lwjgl.stb.STBTTAlignedQuad;
 import org.lwjgl.stb.STBTTFontinfo;
 import org.lwjgl.stb.STBTTPackContext;
@@ -13,7 +12,6 @@ import org.lwjgl.system.MemoryUtil;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import static engine.util.Util.resourceToByteBuffer;
@@ -28,25 +26,6 @@ public class Font
     private static final Logger LOGGER = new Logger();
     
     private static final HashMap<String, ByteBuffer> FILE_CACHE = new HashMap<>();
-    private static final ArrayList<Font>             FONTS      = new ArrayList<>();
-    
-    public static void destroyAll()
-    {
-        for (ByteBuffer buffer : Font.FILE_CACHE.values()) MemoryUtil.memFree(buffer);
-        Font.FILE_CACHE.clear();
-        for (Font font : Font.FONTS)
-        {
-            font.info.free();
-            for (STBTTPackedchar.Buffer buffer : font.charDataMap.values()) MemoryUtil.memFree(buffer);
-            font.charDataMap.clear();
-            font.scaleMap.clear();
-            font.descentMap.clear();
-            font.lineGapMap.clear();
-            for (Texture texture : font.textureMap.values()) texture.destroy();
-            font.textureMap.clear();
-        }
-        Font.FONTS.clear();
-    }
     
     private static final String  DEFAULT_FONT      = "BetterPixels.ttf";
     private static final int     DEFAULT_SIZE      = 12;
@@ -78,13 +57,12 @@ public class Font
      */
     public Font(String font, int size, boolean pixelAligned)
     {
-        // TODO - Buffers should be BufferUtils (ByteBuffer.allocateDirect) so GC can control when memory is released.
         this.font = font;
         this.data = Font.FILE_CACHE.computeIfAbsent(this.font, r -> {
             Font.LOGGER.finer("Loading new Font file:", r);
             return resourceToByteBuffer(r);
         });
-        this.info = STBTTFontinfo.malloc();
+        this.info = STBTTFontinfo.create();
         if (!stbtt_InitFont(this.info, this.data)) throw new RuntimeException("Font could not be loaded: " + font);
         
         this.size = Math.max(4, size);
@@ -92,8 +70,6 @@ public class Font
         this.pixelAligned = pixelAligned;
         
         setup();
-        
-        Font.FONTS.add(this);
     }
     
     /**
@@ -200,7 +176,10 @@ public class Font
         if (this.font.equals(font)) return;
         
         this.font = font;
-        this.data = Font.FILE_CACHE.computeIfAbsent(this.font, Util::resourceToByteBuffer);
+        this.data = Font.FILE_CACHE.computeIfAbsent(this.font, r -> {
+            Font.LOGGER.finer("Loading new Font file:", r);
+            return resourceToByteBuffer(r);
+        });
         this.info = STBTTFontinfo.create();
         if (!stbtt_InitFont(this.info, this.data)) throw new RuntimeException("Font could not be loaded: " + font);
         
@@ -394,27 +373,24 @@ public class Font
      */
     public void destroy()
     {
-        this.info.free();
-        for (STBTTPackedchar.Buffer buffer : this.charDataMap.values()) MemoryUtil.memFree(buffer);
         this.charDataMap.clear();
         this.scaleMap.clear();
         this.descentMap.clear();
         this.lineGapMap.clear();
         for (Texture texture : this.textureMap.values()) texture.destroy();
         this.textureMap.clear();
-        Font.FONTS.remove(this);
     }
     
     private void setup()
     {
         if (this.charDataMap.containsKey(this.size))
         {
-            Font.LOGGER.finest("Font States already cached for size=", this.size);
+            Font.LOGGER.finest("Font States already cached for size=%s", this.size);
             return;
         }
-        Font.LOGGER.finer("Generating new font size for size=", this.size);
+        Font.LOGGER.finer("Generating new font size for size=%s", this.size);
         
-        STBTTPackedchar.Buffer charData = STBTTPackedchar.malloc(128);
+        STBTTPackedchar.Buffer charData = STBTTPackedchar.create(128);
         this.charDataMap.put(this.size, charData);
         
         double scale = stbtt_ScaleForPixelHeight(this.info, this.size);

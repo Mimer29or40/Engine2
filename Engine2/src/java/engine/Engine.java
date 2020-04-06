@@ -11,6 +11,7 @@ import engine.util.Logger;
 import engine.util.Profiler;
 import engine.util.Random;
 import org.joml.*;
+import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
@@ -24,6 +25,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 
 import static engine.util.Util.getCurrentDateTimeString;
+import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.opengl.GL43.*;
 import static org.lwjgl.stb.STBEasyFont.stb_easy_font_height;
 import static org.lwjgl.stb.STBEasyFont.stb_easy_font_print;
@@ -146,7 +148,7 @@ public class Engine
             {
                 Engine.LOGGER.fine("Extension Post Setup");
                 Engine.extensions.values().forEach(Extension::afterSetup);
-    
+                
                 Engine.LOGGER.finest("Preparing Context for Thread Swap");
                 Engine.window.unmakeCurrent();
                 GL.setCapabilities(null);
@@ -369,17 +371,17 @@ public class Engine
                                 maxTime = Long.MIN_VALUE;
                                 
                                 totalFrames = 0;
-    
+                                
                                 if (Engine.PROFILER.enabled && Engine.printFrame != null)
                                 {
                                     // TODO - Add profiler output to screen with stb_easy_font
                                     String parent = Engine.printFrame.equals("") ? null : Engine.printFrame;
-        
+                                    
                                     String text = Engine.PROFILER.getFormattedData(parent);
-        
+                                    
                                     hudShader.bind();
                                     hudShader.setMat4("mMVP", MVP);
-        
+                                    
                                     int x = 2;
                                     int y = 2;
                                     for (String line : text.split("\n"))
@@ -389,23 +391,23 @@ public class Engine
                                             ByteBuffer textBuffer = frame.malloc(12 * 1024);
                                             // ByteBuffer textBuffer = frame.malloc(270 * line.length());
                                             int quads = stb_easy_font_print(x, y, line, null, textBuffer);
-                                            textBuffer.limit(quads * 4 * 16);
-                
+                                            // textBuffer.limit(quads * 4 * 16);
+                                            
                                             glBindBuffer(GL_ARRAY_BUFFER, vboPerf);
                                             glBufferSubData(GL_ARRAY_BUFFER, 0, textBuffer);
-                
+                                            
                                             glVertexAttribPointer(0, 2, GL_FLOAT, false, 4 * 4, 0);
                                             // glVertexAttrib4f(1, 1.0f, 0.0f, 0.0f, 1.0f);
                                             glDrawArrays(GL_QUADS, 0, quads * 6);
-                
+                                            
                                             y += stb_easy_font_height(line);
                                         }
                                     }
                                     // glDisableVertexAttribArray(0);
                                     // glBindBuffer(GL_ARRAY_BUFFER, 0);
-        
+                                    
                                     // glUseProgram(0);
-        
+                                    
                                     Engine.printFrame = null;
                                 }
                             }
@@ -413,9 +415,6 @@ public class Engine
                     }
                     finally
                     {
-                        Font.destroyAll();
-                        Texture.destroyAll();
-    
                         Engine.window.unmakeCurrent();
                         GL.destroy();
                         GL.setCapabilities(null);
@@ -500,10 +499,12 @@ public class Engine
         
         if (Engine.screenSize.lengthSquared() == 0) throw new RuntimeException("Screen dimension must be > 0");
         if (Engine.pixelSize.lengthSquared() == 0) throw new RuntimeException("Pixel dimension must be > 0");
+    
+        Engine.LOGGER.finest("GLFW: Init");
+        GLFWErrorCallback.createPrint(System.err).set();
+        if (!glfwInit()) throw new IllegalStateException("Unable to initialize GLFW");
         
-        Engine.mouse    = new Mouse();
-        Engine.keyboard = new Keyboard();
-        Engine.window   = new Window(Engine.mouse, Engine.keyboard);
+        Engine.window = new Window(Engine.mouse = new Mouse(), Engine.keyboard = new Keyboard());
         
         Engine.window.makeCurrent();
         GL.createCapabilities();

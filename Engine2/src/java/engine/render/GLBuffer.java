@@ -1,6 +1,7 @@
 package engine.render;
 
 import engine.util.Logger;
+import org.lwjgl.BufferUtils;
 
 import java.nio.*;
 import java.util.Objects;
@@ -15,12 +16,6 @@ public class GLBuffer
     private final int id, type;
     
     private int size;
-    
-    private short[]  shortData;
-    private int[]    intData;
-    private long[]   longData;
-    private float[]  floatData;
-    private double[] doubleData;
     
     public GLBuffer(int type)
     {
@@ -139,7 +134,6 @@ public class GLBuffer
         
         GLBuffer.LOGGER.finest("Resizing GLBuffer %s to %s", this.id, this.size);
         
-        resizeArrays();
         glBufferData(this.type, this.size, usage);
         return this;
     }
@@ -159,7 +153,6 @@ public class GLBuffer
         
         GLBuffer.LOGGER.finest("Setting GLBuffer %s with size %s and usage", this.id, this.size, usage);
         
-        resizeArrays();
         glBufferData(this.type, data, usage);
         return this;
     }
@@ -179,7 +172,6 @@ public class GLBuffer
         
         GLBuffer.LOGGER.finest("Setting GLBuffer %s with size %s and usage", this.id, this.size, usage);
         
-        resizeArrays();
         glBufferData(this.type, data, usage);
         return this;
     }
@@ -199,7 +191,6 @@ public class GLBuffer
         
         GLBuffer.LOGGER.finest("Setting GLBuffer %s with size %s and usage", this.id, this.size, usage);
         
-        resizeArrays();
         glBufferData(this.type, data, usage);
         return this;
     }
@@ -219,7 +210,6 @@ public class GLBuffer
         
         GLBuffer.LOGGER.finest("Setting GLBuffer %s with size %s and usage", this.id, this.size, usage);
         
-        resizeArrays();
         glBufferData(this.type, data, usage);
         return this;
     }
@@ -239,7 +229,6 @@ public class GLBuffer
         
         GLBuffer.LOGGER.finest("Setting GLBuffer %s with size %s and usage", this.id, this.size, usage);
         
-        resizeArrays();
         glBufferData(this.type, data, usage);
         return this;
     }
@@ -259,7 +248,6 @@ public class GLBuffer
         
         GLBuffer.LOGGER.finest("Setting GLBuffer %s with size %s and usage", this.id, this.size, usage);
         
-        resizeArrays();
         glBufferData(this.type, data, usage);
         return this;
     }
@@ -279,7 +267,6 @@ public class GLBuffer
         
         GLBuffer.LOGGER.finest("Setting GLBuffer %s with size %s and usage", this.id, this.size, usage);
         
-        resizeArrays();
         glBufferData(this.type, data, usage);
         return this;
     }
@@ -299,7 +286,6 @@ public class GLBuffer
         
         GLBuffer.LOGGER.finest("Setting GLBuffer %s with size %s and usage", this.id, this.size, usage);
         
-        resizeArrays();
         glBufferData(this.type, data, usage);
         return this;
     }
@@ -319,7 +305,6 @@ public class GLBuffer
         
         GLBuffer.LOGGER.finest("Setting GLBuffer %s with size %s and usage", this.id, this.size, usage);
         
-        resizeArrays();
         glBufferData(this.type, data, usage);
         return this;
     }
@@ -339,7 +324,6 @@ public class GLBuffer
         
         GLBuffer.LOGGER.finest("Setting GLBuffer %s with size %s and usage", this.id, this.size, usage);
         
-        resizeArrays();
         glBufferData(this.type, data, usage);
         return this;
     }
@@ -359,197 +343,196 @@ public class GLBuffer
         
         GLBuffer.LOGGER.finest("Setting GLBuffer %s with size %s and usage", this.id, this.size, usage);
         
-        resizeArrays();
         glBufferData(this.type, data, usage);
         return this;
     }
     
-    // /**
-    //  * Changes the contents of the buffer. The size of the data must match the buffer.
-    //  * <p>
-    //  * Make sure to bind the buffer first.
-    //  *
-    //  * @param data The data.
-    //  * @return This instance for call chaining.
-    //  */
-    // public GLBuffer set(short[] data)
-    // {
-    //     GLBuffer.LOGGER.finest("Overwriting GLBuffer %s", this.id);
-    //
-    //     if (data.length != this.size) throw new RuntimeException("Data length does not match the buffer length");
-    //     glBufferSubData(this.type, 0, data);
-    //     return this;
-    // }
-    //
-    // /**
-    //  * Changes the contents of the buffer. The size of the data must match the buffer.
-    //  * <p>
-    //  * Make sure to bind the buffer first.
-    //  *
-    //  * @param data The data.
-    //  * @return This instance for call chaining.
-    //  */
-    // public GLBuffer set(int[] data)
-    // {
-    //     GLBuffer.LOGGER.finest("Overwriting GLBuffer %s", this.id);
-    //
-    //     if (data.length != this.size) throw new RuntimeException("Data length does not match the buffer length");
-    //     glBufferSubData(this.type, 0, data);
-    //     return this;
-    // }
-    //
-    // /**
-    //  * Changes the contents of the buffer. The size of the data must match the buffer.
-    //  * <p>
-    //  * Make sure to bind the buffer first.
-    //  *
-    //  * @param data The data.
-    //  * @return This instance for call chaining.
-    //  */
-    // public GLBuffer set(long[] data)
-    // {
-    //     GLBuffer.LOGGER.finest("Overwriting GLBuffer %s", this.id);
-    //
-    //     if (data.length != this.size) throw new RuntimeException("Data length does not match the buffer length");
-    //     glBufferSubData(this.type, 0, data);
-    //     return this;
-    // }
-    //
-    // /**
-    //  * Changes the contents of the buffer. The size of the data must match the buffer.
-    //  * <p>
-    //  * Make sure to bind the buffer first.
-    //  *
-    //  * @param data The data.
-    //  * @return This instance for call chaining.
-    //  */
-    // public GLBuffer set(float[] data)
-    // {
-    //     GLBuffer.LOGGER.finest("Overwriting GLBuffer %s", this.id);
-    //
-    //     if (data.length != this.size) throw new RuntimeException("Data length does not match the buffer length");
-    //     glBufferSubData(this.type, 0, data);
-    //     return this;
-    // }
-    //
-    // /**
-    //  * Changes the contents of the buffer. The size of the data must match the buffer.
-    //  * <p>
-    //  * Make sure to bind the buffer first.
-    //  *
-    //  * @param data The data.
-    //  * @return This instance for call chaining.
-    //  */
-    // public GLBuffer set(double[] data)
-    // {
-    //     GLBuffer.LOGGER.finest("Overwriting GLBuffer %s", this.id);
-    //
-    //     if (data.length != this.size) throw new RuntimeException("Data length does not match the buffer length");
-    //     glBufferSubData(this.type, 0, data);
-    //     return this;
-    // }
-    //
-    // /**
-    //  * Changes the contents of the buffer. The size of the data must match the buffer.
-    //  * <p>
-    //  * Make sure to bind the buffer first.
-    //  *
-    //  * @param data The data.
-    //  * @return This instance for call chaining.
-    //  */
-    // public GLBuffer set(ByteBuffer data)
-    // {
-    //     GLBuffer.LOGGER.finest("Overwriting GLBuffer %s", this.id);
-    //
-    //     if (data.remaining() != this.size) throw new RuntimeException("Data length does not match the buffer length");
-    //     glBufferSubData(this.type, 0, data);
-    //     return this;
-    // }
-    //
-    // /**
-    //  * Changes the contents of the buffer. The size of the data must match the buffer.
-    //  * <p>
-    //  * Make sure to bind the buffer first.
-    //  *
-    //  * @param data The data.
-    //  * @return This instance for call chaining.
-    //  */
-    // public GLBuffer set(ShortBuffer data)
-    // {
-    //     GLBuffer.LOGGER.finest("Overwriting GLBuffer %s", this.id);
-    //
-    //     if (data.remaining() != this.size) throw new RuntimeException("Data length does not match the buffer length");
-    //     glBufferSubData(this.type, 0, data);
-    //     return this;
-    // }
-    //
-    // /**
-    //  * Changes the contents of the buffer. The size of the data must match the buffer.
-    //  * <p>
-    //  * Make sure to bind the buffer first.
-    //  *
-    //  * @param data The data.
-    //  * @return This instance for call chaining.
-    //  */
-    // public GLBuffer set(IntBuffer data)
-    // {
-    //     GLBuffer.LOGGER.finest("Overwriting GLBuffer %s", this.id);
-    //
-    //     if (data.remaining() != this.size) throw new RuntimeException("Data length does not match the buffer length");
-    //     glBufferSubData(this.type, 0, data);
-    //     return this;
-    // }
-    //
-    // /**
-    //  * Changes the contents of the buffer. The size of the data must match the buffer.
-    //  * <p>
-    //  * Make sure to bind the buffer first.
-    //  *
-    //  * @param data The data.
-    //  * @return This instance for call chaining.
-    //  */
-    // public GLBuffer set(LongBuffer data)
-    // {
-    //     GLBuffer.LOGGER.finest("Overwriting GLBuffer %s", this.id);
-    //
-    //     if (data.remaining() != this.size) throw new RuntimeException("Data length does not match the buffer length");
-    //     glBufferSubData(this.type, 0, data);
-    //     return this;
-    // }
-    //
-    // /**
-    //  * Changes the contents of the buffer. The size of the data must match the buffer.
-    //  * <p>
-    //  * Make sure to bind the buffer first.
-    //  *
-    //  * @param data The data.
-    //  * @return This instance for call chaining.
-    //  */
-    // public GLBuffer set(FloatBuffer data)
-    // {
-    //     GLBuffer.LOGGER.finest("Overwriting GLBuffer %s", this.id);
-    //
-    //     if (data.remaining() != this.size) throw new RuntimeException("Data length does not match the buffer length");
-    //     glBufferSubData(this.type, 0, data);
-    //     return this;
-    // }
-    //
-    // /**
-    //  * Changes the contents of the buffer. The size of the data must match the buffer.
-    //  * <p>
-    //  * Make sure to bind the buffer first.
-    //  *
-    //  * @param data The data.
-    //  * @return This instance for call chaining.
-    //  */
-    // public GLBuffer set(DoubleBuffer data)
-    // {
-    //     GLBuffer.LOGGER.finest("Overwriting GLBuffer %s", this.id);
-    //
-    //     if (data.remaining() != this.size) throw new RuntimeException("Data length does not match the buffer length");
-    //     glBufferSubData(this.type, 0, data);
-    //     return this;
-    // }
+    /**
+     * Changes the contents of the buffer. The size of the data must match the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
+     * @param data The data.
+     * @return This instance for call chaining.
+     */
+    public GLBuffer set(short[] data)
+    {
+        GLBuffer.LOGGER.finest("Overwriting GLBuffer %s", this.id);
+
+        if (data.length != this.size) throw new RuntimeException("Data length does not match the buffer length");
+        glBufferSubData(this.type, 0, data);
+        return this;
+    }
+
+    /**
+     * Changes the contents of the buffer. The size of the data must match the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
+     * @param data The data.
+     * @return This instance for call chaining.
+     */
+    public GLBuffer set(int[] data)
+    {
+        GLBuffer.LOGGER.finest("Overwriting GLBuffer %s", this.id);
+
+        if (data.length != this.size) throw new RuntimeException("Data length does not match the buffer length");
+        glBufferSubData(this.type, 0, data);
+        return this;
+    }
+
+    /**
+     * Changes the contents of the buffer. The size of the data must match the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
+     * @param data The data.
+     * @return This instance for call chaining.
+     */
+    public GLBuffer set(long[] data)
+    {
+        GLBuffer.LOGGER.finest("Overwriting GLBuffer %s", this.id);
+
+        if (data.length != this.size) throw new RuntimeException("Data length does not match the buffer length");
+        glBufferSubData(this.type, 0, data);
+        return this;
+    }
+
+    /**
+     * Changes the contents of the buffer. The size of the data must match the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
+     * @param data The data.
+     * @return This instance for call chaining.
+     */
+    public GLBuffer set(float[] data)
+    {
+        GLBuffer.LOGGER.finest("Overwriting GLBuffer %s", this.id);
+
+        if (data.length != this.size) throw new RuntimeException("Data length does not match the buffer length");
+        glBufferSubData(this.type, 0, data);
+        return this;
+    }
+
+    /**
+     * Changes the contents of the buffer. The size of the data must match the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
+     * @param data The data.
+     * @return This instance for call chaining.
+     */
+    public GLBuffer set(double[] data)
+    {
+        GLBuffer.LOGGER.finest("Overwriting GLBuffer %s", this.id);
+
+        if (data.length != this.size) throw new RuntimeException("Data length does not match the buffer length");
+        glBufferSubData(this.type, 0, data);
+        return this;
+    }
+
+    /**
+     * Changes the contents of the buffer. The size of the data must match the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
+     * @param data The data.
+     * @return This instance for call chaining.
+     */
+    public GLBuffer set(ByteBuffer data)
+    {
+        GLBuffer.LOGGER.finest("Overwriting GLBuffer %s", this.id);
+
+        if (data.remaining() != this.size) throw new RuntimeException("Data length does not match the buffer length");
+        glBufferSubData(this.type, 0, data);
+        return this;
+    }
+
+    /**
+     * Changes the contents of the buffer. The size of the data must match the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
+     * @param data The data.
+     * @return This instance for call chaining.
+     */
+    public GLBuffer set(ShortBuffer data)
+    {
+        GLBuffer.LOGGER.finest("Overwriting GLBuffer %s", this.id);
+
+        if (data.remaining() != this.size) throw new RuntimeException("Data length does not match the buffer length");
+        glBufferSubData(this.type, 0, data);
+        return this;
+    }
+
+    /**
+     * Changes the contents of the buffer. The size of the data must match the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
+     * @param data The data.
+     * @return This instance for call chaining.
+     */
+    public GLBuffer set(IntBuffer data)
+    {
+        GLBuffer.LOGGER.finest("Overwriting GLBuffer %s", this.id);
+
+        if (data.remaining() != this.size) throw new RuntimeException("Data length does not match the buffer length");
+        glBufferSubData(this.type, 0, data);
+        return this;
+    }
+
+    /**
+     * Changes the contents of the buffer. The size of the data must match the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
+     * @param data The data.
+     * @return This instance for call chaining.
+     */
+    public GLBuffer set(LongBuffer data)
+    {
+        GLBuffer.LOGGER.finest("Overwriting GLBuffer %s", this.id);
+
+        if (data.remaining() != this.size) throw new RuntimeException("Data length does not match the buffer length");
+        glBufferSubData(this.type, 0, data);
+        return this;
+    }
+
+    /**
+     * Changes the contents of the buffer. The size of the data must match the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
+     * @param data The data.
+     * @return This instance for call chaining.
+     */
+    public GLBuffer set(FloatBuffer data)
+    {
+        GLBuffer.LOGGER.finest("Overwriting GLBuffer %s", this.id);
+
+        if (data.remaining() != this.size) throw new RuntimeException("Data length does not match the buffer length");
+        glBufferSubData(this.type, 0, data);
+        return this;
+    }
+
+    /**
+     * Changes the contents of the buffer. The size of the data must match the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
+     * @param data The data.
+     * @return This instance for call chaining.
+     */
+    public GLBuffer set(DoubleBuffer data)
+    {
+        GLBuffer.LOGGER.finest("Overwriting GLBuffer %s", this.id);
+
+        if (data.remaining() != this.size) throw new RuntimeException("Data length does not match the buffer length");
+        glBufferSubData(this.type, 0, data);
+        return this;
+    }
     
     /**
      * Gets the data in the buffer.
@@ -561,9 +544,10 @@ public class GLBuffer
     public short[] getShort()
     {
         GLBuffer.LOGGER.finest("Getting GLBuffer %s contents", this.id);
-        
-        if (this.shortData != null) glGetBufferSubData(this.type, 0, this.shortData);
-        return this.shortData;
+    
+        short[] shortData = new short[this.size];
+        glGetBufferSubData(this.type, 0, shortData);
+        return shortData;
     }
     
     /**
@@ -577,8 +561,9 @@ public class GLBuffer
     {
         GLBuffer.LOGGER.finest("Getting GLBuffer %s contents", this.id);
         
-        if (this.intData != null) glGetBufferSubData(this.type, 0, this.intData);
-        return this.intData;
+        int[] intData = new int[this.size];
+        glGetBufferSubData(this.type, 0, intData);
+        return intData;
     }
     
     /**
@@ -592,8 +577,9 @@ public class GLBuffer
     {
         GLBuffer.LOGGER.finest("Getting GLBuffer %s contents", this.id);
         
-        if (this.longData != null) glGetBufferSubData(this.type, 0, this.longData);
-        return this.longData;
+        long[] longData = new long[this.size];
+        glGetBufferSubData(this.type, 0, longData);
+        return longData;
     }
     
     /**
@@ -607,8 +593,9 @@ public class GLBuffer
     {
         GLBuffer.LOGGER.finest("Getting GLBuffer %s contents", this.id);
         
-        if (this.floatData != null) glGetBufferSubData(this.type, 0, this.floatData);
-        return this.floatData;
+        float[] floatData = new float[this.size];
+        glGetBufferSubData(this.type, 0, floatData);
+        return floatData;
     }
     
     /**
@@ -622,16 +609,24 @@ public class GLBuffer
     {
         GLBuffer.LOGGER.finest("Getting GLBuffer %s contents", this.id);
         
-        if (this.doubleData != null) glGetBufferSubData(this.type, 0, this.doubleData);
-        return this.doubleData;
+        double[] doubleData = new double[this.size];
+        glGetBufferSubData(this.type, 0, doubleData);
+        return doubleData;
     }
     
-    private void resizeArrays()
+    /**
+     * Gets the data in the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
+     * @return The data in the buffer.
+     */
+    public ByteBuffer getByteBuffer()
     {
-        if (this.shortData == null || this.shortData.length != this.size) this.shortData = new short[this.size];
-        if (this.intData == null || this.intData.length != this.size) this.intData = new int[this.size];
-        if (this.longData == null || this.longData.length != this.size) this.longData = new long[this.size];
-        if (this.floatData == null || this.floatData.length != this.size) this.floatData = new float[this.size];
-        if (this.doubleData == null || this.doubleData.length != this.size) this.doubleData = new double[this.size];
+        GLBuffer.LOGGER.finest("Getting GLBuffer %s contents", this.id);
+    
+        ByteBuffer buffer = BufferUtils.createByteBuffer(this.size);
+        glGetBufferSubData(this.type, 0, buffer);
+        return buffer;
     }
 }

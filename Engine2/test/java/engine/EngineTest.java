@@ -154,6 +154,7 @@ public class EngineTest extends Engine
         if (keyboard().D.down()) enableDebug(!enableDebug());
         if (keyboard().F.down()) window().toggleFullscreen();
         if (keyboard().V.down()) window().toggleVsync();
+        if (keyboard().P.held()) printFrameData("");
     
         if (keyboard().F1.down()) state = 1;
         if (keyboard().F2.down()) state = 2;
@@ -179,7 +180,7 @@ public class EngineTest extends Engine
     
     public static void main(String[] args)
     {
-        // enableProfiler();
-        start(new EngineTest(), Level.FINEST);
+        enableProfiler();
+        start(new EngineTest(), Level.INFO);
     }
 }

@@ -166,7 +166,7 @@ public class Engine
                                                                    "uniform mat4 mMVP;\n" +
                                                                    "\n" +
                                                                    "layout(location = 0) in vec2 iPosition;\n" +
-                                                                   "//layout(location = 1) in vec4 iColor;\n" +
+                                                                   "//layout(location = 1) in int iColor;\n" +
                                                                    "\n" +
                                                                    "out vec4 vColor;\n" +
                                                                    "\n" +
@@ -184,15 +184,11 @@ public class Engine
                                                                                  "  oColor = vColor;\n" +
                                                                                  "}\n"
                                                                                 ).validate();
+                        VertexArray hudVertexArray = new VertexArray().bind().add(new GLBuffer(GL_ARRAY_BUFFER).bind().resize(12 * 1024, GL_DYNAMIC_DRAW).unbind(), GL_FLOAT, 3, GL_UNSIGNED_BYTE, 4).unbind();
                         
-                        int vboPerf = glGenBuffers();
-                        glBindBuffer(GL_ARRAY_BUFFER, vboPerf);
-                        glBufferData(GL_ARRAY_BUFFER, 12 * 1024, GL_DYNAMIC_DRAW);
-                        glBindBuffer(GL_ARRAY_BUFFER, 0);
-                        
-                        Matrix4f MVP = new Matrix4f().setOrtho(0F, screenWidth() * 2, screenHeight() * 2, 0F, -1F, 1F)
-                                                     .translate(4F, 4F, 0F)
-                                                     .scale(2F, 2F, 1F);
+                        Matrix4f MVP = new Matrix4f().setOrtho(0F, Engine.window.width(), Engine.window.height(), 0F, -1F, 1F);
+                                                     // .translate(4F, 4F, 0F);
+                                                     // .scale(2F, 2F, 1F);
                         
                         long t, dt;
                         long lastFrame  = nanoseconds();
@@ -310,8 +306,6 @@ public class Engine
                                         Engine.shader.bind();
                                         Engine.vertexArray.bind();
                                         Engine.vertexArray.draw(GL_TRIANGLES);
-                                        
-                                        Engine.window.swap();
                                     }
                                     Engine.PROFILER.endSection();
                                     
@@ -354,6 +348,56 @@ public class Engine
                                     
                                     Engine.screenshot = null;
                                 }
+    
+                                if (Engine.PROFILER.enabled)
+                                {
+                                    // TODO - Add profiler output to screen with stb_easy_font
+                                    String parent = "".equals(Engine.printFrame) ? null : Engine.printFrame;
+        
+                                    String text = Engine.PROFILER.getFormattedData(parent);
+        
+                                    hudShader.bind();
+                                    hudShader.setMat4("mMVP", MVP);
+        
+                                    int x = 2;
+                                    int y = 2;
+                                    for (String line : text.split("\n"))
+                                    {
+                                        try (MemoryStack frame = stackPush())
+                                        {
+                                            ByteBuffer textBuffer = frame.malloc(12 * 1024);
+                                            // ByteBuffer textBuffer = frame.malloc(270 * line.length());
+                                            int quads = stb_easy_font_print(x, y, line, null, textBuffer);
+    
+                                            hudVertexArray.bind().getVertexBuffer(0).bind().set(textBuffer/*.limit(quads * 64)*/, GL_DYNAMIC_DRAW).unbind();
+                                            // ByteBuffer data = hudVertexArray.getVertexBuffer(0).bind().getByteBuffer();
+                                            // while (data.remaining() > 0)
+                                            // {
+                                            //     print(data.get(), "");
+                                            // }
+                                            // data.rewind();
+                                            // println();
+                                            hudVertexArray.getVertexBuffer(0).unbind();
+                                            hudVertexArray/*.resize()*/.draw(GL_QUADS).unbind();
+                                            // glBindBuffer.(GL_ARRAY_BUFFER, vboPerf);
+                                            // glBufferSubData(GL_ARRAY_BUFFER, 0, textBuffer);
+                                            //
+                                            // glVertexAttribPointer(0, 2, GL_FLOAT, false, 4 * 4, 0);
+                                            // // glVertexAttrib4f(1, 1.0f, 0.0f, 0.0f, 1.0f);
+                                            // glDrawArrays(GL_QUADS, 0, quads * 6);
+                
+                                            y += stb_easy_font_height(line);
+                                        }
+                                    }
+                                    // glDisableVertexAttribArray(0);
+                                    // glBindBuffer(GL_ARRAY_BUFFER, 0);
+        
+                                    // glUseProgram(0);
+        
+                                    Engine.printFrame = null;
+                                }
+    
+                                Engine.window.swap();
                             }
                             
                             dt = t - lastSecond;
@@ -371,45 +415,6 @@ public class Engine
                                 maxTime = Long.MIN_VALUE;
                                 
                                 totalFrames = 0;
-                                
-                                if (Engine.PROFILER.enabled && Engine.printFrame != null)
-                                {
-                                    // TODO - Add profiler output to screen with stb_easy_font
-                                    String parent = Engine.printFrame.equals("") ? null : Engine.printFrame;
-                                    
-                                    String text = Engine.PROFILER.getFormattedData(parent);
-                                    
-                                    hudShader.bind();
-                                    hudShader.setMat4("mMVP", MVP);
-                                    
-                                    int x = 2;
-                                    int y = 2;
-                                    for (String line : text.split("\n"))
-                                    {
-                                        try (MemoryStack frame = stackPush())
-                                        {
-                                            ByteBuffer textBuffer = frame.malloc(12 * 1024);
-                                            // ByteBuffer textBuffer = frame.malloc(270 * line.length());
-                                            int quads = stb_easy_font_print(x, y, line, null, textBuffer);
-                                            // textBuffer.limit(quads * 4 * 16);
-                                            
-                                            glBindBuffer(GL_ARRAY_BUFFER, vboPerf);
-                                            glBufferSubData(GL_ARRAY_BUFFER, 0, textBuffer);
-                                            
-                                            glVertexAttribPointer(0, 2, GL_FLOAT, false, 4 * 4, 0);
-                                            // glVertexAttrib4f(1, 1.0f, 0.0f, 0.0f, 1.0f);
-                                            glDrawArrays(GL_QUADS, 0, quads * 6);
-                                            
-                                            y += stb_easy_font_height(line);
-                                        }
-                                    }
-                                    // glDisableVertexAttribArray(0);
-                                    // glBindBuffer(GL_ARRAY_BUFFER, 0);
-                                    
-                                    // glUseProgram(0);
-                                    
-                                    Engine.printFrame = null;
-                                }
                             }
                         }
                     }

@@ -1,12 +1,13 @@
 package engine.render;
 
 import engine.util.Logger;
-import engine.util.Util;
 
 import java.nio.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
+import static engine.util.Util.sum;
 import static org.lwjgl.opengl.GL30.*;
 
 /**
@@ -226,7 +227,7 @@ public class VertexArray
     public VertexArray addEBO(GLBuffer buffer)
     {
         VertexArray.LOGGER.finest("Adding EBO (%s) into VertexArray: %s", buffer, this.id);
-    
+        
         if (this.indexBuffer != null) this.indexBuffer.delete();
         this.indexBuffer = buffer;
         return this;
@@ -265,6 +266,61 @@ public class VertexArray
      * <p>
      * Make sure to bind the vertex array first.
      *
+     * @param buffer  The buffer object;
+     * @param formats The types and sizes pairs for how the buffer is organized.
+     * @return This instance for call chaining.
+     */
+    public VertexArray add(GLBuffer buffer, int... formats)
+    {
+        int n = formats.length;
+        if (n == 0) throw new RuntimeException("Invalid vertex format: Must have at least one type/size pair");
+        if ((n & 1) == 1) throw new RuntimeException("Invalid vertex format: A type/size pair is missing a value");
+        
+        n >>= 1;
+        int[] types = new int[n];
+        int[] bytes = new int[n];
+        int[] sizes = new int[n];
+        int stride = 0;
+        for (int i = 0, index; i < n; i++)
+        {
+            index = i << 1;
+            if (invalidType(formats[index])) throw new RuntimeException("Invalid vertex format: Not recognized OpenGL type: " + formats[index]);
+            types[i] = formats[index];
+            bytes[i] = getBytes(formats[index]);
+            sizes[i] = formats[index + 1];
+            stride += bytes[i] * sizes[i];
+        }
+        
+        VertexArray.LOGGER.finest("Adding VBO (%s) of types %s into VertexArray: %s", buffer, Arrays.toString(types), this.id);
+        
+        int bufferAttributesSize = sum(sizes);
+        if (bufferAttributesSize == 0) throw new RuntimeException("Invalid vertex format: Vertex length must be > 0");
+        
+        this.vertexCount = Math.min(this.vertexCount > 0 ? this.vertexCount : Integer.MAX_VALUE, buffer.size() / bufferAttributesSize);
+        
+        ArrayList<Integer> bufferAttributes = new ArrayList<>();
+        
+        buffer.bind();
+        int attributeCount = attributeCount(), offset = 0;
+        for (int i = 0; i < n; i++)
+        {
+            int type = types[i];
+            int size = sizes[i];
+            bufferAttributes.add(size);
+            glVertexAttribPointer(attributeCount, size, type, false, stride, offset);
+            glEnableVertexAttribArray(attributeCount++);
+            offset += size * bytes[i];
+        }
+        this.vertexBuffers.add(buffer.unbind());
+        this.attributes.add(bufferAttributes);
+        return this;
+    }
+    
+    /**
+     * Adds a buffer object with any number of attributes to the Vertex Array. The VertexArray object will manage the buffer.
+     * <p>
+     * Make sure to bind the vertex array first.
+     *
      * @param type   The OpenGL data type
      * @param buffer Teh buffer object;
      * @param sizes  The attributes lengths
@@ -273,9 +329,9 @@ public class VertexArray
     public VertexArray add(int type, GLBuffer buffer, int... sizes)
     {
         VertexArray.LOGGER.finest("Adding VBO (%s) of type %s into VertexArray: %s", buffer, type, this.id);
-    
+        
         if (sizes.length == 0) throw new RuntimeException("Invalid vertex size: Must have at least one size");
-        int bufferAttributesSize = Util.sum(sizes);
+        int bufferAttributesSize = sum(sizes);
         if (bufferAttributesSize == 0) throw new RuntimeException("Invalid vertex size: Vertex length must be > 0");
         
         this.vertexCount = Math.min(this.vertexCount > 0 ? this.vertexCount : Integer.MAX_VALUE, buffer.size() / bufferAttributesSize);
@@ -449,6 +505,24 @@ public class VertexArray
                 return Float.BYTES;
             case GL_DOUBLE:
                 return Double.BYTES;
+        }
+    }
+    
+    private boolean invalidType(int type)
+    {
+        switch (type)
+        {
+            case GL_UNSIGNED_BYTE:
+            case GL_BYTE:
+            case GL_UNSIGNED_SHORT:
+            case GL_SHORT:
+            case GL_UNSIGNED_INT:
+            case GL_INT:
+            case GL_FLOAT:
+            case GL_DOUBLE:
+                return false;
+            default:
+                return true;
         }
     }
 }

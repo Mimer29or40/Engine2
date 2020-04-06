@@ -2,11 +2,7 @@ package engine.render;
 
 import engine.color.Colorc;
 import engine.util.Logger;
-import org.joml.Matrix4f;
 
-import static engine.Engine.screenHeight;
-import static engine.Engine.screenWidth;
-import static engine.util.Util.max;
 import static org.lwjgl.opengl.GL43.*;
 
 /**
@@ -18,9 +14,6 @@ public class OpenGLRenderer extends Renderer
     private static final Logger LOGGER = new Logger();
     
     protected final int fbo, rbo;
-    
-    protected final Matrix4f proj = new Matrix4f();
-    protected final Matrix4f pv   = new Matrix4f();
     
     protected final Shader      pointShader;
     protected final VertexArray pointVAO;
@@ -79,10 +72,6 @@ public class OpenGLRenderer extends Renderer
         
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         
-        this.proj.m00(2F / screenWidth());
-        this.proj.m11(2F / screenHeight());
-        this.proj.m22(2F / max(screenWidth() * screenWidth(), screenHeight() * screenHeight()));
-        
         this.pointShader = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/point.geom").loadFragmentFile("shader/shared.frag").validate();
         this.pointVAO    = new VertexArray().bind().add(GL_FLOAT, new GLBuffer(GL_ARRAY_BUFFER).bind().resize(2, GL_DYNAMIC_DRAW).unbind(), 2).unbind();
         
@@ -139,43 +128,7 @@ public class OpenGLRenderer extends Renderer
      */
     public void identity()
     {
-        this.view.identity();
-        this.proj.mul(this.view, this.pv);
-    }
-    
-    /**
-     * Translates the view space.
-     *
-     * @param x The amount to translate horizontally.
-     * @param y The amount to translate vertically.
-     */
-    public void translate(double x, double y)
-    {
-        this.view.translate((float) x, (float) y, 0);
-        this.proj.mul(this.view, this.pv);
-    }
-    
-    /**
-     * Rotates the view space.
-     *
-     * @param angle The angle in radian to rotate by.
-     */
-    public void rotate(double angle)
-    {
-        this.view.rotate((float) angle, 0, 0, 1);
-        this.proj.mul(this.view, this.pv);
-    }
-    
-    /**
-     * Scales the view space.
-     *
-     * @param x The amount to scale horizontally.
-     * @param y The amount to scale vertically.
-     */
-    public void scale(double x, double y)
-    {
-        this.view.scale((float) x, (float) y, 1);
-        this.proj.mul(this.view, this.pv);
+        this.view.setOrtho(0F, this.target.width(), this.target.height(), 0F, -1F, 1F);
     }
     
     /**
@@ -191,8 +144,7 @@ public class OpenGLRenderer extends Renderer
         glBindFramebuffer(GL_FRAMEBUFFER, this.fbo);
         glViewport(0, 0, this.target.width(), this.target.height());
         
-        this.view.translate(-screenWidth() / 2f, -screenHeight() / 2f, 0);
-        this.proj.mul(this.view, this.pv);
+        this.view.setOrtho(0F, this.target.width(), 0F, this.target.height(), -1F, 1F);
         
         if (this.enableDebug) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
@@ -210,16 +162,6 @@ public class OpenGLRenderer extends Renderer
         this.target.bind().download();
         
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    }
-    
-    /**
-     * Returns the renderers properties to the state when {@link #push} was called.
-     */
-    @Override
-    public void pop()
-    {
-        super.pop();
-        this.proj.mul(this.view, this.pv);
     }
     
     /**
@@ -252,9 +194,9 @@ public class OpenGLRenderer extends Renderer
         makeCurrent();
         
         this.pointShader.bind();
-        this.pointShader.setMat4("pv", this.pv);
+        this.pointShader.setMat4("pv", this.view);
         this.pointShader.setColor("color", this.stroke);
-        this.pointShader.setVec2("viewport", screenWidth(), screenHeight());
+        this.pointShader.setVec2("viewport", this.target.width(), this.target.height());
         this.pointShader.setFloat("thickness", (float) this.weight);
         
         this.pointVAO.bind().getVertexBuffer(0).bind().set(new float[] {(float) x, (float) y}, GL_DYNAMIC_DRAW).unbind();
@@ -277,9 +219,9 @@ public class OpenGLRenderer extends Renderer
         makeCurrent();
         
         this.lineShader.bind();
-        this.lineShader.setMat4("pv", this.pv);
+        this.lineShader.setMat4("pv", this.view);
         this.lineShader.setColor("color", this.stroke);
-        this.lineShader.setVec2("viewport", screenWidth(), screenHeight());
+        this.lineShader.setVec2("viewport", this.target.width(), this.target.height());
         this.lineShader.setFloat("thickness", (float) this.weight);
         
         this.lineVAO.bind().getVertexBuffer(0).bind().set(new float[] {(float) x1, (float) y1, (float) x2, (float) y2}, GL_DYNAMIC_DRAW).unbind();
@@ -322,9 +264,9 @@ public class OpenGLRenderer extends Renderer
         makeCurrent();
         
         this.linesShader.bind();
-        this.linesShader.setMat4("pv", this.pv);
+        this.linesShader.setMat4("pv", this.view);
         this.linesShader.setColor("color", this.stroke);
-        this.linesShader.setVec2("viewport", screenWidth(), screenHeight());
+        this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
         this.linesShader.setFloat("thickness", (float) this.weight);
         
         this.triangleLinesVAO.bind().getVertexBuffer(0).bind().set(new float[] {
@@ -353,7 +295,7 @@ public class OpenGLRenderer extends Renderer
         makeCurrent();
         
         this.triangleShader.bind();
-        this.triangleShader.setMat4("pv", this.pv);
+        this.triangleShader.setMat4("pv", this.view);
         this.triangleShader.setColor("color", this.fill);
         
         this.triangleVAO.bind().getVertexBuffer(0).bind().set(new float[] {(float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3}, GL_DYNAMIC_DRAW).unbind();
@@ -444,9 +386,9 @@ public class OpenGLRenderer extends Renderer
         makeCurrent();
         
         this.linesShader.bind();
-        this.linesShader.setMat4("pv", this.pv);
+        this.linesShader.setMat4("pv", this.view);
         this.linesShader.setColor("color", this.stroke);
-        this.linesShader.setVec2("viewport", screenWidth(), screenHeight());
+        this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
         this.linesShader.setFloat("thickness", (float) this.weight);
         
         this.quadLinesVAO.bind().getVertexBuffer(0).bind().set(new float[] {
@@ -480,7 +422,7 @@ public class OpenGLRenderer extends Renderer
         makeCurrent();
         
         this.quadShader.bind();
-        this.quadShader.setMat4("pv", this.pv);
+        this.quadShader.setMat4("pv", this.view);
         this.quadShader.setColor("color", this.fill);
         
         this.quadVAO.bind().getVertexBuffer(0).bind().set(new float[] {(float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4}, GL_DYNAMIC_DRAW).unbind();
@@ -504,9 +446,9 @@ public class OpenGLRenderer extends Renderer
         makeCurrent();
         
         this.linesShader.bind();
-        this.linesShader.setMat4("pv", this.pv);
+        this.linesShader.setMat4("pv", this.view);
         this.linesShader.setColor("color", this.stroke);
-        this.linesShader.setVec2("viewport", screenWidth(), screenHeight());
+        this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
         this.linesShader.setFloat("thickness", (float) this.weight);
         
         float[] array = new float[points.length * 4];
@@ -548,7 +490,7 @@ public class OpenGLRenderer extends Renderer
         makeCurrent();
         
         this.polygonShader.bind();
-        this.polygonShader.setMat4("pv", this.pv);
+        this.polygonShader.setMat4("pv", this.view);
         this.polygonShader.setColor("color", this.fill);
         
         float[] array = new float[points.length];
@@ -604,10 +546,10 @@ public class OpenGLRenderer extends Renderer
         makeCurrent();
         
         this.ellipseOutlineShader.bind();
-        this.ellipseOutlineShader.setMat4("pv", this.pv);
+        this.ellipseOutlineShader.setMat4("pv", this.view);
         this.ellipseOutlineShader.setColor("color", this.stroke);
         this.ellipseOutlineShader.setVec2("radius", (float) rx, (float) ry);
-        this.ellipseOutlineShader.setVec2("viewport", screenWidth(), screenHeight());
+        this.ellipseOutlineShader.setVec2("viewport", this.target.width(), this.target.height());
         this.ellipseOutlineShader.setFloat("thickness", (float) this.weight);
         
         this.ellipseOutlineVAO.bind().getVertexBuffer(0).bind().set(new float[] {(float) x, (float) y}, GL_DYNAMIC_DRAW).unbind();
@@ -630,7 +572,7 @@ public class OpenGLRenderer extends Renderer
         makeCurrent();
         
         this.ellipseShader.bind();
-        this.ellipseShader.setMat4("pv", this.pv);
+        this.ellipseShader.setMat4("pv", this.view);
         this.ellipseShader.setColor("color", this.fill);
         this.ellipseShader.setVec2("radius", (float) rx, (float) ry);
         
@@ -656,10 +598,10 @@ public class OpenGLRenderer extends Renderer
         makeCurrent();
         
         this.arcOutlineShader.bind();
-        this.arcOutlineShader.setMat4("pv", this.pv);
+        this.arcOutlineShader.setMat4("pv", this.view);
         this.arcOutlineShader.setColor("color", this.stroke);
         this.arcOutlineShader.setVec2("radius", (float) rx, (float) ry);
-        this.arcOutlineShader.setVec2("viewport", screenWidth(), screenHeight());
+        this.arcOutlineShader.setVec2("viewport", this.target.width(), this.target.height());
         this.arcOutlineShader.setFloat("thickness", (float) this.weight);
         this.arcOutlineShader.setVec2("bounds", (float) start, (float) stop);
         this.arcOutlineShader.setInt("mode", this.arcMode.ordinal());
@@ -686,7 +628,7 @@ public class OpenGLRenderer extends Renderer
         makeCurrent();
         
         this.arcShader.bind();
-        this.arcShader.setMat4("pv", this.pv);
+        this.arcShader.setMat4("pv", this.view);
         this.arcShader.setColor("color", this.fill);
         this.arcShader.setVec2("radius", (float) rx, (float) ry);
         this.arcShader.setVec2("bounds", (float) start, (float) stop);
@@ -721,7 +663,7 @@ public class OpenGLRenderer extends Renderer
         texture.bind();
         
         this.textureShader.bind();
-        this.textureShader.setMat4("pv", this.pv);
+        this.textureShader.setMat4("pv", this.view);
         
         this.textureVAO.bind().getVertexBuffer(0).bind().set(new float[] {
                 (float) x1, (float) y1, (float) u1, (float) v1,
@@ -753,7 +695,7 @@ public class OpenGLRenderer extends Renderer
         this.font.getTexture().bind();
         
         this.textShader.bind();
-        this.textShader.setMat4("pv", this.pv);
+        this.textShader.setMat4("pv", this.view);
         this.textShader.setColor("color", this.fill);
         
         float[] data = new float[text.length() * 16];
@@ -789,7 +731,7 @@ public class OpenGLRenderer extends Renderer
             data[index++] = (float) u2;
             data[index++] = (float) v1;
         }
-    
+        
         this.textVAO.bind().getVertexBuffer(0).bind().set(data, GL_DYNAMIC_DRAW).unbind();
         this.textVAO.resize().draw(GL_QUADS).unbind();
     }

@@ -27,7 +27,7 @@ public class EventTests extends Engine
     protected void setup()
     {
         size(800, 400, 2, 2, OPENGL);
-        frameRate(10);
+        // frameRate(10);
         enableBlend(true);
         enableProfiler();
         
@@ -80,6 +80,6 @@ public class EventTests extends Engine
     
     public static void main(String[] args)
     {
-        start(new EventTests(), Level.FINEST);
+        start(new EventTests(), Level.INFO);
     }
 }

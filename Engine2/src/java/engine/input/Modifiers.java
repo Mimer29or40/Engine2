@@ -5,6 +5,7 @@ import static org.lwjgl.glfw.GLFW.*;
 @SuppressWarnings({"unused", "BooleanMethodIsAlwaysInverted"})
 public class Modifiers
 {
+    public final Modifier NONE      = new Modifier("NONE", GLFW_FALSE);
     public final Modifier SHIFT     = new Modifier("SHIFT", GLFW_MOD_SHIFT);
     public final Modifier CONTROL   = new Modifier("CONTROL", GLFW_MOD_CONTROL);
     public final Modifier ALT       = new Modifier("ALT", GLFW_MOD_ALT);

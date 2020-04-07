@@ -122,6 +122,7 @@ public class EngineTest extends Engine
                 if (keyboard().K4.held()) arcMode(ArcMode.PIE);
                 weight(10);
                 translate(screenWidth() / 2., screenHeight() / 2.);
+                translate(50 * Math.cos(seconds()), 50 * Math.sin(seconds()));
                 scale(1, 2 * Math.cos(seconds()));
                 rotate(Math.sin(seconds()));
                 // rotate(seconds());
@@ -147,8 +148,6 @@ public class EngineTest extends Engine
                 break;
             case 11:
                 break;
-            case 12:
-                break;
         }
         // pop();
         // fill(Color.GREEN);
@@ -171,7 +170,6 @@ public class EngineTest extends Engine
         if (keyboard().F9.down()) state = 9;
         if (keyboard().F10.down()) state = 10;
         if (keyboard().F11.down()) state = 11;
-        if (keyboard().F12.down()) state = 12;
     
         if (keyboard().ESCAPE.down()) stop();
     }

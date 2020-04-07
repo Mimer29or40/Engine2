@@ -192,41 +192,9 @@ public abstract class Device<I extends Device.Input>
         {
             return getClass().getSimpleName() + "." + this.name;
         }
-        
-        /**
-         * @return If the Input was pressed. This will only be true for one frame.
-         */
-        public boolean down()
-        {
-            return this.down;
-        }
-        
-        /**
-         * @return If the Input was released. This will only be true for one frame.
-         */
-        public boolean up()
-        {
-            return this.up;
-        }
-        
-        /**
-         * @return If the Input is being held down.
-         */
-        public boolean held()
-        {
-            return this.held;
-        }
-        
-        /**
-         * @return If the Input is being repeated. This will be true for one frame at a time.
-         */
-        public boolean repeat()
-        {
-            return this.repeat;
-        }
     
         /**
-         * @return If the Input was pressed with modifiers. This will only be true for one frame.
+         * @return If the Input was pressed with optional modifiers. This will only be true for one frame.
          */
         public boolean down(Modifiers.Modifier... modifiers)
         {
@@ -239,7 +207,7 @@ public abstract class Device<I extends Device.Input>
         }
     
         /**
-         * @return If the Input was released with modifiers. This will only be true for one frame.
+         * @return If the Input was released with optional modifiers. This will only be true for one frame.
          */
         public boolean up(Modifiers.Modifier... modifiers)
         {
@@ -252,7 +220,7 @@ public abstract class Device<I extends Device.Input>
         }
     
         /**
-         * @return If the Input is being held down with modifiers.
+         * @return If the Input is being held down with optional modifiers.
          */
         public boolean held(Modifiers.Modifier... modifiers)
         {
@@ -265,7 +233,7 @@ public abstract class Device<I extends Device.Input>
         }
     
         /**
-         * @return If the Input is being repeated with modifiers. This will be true for one frame at a time.
+         * @return If the Input is being repeated with optional modifiers. This will be true for one frame at a time.
          */
         public boolean repeat(Modifiers.Modifier... modifiers)
         {

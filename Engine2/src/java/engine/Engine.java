@@ -77,6 +77,9 @@ public class Engine
     private static final ArrayList<Tuple<Integer, Integer, String>> debugLines = new ArrayList<>();
     
     private static boolean debug;
+    private static String  notification;
+    private static long    notificationTime;
+    private static int     profileMode;
     
     private static String profilerOutput;
     private static String screenshot;
@@ -224,7 +227,36 @@ public class Engine
                                         
                                         Engine.PROFILER.startSection("Internal");
                                         {
-                                            if (Engine.keyboard.F12.down()) Engine.debug = !Engine.debug;
+                                            if (Engine.keyboard.F1.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
+                                            {
+                                                Engine.profileMode  = 0;
+                                                Engine.notification = "Profile Mode: Off";
+                                                Engine.notificationTime = t;
+                                            }
+                                            if (Engine.keyboard.F2.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
+                                            {
+                                                Engine.profileMode  = 1;
+                                                Engine.notification = "Profile Mode: Average";
+                                                Engine.notificationTime = t;
+                                            }
+                                            if (Engine.keyboard.F3.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
+                                            {
+                                                Engine.profileMode  = 2;
+                                                Engine.notification = "Profile Mode: Min";
+                                                Engine.notificationTime = t;
+                                            }
+                                            if (Engine.keyboard.F4.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
+                                            {
+                                                Engine.profileMode  = 3;
+                                                Engine.notification = "Profile Mode: Max";
+                                                Engine.notificationTime = t;
+                                            }
+                                            if (Engine.keyboard.F12.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
+                                            {
+                                                Engine.debug            = !Engine.debug;
+                                                Engine.notification     = Engine.debug ? "Debug Mode: On" : "Debug Mode: Off";
+                                                Engine.notificationTime = t;
+                                            }
                                         }
                                         Engine.PROFILER.endSection();
                                     }
@@ -307,17 +339,25 @@ public class Engine
                                     
                                     Engine.PROFILER.startSection("Debug Text");
                                     {
+                                        dt = t - Engine.notificationTime;
+                                        if (dt < 2_000_000_000L && Engine.notification != null)
+                                        {
+                                            int x = (Engine.window.viewW() - stb_easy_font_width(Engine.notification)) >> 1;
+                                            int y = (Engine.window.viewH() - stb_easy_font_height(Engine.notification)) >> 1;
+    
+                                            drawDebugText(x, y, Engine.notification);
+                                        }
                                         if (Engine.debug)
                                         {
                                             drawDebugText(0, 0, "Frame: " + Engine.frameCount);
                                             
-                                            if (Engine.profilerOutput != null)
+                                        }
+                                        if (Engine.profilerOutput != null)
+                                        {
+                                            int y = Engine.window.viewH() - stb_easy_font_height(Engine.profilerOutput);
+                                            for (String line : Engine.profilerOutput.split("\n"))
                                             {
-                                                int y = Engine.window.viewH() - stb_easy_font_height(Engine.profilerOutput);
-                                                for (String line : Engine.profilerOutput.split("\n"))
-                                                {
-                                                    drawDebugText(0, y += stb_easy_font_height(line), line);
-                                                }
+                                                drawDebugText(0, y += stb_easy_font_height(line), line);
                                             }
                                         }
                                         
@@ -402,8 +442,21 @@ public class Engine
                             {
                                 lastProfile = t;
                                 
-                                // TODO - Options for Profiler [Disabled, Avg, Min, Max]
-                                Engine.profilerOutput = Engine.PROFILER.getAvgData(null);
+                                switch (Engine.profileMode)
+                                {
+                                    case 0:
+                                        Engine.profilerOutput = null;
+                                        break;
+                                    case 1:
+                                        Engine.profilerOutput = Engine.PROFILER.getAvgData(null);
+                                        break;
+                                    case 2:
+                                        Engine.profilerOutput = Engine.PROFILER.getMinData(null);
+                                        break;
+                                    case 3:
+                                        Engine.profilerOutput = Engine.PROFILER.getMaxData(null);
+                                        break;
+                                }
                                 Engine.PROFILER.clear();
                             }
                             
@@ -547,7 +600,7 @@ public class Engine
      */
     protected static void size(int screenW, int screenH, int pixelW, int pixelH)
     {
-        size(screenW, screenH, pixelW, pixelH, DEFAULT);
+        size(screenW, screenH, pixelW, pixelH, Engine.DEFAULT);
     }
     
     
@@ -575,7 +628,7 @@ public class Engine
      */
     protected static void size(int screenW, int screenH)
     {
-        size(screenW, screenH, 4, 4, DEFAULT);
+        size(screenW, screenH, 4, 4, Engine.DEFAULT);
     }
     
     // ----------------

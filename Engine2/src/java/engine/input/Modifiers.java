@@ -57,6 +57,14 @@ public class Modifiers
         {
             return getClass().getSimpleName() + "." + this.name;
         }
+    
+        /**
+         * @return The bit value of the modifier.
+         */
+        public int value()
+        {
+            return this.value;
+        }
         
         /**
          * Determines of the modifier is in the current mods

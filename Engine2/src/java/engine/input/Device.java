@@ -199,11 +199,9 @@ public abstract class Device<I extends Device.Input>
         public boolean down(Modifiers.Modifier... modifiers)
         {
             if (!this.down) return false;
-            for (Modifiers.Modifier modifier : modifiers)
-            {
-                if (!modifier.down(this.mods)) return false;
-            }
-            return true;
+            int mods = 0;
+            for (Modifiers.Modifier modifier : modifiers) mods |= modifier.value();
+            return (mods == 0 && this.mods == 0) || (this.mods & mods) != 0;
         }
     
         /**
@@ -212,11 +210,9 @@ public abstract class Device<I extends Device.Input>
         public boolean up(Modifiers.Modifier... modifiers)
         {
             if (!this.up) return false;
-            for (Modifiers.Modifier modifier : modifiers)
-            {
-                if (!modifier.down(this.mods)) return false;
-            }
-            return true;
+            int mods = 0;
+            for (Modifiers.Modifier modifier : modifiers) mods |= modifier.value();
+            return (mods == 0 && this.mods == 0) || (this.mods & mods) != 0;
         }
     
         /**
@@ -225,11 +221,9 @@ public abstract class Device<I extends Device.Input>
         public boolean held(Modifiers.Modifier... modifiers)
         {
             if (!this.held) return false;
-            for (Modifiers.Modifier modifier : modifiers)
-            {
-                if (!modifier.down(this.mods)) return false;
-            }
-            return true;
+            int mods = 0;
+            for (Modifiers.Modifier modifier : modifiers) mods |= modifier.value();
+            return (mods == 0 && this.mods == 0) || (this.mods & mods) != 0;
         }
     
         /**
@@ -238,11 +232,9 @@ public abstract class Device<I extends Device.Input>
         public boolean repeat(Modifiers.Modifier... modifiers)
         {
             if (!this.repeat) return false;
-            for (Modifiers.Modifier modifier : modifiers)
-            {
-                if (!modifier.down(this.mods)) return false;
-            }
-            return true;
+            int mods = 0;
+            for (Modifiers.Modifier modifier : modifiers) mods |= modifier.value();
+            return (mods == 0 && this.mods == 0) || (this.mods & mods) != 0;
         }
     }
 }

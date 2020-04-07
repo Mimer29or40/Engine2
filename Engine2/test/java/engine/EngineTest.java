@@ -116,10 +116,10 @@ public class EngineTest extends Engine
                 line(-10, 0, 10, 0);
                 break;
             case 8:
-                if (keyboard().K1.held()) arcMode(ArcMode.DEFAULT);
-                if (keyboard().K2.held()) arcMode(ArcMode.OPEN);
-                if (keyboard().K3.held()) arcMode(ArcMode.CHORD);
-                if (keyboard().K4.held()) arcMode(ArcMode.PIE);
+                if (keyboard().K1.held(modifiers().NONE)) arcMode(ArcMode.DEFAULT);
+                if (keyboard().K2.held(modifiers().NONE)) arcMode(ArcMode.OPEN);
+                if (keyboard().K3.held(modifiers().NONE)) arcMode(ArcMode.CHORD);
+                if (keyboard().K4.held(modifiers().NONE)) arcMode(ArcMode.PIE);
                 weight(10);
                 translate(screenWidth() / 2., screenHeight() / 2.);
                 translate(50 * Math.cos(seconds()), 50 * Math.sin(seconds()));
@@ -148,6 +148,8 @@ public class EngineTest extends Engine
                 break;
             case 11:
                 break;
+            case 12:
+                break;
         }
         // pop();
         // fill(Color.GREEN);
@@ -159,17 +161,18 @@ public class EngineTest extends Engine
         if (keyboard().F.down()) window().toggleFullscreen();
         if (keyboard().V.down()) window().toggleVsync();
     
-        if (keyboard().F1.down()) state = 1;
-        if (keyboard().F2.down()) state = 2;
-        if (keyboard().F3.down()) state = 3;
-        if (keyboard().F4.down()) state = 4;
-        if (keyboard().F5.down()) state = 5;
-        if (keyboard().F6.down()) state = 6;
-        if (keyboard().F7.down()) state = 7;
-        if (keyboard().F8.down()) state = 8;
-        if (keyboard().F9.down()) state = 9;
-        if (keyboard().F10.down()) state = 10;
-        if (keyboard().F11.down()) state = 11;
+        if (keyboard().F1.down(modifiers().NONE)) state = 1;
+        if (keyboard().F2.down(modifiers().NONE)) state = 2;
+        if (keyboard().F3.down(modifiers().NONE)) state = 3;
+        if (keyboard().F4.down(modifiers().NONE)) state = 4;
+        if (keyboard().F5.down(modifiers().NONE)) state = 5;
+        if (keyboard().F6.down(modifiers().NONE)) state = 6;
+        if (keyboard().F7.down(modifiers().NONE)) state = 7;
+        if (keyboard().F8.down(modifiers().NONE)) state = 8;
+        if (keyboard().F9.down(modifiers().NONE)) state = 9;
+        if (keyboard().F10.down(modifiers().NONE)) state = 10;
+        if (keyboard().F11.down(modifiers().NONE)) state = 11;
+        if (keyboard().F12.down(modifiers().NONE)) state = 12;
     
         if (keyboard().ESCAPE.down()) stop();
     }

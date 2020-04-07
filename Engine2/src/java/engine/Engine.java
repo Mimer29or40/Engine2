@@ -15,6 +15,7 @@ import org.joml.*;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
 import org.reflections.Reflections;
 
 import java.lang.Math;
@@ -70,10 +71,10 @@ public class Engine
     
     private static Renderer renderer;
     
+    private static final Color debugLineBackground = new Color(255, 50);
     private static final ArrayList<Tuple<Integer, Integer, String>> debugLines = new ArrayList<>();
     
-    private static String printFrame;
-    private static String frameText;
+    private static String profilerOutput;
     private static String screenshot;
     
     public static final String SOFTWARE = "software";
@@ -172,8 +173,9 @@ public class Engine
                         GL.createCapabilities();
                         
                         long t, dt;
-                        long lastFrame  = nanoseconds();
-                        long lastSecond = 0;
+                        long lastFrame   = nanoseconds();
+                        long lastProfile = nanoseconds();
+                        long lastTitle   = 0;
                         
                         long frameTime;
                         long totalTime = 0;
@@ -193,6 +195,15 @@ public class Engine
                                 lastFrame = t;
                                 
                                 drawDebugText(0, 0, "Frame: " + Engine.frameCount);
+                                
+                                if (Engine.profilerOutput != null)
+                                {
+                                    int y = Engine.window.viewH() - stb_easy_font_height(Engine.profilerOutput);
+                                    for (String line : Engine.profilerOutput.split("\n"))
+                                    {
+                                        drawDebugText(0, y += stb_easy_font_height(line), line);
+                                    }
+                                }
                                 
                                 Engine.PROFILER.startFrame();
                                 {
@@ -245,7 +256,7 @@ public class Engine
                                             }
                                         }
                                         Engine.PROFILER.endSection();
-        
+                                        
                                         Engine.PROFILER.startSection("User");
                                         {
                                             Engine.renderer.push();
@@ -253,7 +264,7 @@ public class Engine
                                             Engine.renderer.pop();
                                         }
                                         Engine.PROFILER.endSection();
-        
+                                        
                                         Engine.PROFILER.startSection("PEX Post");
                                         {
                                             for (String name : Engine.extensions.keySet())
@@ -303,13 +314,14 @@ public class Engine
                                         try (MemoryStack frame = stackPush())
                                         {
                                             ByteBuffer textBuffer = frame.malloc(24 * 1024);
+                                            glEnable(GL_BLEND);
                                             for (Tuple<Integer, Integer, String> line : Engine.debugLines)
                                             {
-                                                int quads = stb_easy_font_print(line.a + 2, line.b + 2, line.c, null, textBuffer);
-                                                int width = stb_easy_font_width(line.c);
+                                                int quads  = stb_easy_font_print(line.a + 2, line.b + 2, line.c, null, textBuffer);
+                                                int width  = stb_easy_font_width(line.c);
                                                 int height = stb_easy_font_height(line.c);
-    
-                                                Engine.debugShader.setColor("color", new Color(255, 255, 255, 51));
+                                                
+                                                Engine.debugShader.setColor("color", Engine.debugLineBackground);
                                                 Engine.debugBoxVAO.bind().set(0, new float[] {
                                                         line.a, line.b, line.a + width + 2, line.b, line.a + width + 2, line.b + height, line.a, line.b + height
                                                 }, GL_DYNAMIC_DRAW).draw(GL_QUADS).unbind();
@@ -319,8 +331,15 @@ public class Engine
                                                 
                                                 textBuffer.clear();
                                             }
+                                            glDisable(GL_BLEND);
                                         }
                                         Engine.debugLines.clear();
+                                    }
+                                    Engine.PROFILER.endSection();
+                                    
+                                    Engine.PROFILER.startSection("Swap");
+                                    {
+                                        Engine.window.swap();
                                     }
                                     Engine.PROFILER.endSection();
                                     
@@ -332,27 +351,6 @@ public class Engine
                                     Engine.frameCount++;
                                 }
                                 Engine.PROFILER.endFrame();
-                                
-                                if (Engine.PROFILER.enabled() && Engine.frameText != null)
-                                {
-                                    String parent = "".equals(Engine.printFrame) ? null : Engine.printFrame;
-                                    
-                                    // TODO - Make profiler take averages over an amount of frames.
-                                    // Engine.frameText = Engine.PROFILER.getFormattedData(parent);
-                                    
-                                    int x = 0;
-                                    int y = stb_easy_font_height(" ");
-                                    for (String line : Engine.frameText.split("\n"))
-                                    {
-                                        drawDebugText(x, y, line);
-                                        
-                                        y += stb_easy_font_height(line);
-                                    }
-                                    
-                                    Engine.printFrame = null;
-                                }
-                                
-                                Engine.window.swap();
                             }
                             
                             if (Engine.screenshot != null)
@@ -365,33 +363,41 @@ public class Engine
                                 
                                 int stride = w * c;
                                 
-                                try (MemoryStack stack = MemoryStack.stackPush())
+                                ByteBuffer buf = MemoryUtil.memAlloc(w * h * c);
+                                glReadBuffer(GL_FRONT);
+                                glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buf);
+                                
+                                byte[] tmp1 = new byte[stride], tmp2 = new byte[stride];
+                                for (int i = 0, n = h >> 1, col1, col2; i < n; i++)
                                 {
-                                    ByteBuffer buf = stack.malloc(w * h * c);
-                                    glReadBuffer(GL_FRONT);
-                                    glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buf);
-                                    
-                                    byte[] tmp1 = new byte[stride], tmp2 = new byte[stride];
-                                    for (int i = 0, n = h >> 1, col1, col2; i < n; i++)
-                                    {
-                                        col1 = i * stride;
-                                        col2 = (h - i - 1) * stride;
-                                        buf.get(col1, tmp1);
-                                        buf.get(col2, tmp2);
-                                        buf.put(col1, tmp2);
-                                        buf.put(col2, tmp1);
-                                    }
-                                    
-                                    if (!stbi_write_png(fileName, w, h, c, buf, stride)) Engine.LOGGER.severe("Could not take screen shot");
+                                    col1 = i * stride;
+                                    col2 = (h - i - 1) * stride;
+                                    buf.get(col1, tmp1);
+                                    buf.get(col2, tmp2);
+                                    buf.put(col1, tmp2);
+                                    buf.put(col2, tmp1);
                                 }
+                                
+                                if (!stbi_write_png(fileName, w, h, c, buf, stride)) Engine.LOGGER.severe("Could not take screen shot");
+                                MemoryUtil.memFree(buf);
                                 
                                 Engine.screenshot = null;
                             }
                             
-                            dt = t - lastSecond;
+                            dt = t - lastProfile;
+                            if (dt >= Engine.PROFILER.frequencyRaw())
+                            {
+                                lastProfile = t;
+                                
+                                // TODO - Options for Profiler [Disabled, Avg, Min, Max]
+                                Engine.profilerOutput = Engine.PROFILER.getAvgData(null);
+                                Engine.PROFILER.clear();
+                            }
+                            
+                            dt = t - lastTitle;
                             if (dt >= 1_000_000_000L && totalFrames > 0)
                             {
-                                lastSecond = t;
+                                lastTitle = t;
                                 
                                 totalTime /= totalFrames;
                                 
@@ -403,9 +409,6 @@ public class Engine
                                 maxTime = Long.MIN_VALUE;
                                 
                                 totalFrames = 0;
-                                
-                                Engine.frameText = Engine.PROFILER.getAvgData(null);
-                                Engine.PROFILER.clear();
                             }
                         }
                     }
@@ -716,16 +719,6 @@ public class Engine
     public static void disableProfiler()
     {
         Engine.PROFILER.enabled(false);
-    }
-    
-    /**
-     * Prints the data for the current frame after the frame has competed.
-     *
-     * @param parent The frame group to print. If no parent is given, then it will print everything.
-     */
-    public static void printFrameData(String parent)
-    {
-        if (Engine.PROFILER.enabled()) Engine.printFrame = parent;
     }
     
     /**

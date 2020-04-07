@@ -21,8 +21,8 @@ public class EngineTest extends Engine
     {
         // size(200, 200, 2, 2);
         // size(100, 100, 8, 8);
-        // size(400, 400, 2, 2, SOFTWARE);
-        size(400, 400, 2, 2, OPENGL);
+        size(400, 400, 2, 2, SOFTWARE);
+        // size(400, 400, 2, 2, OPENGL);
     
         texture = new Texture(30, 30);
         Color c = new Color();
@@ -158,7 +158,6 @@ public class EngineTest extends Engine
         if (keyboard().D.down()) enableDebug(!enableDebug());
         if (keyboard().F.down()) window().toggleFullscreen();
         if (keyboard().V.down()) window().toggleVsync();
-        if (keyboard().P.held()) printFrameData("");
     
         if (keyboard().F1.down()) state = 1;
         if (keyboard().F2.down()) state = 2;

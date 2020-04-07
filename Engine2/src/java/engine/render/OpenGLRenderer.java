@@ -144,6 +144,9 @@ public class OpenGLRenderer extends Renderer
         glBindFramebuffer(GL_FRAMEBUFFER, this.fbo);
         glViewport(0, 0, this.target.width(), this.target.height());
         
+        if (this.enableBlend) glEnable(GL_BLEND);
+        if (!this.enableBlend) glDisable(GL_BLEND);
+        
         this.view.setOrtho(0F, this.target.width(), 0F, this.target.height(), -1F, 1F);
         
         if (this.enableDebug) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

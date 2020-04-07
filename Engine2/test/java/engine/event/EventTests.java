@@ -43,7 +43,6 @@ public class EventTests extends Engine
     @Override
     protected void draw(double elapsedTime)
     {
-        if (keyboard().P.held()) printFrameData("");
         if (keyboard().SPACE.down()) window().toggleFullscreen();
         if (keyboard().C.down()) mouse().toggleCaptured();
         

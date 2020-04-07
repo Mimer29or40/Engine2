@@ -45,7 +45,7 @@ public class CT004_PurpleRain extends Engine
         size(400, 300, 2, 2, OPENGL);
         
         frameRate(60);
-        enableBlend(true);
+        rendererBlend(true);
         
         for (int i = 0; i < 500; i++) drops.add(new Drop());
     }

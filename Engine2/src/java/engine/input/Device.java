@@ -114,28 +114,31 @@ public abstract class Device<I extends Device.Input>
             input.down   = false;
             input.up     = false;
             input.repeat = false;
+            input.mods   = 0;
             
-            if (input.state != input.prevState)
+            if (input.newState != input.state)
             {
-                if (input.state == GLFW_PRESS)
+                if (input.newState == GLFW_PRESS)
                 {
                     input.down     = true;
                     input.held     = true;
                     input.downTime = time;
                 }
-                else if (input.state == GLFW_RELEASE)
+                else if (input.newState == GLFW_RELEASE)
                 {
                     input.up       = true;
                     input.held     = false;
                     input.downTime = Long.MAX_VALUE;
                 }
+                input.state = input.newState;
+                input.mods = input.newMods;
             }
-            if (input.state == GLFW_REPEAT || input.held && time - input.downTime > Device.holdDelay)
+            if (input.newState == GLFW_REPEAT || input.held && time - input.downTime > Device.holdDelay)
             {
                 input.downTime += Device.repeatDelay;
                 input.repeat = true;
+                input.mods = input.newMods;
             }
-            input.prevState = input.state;
             
             postEvents(input, time, delta);
         }
@@ -154,13 +157,16 @@ public abstract class Device<I extends Device.Input>
      * This is the callback used by the window whenever an input is pressed, released, or repeated
      *
      * @param reference The Input
-     * @param state     The time in nano seconds that it happened.
+     * @param state     The action that took place
+     * @param mods      The modifier info
      */
-    public void stateCallback(int reference, int state)
+    public void stateCallback(int reference, int state, int mods)
     {
         Device.LOGGER.finest("Device(%s) Input State Callback: %s %s", getClass().getSimpleName(), reference, state);
         
-        get(reference).state = state;
+        I input = get(reference);
+        input.newState = state;
+        input.newMods  = mods;
     }
     
     /**
@@ -171,7 +177,7 @@ public abstract class Device<I extends Device.Input>
         private final String name;
         
         protected boolean down, up, held, repeat;
-        protected int state, prevState;
+        protected int newState, state, newMods, mods;
         protected long downTime, pressTime;
         
         @SuppressWarnings("unchecked")
@@ -217,6 +223,58 @@ public abstract class Device<I extends Device.Input>
         public boolean repeat()
         {
             return this.repeat;
+        }
+    
+        /**
+         * @return If the Input was pressed with modifiers. This will only be true for one frame.
+         */
+        public boolean down(Modifiers.Modifier... modifiers)
+        {
+            if (!this.down) return false;
+            for (Modifiers.Modifier modifier : modifiers)
+            {
+                if (!modifier.down(this.mods)) return false;
+            }
+            return true;
+        }
+    
+        /**
+         * @return If the Input was released with modifiers. This will only be true for one frame.
+         */
+        public boolean up(Modifiers.Modifier... modifiers)
+        {
+            if (!this.up) return false;
+            for (Modifiers.Modifier modifier : modifiers)
+            {
+                if (!modifier.down(this.mods)) return false;
+            }
+            return true;
+        }
+    
+        /**
+         * @return If the Input is being held down with modifiers.
+         */
+        public boolean held(Modifiers.Modifier... modifiers)
+        {
+            if (!this.held) return false;
+            for (Modifiers.Modifier modifier : modifiers)
+            {
+                if (!modifier.down(this.mods)) return false;
+            }
+            return true;
+        }
+    
+        /**
+         * @return If the Input is being repeated with modifiers. This will be true for one frame at a time.
+         */
+        public boolean repeat(Modifiers.Modifier... modifiers)
+        {
+            if (!this.repeat) return false;
+            for (Modifiers.Modifier modifier : modifiers)
+            {
+                if (!modifier.down(this.mods)) return false;
+            }
+            return true;
         }
     }
 }

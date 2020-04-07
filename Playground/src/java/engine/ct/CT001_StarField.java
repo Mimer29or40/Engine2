@@ -65,7 +65,7 @@ public class CT001_StarField extends Engine
         size(400, 400, 1, 1, OPENGL);
         
         frameRate(60);
-        enableBlend(true);
+        rendererBlend(true);
         
         for (int i = 0; i < 100; i++) stars.add(new Star());
     }

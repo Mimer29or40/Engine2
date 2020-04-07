@@ -9,6 +9,7 @@ import engine.util.Logger;
 import java.util.logging.Level;
 
 import static engine.util.Util.map;
+import static engine.util.Util.println;
 
 public class EngineTest extends Engine
 {
@@ -21,8 +22,8 @@ public class EngineTest extends Engine
     {
         // size(200, 200, 2, 2);
         // size(100, 100, 8, 8);
-        size(400, 400, 2, 2, SOFTWARE);
-        // size(400, 400, 2, 2, OPENGL);
+        // size(400, 400, 2, 2, SOFTWARE);
+        size(400, 400, 2, 2, OPENGL);
     
         texture = new Texture(30, 30);
         Color c = new Color();
@@ -35,7 +36,7 @@ public class EngineTest extends Engine
         }
         texture.upload();
         
-        enableBlend(true);
+        rendererBlend(true);
     }
     
     @Override
@@ -153,9 +154,9 @@ public class EngineTest extends Engine
         // fill(Color.GREEN);
         // textSize(30);
         // text("Frame: " + frameCount(), 0, 0);
-        if (keyboard().SPACE.down()) screenShot("screenshot" + frameCount());
+        if (keyboard().K1.down(modifiers().CONTROL)) println("Modifier Tests");
         if (keyboard().S.down()) screenShot();
-        if (keyboard().D.down()) enableDebug(!enableDebug());
+        if (keyboard().D.down()) rendererDebug(!rendererDebug());
         if (keyboard().F.down()) window().toggleFullscreen();
         if (keyboard().V.down()) window().toggleVsync();
     

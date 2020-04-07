@@ -5,6 +5,7 @@ import engine.color.Color;
 import engine.color.Colorc;
 import engine.event.Events;
 import engine.input.Keyboard;
+import engine.input.Modifiers;
 import engine.input.Mouse;
 import engine.render.*;
 import engine.util.Logger;
@@ -54,11 +55,13 @@ public class Engine
     
     private static Random random;
     
-    private static Mouse    mouse;
-    private static Keyboard keyboard;
-    private static Window   window;
+    private static Mouse     mouse;
+    private static Keyboard  keyboard;
+    private static Modifiers modifiers;
+    private static Window    window;
     
-    private static Blend blend;
+    private static Blend    blend;
+    private static Renderer renderer;
     
     private static Texture     screen;
     private static Shader      screenShader;
@@ -69,10 +72,11 @@ public class Engine
     private static VertexArray debugBoxVAO;
     private static Matrix4f    debugView;
     
-    private static Renderer renderer;
-    
     private static final Color debugLineBackground = new Color(255, 50);
+    
     private static final ArrayList<Tuple<Integer, Integer, String>> debugLines = new ArrayList<>();
+    
+    private static boolean debug;
     
     private static String profilerOutput;
     private static String screenshot;
@@ -194,17 +198,6 @@ public class Engine
                             {
                                 lastFrame = t;
                                 
-                                drawDebugText(0, 0, "Frame: " + Engine.frameCount);
-                                
-                                if (Engine.profilerOutput != null)
-                                {
-                                    int y = Engine.window.viewH() - stb_easy_font_height(Engine.profilerOutput);
-                                    for (String line : Engine.profilerOutput.split("\n"))
-                                    {
-                                        drawDebugText(0, y += stb_easy_font_height(line), line);
-                                    }
-                                }
-                                
                                 Engine.PROFILER.startFrame();
                                 {
                                     Engine.PROFILER.startSection("Events");
@@ -226,6 +219,12 @@ public class Engine
                                         Engine.PROFILER.startSection("Window Events");
                                         {
                                             Engine.window.handleEvents(t, dt);
+                                        }
+                                        Engine.PROFILER.endSection();
+                                        
+                                        Engine.PROFILER.startSection("Internal");
+                                        {
+                                            if (Engine.keyboard.F12.down()) Engine.debug = !Engine.debug;
                                         }
                                         Engine.PROFILER.endSection();
                                     }
@@ -308,6 +307,20 @@ public class Engine
                                     
                                     Engine.PROFILER.startSection("Debug Text");
                                     {
+                                        if (Engine.debug)
+                                        {
+                                            drawDebugText(0, 0, "Frame: " + Engine.frameCount);
+                                            
+                                            if (Engine.profilerOutput != null)
+                                            {
+                                                int y = Engine.window.viewH() - stb_easy_font_height(Engine.profilerOutput);
+                                                for (String line : Engine.profilerOutput.split("\n"))
+                                                {
+                                                    drawDebugText(0, y += stb_easy_font_height(line), line);
+                                                }
+                                            }
+                                        }
+                                        
                                         Engine.debugShader.bind();
                                         Engine.debugShader.setMat4("pv", Engine.debugView.setOrtho(0F, Engine.window.viewW(), Engine.window.viewH(), 0F, -1F, 1F));
                                         
@@ -503,16 +516,16 @@ public class Engine
         GLFWErrorCallback.createPrint(System.err).set();
         if (!glfwInit()) throw new IllegalStateException("Unable to initialize GLFW");
         
-        Engine.window = new Window(Engine.mouse = new Mouse(), Engine.keyboard = new Keyboard());
+        Engine.window = new Window(Engine.mouse = new Mouse(), Engine.keyboard = new Keyboard(), Engine.modifiers = new Modifiers());
         
         Engine.window.makeCurrent();
         GL.createCapabilities();
         
         glEnable(GL_TEXTURE_2D);
         
-        Engine.blend = new Blend();
+        Engine.blend    = new Blend();
+        Engine.renderer = Renderer.getRenderer(Engine.screen = new Texture(screenW, screenH), renderer);
         
-        Engine.screen       = new Texture(screenW, screenH);
         Engine.screenShader = new Shader().loadVertexFile("shader/pixel.vert").loadFragmentFile("shader/pixel.frag").validate().unbind();
         Engine.screenVAO    = new VertexArray().bind().add(new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, GL_DYNAMIC_DRAW, 2);
         
@@ -520,8 +533,6 @@ public class Engine
         Engine.debugTextVAO = new VertexArray().bind().add(24 * 1024, GL_DYNAMIC_DRAW, GL_FLOAT, 3, GL_UNSIGNED_BYTE, 4).unbind();
         Engine.debugBoxVAO  = new VertexArray().bind().add(8, GL_DYNAMIC_DRAW, GL_FLOAT, 2).unbind();
         Engine.debugView    = new Matrix4f().setOrtho(0F, Engine.window.viewW(), Engine.window.height(), 0F, -1F, 1F);
-        
-        Engine.renderer = Renderer.getRenderer(Engine.screen, renderer);
     }
     
     /**
@@ -691,6 +702,14 @@ public class Engine
     public static Keyboard keyboard()
     {
         return Engine.keyboard;
+    }
+    
+    /**
+     * @return The modifiers instance. This will be null unless {@link #size} is called.
+     */
+    public static Modifiers modifiers()
+    {
+        return Engine.modifiers;
     }
     
     /**
@@ -1391,35 +1410,35 @@ public class Engine
     }
     
     /**
-     * See {@link Renderer#enableBlend()}
+     * See {@link Renderer#blend()}
      */
-    public static boolean enableBlend()
+    public static boolean rendererBlend()
     {
-        return Engine.renderer.enableBlend();
+        return Engine.renderer.blend();
     }
     
     /**
-     * See {@link Renderer#enableBlend(boolean)}
+     * See {@link Renderer#blend(boolean)}
      */
-    public static void enableBlend(boolean enableBlend)
+    public static void rendererBlend(boolean blend)
     {
-        Engine.renderer.enableBlend(enableBlend);
+        Engine.renderer.blend(blend);
     }
     
     /**
-     * See {@link Renderer#enableBlend()}
+     * See {@link Renderer#blend()}
      */
-    public static boolean enableDebug()
+    public static boolean rendererDebug()
     {
-        return Engine.renderer.enableDebug();
+        return Engine.renderer.debug();
     }
     
     /**
-     * See {@link Renderer#enableDebug(boolean)}
+     * See {@link Renderer#debug(boolean)}
      */
-    public static void enableDebug(boolean enableDebug)
+    public static void rendererDebug(boolean debug)
     {
-        Engine.renderer.enableDebug(enableDebug);
+        Engine.renderer.debug(debug);
     }
     
     /**

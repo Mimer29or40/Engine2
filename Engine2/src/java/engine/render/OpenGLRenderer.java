@@ -117,9 +117,9 @@ public class OpenGLRenderer extends Renderer
      *
      * @param enableBlend If blend is enabled.
      */
-    public void enableBlend(boolean enableBlend)
+    public void blend(boolean enableBlend)
     {
-        super.enableBlend(enableBlend);
+        super.blend(enableBlend);
         glEnable(GL_BLEND);
     }
     
@@ -144,12 +144,12 @@ public class OpenGLRenderer extends Renderer
         glBindFramebuffer(GL_FRAMEBUFFER, this.fbo);
         glViewport(0, 0, this.target.width(), this.target.height());
         
-        if (this.enableBlend) glEnable(GL_BLEND);
-        if (!this.enableBlend) glDisable(GL_BLEND);
+        if (this.blend) glEnable(GL_BLEND);
+        if (!this.blend) glDisable(GL_BLEND);
         
         this.view.setOrtho(0F, this.target.width(), 0F, this.target.height(), -1F, 1F);
         
-        if (this.enableDebug) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        if (this.debug) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
     
     /**

@@ -28,7 +28,7 @@ public class EventTests extends Engine
     {
         size(800, 400, 2, 2, OPENGL);
         // frameRate(10);
-        enableBlend(true);
+        rendererBlend(true);
         enableProfiler();
         
         textSize(20);

@@ -2,6 +2,7 @@ package engine;
 
 import engine.event.*;
 import engine.input.Keyboard;
+import engine.input.Modifiers;
 import engine.input.Mouse;
 import engine.util.Logger;
 import org.joml.Vector2i;
@@ -27,8 +28,9 @@ public class Window
     private Monitor[] monitors;
     private Monitor   monitor;
     
-    private final Mouse    mouse;
-    private final Keyboard keyboard;
+    private final Mouse     mouse;
+    private final Keyboard  keyboard;
+    private final Modifiers modifiers;
     
     private final long handle;
     
@@ -54,9 +56,9 @@ public class Window
     private boolean update = true;
     
     private String title = "", newTitle = "";
-    private boolean capturedState;
+    private boolean capturedState, lockModsState;
     
-    public Window(Mouse mouse, Keyboard keyboard)
+    public Window(Mouse mouse, Keyboard keyboard, Modifiers modifiers)
     {
         Window.LOGGER.finest("Window Creation Started");
         
@@ -84,6 +86,7 @@ public class Window
         
         this.mouse    = mouse;
         this.keyboard = keyboard;
+        this.modifiers = modifiers;
         
         glfwSetWindowSizeLimits(this.handle, screenWidth(), screenHeight(), GLFW_DONT_CARE, GLFW_DONT_CARE);
         
@@ -95,7 +98,8 @@ public class Window
         
         Window.LOGGER.finest("GLFW: Event Handling");
         
-        glfwSetMonitorCallback(this.glfwMonitorCallback = new GLFWMonitorCallback() {
+        glfwSetMonitorCallback(this.glfwMonitorCallback = new GLFWMonitorCallback()
+        {
             @Override
             public void invoke(long monitor, int event)
             {
@@ -107,7 +111,7 @@ public class Window
                     Window.this.monitors[i] = new Monitor(buffer.get(), i);
                     if ((next = Window.this.monitors[i].isWindowIn(Window.this)) > max)
                     {
-                        max          = next;
+                        max                 = next;
                         Window.this.monitor = Window.this.monitors[i];
                     }
                 }
@@ -160,12 +164,12 @@ public class Window
         
         glfwSetMouseButtonCallback(this.handle, (window, button, action, mods) -> {
             if (window != this.handle) return;
-            this.mouse.stateCallback(button, action);
+            this.mouse.stateCallback(button, action, mods);
         });
         
         glfwSetKeyCallback(this.handle, (window, key, scancode, action, mods) -> {
             if (window != this.handle) return;
-            this.keyboard.stateCallback(key, action);
+            this.keyboard.stateCallback(key, action, mods);
         });
         
         glfwSetCharCallback(this.handle, (window, codePoint) -> {
@@ -595,11 +599,18 @@ public class Window
         glfwPollEvents();
         
         boolean newCapturedState = this.mouse.captured();
+        boolean newLockModsState = this.modifiers.lockMods();
         
         if (newCapturedState != this.capturedState)
         {
             this.capturedState = newCapturedState;
             glfwSetInputMode(this.handle, GLFW_CURSOR, this.capturedState ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+        }
+        
+        if (newLockModsState != this.lockModsState)
+        {
+            this.lockModsState = newLockModsState;
+            glfwSetInputMode(this.handle, GLFW_LOCK_KEY_MODS, this.lockModsState ? GLFW_TRUE : GLFW_FALSE);
         }
         
         if (!this.title.equals(this.newTitle))

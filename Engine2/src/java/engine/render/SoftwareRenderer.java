@@ -705,7 +705,7 @@ public class SoftwareRenderer extends Renderer
     
     private void pointImpl(int x, int y, Colorc color)
     {
-        if (this.enableBlend)
+        if (this.blend)
         {
             this.target.setPixel(x, y, Engine.blend().blend(color, this.target.getPixel(x, y), SoftwareRenderer.COLOR));
         }

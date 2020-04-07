@@ -70,8 +70,8 @@ public abstract class Renderer
     
     protected final Texture target;
     
-    protected boolean enableBlend = false;
-    protected boolean enableDebug = false;
+    protected boolean blend = false;
+    protected boolean debug = false;
     
     protected final Color        fill  = new Color(Renderer.DEFAULT_FILL);
     protected final Stack<Color> fills = new Stack<>();
@@ -118,9 +118,9 @@ public abstract class Renderer
     /**
      * @return If blend is enabled for the renderer.
      */
-    public boolean enableBlend()
+    public boolean blend()
     {
-        return this.enableBlend;
+        return this.blend;
     }
     
     /**
@@ -128,19 +128,27 @@ public abstract class Renderer
      *
      * @param enableBlend If blend is enabled.
      */
-    public void enableBlend(boolean enableBlend)
+    public void blend(boolean enableBlend)
     {
         Renderer.LOGGER.finest("Setting Blend State:", enableBlend);
-        
-        this.enableBlend = enableBlend;
+    
+        this.blend = enableBlend;
+    }
+    
+    /**
+     * Toggles if the renderer should blend when pixels are drawn.
+     */
+    public void toggleBlend()
+    {
+        blend(!this.blend);
     }
     
     /**
      * @return If debug is enabled for the renderer.
      */
-    public boolean enableDebug()
+    public boolean debug()
     {
-        return this.enableDebug;
+        return this.debug;
     }
     
     /**
@@ -148,11 +156,19 @@ public abstract class Renderer
      *
      * @param enableDebug If debug is enabled.
      */
-    public void enableDebug(boolean enableDebug)
+    public void debug(boolean enableDebug)
     {
         Renderer.LOGGER.finest("Setting Debug State:", enableDebug);
-        
-        this.enableDebug = enableDebug;
+    
+        this.debug = enableDebug;
+    }
+    
+    /**
+     * Toggles if the renderer is in debug mode.
+     */
+    public void toggleDebug()
+    {
+        debug(!this.debug);
     }
     
     /**

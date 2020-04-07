@@ -41,7 +41,7 @@ public class SoftwareRenderer extends Renderer
     {
         super.finish();
         
-        this.target.bind().upload();
+        this.target.bind().upload(); // Upload should only happen if it needs to.
     }
     
     /**

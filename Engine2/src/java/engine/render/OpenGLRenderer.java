@@ -159,7 +159,7 @@ public class OpenGLRenderer extends Renderer
     {
         super.finish();
         
-        this.target.bind().download();
+        // this.target.bind().download(); // Download should only happen if the user want it to happen.
         
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }

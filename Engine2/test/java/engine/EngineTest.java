@@ -42,7 +42,7 @@ public class EngineTest extends Engine
     protected void draw(double elapsedTime)
     {
         clear();
-        push();
+        // push();
         switch (state)
         {
             case 1:
@@ -121,7 +121,11 @@ public class EngineTest extends Engine
                 if (keyboard().K4.held()) arcMode(ArcMode.PIE);
                 weight(10);
                 translate(screenWidth() / 2., screenHeight() / 2.);
-                arc(0, 0, 300, 100, 0, map(mouse().x(), 0, screenWidth() - 1, 0, 2.0 * Math.PI));
+                scale(1, 2 * Math.cos(seconds()));
+                rotate(Math.sin(seconds()));
+                // rotate(seconds());
+                // arc(0, 0, 300, 100, 0, map(Math.sin(seconds()), -1, 1, 0, 2.0 * Math.PI));
+                arc(0, 0, 300, 100, 0, seconds() + 1 * Math.sin(4 * seconds()));
                 break;
             case 9:
                 push();
@@ -145,10 +149,10 @@ public class EngineTest extends Engine
             case 12:
                 break;
         }
-        pop();
-        fill(Color.GREEN);
-        textSize(30);
-        text("Frame: " + frameCount(), 0, 0);
+        // pop();
+        // fill(Color.GREEN);
+        // textSize(30);
+        // text("Frame: " + frameCount(), 0, 0);
         if (keyboard().SPACE.down()) screenShot("screenshot" + frameCount());
         if (keyboard().S.down()) screenShot();
         if (keyboard().D.down()) enableDebug(!enableDebug());

@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.function.Supplier;
 
 import static engine.Engine.*;
+import static engine.util.Util.getDecimal;
 
 /**
  * Abstract Renderer to draw things to a texture.
@@ -1345,6 +1346,20 @@ public abstract class Renderer
     public void arc(double a, double b, double c, double d, double start, double stop)
     {
         Renderer.LOGGER.finer("Drawing Arc", a, b, c, d, start, stop);
+        
+        double TWO_PI = 2 * Math.PI;
+        
+        if (start < 0) start = getDecimal(start / TWO_PI) * TWO_PI;
+        if (start >= TWO_PI) start = getDecimal(start / TWO_PI) * TWO_PI;
+        if (stop < 0) stop = getDecimal(stop / TWO_PI) * TWO_PI;
+        if (stop >= TWO_PI) stop = getDecimal(stop / TWO_PI) * TWO_PI;
+        
+        if (start > stop)
+        {
+            double temp = start;
+            start = stop;
+            stop = temp;
+        }
         
         switch (this.ellipseMode)
         {

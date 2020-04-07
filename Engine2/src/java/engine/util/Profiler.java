@@ -1,6 +1,9 @@
 package engine.util;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Stack;
 import java.util.function.Function;
 
 import static engine.util.Util.round;
@@ -8,28 +11,53 @@ import static engine.util.Util.round;
 /**
  * A profiler that tracks the time taken to perform a task. It can track groups and sub groups.
  */
+@SuppressWarnings("unused")
 public class Profiler
 {
     private static final Logger LOGGER = new Logger();
     
     private static final long WARN_TIME_THRESHOLD = 100_000_000L;
     
-    private final String root;
-    
     private final Stack<Pair<String, Long>> sections = new Stack<>();
-    private final Map<String, Long>         times    = new HashMap<>();
     
-    public  boolean enabled = false;
-    private boolean started = false;
+    private final ArrayList<Long>                  frameTimeList    = new ArrayList<>();
+    private final HashMap<String, ArrayList<Long>> sectionsTimeList = new HashMap<>();
+    
+    private boolean enabled, started;
     
     /**
-     * Creates a new Profiler.
-     *
-     * @param root The root group name.
+     * @return If the profiler is enabled.
      */
-    public Profiler(String root)
+    public boolean enabled()
     {
-        this.root = root;
+        return this.enabled;
+    }
+    
+    /**
+     * Sets the profiler to enabled/disabled.
+     *
+     * @param enabled The new enabled state.
+     */
+    public void enabled(boolean enabled)
+    {
+        this.enabled = enabled;
+    }
+    
+    /**
+     * Toggles the enabled state.
+     */
+    public void toggleEnabled()
+    {
+        this.enabled = !this.enabled;
+    }
+    
+    /**
+     * Clears the data.
+     */
+    public void clear()
+    {
+        this.frameTimeList.clear();
+        this.sectionsTimeList.clear();
     }
     
     /**
@@ -41,14 +69,17 @@ public class Profiler
         {
             if (this.started)
             {
-                Profiler.LOGGER.warning("Profiler tick already started");
+                Profiler.LOGGER.warning("Profiler frame already started");
             }
             else
             {
-                this.started = true;
+                Profiler.LOGGER.finest("Starting Frame");
+                
                 this.sections.clear();
-                this.times.clear();
-                startSection(this.root);
+                
+                this.frameTimeList.add(System.nanoTime());
+                
+                this.started = true;
             }
         }
     }
@@ -62,16 +93,16 @@ public class Profiler
         {
             if (!this.started)
             {
-                Profiler.LOGGER.warning("Profiler tick already ended");
+                Profiler.LOGGER.warning("Profiler frame was never started.");
             }
             else
             {
-                endSection();
+                Profiler.LOGGER.finest("Ending Frame");
+                
+                this.frameTimeList.add(System.nanoTime() - this.frameTimeList.remove(this.frameTimeList.size() - 1));
+                
                 this.started = false;
-                if (!this.sections.isEmpty())
-                {
-                    Profiler.LOGGER.warning("Profiler tick ended before path was fully popped (remainder: '%s')", this.sections.peek());
-                }
+                if (!this.sections.isEmpty()) Profiler.LOGGER.warning("Profiler frame ended before all sections were ended (remainder: '%s')", this.sections.peek());
             }
         }
     }
@@ -87,15 +118,15 @@ public class Profiler
         {
             if (!this.started)
             {
-                Profiler.LOGGER.warning("Cannot push '%s' to profiler if profiler tick hasn't started", section);
+                Profiler.LOGGER.warning("Cannot start '%s' to profiler because profiler frame wasn't started.", section);
             }
             else
             {
-                String parent = !this.sections.isEmpty() ? this.sections.peek().a + '.' : "";
+                String name = (!this.sections.isEmpty() ? this.sections.peek().a + '.' : "") + section;
                 
-                this.sections.push(new Pair<>(parent + section, System.nanoTime()));
+                Profiler.LOGGER.finest("Starting Section:", name);
                 
-                Profiler.LOGGER.finest("Starting Section: %s", parent + section);
+                this.sections.push(new Pair<>(name, System.nanoTime()));
             }
         }
     }
@@ -109,58 +140,189 @@ public class Profiler
         {
             if (!this.started)
             {
-                Profiler.LOGGER.warning("Cannot pop from profiler if profiler tick hasn't started");
+                Profiler.LOGGER.warning("Cannot stop section because profiler frame wasn't started.");
             }
             else if (this.sections.isEmpty())
             {
-                Profiler.LOGGER.warning("Tried to pop one too many times");
+                Profiler.LOGGER.warning("No section was started.");
             }
             else
             {
                 Pair<String, Long> data = this.sections.pop();
                 
-                String section = data.a;
-                long   delta   = System.nanoTime() - data.b;
-                this.times.put(section, delta);
-                if (delta > WARN_TIME_THRESHOLD)
-                {
-                    Profiler.LOGGER.warning("Something's taking too long! '%s' took approx %s us", section, delta / 1_000D);
-                }
+                Profiler.LOGGER.finest("Ending Section:", data.a);
                 
-                Profiler.LOGGER.finest("Ending Section: %s", section);
+                long sectionTime = System.nanoTime() - data.b;
+                this.sectionsTimeList.putIfAbsent(data.a, new ArrayList<>());
+                this.sectionsTimeList.get(data.a).add(sectionTime);
+                
+                if (sectionTime > WARN_TIME_THRESHOLD) Profiler.LOGGER.warning("'%s' took approx %s us", data.a, sectionTime / 1_000D);
             }
         }
     }
     
     /**
-     * Gets the raw data for the section and all of its children and grandchildren.
+     * Gets a multiline string that shows the average, minimum, and maximum for each section over the number of frames profiled.
+     * <p>
+     * All child sections will be included in the string.
      *
-     * @param parent The section.
-     * @return The list of data points for the parent.
+     * @param parent The parent section to collect or null for the entire data set.
+     * @return The multiline string.
      */
-    public List<FrameData> getData(String parent)
+    public String getAvgData(String parent)
     {
-        final String p = parent == null || parent.equals("") ? this.root : parent;
+        return format(0, parent, new StringBuilder(), true, this::getAverageData).toString();
+    }
+    
+    /**
+     * Gets a multiline string that shows the frame that took the minimum amount of time.
+     * <p>
+     * All child sections will be included in the string with the percentage that the child took in the parent
+     * as well as the percentage of the frame time taken.
+     *
+     * @param parent The parent section to collect or null for the entire data set.
+     * @return The multiline string.
+     */
+    public String getMinData(String parent)
+    {
+        ArrayList<Long> data = parent != null ? this.sectionsTimeList.get(parent) : this.frameTimeList;
         
-        Function<String, Boolean> check = (s) -> s.startsWith(p + ".") && !s.replaceAll(p + ".", "").contains(".");
+        long min = Long.MAX_VALUE;
+        int  idx = 0;
+        for (int i = 0, n = data.size(); i < n; i++)
+        {
+            long value = data.get(i);
+            if (value < min)
+            {
+                min = value;
+                idx = i;
+            }
+        }
+        final int index = idx;
+        
+        return format(0, parent, new StringBuilder(), true, p -> getFrameData(index, p)).toString();
+    }
+    
+    /**
+     * Gets a multiline string that shows the frame that took the maximum amount of time.
+     * <p>
+     * All child sections will be included in the string with the percentage that the child took in the parent
+     * as well as the percentage of the frame time taken.
+     *
+     * @param parent The parent section to collect or null for the entire data set.
+     * @return The multiline string.
+     */
+    public String getMaxData(String parent)
+    {
+        ArrayList<Long> data = parent != null ? this.sectionsTimeList.get(parent) : this.frameTimeList;
+        
+        long max = Long.MIN_VALUE;
+        int  idx = 0;
+        for (int i = 0, n = data.size(); i < n; i++)
+        {
+            long value = data.get(i);
+            if (value > max)
+            {
+                max = value;
+                idx = i;
+            }
+        }
+        final int index = idx;
+        
+        return format(0, parent, new StringBuilder(), true, p -> getFrameData(index, p)).toString();
+    }
+    
+    private StringBuilder format(int level, String parent, StringBuilder builder, boolean header, Function<String, ArrayList<? extends Data>> points)
+    {
+        ArrayList<? extends Data> apply = points.apply(parent);
+        for (int i = header ? 0 : 1, n = apply.size(); i < n; i++)
+        {
+            Data point = apply.get(i);
+            builder.append(String.format("[%02d] ", level));
+            builder.append("|   ".repeat(Math.max(0, level)));
+            builder.append(point.name.contains(".") ? point.name.substring(point.name.lastIndexOf(".") + 1) : point.name);
+            builder.append(" - ").append(point.values()).append('\n');
+            if (point.name.equals(parent) || point.name.equals("Frame"))
+            {
+                level += 1;
+            }
+            else if (!point.name.contains("Unspecified"))
+            {
+                try
+                {
+                    format(level + 1, point.name, builder, false, points);
+                }
+                catch (Exception e)
+                {
+                    builder.append("[[ EXCEPTION ").append(e).append(" ]]");
+                }
+            }
+        }
+        return builder;
+    }
+    
+    private ArrayList<SectionData> getAverageData(String parent)
+    {
+        Function<String, Boolean> check = s -> (parent == null && !s.contains(".")) || (s.startsWith(parent + '.') && !s.replaceAll(parent + '.', "").contains("."));
+        
+        ArrayList<SectionData> data = new ArrayList<>();
+        for (String section : this.sectionsTimeList.keySet())
+        {
+            if (check.apply(section))
+            {
+                ArrayList<Long> times = this.sectionsTimeList.get(section);
+                
+                long minTime   = Long.MAX_VALUE;
+                long maxTime   = Long.MIN_VALUE;
+                long totalTime = 0;
+                
+                for (long time : times)
+                {
+                    minTime = Math.min(minTime, time);
+                    maxTime = Math.max(maxTime, time);
+                    totalTime += time;
+                }
+                
+                data.add(new SectionData(section, totalTime / times.size(), minTime, maxTime));
+            }
+        }
+        
+        long minTime   = Long.MAX_VALUE;
+        long maxTime   = Long.MIN_VALUE;
+        long totalTime = 0;
+    
+        for (long time : this.frameTimeList)
+        {
+            minTime = Math.min(minTime, time);
+            maxTime = Math.max(maxTime, time);
+            totalTime += time;
+        }
+        data.sort(Collections.reverseOrder());
+        data.add(0, new SectionData(parent == null ? "Frame" : parent, totalTime / this.frameTimeList.size(), minTime, maxTime));
+        return data;
+    }
+    
+    private ArrayList<SectionPercent> getFrameData(int frame, String parent)
+    {
+        Function<String, Boolean> check = s -> (parent == null && !s.contains(".")) || (s.startsWith(parent + '.') && !s.replaceAll(parent + '.', "").contains("."));
         
         long actualTotal = 0;
-        for (String section : this.times.keySet()) if (check.apply(section)) actualTotal += this.times.get(section);
+        for (String section : this.sectionsTimeList.keySet()) if (check.apply(section)) actualTotal += this.sectionsTimeList.get(section).get(frame);
         
-        long parentTotal = this.times.get(p);
-        long globalTotal = Math.max(this.times.get(this.root), parentTotal);
+        long parentTotal = (parent != null ? this.sectionsTimeList.get(parent) : this.frameTimeList).get(frame);
+        long globalTotal = Math.max(this.frameTimeList.get(frame), parentTotal);
         
         long total = Math.max(actualTotal, parentTotal);
         
-        List<FrameData> data = new ArrayList<>();
-        for (String section : this.times.keySet())
+        ArrayList<SectionPercent> data = new ArrayList<>();
+        for (String section : this.sectionsTimeList.keySet())
         {
-            long time = this.times.get(section);
             if (check.apply(section))
             {
+                long   time     = this.sectionsTimeList.get(section).get(frame);
                 double percent  = round(((double) time / (double) total) * 100D, 3);
                 double gPercent = round(((double) time / (double) globalTotal) * 100D, 3);
-                data.add(new FrameData(section, time, percent, gPercent));
+                data.add(new SectionPercent(section, time, percent, gPercent));
             }
         }
         
@@ -169,85 +331,81 @@ public class Profiler
             long   time     = parentTotal - actualTotal;
             double percent  = round(((double) time / (double) total) * 100D, 3);
             double gPercent = round(((double) time / (double) globalTotal) * 100D, 3);
-            data.add(new FrameData(p + ".Unspecified", time, percent, gPercent));
+            data.add(new SectionPercent(parent != null ? parent + ".Unspecified" : "Unspecified", time, percent, gPercent));
         }
         
-        Collections.sort(data);
-        FrameData pData = new FrameData(p, parentTotal, 100, round((double) parentTotal / (double) globalTotal * 100, 3));
-        data.add(0, pData);
-        
+        data.sort(Collections.reverseOrder());
+        data.add(0, new SectionPercent(parent == null ? "Frame" : parent, parentTotal, 100, round((double) parentTotal / (double) globalTotal * 100, 3)));
         return data;
     }
     
-    /**
-     * Gets a formatted string of the data points for the parent and its children.
-     *
-     * @param parent The section.
-     * @return The formatted string.
-     */
-    public String getFormattedData(String parent)
+    private static abstract class Data implements Comparable<Data>
     {
-        final String  p       = parent == null || parent.equals("") ? this.root : parent;
-        StringBuilder builder = new StringBuilder();
-        format(0, p, builder, true);
-        return builder.toString();
-    }
-    
-    private void format(int level, String base, StringBuilder builder, boolean header)
-    {
-        List<FrameData> data = this.getData(base);
-        for (int i = header ? 1 : 0; i < data.size(); ++i)
+        public final String name;
+        
+        private Data(String name)
         {
-            FrameData point = data.get(i);
-            builder.append(String.format("[%02d] ", level));
-            builder.append("|   ".repeat(Math.max(0, level)));
-            if (point.name.contains("."))
-            {
-                builder.append(point.name.substring(point.name.indexOf(".") + 1)).append(": ");
-            }
-            else
-            {
-                builder.append(point.name).append(": ");
-            }
-            builder.append(point.time / 1000).append("us ");
-            builder.append(String.format("%.3f", point.percentage)).append("% / ");
-            builder.append(String.format("%.3f", point.globalPercentage)).append("%)\n");
-            if (point.name.equals(base))
-            {
-                level += 1;
-            }
-            else if (base == null || !point.name.equals(base + ".Unspecified"))
-            {
-                try
-                {
-                    format(level + 1, point.name, builder, false);
-                }
-                catch (Exception e)
-                {
-                    builder.append("[[ EXCEPTION ").append(e).append(" ]]");
-                }
-            }
+            this.name = name;
+        }
+        
+        public abstract long compareValue();
+        
+        public abstract String values();
+        
+        public int compareTo(Data o)
+        {
+            return compareValue() < o.compareValue() ? -1 : compareValue() > o.compareValue() ? 1 : this.name.compareTo(o.name);
         }
     }
     
-    public static class FrameData implements Comparable<FrameData>
+    private static class SectionData extends Data
     {
-        public final String name;
-        public final long   time;
-        public final double percentage;
-        public final double globalPercentage;
+        public final long avgTime, minTime, maxTime;
         
-        private FrameData(String name, long time, double percentage, double globalPercentage)
+        private SectionData(String name, long avgTime, long minTime, long maxTime)
         {
-            this.name             = name;
-            this.time             = time;
+            super(name);
+            this.avgTime = avgTime / 1000;
+            this.minTime = minTime / 1000;
+            this.maxTime = maxTime / 1000;
+        }
+        
+        @Override
+        public long compareValue()
+        {
+            return this.avgTime;
+        }
+        
+        @Override
+        public String values()
+        {
+            return String.format("Avg: %s us Min: %s us Max: %s us", this.avgTime, this.minTime, this.maxTime);
+        }
+    }
+    
+    private static class SectionPercent extends Data
+    {
+        public final long   time;
+        public final double percentage, globalPercentage;
+        
+        private SectionPercent(String name, long time, double percentage, double globalPercentage)
+        {
+            super(name);
+            this.time             = time / 1000;
             this.percentage       = percentage;
             this.globalPercentage = globalPercentage;
         }
         
-        public int compareTo(FrameData o)
+        @Override
+        public long compareValue()
         {
-            return o.percentage < this.percentage ? -1 : o.percentage > this.percentage ? 1 : o.name.compareTo(this.name);
+            return this.time;
+        }
+        
+        @Override
+        public String values()
+        {
+            return String.format("%s us (%.3f%% / %.3f%%)", this.time, this.percentage, this.globalPercentage);
         }
     }
 }

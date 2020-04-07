@@ -28,8 +28,7 @@ import java.util.logging.Level;
 import static engine.util.Util.getCurrentDateTimeString;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.opengl.GL43.*;
-import static org.lwjgl.stb.STBEasyFont.stb_easy_font_height;
-import static org.lwjgl.stb.STBEasyFont.stb_easy_font_print;
+import static org.lwjgl.stb.STBEasyFont.*;
 import static org.lwjgl.stb.STBImageWrite.stbi_write_png;
 import static org.lwjgl.system.MemoryStack.stackPush;
 
@@ -38,7 +37,7 @@ public class Engine
 {
     private static final String   TITLE    = "Engine - %s - FPS(%s) SPF(Avg: %s us, Min: %s us, Max: %s us)";
     private static final Logger   LOGGER   = new Logger();
-    private static final Profiler PROFILER = new Profiler("Engine");
+    private static final Profiler PROFILER = new Profiler();
     
     private static Engine  logic;
     private static boolean running;
@@ -65,13 +64,16 @@ public class Engine
     private static VertexArray screenVAO;
     
     private static Shader      debugShader;
-    private static VertexArray debugVAO;
+    private static VertexArray debugTextVAO;
+    private static VertexArray debugBoxVAO;
     private static Matrix4f    debugView;
     
     private static Renderer renderer;
     
     private static final ArrayList<Tuple<Integer, Integer, String>> debugLines = new ArrayList<>();
+    
     private static String printFrame;
+    private static String frameText;
     private static String screenshot;
     
     public static final String SOFTWARE = "software";
@@ -169,7 +171,6 @@ public class Engine
                         Engine.window.makeCurrent();
                         GL.createCapabilities();
                         
-                        
                         long t, dt;
                         long lastFrame  = nanoseconds();
                         long lastSecond = 0;
@@ -190,6 +191,8 @@ public class Engine
                             if (dt >= Engine.frameRate)
                             {
                                 lastFrame = t;
+                                
+                                drawDebugText(0, 0, "Frame: " + Engine.frameCount);
                                 
                                 Engine.PROFILER.startFrame();
                                 {
@@ -223,47 +226,51 @@ public class Engine
                                     }
                                     Engine.PROFILER.endSection();
                                     
-                                    Engine.PROFILER.startSection("PEX Pre");
+                                    Engine.PROFILER.startSection("Update");
                                     {
-                                        for (String name : Engine.extensions.keySet())
+                                        Engine.PROFILER.startSection("PEX Pre");
                                         {
-                                            if (Engine.extensions.get(name).enabled())
+                                            for (String name : Engine.extensions.keySet())
                                             {
-                                                Engine.PROFILER.startSection(name);
+                                                if (Engine.extensions.get(name).enabled())
                                                 {
-                                                    Engine.renderer.push();
-                                                    Engine.extensions.get(name).beforeDraw(Engine.PROFILER, dt / 1_000_000_000D);
-                                                    Engine.renderer.pop();
+                                                    Engine.PROFILER.startSection(name);
+                                                    {
+                                                        Engine.renderer.push();
+                                                        Engine.extensions.get(name).beforeDraw(Engine.PROFILER, dt / 1_000_000_000D);
+                                                        Engine.renderer.pop();
+                                                    }
+                                                    Engine.PROFILER.endSection();
                                                 }
-                                                Engine.PROFILER.endSection();
                                             }
                                         }
-                                    }
-                                    Engine.PROFILER.endSection();
-                                    
-                                    Engine.PROFILER.startSection("User Update");
-                                    {
-                                        Engine.renderer.push();
-                                        Engine.logic.draw(dt / 1_000_000_000D);
-                                        Engine.renderer.pop();
-                                    }
-                                    Engine.PROFILER.endSection();
-                                    
-                                    Engine.PROFILER.startSection("PEX Post");
-                                    {
-                                        for (String name : Engine.extensions.keySet())
+                                        Engine.PROFILER.endSection();
+        
+                                        Engine.PROFILER.startSection("User");
                                         {
-                                            if (Engine.extensions.get(name).enabled())
+                                            Engine.renderer.push();
+                                            Engine.logic.draw(dt / 1_000_000_000D);
+                                            Engine.renderer.pop();
+                                        }
+                                        Engine.PROFILER.endSection();
+        
+                                        Engine.PROFILER.startSection("PEX Post");
+                                        {
+                                            for (String name : Engine.extensions.keySet())
                                             {
-                                                Engine.PROFILER.startSection(name);
+                                                if (Engine.extensions.get(name).enabled())
                                                 {
-                                                    Engine.renderer.push();
-                                                    Engine.extensions.get(name).afterDraw(Engine.PROFILER, dt / 1_000_000_000D);
-                                                    Engine.renderer.pop();
+                                                    Engine.PROFILER.startSection(name);
+                                                    {
+                                                        Engine.renderer.push();
+                                                        Engine.extensions.get(name).afterDraw(Engine.PROFILER, dt / 1_000_000_000D);
+                                                        Engine.renderer.pop();
+                                                    }
+                                                    Engine.PROFILER.endSection();
                                                 }
-                                                Engine.PROFILER.endSection();
                                             }
                                         }
+                                        Engine.PROFILER.endSection();
                                     }
                                     Engine.PROFILER.endSection();
                                     
@@ -288,25 +295,31 @@ public class Engine
                                     }
                                     Engine.PROFILER.endSection();
                                     
-                                    Engine.PROFILER.startSection("Debug Render");
+                                    Engine.PROFILER.startSection("Debug Text");
                                     {
                                         Engine.debugShader.bind();
                                         Engine.debugShader.setMat4("pv", Engine.debugView.setOrtho(0F, Engine.window.viewW(), Engine.window.viewH(), 0F, -1F, 1F));
-                                        Engine.debugShader.setColor("color", Color.WHITE);
-    
-                                        Engine.debugVAO.bind();
-                                        for (Tuple<Integer, Integer, String> line : Engine.debugLines)
+                                        
+                                        try (MemoryStack frame = stackPush())
                                         {
-                                            try (MemoryStack frame = stackPush())
+                                            ByteBuffer textBuffer = frame.malloc(24 * 1024);
+                                            for (Tuple<Integer, Integer, String> line : Engine.debugLines)
                                             {
-                                                ByteBuffer textBuffer = frame.malloc(12 * 1024);
-                                                stb_easy_font_print(line.a, line.b, line.c, null, textBuffer);
+                                                int quads = stb_easy_font_print(line.a + 2, line.b + 2, line.c, null, textBuffer);
+                                                int width = stb_easy_font_width(line.c);
+                                                int height = stb_easy_font_height(line.c);
     
-                                                Engine.debugVAO.set(0, textBuffer);
-                                                Engine.debugVAO.draw(GL_QUADS);
+                                                Engine.debugShader.setColor("color", new Color(255, 255, 255, 51));
+                                                Engine.debugBoxVAO.bind().set(0, new float[] {
+                                                        line.a, line.b, line.a + width + 2, line.b, line.a + width + 2, line.b + height, line.a, line.b + height
+                                                }, GL_DYNAMIC_DRAW).draw(GL_QUADS).unbind();
+                                                
+                                                Engine.debugShader.setColor("color", Color.WHITE);
+                                                Engine.debugTextVAO.bind().set(0, textBuffer.limit(quads * 64), GL_DYNAMIC_DRAW).draw(GL_QUADS).unbind();
+                                                
+                                                textBuffer.clear();
                                             }
                                         }
-                                        Engine.debugVAO.unbind();
                                         Engine.debugLines.clear();
                                     }
                                     Engine.PROFILER.endSection();
@@ -320,19 +333,19 @@ public class Engine
                                 }
                                 Engine.PROFILER.endFrame();
                                 
-                                if (Engine.PROFILER.enabled)
+                                if (Engine.PROFILER.enabled() && Engine.frameText != null)
                                 {
                                     String parent = "".equals(Engine.printFrame) ? null : Engine.printFrame;
                                     
                                     // TODO - Make profiler take averages over an amount of frames.
-                                    String text = Engine.PROFILER.getFormattedData(parent);
+                                    // Engine.frameText = Engine.PROFILER.getFormattedData(parent);
                                     
-                                    int x = 2;
-                                    int y = 2;
-                                    for (String line : text.split("\n"))
+                                    int x = 0;
+                                    int y = stb_easy_font_height(" ");
+                                    for (String line : Engine.frameText.split("\n"))
                                     {
                                         drawDebugText(x, y, line);
-    
+                                        
                                         y += stb_easy_font_height(line);
                                     }
                                     
@@ -341,23 +354,23 @@ public class Engine
                                 
                                 Engine.window.swap();
                             }
-    
+                            
                             if (Engine.screenshot != null)
                             {
                                 String fileName = Engine.screenshot + (!Engine.screenshot.endsWith(".png") ? ".png" : "");
-        
+                                
                                 int w = Engine.window.frameBufferWidth();
                                 int h = Engine.window.frameBufferHeight();
                                 int c = 3;
-        
+                                
                                 int stride = w * c;
-        
-                                try(MemoryStack stack = MemoryStack.stackPush())
+                                
+                                try (MemoryStack stack = MemoryStack.stackPush())
                                 {
                                     ByteBuffer buf = stack.malloc(w * h * c);
                                     glReadBuffer(GL_FRONT);
                                     glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buf);
-    
+                                    
                                     byte[] tmp1 = new byte[stride], tmp2 = new byte[stride];
                                     for (int i = 0, n = h >> 1, col1, col2; i < n; i++)
                                     {
@@ -368,10 +381,10 @@ public class Engine
                                         buf.put(col1, tmp2);
                                         buf.put(col2, tmp1);
                                     }
-    
+                                    
                                     if (!stbi_write_png(fileName, w, h, c, buf, stride)) Engine.LOGGER.severe("Could not take screen shot");
                                 }
-        
+                                
                                 Engine.screenshot = null;
                             }
                             
@@ -390,6 +403,9 @@ public class Engine
                                 maxTime = Long.MIN_VALUE;
                                 
                                 totalFrames = 0;
+                                
+                                Engine.frameText = Engine.PROFILER.getAvgData(null);
+                                Engine.PROFILER.clear();
                             }
                         }
                     }
@@ -497,9 +513,10 @@ public class Engine
         Engine.screenShader = new Shader().loadVertexFile("shader/pixel.vert").loadFragmentFile("shader/pixel.frag").validate().unbind();
         Engine.screenVAO    = new VertexArray().bind().add(new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, GL_DYNAMIC_DRAW, 2);
         
-        Engine.debugShader = new Shader().bind().loadVertexFile("shader/debug.vert").loadFragmentFile("shader/debug.frag").validate().unbind();
-        Engine.debugVAO    = new VertexArray().bind().add(12 * 1024, GL_DYNAMIC_DRAW, GL_FLOAT, 3, GL_UNSIGNED_BYTE, 4).unbind();
-        Engine.debugView   = new Matrix4f().setOrtho(0F, Engine.window.viewW(), Engine.window.height(), 0F, -1F, 1F);
+        Engine.debugShader  = new Shader().bind().loadVertexFile("shader/debug.vert").loadFragmentFile("shader/debug.frag").validate().unbind();
+        Engine.debugTextVAO = new VertexArray().bind().add(24 * 1024, GL_DYNAMIC_DRAW, GL_FLOAT, 3, GL_UNSIGNED_BYTE, 4).unbind();
+        Engine.debugBoxVAO  = new VertexArray().bind().add(8, GL_DYNAMIC_DRAW, GL_FLOAT, 2).unbind();
+        Engine.debugView    = new Matrix4f().setOrtho(0F, Engine.window.viewW(), Engine.window.height(), 0F, -1F, 1F);
         
         Engine.renderer = Renderer.getRenderer(Engine.screen, renderer);
     }
@@ -690,7 +707,7 @@ public class Engine
      */
     public static void enableProfiler()
     {
-        Engine.PROFILER.enabled = true;
+        Engine.PROFILER.enabled(true);
     }
     
     /**
@@ -698,7 +715,7 @@ public class Engine
      */
     public static void disableProfiler()
     {
-        Engine.PROFILER.enabled = false;
+        Engine.PROFILER.enabled(false);
     }
     
     /**
@@ -708,7 +725,7 @@ public class Engine
      */
     public static void printFrameData(String parent)
     {
-        if (Engine.PROFILER.enabled) Engine.printFrame = parent;
+        if (Engine.PROFILER.enabled()) Engine.printFrame = parent;
     }
     
     /**
@@ -732,8 +749,8 @@ public class Engine
     /**
      * Draws Debug text to the screen. The coordinates passed in will not be affected by any transformations.
      *
-     * @param x The x coordinate of the top left point if the text.
-     * @param y The y coordinate of the top left point if the text.
+     * @param x    The x coordinate of the top left point if the text.
+     * @param y    The y coordinate of the top left point if the text.
      * @param text The text to render.
      */
     public static void drawDebugText(int x, int y, String text)

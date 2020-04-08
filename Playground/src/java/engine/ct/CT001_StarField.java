@@ -42,14 +42,16 @@ public class CT001_StarField extends Engine
             
             double sx = map(pos.x / pos.z, 0, 1, 0, screenWidth() / 2.);
             double sy = map(pos.y / pos.z, 0, 1, 0, screenHeight() / 2.);
+            double px = map(pos.x / prevZ, 0, 1, 0, screenWidth() / 2.);
+            double py = map(pos.y / prevZ, 0, 1, 0, screenHeight() / 2.);
             double r  = map(pos.z, 0, screenWidth(), 8, 0);
+            
             circle(sx, sy, r);
+            circle(px, py, r);
             
             stroke(255, alpha);
             weight(r);
             
-            double px = map(pos.x / prevZ, 0, 1, 0, screenWidth() / 2.);
-            double py = map(pos.y / prevZ, 0, 1, 0, screenHeight() / 2.);
             line(px, py, sx, sy);
             
             prevZ = pos.z;
@@ -62,7 +64,7 @@ public class CT001_StarField extends Engine
     @Override
     protected void setup()
     {
-        size(400, 400, 1, 1, OPENGL);
+        size(800, 800, 1, 1, OPENGL);
         
         frameRate(60);
         rendererBlend(true);

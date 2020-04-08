@@ -37,9 +37,8 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 @SuppressWarnings({"EmptyMethod", "unused"})
 public class Engine
 {
-    private static final String   TITLE    = "Engine - %s - FPS(%s) SPF(Avg: %s us, Min: %s us, Max: %s us)";
-    private static final Logger   LOGGER   = new Logger();
-    private static final Profiler PROFILER = new Profiler();
+    private static final String TITLE  = "Engine - %s - FPS(%s) SPF(Avg: %s us, Min: %s us, Max: %s us)";
+    private static final Logger LOGGER = new Logger();
     
     private static Engine  logic;
     private static boolean running;
@@ -72,6 +71,8 @@ public class Engine
     private static VertexArray debugBoxVAO;
     private static Matrix4f    debugView;
     
+    private static final Profiler profiler = new Profiler();
+    
     private static final Color debugLineBackground = new Color(255, 50);
     
     private static final ArrayList<Tuple<Integer, Integer, String>> debugLines = new ArrayList<>();
@@ -80,6 +81,7 @@ public class Engine
     private static String  notification;
     private static long    notificationTime;
     private static int     profileMode;
+    private static boolean paused;
     
     private static String profilerOutput;
     private static String screenshot;
@@ -201,128 +203,147 @@ public class Engine
                             {
                                 lastFrame = t;
                                 
-                                Engine.PROFILER.startFrame();
+                                Engine.profiler.startFrame();
                                 {
-                                    Engine.PROFILER.startSection("Events");
+                                    Engine.profiler.startSection("Events");
                                     {
                                         Events.clear();
                                         
-                                        Engine.PROFILER.startSection("Mouse Events");
+                                        Engine.profiler.startSection("Mouse Events");
                                         {
                                             Engine.mouse.handleEvents(t, dt);
                                         }
-                                        Engine.PROFILER.endSection();
+                                        Engine.profiler.endSection();
                                         
-                                        Engine.PROFILER.startSection("Key Events");
+                                        Engine.profiler.startSection("Key Events");
                                         {
                                             Engine.keyboard.handleEvents(t, dt);
                                         }
-                                        Engine.PROFILER.endSection();
+                                        Engine.profiler.endSection();
                                         
-                                        Engine.PROFILER.startSection("Window Events");
+                                        Engine.profiler.startSection("Window Events");
                                         {
                                             Engine.window.handleEvents(t, dt);
                                         }
-                                        Engine.PROFILER.endSection();
+                                        Engine.profiler.endSection();
                                         
-                                        Engine.PROFILER.startSection("Internal");
+                                        Engine.profiler.startSection("Internal");
                                         {
                                             if (Engine.keyboard.F1.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
                                             {
-                                                Engine.profileMode  = 0;
-                                                Engine.notification = "Profile Mode: Off";
+                                                Engine.profiler.enabled(false);
+                                                Engine.profileMode      = 0;
+                                                Engine.notification     = "Profile Mode: Off";
                                                 Engine.notificationTime = t;
                                             }
                                             if (Engine.keyboard.F2.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
                                             {
-                                                Engine.profileMode  = 1;
-                                                Engine.notification = "Profile Mode: Average";
+                                                Engine.profiler.enabled(true);
+                                                Engine.profileMode      = 1;
+                                                Engine.notification     = "Profile Mode: Average";
                                                 Engine.notificationTime = t;
                                             }
                                             if (Engine.keyboard.F3.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
                                             {
-                                                Engine.profileMode  = 2;
-                                                Engine.notification = "Profile Mode: Min";
+                                                Engine.profiler.enabled(true);
+                                                Engine.profileMode      = 2;
+                                                Engine.notification     = "Profile Mode: Min";
                                                 Engine.notificationTime = t;
                                             }
                                             if (Engine.keyboard.F4.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
                                             {
-                                                Engine.profileMode  = 3;
-                                                Engine.notification = "Profile Mode: Max";
+                                                Engine.profiler.enabled(true);
+                                                Engine.profileMode      = 3;
+                                                Engine.notification     = "Profile Mode: Max";
                                                 Engine.notificationTime = t;
                                             }
-                                            if (Engine.keyboard.F12.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
+                                            if (Engine.keyboard.F10.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
+                                            {
+                                                Engine.renderer.debug(!Engine.renderer.debug());
+                                                Engine.notification     = Engine.renderer.debug() ? "Renderer Debug Mode: On" : "Renderer Debug Mode: Off";
+                                                Engine.notificationTime = t;
+                                            }
+                                            if (Engine.keyboard.F11.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
                                             {
                                                 Engine.debug            = !Engine.debug;
                                                 Engine.notification     = Engine.debug ? "Debug Mode: On" : "Debug Mode: Off";
                                                 Engine.notificationTime = t;
                                             }
-                                        }
-                                        Engine.PROFILER.endSection();
-                                    }
-                                    Engine.PROFILER.endSection();
-                                    
-                                    Engine.PROFILER.startSection("Renderer Begin");
-                                    {
-                                        Engine.renderer.start();
-                                    }
-                                    Engine.PROFILER.endSection();
-                                    
-                                    Engine.PROFILER.startSection("Update");
-                                    {
-                                        Engine.PROFILER.startSection("PEX Pre");
-                                        {
-                                            for (String name : Engine.extensions.keySet())
+                                            if (Engine.keyboard.F12.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
                                             {
-                                                if (Engine.extensions.get(name).enabled())
-                                                {
-                                                    Engine.PROFILER.startSection(name);
-                                                    {
-                                                        Engine.renderer.push();
-                                                        Engine.extensions.get(name).beforeDraw(Engine.PROFILER, dt / 1_000_000_000D);
-                                                        Engine.renderer.pop();
-                                                    }
-                                                    Engine.PROFILER.endSection();
-                                                }
+                                                Engine.paused           = !Engine.paused;
+                                                Engine.notification     = Engine.debug ? "Engine Paused" : "Engine Unpaused";
+                                                Engine.notificationTime = t;
                                             }
                                         }
-                                        Engine.PROFILER.endSection();
-                                        
-                                        Engine.PROFILER.startSection("User");
+                                        Engine.profiler.endSection();
+                                    }
+                                    Engine.profiler.endSection();
+                                    
+                                    if (!Engine.paused)
+                                    {
+                                        Engine.profiler.startSection("Renderer Begin");
                                         {
-                                            Engine.renderer.push();
-                                            Engine.logic.draw(dt / 1_000_000_000D);
-                                            Engine.renderer.pop();
+                                            Engine.renderer.start();
                                         }
-                                        Engine.PROFILER.endSection();
+                                        Engine.profiler.endSection();
                                         
-                                        Engine.PROFILER.startSection("PEX Post");
+                                        Engine.profiler.startSection("Update");
                                         {
-                                            for (String name : Engine.extensions.keySet())
+                                            Engine.profiler.startSection("PEX Pre");
                                             {
-                                                if (Engine.extensions.get(name).enabled())
+                                                for (String name : Engine.extensions.keySet())
                                                 {
-                                                    Engine.PROFILER.startSection(name);
+                                                    if (Engine.extensions.get(name).enabled())
                                                     {
-                                                        Engine.renderer.push();
-                                                        Engine.extensions.get(name).afterDraw(Engine.PROFILER, dt / 1_000_000_000D);
-                                                        Engine.renderer.pop();
+                                                        Engine.profiler.startSection(name);
+                                                        {
+                                                            Engine.renderer.push();
+                                                            Engine.extensions.get(name).beforeDraw(Engine.profiler, dt / 1_000_000_000D);
+                                                            Engine.renderer.pop();
+                                                        }
+                                                        Engine.profiler.endSection();
                                                     }
-                                                    Engine.PROFILER.endSection();
                                                 }
                                             }
+                                            Engine.profiler.endSection();
+                                            
+                                            Engine.profiler.startSection("User");
+                                            {
+                                                Engine.renderer.push();
+                                                Engine.logic.draw(dt / 1_000_000_000D);
+                                                Engine.renderer.pop();
+                                            }
+                                            Engine.profiler.endSection();
+                                            
+                                            Engine.profiler.startSection("PEX Post");
+                                            {
+                                                for (String name : Engine.extensions.keySet())
+                                                {
+                                                    if (Engine.extensions.get(name).enabled())
+                                                    {
+                                                        Engine.profiler.startSection(name);
+                                                        {
+                                                            Engine.renderer.push();
+                                                            Engine.extensions.get(name).afterDraw(Engine.profiler, dt / 1_000_000_000D);
+                                                            Engine.renderer.pop();
+                                                        }
+                                                        Engine.profiler.endSection();
+                                                    }
+                                                }
+                                            }
+                                            Engine.profiler.endSection();
                                         }
-                                        Engine.PROFILER.endSection();
+                                        Engine.profiler.endSection();
+                                        
+                                        Engine.profiler.startSection("Renderer Finish");
+                                        {
+                                            Engine.renderer.finish();
+                                        }
+                                        Engine.profiler.endSection();
                                     }
-                                    Engine.PROFILER.endSection();
                                     
-                                    Engine.PROFILER.startSection("Renderer Finish");
-                                    {
-                                        Engine.renderer.finish();
-                                    }
-                                    Engine.PROFILER.endSection();
-                                    
-                                    Engine.PROFILER.startSection("Render Screen");
+                                    Engine.profiler.startSection("Render Screen");
                                     {
                                         glBindFramebuffer(GL_FRAMEBUFFER, 0);
                                         if (window.updateViewport())
@@ -335,16 +356,16 @@ public class Engine
                                         Engine.screenShader.bind();
                                         Engine.screenVAO.bind().draw(GL_QUADS).unbind();
                                     }
-                                    Engine.PROFILER.endSection();
+                                    Engine.profiler.endSection();
                                     
-                                    Engine.PROFILER.startSection("Debug Text");
+                                    Engine.profiler.startSection("Debug Text");
                                     {
                                         dt = t - Engine.notificationTime;
                                         if (dt < 2_000_000_000L && Engine.notification != null)
                                         {
                                             int x = (Engine.window.viewW() - stb_easy_font_width(Engine.notification)) >> 1;
                                             int y = (Engine.window.viewH() - stb_easy_font_height(Engine.notification)) >> 1;
-    
+                                            
                                             drawDebugText(x, y, Engine.notification);
                                         }
                                         if (Engine.debug)
@@ -388,22 +409,25 @@ public class Engine
                                         }
                                         Engine.debugLines.clear();
                                     }
-                                    Engine.PROFILER.endSection();
+                                    Engine.profiler.endSection();
                                     
-                                    Engine.PROFILER.startSection("Swap");
+                                    Engine.profiler.startSection("Swap");
                                     {
                                         Engine.window.swap();
                                     }
-                                    Engine.PROFILER.endSection();
+                                    Engine.profiler.endSection();
                                     
                                     frameTime = nanoseconds() - t;
-                                    minTime   = Math.min(minTime, frameTime);
-                                    maxTime   = Math.max(maxTime, frameTime);
-                                    totalTime += frameTime;
-                                    totalFrames++;
-                                    Engine.frameCount++;
+                                    if (!Engine.paused)
+                                    {
+                                        minTime = Math.min(minTime, frameTime);
+                                        maxTime = Math.max(maxTime, frameTime);
+                                        totalTime += frameTime;
+                                        totalFrames++;
+                                        Engine.frameCount++;
+                                    }
                                 }
-                                Engine.PROFILER.endFrame();
+                                Engine.profiler.endFrame();
                             }
                             
                             if (Engine.screenshot != null)
@@ -438,7 +462,7 @@ public class Engine
                             }
                             
                             dt = t - lastProfile;
-                            if (dt >= Engine.PROFILER.frequencyRaw())
+                            if (dt >= Engine.profiler.frequencyRaw() && !Engine.paused)
                             {
                                 lastProfile = t;
                                 
@@ -448,20 +472,20 @@ public class Engine
                                         Engine.profilerOutput = null;
                                         break;
                                     case 1:
-                                        Engine.profilerOutput = Engine.PROFILER.getAvgData(null);
+                                        Engine.profilerOutput = Engine.profiler.getAvgData(null);
                                         break;
                                     case 2:
-                                        Engine.profilerOutput = Engine.PROFILER.getMinData(null);
+                                        Engine.profilerOutput = Engine.profiler.getMinData(null);
                                         break;
                                     case 3:
-                                        Engine.profilerOutput = Engine.PROFILER.getMaxData(null);
+                                        Engine.profilerOutput = Engine.profiler.getMaxData(null);
                                         break;
                                 }
-                                Engine.PROFILER.clear();
+                                Engine.profiler.clear();
                             }
                             
                             dt = t - lastTitle;
-                            if (dt >= 1_000_000_000L && totalFrames > 0)
+                            if (dt >= 1_000_000_000L && totalFrames > 0 && !Engine.paused)
                             {
                                 lastTitle = t;
                                 
@@ -667,6 +691,10 @@ public class Engine
         return nanoseconds() / 1_000_000_000D;
     }
     
+    // ----------------------------
+    // -- Render Loop Properties --
+    // ----------------------------
+    
     /**
      * @return The current frame rate or zero if not limit is set.
      */
@@ -741,6 +769,10 @@ public class Engine
         return Engine.pixelSize.y;
     }
     
+    // -------------------------
+    // -- Render Loop Objects --
+    // -------------------------
+    
     /**
      * @return The mouse instance. This will be null unless {@link #size} is called.
      */
@@ -773,25 +805,21 @@ public class Engine
         return Engine.window;
     }
     
+    // -------------------
+    // -- Debug Objects --
+    // -------------------
+    
+    /**
+     * @return The Engine's Profiler instance.
+     */
+    public static Profiler profiler()
+    {
+        return Engine.profiler;
+    }
+    
     // ---------------
     // -- Functions --
     // ---------------
-    
-    /**
-     * Enables the profiler to start keeping track of frame data.
-     */
-    public static void enableProfiler()
-    {
-        Engine.PROFILER.enabled(true);
-    }
-    
-    /**
-     * Disabled the profiler.
-     */
-    public static void disableProfiler()
-    {
-        Engine.PROFILER.enabled(false);
-    }
     
     /**
      * Takes a screen shot after the frame is completed and saves it to the path given.
@@ -810,6 +838,10 @@ public class Engine
     {
         screenShot(null);
     }
+    
+    // ---------------------
+    // -- Debug Functions --
+    // ---------------------
     
     /**
      * Draws Debug text to the screen. The coordinates passed in will not be affected by any transformations.

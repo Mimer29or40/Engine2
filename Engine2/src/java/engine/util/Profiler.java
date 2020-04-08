@@ -19,7 +19,7 @@ public class Profiler
     private static final long WARN_TIME_THRESHOLD = 100_000_000L;
     
     private long    frequency = 1_000_000_000L;
-    private boolean enabled, started;
+    private boolean enabled, newEnabled, started;
     
     private final Stack<Pair<String, Long>> sections = new Stack<>();
     
@@ -67,7 +67,7 @@ public class Profiler
      */
     public void enabled(boolean enabled)
     {
-        this.enabled = enabled;
+        this.newEnabled = enabled;
     }
     
     /**
@@ -75,7 +75,7 @@ public class Profiler
      */
     public void toggleEnabled()
     {
-        this.enabled = !this.enabled;
+        enabled(!this.enabled);
     }
     
     /**
@@ -92,6 +92,7 @@ public class Profiler
      */
     public void startFrame()
     {
+        this.enabled = this.newEnabled;
         if (this.enabled)
         {
             if (this.started)

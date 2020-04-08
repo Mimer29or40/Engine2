@@ -23,7 +23,7 @@ public class EngineTest extends Engine
         // size(200, 200, 2, 2);
         // size(100, 100, 8, 8);
         // size(400, 400, 2, 2, SOFTWARE);
-        size(400, 400, 2, 2, OPENGL);
+        size(800, 800, 1, 1, OPENGL);
     
         texture = new Texture(30, 30);
         Color c = new Color();

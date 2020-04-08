@@ -217,7 +217,7 @@ public class SoftwareRenderer extends Renderer
     @Override
     public void drawTriangle(double x1, double y1, double x2, double y2, double x3, double y3)
     {
-        drawPolygon(new double[] {x1, y1, x2, y2, x3, y3});
+        drawPolygon(x1, y1, x2, y2, x3, y3);
     }
     
     /**
@@ -235,7 +235,7 @@ public class SoftwareRenderer extends Renderer
     @Override
     public void fillTriangle(double x1, double y1, double x2, double y2, double x3, double y3)
     {
-        fillPolygon(new double[] {x1, y1, x2, y2, x3, y3});
+        fillPolygon(x1, y1, x2, y2, x3, y3);
     }
     
     /**
@@ -250,7 +250,7 @@ public class SoftwareRenderer extends Renderer
     @Override
     public void drawSquare(double x, double y, double w)
     {
-        drawPolygon(new double[] {x, y, x + w, y, x + w, y + w, x, y + w});
+        drawPolygon(x, y, x + w, y, x + w, y + w, x, y + w);
     }
     
     /**
@@ -265,7 +265,7 @@ public class SoftwareRenderer extends Renderer
     @Override
     public void fillSquare(double x, double y, double w)
     {
-        fillPolygon(new double[] {x, y, x + w, y, x + w, y + w, x, y + w});
+        fillPolygon(x, y, x + w, y, x + w, y + w, x, y + w);
     }
     
     /**
@@ -281,7 +281,7 @@ public class SoftwareRenderer extends Renderer
     @Override
     public void drawRect(double x, double y, double w, double h)
     {
-        drawPolygon(new double[] {x, y, x + w, y, x + w, y + h, x, y + h});
+        drawPolygon(x, y, x + w, y, x + w, y + h, x, y + h);
     }
     
     /**
@@ -297,7 +297,7 @@ public class SoftwareRenderer extends Renderer
     @Override
     public void fillRect(double x, double y, double w, double h)
     {
-        fillPolygon(new double[] {x, y, x + w, y, x + w, y + h, x, y + h});
+        fillPolygon(x, y, x + w, y, x + w, y + h, x, y + h);
     }
     
     /**
@@ -319,7 +319,7 @@ public class SoftwareRenderer extends Renderer
     @Override
     public void drawQuad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
     {
-        drawPolygon(new double[] {x1, y1, x2, y2, x3, y3, x4, y4});
+        drawPolygon(x1, y1, x2, y2, x3, y3, x4, y4);
     }
     
     /**
@@ -341,7 +341,7 @@ public class SoftwareRenderer extends Renderer
     @Override
     public void fillQuad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
     {
-        fillPolygon(new double[] {x1, y1, x2, y2, x3, y3, x4, y4});
+        fillPolygon(x1, y1, x2, y2, x3, y3, x4, y4);
     }
     
     /**
@@ -356,7 +356,7 @@ public class SoftwareRenderer extends Renderer
      * @param points The points.
      */
     @Override
-    public void drawPolygon(double[] points)
+    public void drawPolygon(double... points)
     {
         drawPolygonImpl(points, true);
     }
@@ -373,7 +373,7 @@ public class SoftwareRenderer extends Renderer
      * @param points The points.
      */
     @Override
-    public void fillPolygon(double[] points)
+    public void fillPolygon(double... points)
     {
         int n = points.length;
         int x1, y1, x2, y2;

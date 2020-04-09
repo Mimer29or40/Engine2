@@ -272,7 +272,7 @@ public class Engine
                                             if (Engine.keyboard.F12.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
                                             {
                                                 Engine.paused           = !Engine.paused;
-                                                Engine.notification     = Engine.debug ? "Engine Paused" : "Engine Unpaused";
+                                                Engine.notification     = Engine.paused ? "Engine Paused" : "Engine Unpaused";
                                                 Engine.notificationTime = t;
                                             }
                                         }

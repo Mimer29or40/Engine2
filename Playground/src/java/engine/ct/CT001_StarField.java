@@ -36,23 +36,33 @@ public class CT001_StarField extends Engine
         void show()
         {
             double alpha = map(pos.z, 0, screenWidth(), 1, 0.1);
-            
+    
+            profiler().startSection("Fill");
             fill(255, alpha);
             noStroke();
-            
+            profiler().endSection();
+    
+            profiler().startSection("Map");
             double sx = map(pos.x / pos.z, 0, 1, 0, screenWidth() / 2.);
             double sy = map(pos.y / pos.z, 0, 1, 0, screenHeight() / 2.);
             double px = map(pos.x / prevZ, 0, 1, 0, screenWidth() / 2.);
             double py = map(pos.y / prevZ, 0, 1, 0, screenHeight() / 2.);
             double r  = map(pos.z, 0, screenWidth(), 8, 0);
+            profiler().endSection();
             
+            profiler().startSection("Circles");
             circle(sx, sy, r);
             circle(px, py, r);
-            
+            profiler().endSection();
+    
+            profiler().startSection("Stroke");
             stroke(255, alpha);
             weight(r);
-            
+            profiler().endSection();
+    
+            profiler().startSection("Line");
             line(px, py, sx, sy);
+            profiler().endSection();
             
             prevZ = pos.z;
         }
@@ -65,9 +75,10 @@ public class CT001_StarField extends Engine
     protected void setup()
     {
         size(800, 800, 1, 1, OPENGL);
+        // size(800, 800, 1, 1, SOFTWARE);
         
         frameRate(60);
-        rendererBlend(true);
+        // rendererBlend(true);
         
         for (int i = 0; i < 100; i++) stars.add(new Star());
     }
@@ -76,16 +87,21 @@ public class CT001_StarField extends Engine
     protected void draw(double elapsedTime)
     {
         speed = map(mouse().x(), 0, screenWidth(), 0, 50);
-        
+    
+    
+        profiler().startSection("Clear");
         clear(0);
+        profiler().endSection();
         
         translate(screenWidth() / 2., screenHeight() / 2.);
-        
+    
+        profiler().startSection("Stars");
         for (Star s : stars)
         {
             s.update();
             s.show();
         }
+        profiler().endSection();
     }
     
     @Override

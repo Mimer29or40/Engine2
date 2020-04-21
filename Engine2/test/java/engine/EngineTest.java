@@ -38,8 +38,8 @@ public class EngineTest extends Engine
             }
         }
         texture.upload();
-        
-        rendererBlend(true);
+    
+        renderer().blend().enabled(true);
     }
     
     @Override

@@ -450,23 +450,24 @@ public class Font
         return 1;
     }
     
-    public static final class FontTuple extends Tuple<String, Integer, Boolean>
+    public static final class FTuple extends Tuple<String, Integer, Boolean>
     {
         /**
          * Creates a new tuple with the fonts information
          *
          * @param font The font object.
          */
-        public FontTuple(Font font)
+        public FTuple(Font font)
         {
             super(font.font, font.size, font.pixelAligned);
         }
         
-        public void setFont(Font font)
+        public Font setFont(Font font)
         {
-            font.setFont(font.font);
-            font.setSize(font.size);
-            font.setPixelAligned(font.pixelAligned);
+            font.setFont(this.a);
+            font.setSize(this.b);
+            font.setPixelAligned(this.c);
+            return font;
         }
     }
 }

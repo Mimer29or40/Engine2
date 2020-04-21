@@ -60,7 +60,6 @@ public class Engine
     private static Window    window;
     
     private static String   rendererType;
-    private static Blend    blend;
     private static Renderer renderer;
     
     private static Texture     screen;
@@ -611,9 +610,7 @@ public class Engine
         
         glEnable(GL_TEXTURE_2D);
         
-        Engine.rendererType = renderer;
-        Engine.blend        = new Blend();
-        Engine.renderer     = Renderer.getRenderer(Engine.screen = new Texture(screenW, screenH), renderer);
+        Engine.renderer = Renderer.getRenderer(Engine.screen = new Texture(screenW, screenH), Engine.rendererType = renderer);
         
         Engine.screenShader = new Shader().loadVertexFile("shader/pixel.vert").loadFragmentFile("shader/pixel.frag").validate().unbind();
         Engine.screenVAO    = new VertexArray().bind().add(new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, GL_DYNAMIC_DRAW, 2);
@@ -1410,90 +1407,6 @@ public class Engine
         return Engine.random.nextColor();
     }
     
-    // --------------------
-    // -- Blend Instance --
-    // --------------------
-    
-    /**
-     * @return The engine's blend instance.
-     */
-    public static Blend blend()
-    {
-        return Engine.blend;
-    }
-    
-    /**
-     * See {@link Blend#sourceFactor()}
-     */
-    public static Blend.Func sourceFactor()
-    {
-        return Engine.blend.sourceFactor();
-    }
-    
-    /**
-     * See {@link Blend#destFactor()}
-     */
-    public static Blend.Func destFactor()
-    {
-        return Engine.blend.destFactor();
-    }
-    
-    /**
-     * See {@link Blend#blendFunc(Blend.Func, Blend.Func)}
-     */
-    public static Blend blendFunc(Blend.Func sourceFactor, Blend.Func destFactor)
-    {
-        return Engine.blend.blendFunc(sourceFactor, destFactor);
-    }
-    
-    /**
-     * See {@link Blend#blendEquation()}
-     */
-    public static Blend.Equation blendEquation()
-    {
-        return Engine.blend.blendEquation();
-    }
-    
-    /**
-     * See {@link Blend#blendEquation(Blend.Equation)}
-     */
-    public static Blend blendEquation(Blend.Equation blendEquation)
-    {
-        return Engine.blend.blendEquation(blendEquation);
-    }
-    
-    /**
-     * See {@link Blend#blend(int, int, int, int, int, int, int, int, Color)}
-     */
-    public static Color blend(int rs, int gs, int bs, int as, int rd, int gd, int bd, int ad, Color result)
-    {
-        return Engine.blend.blend(rs, gs, bs, as, rd, gd, bd, ad, result);
-    }
-    
-    /**
-     * See {@link Blend#blend(Colorc, int, int, int, int, Color)}
-     */
-    public static Color blend(Colorc source, int rd, int gd, int bd, int ad, Color result)
-    {
-        return Engine.blend.blend(source, rd, gd, bd, ad, result);
-    }
-    
-    /**
-     * See {@link Blend#blend(int, int, int, int, Colorc, Color)}
-     */
-    public static Color blend(int rs, int gs, int bs, int as, Colorc dest, Color result)
-    {
-        return Engine.blend.blend(rs, gs, bs, as, dest, result);
-    }
-    
-    /**
-     * See {@link Blend#blend(Colorc, Colorc, Color)}
-     */
-    public static Color blend(Colorc source, Colorc dest, Color result)
-    {
-        return Engine.blend.blend(source, dest, result);
-    }
-    
     // -----------------------
     // -- Renderer Instance --
     // -----------------------
@@ -1535,17 +1448,9 @@ public class Engine
     /**
      * See {@link Renderer#blend()}
      */
-    public static boolean rendererBlend()
+    public static Blend blend()
     {
         return Engine.renderer.blend();
-    }
-    
-    /**
-     * See {@link Renderer#blend(boolean)}
-     */
-    public static void rendererBlend(boolean blend)
-    {
-        Engine.renderer.blend(blend);
     }
     
     /**
@@ -1562,6 +1467,14 @@ public class Engine
     public static void rendererDebug(boolean debug)
     {
         Engine.renderer.debug(debug);
+    }
+    
+    /**
+     * See {@link Renderer#toggleDebug()}
+     */
+    public static void rendererToggleDebug()
+    {
+        Engine.renderer.toggleDebug();
     }
     
     /**

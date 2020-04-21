@@ -13,7 +13,7 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 
 import static engine.util.Util.getPath;
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL46.*;
 import static org.lwjgl.stb.STBImage.*;
 import static org.lwjgl.stb.STBImageWrite.stbi_write_png;
 
@@ -242,6 +242,14 @@ public class Texture
         return this;
     }
     
+    public Texture copy()
+    {
+        Texture other = new Texture(this.width, this.height, this.channels);
+        MemoryUtil.memCopy(this.data, other.data);
+        glCopyImageSubData(this.id, GL_TEXTURE_2D, 0, 0, 0, 0, other.id, GL_TEXTURE_2D, 0, 0, 0, 0, this.width, this.height, this.channels);
+        return other;
+    }
+    
     /**
      * Copies this texture into the other texture.
      *
@@ -252,6 +260,7 @@ public class Texture
         if (this.width != other.width || this.height != other.height || this.channels != other.channels) throw new RuntimeException("Sprites are not same size.");
         
         MemoryUtil.memCopy(this.data, other.data);
+        glCopyImageSubData(this.id, GL_TEXTURE_2D, 0, 0, 0, 0, other.id, GL_TEXTURE_2D, 0, 0, 0, 0, this.width, this.height, this.channels);
     }
     
     /**

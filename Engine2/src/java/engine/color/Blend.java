@@ -1,8 +1,10 @@
 package engine.color;
 
 import engine.util.Logger;
+import engine.util.Pair;
+import engine.util.Tuple;
 
-import static org.lwjgl.opengl.GL14.*;
+import static org.lwjgl.opengl.GL46.*;
 
 /**
  * An object to blend colors in a similar way to OpenGL.
@@ -13,12 +15,15 @@ public class Blend implements IBlend
 {
     private static final Logger LOGGER = new Logger();
     
+    private boolean enabled;
+    
     private Func     srcFactor;
     private Func     dstFactor;
-    private Equation blendEq;
+    private Equation equation;
     
     public Blend()
     {
+        enabled(false);
         blendFunc(Func.SRC_ALPHA, Func.ONE_MINUS_SRC_ALPHA);
         blendEquation(Equation.ADD);
     }
@@ -26,7 +31,39 @@ public class Blend implements IBlend
     @Override
     public String toString()
     {
-        return "Blend{" + "srcFactor=" + this.srcFactor + ", dstFactor=" + this.dstFactor + ", blendEq=" + this.blendEq + '}';
+        return "Blend{" + "srcFactor=" + this.srcFactor + ", dstFactor=" + this.dstFactor + ", equation=" + this.equation + '}';
+    }
+    
+    /**
+     * @return If blend is enabled.
+     */
+    public boolean enabled()
+    {
+        return this.enabled;
+    }
+    
+    /**
+     * Sets if blend is enabled.
+     *
+     * @param enabled The new enabled state.
+     * @return This instance for call chaining.
+     */
+    public Blend enabled(boolean enabled)
+    {
+        this.enabled = enabled;
+        if (this.enabled) glEnable(GL_BLEND);
+        if (!this.enabled) glDisable(GL_BLEND);
+        return this;
+    }
+    
+    /**
+     * Toggles if the blend is enabled or not.
+     *
+     * @return This instance for call chaining.
+     */
+    public Blend toggle()
+    {
+        return enabled(!enabled());
     }
     
     /**
@@ -65,7 +102,7 @@ public class Blend implements IBlend
      */
     public Equation blendEquation()
     {
-        return this.blendEq;
+        return this.equation;
     }
     
     /**
@@ -75,8 +112,8 @@ public class Blend implements IBlend
     public Blend blendEquation(Equation blendEquation)
     {
         Blend.LOGGER.finest("Setting Blend Equation:", blendEquation);
-    
-        this.blendEq = blendEquation;
+        
+        this.equation = blendEquation;
         glBlendEquation(blendEquation.gl);
         return this;
     }
@@ -98,20 +135,24 @@ public class Blend implements IBlend
     @Override
     public Color blend(int rs, int gs, int bs, int as, int rd, int gd, int bd, int ad, Color result)
     {
-        int sr = this.srcFactor.func.apply(rs, as, rd, ad);
-        int sg = this.srcFactor.func.apply(gs, as, gd, ad);
-        int sb = this.srcFactor.func.apply(bs, as, bd, ad);
-        int sa = this.srcFactor.func.apply(as, as, ad, ad);
-        
-        int dr = this.dstFactor.func.apply(rs, as, rd, ad);
-        int dg = this.dstFactor.func.apply(gs, as, gd, ad);
-        int db = this.dstFactor.func.apply(bs, as, bd, ad);
-        int da = this.dstFactor.func.apply(as, as, ad, ad);
-        
-        return result.r(this.blendEq.func.apply(rs * sr, rd * dr) / 255)
-                     .g(this.blendEq.func.apply(gs * sg, gd * dg) / 255)
-                     .b(this.blendEq.func.apply(bs * sb, bd * db) / 255)
-                     .a(this.blendEq.func.apply(as * sa, ad * da) / 255);
+        if (this.enabled)
+        {
+            int sr = this.srcFactor.func.apply(rs, as, rd, ad);
+            int sg = this.srcFactor.func.apply(gs, as, gd, ad);
+            int sb = this.srcFactor.func.apply(bs, as, bd, ad);
+            int sa = this.srcFactor.func.apply(as, as, ad, ad);
+            
+            int dr = this.dstFactor.func.apply(rs, as, rd, ad);
+            int dg = this.dstFactor.func.apply(gs, as, gd, ad);
+            int db = this.dstFactor.func.apply(bs, as, bd, ad);
+            int da = this.dstFactor.func.apply(as, as, ad, ad);
+            
+            return result.r(this.equation.func.apply(rs * sr, rd * dr) / 255)
+                         .g(this.equation.func.apply(gs * sg, gd * dg) / 255)
+                         .b(this.equation.func.apply(bs * sb, bd * db) / 255)
+                         .a(this.equation.func.apply(as * sa, ad * da) / 255);
+        }
+        return result.set(rs, gs, bs, as);
     }
     
     /**
@@ -133,10 +174,10 @@ public class Blend implements IBlend
         ONE_MINUS_DST_ALPHA(GL_ONE_MINUS_DST_ALPHA, (sourceColor, sourceAlpha, destColor, destAlpha) -> 255 - destAlpha),
         ;
         
-        private final int        gl;
-        private final IBlendFunc func;
+        private final int   gl;
+        private final IFunc func;
         
-        Func(int gl, IBlendFunc func)
+        Func(int gl, IFunc func)
         {
             this.gl   = gl;
             this.func = func;
@@ -156,23 +197,44 @@ public class Blend implements IBlend
         MAX(GL_MAX, Math::max),
         ;
         
-        private final int            gl;
-        private final IBlendEquation func;
+        private final int       gl;
+        private final IEquation func;
         
-        Equation(int gl, IBlendEquation func)
+        Equation(int gl, IEquation func)
         {
             this.gl   = gl;
             this.func = func;
         }
     }
     
-    private interface IBlendFunc
+    private interface IFunc
     {
         int apply(int sourceColor, int sourceAlpha, int destColor, int destAlpha);
     }
     
-    private interface IBlendEquation
+    private interface IEquation
     {
         int apply(int source, int dest);
+    }
+    
+    public static final class BTuple extends Tuple<Boolean, Pair<Func, Func>, Equation>
+    {
+        /**
+         * Creates a new tuple with the blends information
+         *
+         * @param blend The Blend object.
+         */
+        public BTuple(Blend blend)
+        {
+            super(blend.enabled, new Pair<>(blend.srcFactor, blend.dstFactor), blend.equation);
+        }
+        
+        public Blend setBlend(Blend blend)
+        {
+            blend.enabled(this.a);
+            blend.blendFunc(this.b.a, this.b.b);
+            blend.blendEquation(this.c);
+            return blend;
+        }
     }
 }

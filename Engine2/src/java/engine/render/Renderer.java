@@ -1,5 +1,6 @@
 package engine.render;
 
+import engine.color.Blend;
 import engine.color.Color;
 import engine.color.Colorc;
 import engine.util.Logger;
@@ -18,14 +19,15 @@ public abstract class Renderer
 {
     private static final Logger LOGGER = new Logger();
     
-    private static final Color       DEFAULT_FILL         = new Color(255);
-    private static final Color       DEFAULT_STROKE       = new Color(0);
-    private static final double      DEFAULT_WEIGHT       = 5;
-    private static final RectMode    DEFAULT_RECT_MODE    = RectMode.CORNER;
-    private static final EllipseMode DEFAULT_ELLIPSE_MODE = EllipseMode.CENTER;
-    private static final ArcMode     DEFAULT_ARC_MODE     = ArcMode.DEFAULT;
-    private static final Font        DEFAULT_FONT         = new Font();
-    private static final TextAlign   DEFAULT_TEXT_ALIGN   = TextAlign.TOP_LEFT;
+    private static final Blend.BTuple DEFAULT_BLEND        = new Blend.BTuple(new Blend());
+    private static final Color        DEFAULT_FILL         = new Color(255);
+    private static final Color        DEFAULT_STROKE       = new Color(0);
+    private static final double       DEFAULT_WEIGHT       = 5;
+    private static final RectMode     DEFAULT_RECT_MODE    = RectMode.CORNER;
+    private static final EllipseMode  DEFAULT_ELLIPSE_MODE = EllipseMode.CENTER;
+    private static final ArcMode      DEFAULT_ARC_MODE     = ArcMode.DEFAULT;
+    private static final Font.FTuple  DEFAULT_FONT         = new Font.FTuple(new Font());
+    private static final TextAlign    DEFAULT_TEXT_ALIGN   = TextAlign.TOP_LEFT;
     
     protected static final Color CLEAR = new Color();
     
@@ -70,8 +72,11 @@ public abstract class Renderer
     
     protected Texture target;
     
-    protected boolean blend = false;
+    // protected boolean blend = false;
     protected boolean debug = false;
+    
+    protected final Blend               blend  = Renderer.DEFAULT_BLEND.setBlend(new Blend());
+    protected final Stack<Blend.BTuple> blends = new Stack<>();
     
     protected final Color        fill  = new Color(Renderer.DEFAULT_FILL);
     protected final Stack<Color> fills = new Stack<>();
@@ -91,8 +96,8 @@ public abstract class Renderer
     protected       ArcMode        arcMode  = Renderer.DEFAULT_ARC_MODE;
     protected final Stack<ArcMode> arcModes = new Stack<>();
     
-    protected       Font                  font  = Renderer.DEFAULT_FONT;
-    protected final Stack<Font.FontTuple> fonts = new Stack<>();
+    protected       Font               font  = Renderer.DEFAULT_FONT.setFont(new Font());
+    protected final Stack<Font.FTuple> fonts = new Stack<>();
     
     protected       TextAlign        textAlign  = Renderer.DEFAULT_TEXT_ALIGN;
     protected final Stack<TextAlign> textAligns = new Stack<>();
@@ -133,34 +138,6 @@ public abstract class Renderer
     }
     
     /**
-     * @return If blend is enabled for the renderer.
-     */
-    public boolean blend()
-    {
-        return this.blend;
-    }
-    
-    /**
-     * Sets if the renderer should blend when pixels are drawn.
-     *
-     * @param enableBlend If blend is enabled.
-     */
-    public void blend(boolean enableBlend)
-    {
-        Renderer.LOGGER.finest("Setting Blend State:", enableBlend);
-        
-        this.blend = enableBlend;
-    }
-    
-    /**
-     * Toggles if the renderer should blend when pixels are drawn.
-     */
-    public void toggleBlend()
-    {
-        blend(!this.blend);
-    }
-    
-    /**
      * @return If debug is enabled for the renderer.
      */
     public boolean debug()
@@ -186,6 +163,14 @@ public abstract class Renderer
     public void toggleDebug()
     {
         debug(!this.debug);
+    }
+    
+    /**
+     * @return If blend is enabled for the renderer.
+     */
+    public Blend blend()
+    {
+        return this.blend;
     }
     
     /**
@@ -613,6 +598,9 @@ public abstract class Renderer
         
         this.drawing = true;
         
+        Renderer.DEFAULT_BLEND.setBlend(this.blend);
+        this.blends.clear();
+        
         this.fill.set(Renderer.DEFAULT_FILL);
         this.fills.clear();
         
@@ -631,7 +619,7 @@ public abstract class Renderer
         this.arcMode = Renderer.DEFAULT_ARC_MODE;
         this.arcModes.clear();
         
-        this.font = Renderer.DEFAULT_FONT;
+        Renderer.DEFAULT_FONT.setFont(this.font);
         this.fonts.clear();
         
         this.textAlign = Renderer.DEFAULT_TEXT_ALIGN;
@@ -662,13 +650,14 @@ public abstract class Renderer
     {
         Renderer.LOGGER.finer("Pushing Renderer State");
         
+        this.blends.push(new Blend.BTuple(this.blend));
         this.fills.push(new Color(this.fill));
         this.strokes.push(new Color(this.stroke));
         this.weights.push(this.weight);
         this.rectModes.push(this.rectMode);
         this.ellipseModes.push(this.ellipseMode);
         this.arcModes.push(this.arcMode);
-        this.fonts.push(new Font.FontTuple(this.font));
+        this.fonts.push(new Font.FTuple(this.font));
         this.textAligns.push(this.textAlign);
         this.views.push(new Matrix4f(this.view));
     }
@@ -680,6 +669,7 @@ public abstract class Renderer
     {
         Renderer.LOGGER.finer("Popping Renderer State");
         
+        this.blends.pop().setBlend(this.blend);
         this.fill.set(this.fills.pop());
         this.stroke.set(this.strokes.pop());
         this.weight      = this.weights.pop();
@@ -1047,8 +1037,8 @@ public abstract class Renderer
                 if (this.stroke.a() > 0) drawRect(a, b, c, d);
                 break;
             case CORNERS:
-                if (this.fill.a() > 0) fillRect(a, b, c - a, d - b);
-                if (this.stroke.a() > 0) drawRect(a, b, c - a, d - b);
+                if (this.fill.a() > 0) fillRect(a, b, c - a + 1, d - b + 1);
+                if (this.stroke.a() > 0) drawRect(a, b, c - a + 1, d - b + 1);
                 break;
             case CENTER:
                 if (this.fill.a() > 0) fillRect(a - c * 0.5, b - d * 0.5, c, d);

@@ -97,18 +97,6 @@ public class OpenGLRenderer extends Renderer
     }
     
     /**
-     * Sets if the renderer should blend when pixels are drawn.
-     *
-     * @param enableBlend If blend is enabled.
-     */
-    @Override
-    public void blend(boolean enableBlend)
-    {
-        super.blend(enableBlend);
-        glEnable(GL_BLEND);
-    }
-    
-    /**
      * Resets the view space transformations.
      */
     @Override
@@ -128,9 +116,6 @@ public class OpenGLRenderer extends Renderer
         super.start();
         
         makeCurrent();
-        
-        if (this.blend) glEnable(GL_BLEND);
-        if (!this.blend) glDisable(GL_BLEND);
         
         if (this.debug) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }

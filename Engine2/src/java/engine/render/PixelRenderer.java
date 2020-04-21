@@ -1,6 +1,5 @@
 package engine.render;
 
-import engine.Engine;
 import engine.color.Color;
 import engine.color.Colorc;
 import engine.util.Logger;
@@ -684,9 +683,9 @@ public class PixelRenderer extends Renderer
     
     private void pointImpl(int x, int y, Colorc color)
     {
-        if (this.blend)
+        if (this.blend.enabled())
         {
-            this.target.setPixel(x, y, Engine.blend().blend(color, this.target.getPixel(x, y), PixelRenderer.COLOR));
+            this.target.setPixel(x, y, this.blend.blend(color, this.target.getPixel(x, y), PixelRenderer.COLOR));
         }
         else
         {

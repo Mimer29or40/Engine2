@@ -59,6 +59,7 @@ public class Engine
     private static Modifiers modifiers;
     private static Window    window;
     
+    private static String   rendererType;
     private static Blend    blend;
     private static Renderer renderer;
     
@@ -122,7 +123,7 @@ public class Engine
      *
      *     public static void main(String[] args)
      *     {
-     *         start(new EngineClass(), Logger.Level.DEBUG);
+     *         start(new EngineClass(), Level.FINE);
      *     }
      * }}
      * </pre>
@@ -147,7 +148,7 @@ public class Engine
         {
             try
             {
-                String name = ext.getSimpleName();
+                String    name = ext.getSimpleName();
                 Extension extInstance;
                 try
                 {
@@ -611,8 +612,9 @@ public class Engine
         
         glEnable(GL_TEXTURE_2D);
         
-        Engine.blend    = new Blend();
-        Engine.renderer = Renderer.getRenderer(Engine.screen = new Texture(screenW, screenH), renderer);
+        Engine.rendererType = renderer;
+        Engine.blend        = new Blend();
+        Engine.renderer     = Renderer.getRenderer(Engine.screen = new Texture(screenW, screenH), renderer);
         
         Engine.screenShader = new Shader().loadVertexFile("shader/pixel.vert").loadFragmentFile("shader/pixel.frag").validate().unbind();
         Engine.screenVAO    = new VertexArray().bind().add(new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, GL_DYNAMIC_DRAW, 2);
@@ -1500,11 +1502,35 @@ public class Engine
     // TODO - Add profiler methods to render methods
     
     /**
+     * @return The type of the renderer.
+     */
+    public static String rendererType()
+    {
+        return Engine.rendererType;
+    }
+    
+    /**
      * @return The engine's render instance. This should only be used for {@link Overloads} methods.
      */
     public static Renderer renderer()
     {
         return Engine.renderer;
+    }
+    
+    /**
+     * See {@link Renderer#target()}
+     */
+    public static Texture target()
+    {
+        return Engine.renderer.target();
+    }
+    
+    /**
+     * See {@link Renderer#target(Texture)}
+     */
+    public static void target(Texture target)
+    {
+        Engine.renderer.target(target);
     }
     
     /**

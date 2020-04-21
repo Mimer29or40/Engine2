@@ -68,7 +68,7 @@ public abstract class Renderer
         return new SoftwareRenderer(target);
     }
     
-    protected final Texture target;
+    protected Texture target;
     
     protected boolean blend = false;
     protected boolean debug = false;
@@ -100,20 +100,36 @@ public abstract class Renderer
     protected final Matrix4f        view  = new Matrix4f();
     protected final Stack<Matrix4f> views = new Stack<>();
     
-    protected final int[] pixels;
+    protected int[] pixels;
     
     private boolean drawing = false;
     
     protected Renderer(Texture target)
     {
         this.target = target;
-        
-        this.pixels = new int[this.target.width() * this.target.height() * this.target.channels()];
     }
     
     // ----------------
     // -- Properties --
     // ----------------
+    
+    /**
+     * @return Gets the current render target.
+     */
+    public Texture target()
+    {
+        return this.target;
+    }
+    
+    /**
+     * Sets the render target of the renderer.
+     *
+     * @param target The new target.
+     */
+    public void target(Texture target)
+    {
+        this.target = target;
+    }
     
     /**
      * @return If blend is enabled for the renderer.
@@ -131,7 +147,7 @@ public abstract class Renderer
     public void blend(boolean enableBlend)
     {
         Renderer.LOGGER.finest("Setting Blend State:", enableBlend);
-    
+        
         this.blend = enableBlend;
     }
     
@@ -159,7 +175,7 @@ public abstract class Renderer
     public void debug(boolean enableDebug)
     {
         Renderer.LOGGER.finest("Setting Debug State:", enableDebug);
-    
+        
         this.debug = enableDebug;
     }
     
@@ -1374,7 +1390,7 @@ public abstract class Renderer
         {
             double temp = start;
             start = stop;
-            stop = temp;
+            stop  = temp;
         }
         
         switch (this.ellipseMode)
@@ -1684,7 +1700,12 @@ public abstract class Renderer
      *
      * @return The color array.
      */
-    public abstract int[] loadPixels();
+    public int[] loadPixels()
+    {
+        int length = this.target.width() * this.target.height() * this.target.channels();
+        if (this.pixels == null || this.pixels.length != length) this.pixels = new int[length];
+        return this.pixels;
+    }
     
     /**
      * Updates the target with the values of the pixel array.

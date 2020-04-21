@@ -682,10 +682,8 @@ public class SoftwareRenderer extends Renderer
     @Override
     public int[] loadPixels()
     {
-        for (int i = 0, n = this.pixels.length; i < n; i++)
-        {
-            this.pixels[i] = this.target.data().get(i) & 0xFF;
-        }
+        super.loadPixels();
+        for (int i = 0, n = this.pixels.length; i < n; i++) this.pixels[i] = this.target.data().get(i) & 0xFF;
         return this.pixels;
     }
     
@@ -697,10 +695,7 @@ public class SoftwareRenderer extends Renderer
     @Override
     public void updatePixels()
     {
-        for (int i = 0, n = this.pixels.length; i < n; i++)
-        {
-            this.target.data().put(i, (byte) (this.pixels[i] & 0xFF));
-        }
+        for (int i = 0, n = this.pixels.length; i < n; i++) this.target.data().put(i, (byte) (this.pixels[i] & 0xFF));
     }
     
     private void pointImpl(int x, int y, Colorc color)

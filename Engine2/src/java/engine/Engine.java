@@ -357,14 +357,13 @@ public class Engine
                                     
                                     Engine.profiler.startSection("Render Screen");
                                     {
-                                        glBindFramebuffer(GL_FRAMEBUFFER, 0);
                                         if (window.updateViewport())
                                         {
                                             Engine.pixelSize.x = Math.max(Engine.window.viewW() / Engine.screenSize.x, 1);
                                             Engine.pixelSize.y = Math.max(Engine.window.viewH() / Engine.screenSize.y, 1);
                                         }
                                         
-                                        Engine.screen.bind();
+                                        Engine.screen.bindTexture().unbindFramebuffer();
                                         Engine.screenShader.bind();
                                         Engine.screenVAO.bind().draw(GL_QUADS).unbind();
                                     }

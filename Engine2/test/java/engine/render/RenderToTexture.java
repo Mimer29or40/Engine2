@@ -266,7 +266,7 @@ public class RenderToTexture extends OpenGLDemo
                 }
             }
         }
-        this.texture.bind().upload();
+        this.texture.bindTexture().upload();
     
         glClearColor(.5f, .5f, .5f, 1.f);
     }

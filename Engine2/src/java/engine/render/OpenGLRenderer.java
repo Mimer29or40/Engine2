@@ -13,8 +13,6 @@ public class OpenGLRenderer extends Renderer
 {
     private static final Logger LOGGER = new Logger();
     
-    protected int fbo, rbo;
-    
     protected final Shader      pointShader;
     protected final VertexArray pointVAO;
     
@@ -54,24 +52,9 @@ public class OpenGLRenderer extends Renderer
     protected final Shader      textShader;
     protected final VertexArray textVAO;
     
-    
     protected OpenGLRenderer(Texture target)
     {
         super(target);
-        
-        this.fbo = glGenFramebuffers();
-        glBindFramebuffer(GL_FRAMEBUFFER, this.fbo);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this.target.bind().id(), 0);
-        
-        this.rbo = glGenRenderbuffers();
-        glBindRenderbuffer(GL_RENDERBUFFER, this.rbo);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, this.target.width(), this.target.height());
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, this.rbo);
-        
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) OpenGLRenderer.LOGGER.severe("Could not create FrameBuffer");
-        
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glBindRenderbuffer(GL_RENDERBUFFER, 0);
         
         this.pointShader = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/point.geom").loadFragmentFile("shader/shared.frag").validate();
         this.pointVAO    = new VertexArray().bind().add(2, GL_DYNAMIC_DRAW, GL_FLOAT, 2).unbind();
@@ -114,34 +97,6 @@ public class OpenGLRenderer extends Renderer
     }
     
     /**
-     * Sets the render target of the renderer.
-     *
-     * @param target The new target.
-     */
-    @Override
-    public void target(Texture target)
-    {
-        super.target(target);
-        
-        glDeleteFramebuffers(this.fbo);
-        glDeleteRenderbuffers(this.rbo);
-        
-        this.fbo = glGenFramebuffers();
-        glBindFramebuffer(GL_FRAMEBUFFER, this.fbo);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this.target.bind().id(), 0);
-        
-        this.rbo = glGenRenderbuffers();
-        glBindRenderbuffer(GL_RENDERBUFFER, this.rbo);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, this.target.width(), this.target.height());
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, this.rbo);
-        
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) OpenGLRenderer.LOGGER.severe("Could not create FrameBuffer");
-        
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    }
-    
-    /**
      * Sets if the renderer should blend when pixels are drawn.
      *
      * @param enableBlend If blend is enabled.
@@ -172,13 +127,10 @@ public class OpenGLRenderer extends Renderer
     {
         super.start();
         
-        glBindFramebuffer(GL_FRAMEBUFFER, this.fbo);
-        glViewport(0, 0, this.target.width(), this.target.height());
+        makeCurrent();
         
         if (this.blend) glEnable(GL_BLEND);
         if (!this.blend) glDisable(GL_BLEND);
-        
-        this.view.setOrtho(0F, this.target.width(), 0F, this.target.height(), -1F, 1F);
         
         if (this.debug) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
@@ -194,6 +146,8 @@ public class OpenGLRenderer extends Renderer
         super.finish();
         
         // this.target.bind().download(); // Download should only happen if the user want it to happen.
+        
+        this.target.unbindFramebuffer();
         
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
@@ -694,7 +648,7 @@ public class OpenGLRenderer extends Renderer
     {
         makeCurrent();
         
-        texture.bind();
+        texture.bindTexture();
         
         this.textureShader.bind();
         this.textureShader.setMat4("pv", this.view);
@@ -726,7 +680,7 @@ public class OpenGLRenderer extends Renderer
     {
         makeCurrent();
         
-        this.font.getTexture().bind();
+        this.font.getTexture().bindTexture();
         
         this.textShader.bind();
         this.textShader.setMat4("pv", this.view);
@@ -785,7 +739,7 @@ public class OpenGLRenderer extends Renderer
     public int[] loadPixels()
     {
         super.loadPixels();
-        this.target.bind().download().unbind();
+        this.target.bindTexture().download();
         for (int i = 0, n = this.pixels.length; i < n; i++) this.pixels[i] = this.target.data().get(i) & 0xFF;
         return this.pixels;
     }
@@ -799,12 +753,12 @@ public class OpenGLRenderer extends Renderer
     public void updatePixels()
     {
         for (int i = 0, n = this.pixels.length; i < n; i++) this.target.data().put(i, (byte) (this.pixels[i] & 0xFF));
-        this.target.bind().upload().unbind();
+        this.target.bindTexture().upload();
     }
     
     private void makeCurrent()
     {
-        glBindFramebuffer(GL_FRAMEBUFFER, this.fbo);
+        this.target.bindFramebuffer();
         glViewport(0, 0, this.target.width(), this.target.height());
     }
 }

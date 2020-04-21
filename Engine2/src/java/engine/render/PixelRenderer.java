@@ -81,7 +81,7 @@ public class PixelRenderer extends Renderer
     {
         super.finish();
         
-        this.target.bind().upload(); // Upload should only happen if it needs to.
+        this.target.bindTexture().upload(); // Upload should only happen if it needs to.
     }
     
     /**
@@ -538,7 +538,7 @@ public class PixelRenderer extends Renderer
     {
         if (x2 <= 0 || y2 <= 0 || u2 <= 0 || v2 <= 0) return;
         
-        texture.bind().download();
+        texture.bindTexture().download();
         
         int topLeftX     = (int) round(x1);
         int topLeftY     = (int) round(y1);
@@ -690,7 +690,7 @@ public class PixelRenderer extends Renderer
         }
         else
         {
-            this.target.setPixel(x, y, color);
+            if (color.a() > 0) this.target.setPixel(x, y, color);
         }
     }
     

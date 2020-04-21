@@ -132,8 +132,8 @@ public class Framebuffer
         
         // load textures
         // -------------
-        Texture cubeTexture  = Texture.loadImage("textures/marble.jpg").wrapMode(GL_REPEAT, GL_REPEAT).bind().upload();
-        Texture floorTexture = Texture.loadImage("textures/metal.png").wrapMode(GL_REPEAT, GL_REPEAT).bind().upload();
+        Texture cubeTexture  = Texture.loadImage("textures/marble.jpg").wrapMode(GL_REPEAT, GL_REPEAT).bindTexture().upload();
+        Texture floorTexture = Texture.loadImage("textures/metal.png").wrapMode(GL_REPEAT, GL_REPEAT).bindTexture().upload();
         
         // shader configuration
         // --------------------
@@ -151,7 +151,7 @@ public class Framebuffer
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         // create a color attachment texture
         Texture texture = new Texture(framebufferWidth, framebufferHeight, 3);
-        texture.bind().upload();
+        texture.bindTexture().upload();
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.id(), 0);
         // create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
         int rbo = glGenRenderbuffers();
@@ -200,7 +200,7 @@ public class Framebuffer
             // cubes
             cubeArray.bind();
             glActiveTexture(GL_TEXTURE0);
-            cubeTexture.bind();
+            cubeTexture.bindTexture();
             model.translate(-1.0f, 0.0f, -1.0f);
             shader.setMat4("model", model);
             cubeArray.draw(GL_TRIANGLES);
@@ -211,7 +211,7 @@ public class Framebuffer
             cubeArray.unbind();
             
             // floor
-            floorTexture.bind();
+            floorTexture.bindTexture();
             shader.setMat4("model", model.identity());
             planeArray.bind().draw(GL_TRIANGLES).unbind();
             
@@ -224,7 +224,7 @@ public class Framebuffer
             glClear(GL_COLOR_BUFFER_BIT);
             
             screenShader.bind();
-            texture.bind();    // use the color attachment texture as the texture of the quad plane
+            texture.bindTexture();    // use the color attachment texture as the texture of the quad plane
             quadArray.bind().draw(GL_TRIANGLES).unbind();
             
             

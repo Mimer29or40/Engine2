@@ -41,6 +41,8 @@ public class Texture
     protected int minFilter = GL_NEAREST;
     protected int magFilter = GL_NEAREST;
     
+    protected final int fbo, rbo;
+    
     /**
      * Creates a texture from an existing buffer. This is only used internally by {@link #loadImage} and {@link #loadTexture}
      *
@@ -54,6 +56,7 @@ public class Texture
         if (channels < 1 || 4 < channels) throw new RuntimeException("Sprites can only have 1-4 channels");
         
         this.id = glGenTextures();
+        glBindTexture(GL_TEXTURE_2D, this.id);
         
         this.width    = width;
         this.height   = height;
@@ -62,8 +65,6 @@ public class Texture
         
         this.data = data;
         
-        bind();
-        
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, this.wrapS);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, this.wrapT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this.minFilter);
@@ -71,6 +72,21 @@ public class Texture
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         
         glTexImage2D(GL_TEXTURE_2D, 0, this.format, this.width, this.height, 0, this.format, GL_UNSIGNED_BYTE, this.data);
+        
+        this.fbo = glGenFramebuffers();
+        glBindFramebuffer(GL_FRAMEBUFFER, this.fbo);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this.id, 0);
+        
+        this.rbo = glGenRenderbuffers();
+        glBindRenderbuffer(GL_RENDERBUFFER, this.rbo);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, this.rbo);
+        
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) Texture.LOGGER.severe("Could not create FrameBuffer");
+        
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
     }
     
     /**
@@ -374,7 +390,7 @@ public class Texture
      *
      * @return This instance for call chaining.
      */
-    public Texture bind()
+    public Texture bindTexture()
     {
         glBindTexture(GL_TEXTURE_2D, this.id);
         return this;
@@ -385,9 +401,31 @@ public class Texture
      *
      * @return This instance for call chaining.
      */
-    public Texture unbind()
+    public Texture unbindTexture()
     {
         glBindTexture(GL_TEXTURE_2D, 0);
+        return this;
+    }
+    
+    /**
+     * Binds the framebuffer for OpenGL rendering.
+     *
+     * @return This instance for call chaining.
+     */
+    public Texture bindFramebuffer()
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, this.fbo);
+        return this;
+    }
+    
+    /**
+     * Unbinds the framebuffer from OpenGL rendering.
+     *
+     * @return This instance for call chaining.
+     */
+    public Texture unbindFramebuffer()
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
         return this;
     }
     
@@ -425,6 +463,8 @@ public class Texture
     public void destroy()
     {
         glDeleteTextures(this.id);
+        glDeleteFramebuffers(this.fbo);
+        glDeleteRenderbuffers(this.rbo);
         BufferUtils.zeroBuffer(this.data);
     }
     

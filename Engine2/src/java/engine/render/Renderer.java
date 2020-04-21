@@ -129,6 +129,7 @@ public abstract class Renderer
     public void target(Texture target)
     {
         this.target = target;
+        identity();
     }
     
     /**
@@ -636,7 +637,7 @@ public abstract class Renderer
         this.textAlign = Renderer.DEFAULT_TEXT_ALIGN;
         this.textAligns.clear();
         
-        this.view.identity();
+        identity();
         this.views.clear();
     }
     

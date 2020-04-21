@@ -41,7 +41,7 @@ public class SoftwareRenderer extends Renderer
     {
         super.finish();
         
-        this.target.bind().upload(); // Upload should only happen if it needs to.
+        this.target.bindTexture().upload(); // Upload should only happen if it needs to.
     }
     
     /**
@@ -544,7 +544,7 @@ public class SoftwareRenderer extends Renderer
     {
         if (x2 <= 0 || y2 <= 0 || u2 <= 0 || v2 <= 0) return;
         
-        texture.bind().download();
+        texture.bindTexture().download();
         
         PairD topLeft     = transform(x1, y1);
         PairD topRight    = transform(x2, y1);
@@ -706,7 +706,7 @@ public class SoftwareRenderer extends Renderer
         }
         else
         {
-            this.target.setPixel(x, y, color);
+            if (color.a() > 0) this.target.setPixel(x, y, color);
         }
     }
     

@@ -2,26 +2,31 @@ package engine.gui;
 
 import engine.Engine;
 import engine.Extension;
+import engine.color.Color;
 import engine.event.*;
+import engine.render.Renderer;
+import engine.render.Texture;
 import org.joml.Vector2i;
 
 import java.util.ArrayList;
 
-import static engine.Engine.mouse;
+import static engine.Engine.*;
 
 public class EEXT_GUI extends Extension
 {
     public static EEXT_GUI INSTANCE = new EEXT_GUI();
     
+    private final Vector2i resolution = new Vector2i();
+    
+    private Texture  texture;
+    private Renderer renderer;
+    
     final ArrayList<UIElement> elements = new ArrayList<>();
-    // private final ArrayList<UIWindow> windows = new ArrayList<>();
     
     private UIElement topElement     = null;
     private UIElement focusedElement = null;
     
     private double hoverTime = 0.0;
-    
-    private final Vector2i vector2 = new Vector2i();
     
     /**
      * This is called once before the {@link Engine#setup} method is called.
@@ -38,7 +43,9 @@ public class EEXT_GUI extends Extension
     @Override
     public void afterSetup()
     {
-    
+        if (this.resolution.x <= 0 || this.resolution.y <= 0) this.resolution.set(screenSize());
+        
+        this.renderer = Renderer.getRenderer(this.texture = new Texture(this.resolution.x, this.resolution.y, 4), rendererType());
     }
     
     /**
@@ -55,6 +62,7 @@ public class EEXT_GUI extends Extension
         this.topElement = null;
         
         boolean blockingWindow = false;
+        // UIWindow focusedWindow = null;
         for (UIElement element : this.elements)
         {
             if (element instanceof UIWindow)
@@ -64,6 +72,7 @@ public class EEXT_GUI extends Extension
                 {
                     blockingWindow  = true;
                     this.topElement = window.getTopElement(mouseX, mouseY);
+                    // if (this.topElement != null) focusedWindow = window;
                 }
             }
         }
@@ -184,7 +193,15 @@ public class EEXT_GUI extends Extension
     @Override
     public void afterDraw(double elapsedTime)
     {
-    
+        this.renderer.target(this.texture);
+        
+        this.renderer.start();
+        
+        this.renderer.clear(Color.BLANK);
+        
+        this.renderer.finish();
+        
+        texture(this.texture, 0, 0, screenWidth(), screenHeight());
     }
     
     /**
@@ -205,17 +222,22 @@ public class EEXT_GUI extends Extension
     
     }
     
-    public void setFocused(UIElement element)
+    public static void size(int width, int height)
     {
-        if (element == this.focusedElement) return;
+        EEXT_GUI.INSTANCE.resolution.set(width, height);
+    }
+    
+    public static void setFocused(UIElement element)
+    {
+        if (element == EEXT_GUI.INSTANCE.focusedElement) return;
         
-        if (this.focusedElement != null) this.focusedElement.onUnfocus();
+        if (EEXT_GUI.INSTANCE.focusedElement != null) EEXT_GUI.INSTANCE.focusedElement.onUnfocus();
         
-        this.focusedElement = element;
+        EEXT_GUI.INSTANCE.focusedElement = element;
         
-        if (this.focusedElement != null)
+        if (EEXT_GUI.INSTANCE.focusedElement != null)
         {
-            this.focusedElement.onFocus();
+            EEXT_GUI.INSTANCE.focusedElement.onFocus();
         }
     }
 }

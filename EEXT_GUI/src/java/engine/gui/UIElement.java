@@ -4,8 +4,7 @@ import engine.gui.interfaces.IUIContainerLike;
 import engine.gui.util.Rect;
 import engine.gui.util.Rectc;
 import engine.input.Mouse;
-import org.joml.Vector2i;
-import org.joml.Vector2ic;
+import engine.render.Texture;
 
 public abstract class UIElement
 {
@@ -16,11 +15,13 @@ public abstract class UIElement
     
     protected final Rect rect = new Rect();
     
-    protected final Vector2i absPos = new Vector2i();
+    protected Texture texture;
     
     protected int shadowWidth;
     protected int borderWidth;
     protected int shapeCornerWidth;
+    
+    protected boolean alive = true;
     
     protected boolean visible = true;
     
@@ -42,6 +43,25 @@ public abstract class UIElement
         }
         
         this.rect.set(rect);
+        
+        rebuild();
+    }
+    
+    public boolean alive()
+    {
+        return this.alive;
+    }
+    
+    public void kill()
+    {
+        if (this.container != null)
+        {
+            this.container.removeElement(this);
+        }
+        else
+        {
+            EEXT_GUI.INSTANCE.elements.remove(this);
+        }
     }
     
     public UIContainer container()
@@ -52,11 +72,6 @@ public abstract class UIElement
     public Rectc rect()
     {
         return this.rect;
-    }
-    
-    public Vector2ic absPos()
-    {
-        return this.container != null ? this.container.absPos().add(this.rect.x1(), this.rect.y1(), this.absPos) : this.absPos;
     }
     
     public int absX()
@@ -71,37 +86,42 @@ public abstract class UIElement
     
     public UIElement position(int x, int y)
     {
-        this.rect.pos(x, y);
+        if (this.rect.left() != x || this.rect.top() != y)
+        {
+            this.rect.pos(x, y);
+            
+            if (this.container != null) this.container.recalculateLayers();
+        }
         
         return this;
     }
     
     public UIElement dimensions(int width, int height)
     {
-        this.rect.size(width, height);
-        
-        // if (width > 0 && height > 0)
-        // {
-        //
-        // }
+        if (this.rect.width() != width || this.rect.height() != height)
+        {
+            this.rect.size(width, height);
+            
+            if (this.container != null) this.container.recalculateLayers();
+            
+            // if (width > 0 && height > 0)
+            // {
+            //
+            // }
+        }
         
         return this;
     }
     
-    // public void kill()
-    // {
-    //     this.container.removeElement(this);
-    // }
-    
     public void rebuild()
     {
-    
+        this.texture = new Texture(this.rect.width(), this.rect.height(), 4);
     }
     
     public UIElement getTopElement(int mouseX, int mouseY)
     {
         UIElement top = null;
-        if (this.visible)
+        if (this.alive && this.visible)
         {
             if (this instanceof UIContainer)
             {
@@ -134,12 +154,12 @@ public abstract class UIElement
     
     public void onMouseEnter()
     {
-    
+        this.hover = true;
     }
     
     public void onMouseExit()
     {
-    
+        this.hover = false;
     }
     
     public void onMouseHover(double hoverTime)

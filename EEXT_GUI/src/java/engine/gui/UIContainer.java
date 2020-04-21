@@ -15,6 +15,18 @@ public class UIContainer extends UIElement implements IUIContainerLike
     }
     
     @Override
+    public void kill()
+    {
+        clear();
+        super.kill();
+    }
+    
+    public void clear()
+    {
+        while (this.elements.size() > 0) this.elements.remove(0).kill();
+    }
+    
+    @Override
     public UIContainer getContainer()
     {
         return this;
@@ -23,6 +35,12 @@ public class UIContainer extends UIElement implements IUIContainerLike
     public void addElement(UIElement element)
     {
         this.elements.add(element);
+        recalculateLayers();
+    }
+    
+    public void removeElement(UIElement element)
+    {
+        this.elements.remove(element);
         recalculateLayers();
     }
     

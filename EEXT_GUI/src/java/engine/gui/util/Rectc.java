@@ -10,14 +10,19 @@ import org.joml.Vector2ic;
 public interface Rectc
 {
     /**
-     * @return The position of the left edge of the {@code Rect}. If {@link #width} is negative, then this will be > the right edge.
+     * @return The x value of the {@code Rect} in screen space coordinates.
      */
-    int left();
+    int x();
     
     /**
-     * @return The position of the top edge of the {@code Rect}. If {@link #height} is negative, then this will be > the bottom edge.
+     * @return The y value of the {@code Rect} in screen space coordinates.
      */
-    int top();
+    int y();
+    
+    /**
+     * @return The position of the {@code Rect}.
+     */
+    Vector2ic pos();
     
     /**
      * @return The width of the {@code Rect} in screen space coordinates.
@@ -30,34 +35,69 @@ public interface Rectc
     int height();
     
     /**
-     * @return The position of the right edge of the {@code Rect}. If {@link #width} is negative, then this will be < the left edge.
+     * @return The size of the {@code Rect}. Can be negative
+     */
+    Vector2ic size();
+    
+    /**
+     * @return The position of the left most edge of the {@code Rect}.
+     */
+    int left();
+    
+    /**
+     * @return The position of the top most edge of the {@code Rect}.
+     */
+    int top();
+    
+    /**
+     * @return The position of the right most edge of the {@code Rect}.
      */
     int right();
     
     /**
-     * @return The position of the bottom edge of the {@code Rect}. If {@link #height} is negative, then this will be < the top edge.
+     * @return The position of the bottom most edge of the {@code Rect}.
      */
     int bottom();
     
     /**
-     * @return The left most x value of the {@code Rect}, regardless of the sign of {@link #width}.
+     * @return The topLeft corner of the {@code Rect}.
      */
-    int x1();
+    Vector2ic topLeft();
     
     /**
-     * @return The top most y value of the {@code Rect}, regardless of the sign of {@link #height}.
+     * @return The topRight corner of the {@code Rect}.
      */
-    int y1();
+    Vector2ic topRight();
     
     /**
-     * @return The right most x value of the {@code Rect}, regardless of the sign of {@link #width}.
+     * @return The bottomLeft corner of the {@code Rect}.
      */
-    int x2();
+    Vector2ic bottomLeft();
     
     /**
-     * @return The bottom most y value of the {@code Rect}, regardless of the sign of {@link #height}.
+     * @return The bottomRight corner of the {@code Rect}.
      */
-    int y2();
+    Vector2ic bottomRight();
+    
+    /**
+     * @return The midLeft point of the {@code Rect}.
+     */
+    Vector2ic midLeft();
+    
+    /**
+     * @return The midTop point of the {@code Rect}.
+     */
+    Vector2ic midTop();
+    
+    /**
+     * @return The midRight point of the {@code Rect}.
+     */
+    Vector2ic midRight();
+    
+    /**
+     * @return The midBottom point of the {@code Rect}.
+     */
+    Vector2ic midBottom();
     
     /**
      * @return The center x value of the {@code Rect}.
@@ -70,59 +110,9 @@ public interface Rectc
     int centerY();
     
     /**
-     * @return The topLeft corner of the {@code Rect}. This is not the absolute topLeft of the {@code Rect} as if a {@link #size} value is negative.
-     */
-    Vector2ic topLeft();
-    
-    /**
-     * @return The topRight corner of the {@code Rect}. This is not the absolute topRight of the {@code Rect} as if a {@link #size} value is negative.
-     */
-    Vector2ic topRight();
-    
-    /**
-     * @return The bottomLeft corner of the {@code Rect}. This is not the absolute bottomLeft of the {@code Rect} as if a {@link #size} value is negative.
-     */
-    Vector2ic bottomLeft();
-    
-    /**
-     * @return The bottomRight corner of the {@code Rect}. This is not the absolute bottomRight of the {@code Rect} as if a {@link #size} value is negative.
-     */
-    Vector2ic bottomRight();
-    
-    /**
-     * @return The midLeft point of the {@code Rect}. This is not the absolute midLeft of the {@code Rect} as if a {@link #size} value is negative.
-     */
-    Vector2ic midLeft();
-    
-    /**
-     * @return The midTop point of the {@code Rect}. This is not the absolute midTop of the {@code Rect} as if a {@link #size} value is negative.
-     */
-    Vector2ic midTop();
-    
-    /**
-     * @return The midRight point of the {@code Rect}. This is not the absolute midRight of the {@code Rect} as if a {@link #size} value is negative.
-     */
-    Vector2ic midRight();
-    
-    /**
-     * @return The midBottom point of the {@code Rect}. This is not the absolute midBottom of the {@code Rect} as if a {@link #size} value is negative.
-     */
-    Vector2ic midBottom();
-    
-    /**
      * @return The center point of the {@code Rect}.
      */
     Vector2ic center();
-    
-    /**
-     * @return The position of the {@code Rect}.
-     */
-    Vector2ic pos();
-    
-    /**
-     * @return The size of the {@code Rect}. Can be negative
-     */
-    Vector2ic size();
     
     /**
      * Copy the {@code Rect}.

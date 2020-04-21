@@ -2,6 +2,9 @@ package engine.gui.util;
 
 import engine.Engine;
 import engine.color.Color;
+import engine.render.RectMode;
+
+import static engine.util.Util.println;
 
 public class RectTest extends Engine
 {
@@ -40,19 +43,25 @@ public class RectTest extends Engine
         if (keyboard().K3.down()) state = 2;
         if (keyboard().K4.down()) state = 3;
         
-        if (mouse().scrollY() != 0) r1.inflate((int) mouse().scrollY(), (int) mouse().scrollY());
+        if (mouse().scrollY() != 0)
+        {
+            r1.inflate((int) mouse().scrollY(), (int) mouse().scrollY());
+            println(r1.topLeft(), r1.bottomRight());
+            println(r1.size());
+        }
         
         clear();
         
         r1.pos((int) mouse().x(), (int) mouse().y());
         
         noStroke();
+        rectMode(RectMode.CORNERS);
     
         fill(Color.BLUE);
-        rect(r2.left(), r2.top(), r2.width(), r2.height());
+        rect(r2.left(), r2.top(), r2.right(), r2.bottom());
     
         fill(Color.RED);
-        rect(r1.left(), r1.top(), r1.width(), r1.height());
+        rect(r1.left(), r1.top(), r1.right(), r1.bottom());
         
         switch (state)
         {
@@ -71,7 +80,7 @@ public class RectTest extends Engine
         }
     
         fill(Color.GREEN);
-        rect(r3.left(), r3.top(), r3.width(), r3.height());
+        rect(r3.left(), r3.top(), r3.right(), r3.bottom());
     }
     
     /**

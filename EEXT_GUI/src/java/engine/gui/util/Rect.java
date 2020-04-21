@@ -3,9 +3,10 @@ package engine.gui.util;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
+@SuppressWarnings("UnusedReturnValue")
 public class Rect implements Rectc
 {
-    private int left, top, width, height;
+    private int x, y, w, h;
     
     private final Vector2i topLeft     = new Vector2i();
     private final Vector2i topRight    = new Vector2i();
@@ -21,75 +22,105 @@ public class Rect implements Rectc
     
     public Rect()
     {
-        this.left   = 0;
-        this.top    = 0;
-        this.width  = 1;
-        this.height = 1;
+        this.x = this.y = 0;
+        this.w = this.h = 1;
     }
     
-    public Rect(int left, int top, int width, int height)
+    public Rect(int x, int y, int width, int height)
     {
-        this.left   = left;
-        this.top    = top;
-        this.width  = width;
-        this.height = height;
+        this.x = x;
+        this.y = y;
+        this.w = width;
+        this.h = height;
     }
     
     public Rect(Vector2ic pos, Vector2ic size)
     {
-        this.left   = pos.x();
-        this.top    = pos.y();
-        this.width  = size.x();
-        this.height = size.y();
+        this.x = pos.x();
+        this.y = pos.y();
+        this.w = size.x();
+        this.h = size.y();
     }
     
     public Rect(Rectc other)
     {
-        this.left   = other.left();
-        this.top    = other.top();
-        this.width  = other.width();
-        this.height = other.height();
+        this.x = other.x();
+        this.y = other.y();
+        this.w = other.width();
+        this.h = other.height();
     }
     
     /**
-     * @return The position of the left edge of the {@code Rect}. If {@link #width} is negative, then this will be > the right edge.
+     * @return The x value of the {@code Rect} in screen space coordinates.
      */
     @Override
-    public int left()
+    public int x()
     {
-        return this.left;
+        return this.x;
     }
     
     /**
-     * Sets the left edge value of the {@code Rect}
+     * Sets the x value of the {@code Rect} in screen space coordinates.
      *
-     * @param left The new left value.
+     * @param x The new x value.
      * @return This instance for call chaining.
      */
-    public Rect left(int left)
+    public Rect x(int x)
     {
-        this.left = left;
+        this.x = x;
         return this;
     }
     
     /**
-     * @return The position of the top edge of the {@code Rect}. If {@link #height} is negative, then this will be > the bottom edge.
+     * @return The y value of the {@code Rect}. in screen space coordinates
      */
     @Override
-    public int top()
+    public int y()
     {
-        return this.top;
+        return this.y;
     }
     
     /**
-     * Sets the top edge value of the {@code Rect}
+     * @return The pos of the {@code Rect}
+     */
+    @Override
+    public Vector2ic pos()
+    {
+        return this.pos.set(x(), y());
+    }
+    
+    /**
+     * Sets the position of the {@code Rect}.
      *
-     * @param top The new top value.
+     * @param x The new x value.
+     * @param y The new y value.
      * @return This instance for call chaining.
      */
-    public Rect top(int top)
+    public Rect pos(int x, int y)
     {
-        this.top = top;
+        return x(x).y(y);
+    }
+    
+    /**
+     * Sets the position of the {@code Rect}.
+     *
+     * @param pos The new pos value.
+     * @return This instance for call chaining.
+     */
+    public Rect pos(Vector2ic pos)
+    {
+        return x(pos.x()).y(pos.y());
+    }
+    
+    /**
+     * Sets the y value of the {@code Rect} in screen space coordinates.
+     *
+     * @param y The new y value.
+     * @return This instance for call chaining.
+     */
+    public Rect y(int y)
+    {
+        this.y = y;
         return this;
     }
     
@@ -99,7 +130,7 @@ public class Rect implements Rectc
     @Override
     public int width()
     {
-        return this.width;
+        return this.w;
     }
     
     /**
@@ -110,7 +141,7 @@ public class Rect implements Rectc
      */
     public Rect width(int width)
     {
-        this.width = width;
+        this.w = width;
         return this;
     }
     
@@ -120,7 +151,7 @@ public class Rect implements Rectc
     @Override
     public int height()
     {
-        return this.height;
+        return this.h;
     }
     
     /**
@@ -131,17 +162,109 @@ public class Rect implements Rectc
      */
     public Rect height(int height)
     {
-        this.height = height;
+        this.h = height;
         return this;
     }
     
     /**
-     * @return The position of the right edge of the {@code Rect}. If {@link #width} is negative, then this will be < the left edge.
+     * @return The size of the {@code Rect}. Can be negative
+     */
+    @Override
+    public Vector2ic size()
+    {
+        return this.size.set(width(), height());
+    }
+    
+    /**
+     * Sets the size of the {@code Rect}.
+     *
+     * @param width  The new width value.
+     * @param height The new height value.
+     * @return This instance for call chaining.
+     */
+    public Rect size(int width, int height)
+    {
+        return width(width).height(height);
+    }
+    
+    /**
+     * Sets the size of the {@code Rect}.
+     *
+     * @param size The new size value.
+     * @return This instance for call chaining.
+     */
+    public Rect size(Vector2ic size)
+    {
+        return width(size.x()).height(size.y());
+    }
+    
+    /**
+     * @return The position of the left edge of the {@code Rect}. If {@link #w} is negative, then this will be > the right edge.
+     */
+    @Override
+    public int left()
+    {
+        return this.w >= 0 ? this.x : this.x + this.w + 1;
+    }
+    
+    /**
+     * Sets the left edge value of the {@code Rect}
+     *
+     * @param left The new left value.
+     * @return This instance for call chaining.
+     */
+    public Rect left(int left)
+    {
+        int dif = left - left();
+        if (this.w >= 0)
+        {
+            this.x = left;
+            this.w -= dif;
+        }
+        else
+        {
+            this.w += dif;
+        }
+        return this;
+    }
+    
+    /**
+     * @return The position of the top edge of the {@code Rect}. If {@link #h} is negative, then this will be > the bottom edge.
+     */
+    @Override
+    public int top()
+    {
+        return this.h >= 0 ? this.y : this.y + this.h + 1;
+    }
+    
+    /**
+     * Sets the top edge value of the {@code Rect}
+     *
+     * @param top The new top value.
+     * @return This instance for call chaining.
+     */
+    public Rect top(int top)
+    {
+        int dif = top - top();
+        if (this.h >= 0)
+        {
+            this.y = top;
+            this.h -= dif;
+        }
+        else
+        {
+            this.h += dif;
+        }
+        return this;
+    }
+    
+    /**
+     * @return The position of the right edge of the {@code Rect}. If {@link #w} is negative, then this will be < the left edge.
      */
     @Override
     public int right()
     {
-        return this.left + this.width - 1;
+        return this.w < 0 ? this.x : this.x + this.w - 1;
     }
     
     /**
@@ -152,17 +275,26 @@ public class Rect implements Rectc
      */
     public Rect right(int right)
     {
-        this.width = right - this.left + 1;
+        int dif = right - right();
+        if (this.w < 0)
+        {
+            this.x = right;
+            this.w -= dif;
+        }
+        else
+        {
+            this.w += dif;
+        }
         return this;
     }
     
     /**
-     * @return The position of the bottom edge of the {@code Rect}. If {@link #height} is negative, then this will be < the top edge.
+     * @return The position of the bottom edge of the {@code Rect}. If {@link #h} is negative, then this will be < the top edge.
      */
     @Override
     public int bottom()
     {
-        return this.top + this.height - 1;
+        return this.h < 0 ? this.y : this.y + this.h - 1;
     }
     
     /**
@@ -173,85 +305,16 @@ public class Rect implements Rectc
      */
     public Rect bottom(int bottom)
     {
-        this.height = bottom - this.top + 1;
-        return this;
-    }
-    
-    /**
-     * @return The left most x value of the {@code Rect}, regardless of the sign of {@link #width}.
-     */
-    @Override
-    public int x1()
-    {
-        return Math.min(left(), right());
-    }
-    
-    /**
-     * @return The top most y value of the {@code Rect}, regardless of the sign of {@link #height}.
-     */
-    @Override
-    public int y1()
-    {
-        return Math.min(top(), bottom());
-    }
-    
-    /**
-     * @return The right most x value of the {@code Rect}, regardless of the sign of {@link #width}.
-     */
-    @Override
-    public int x2()
-    {
-        return Math.max(left(), right());
-    }
-    
-    /**
-     * @return The bottom most y value of the {@code Rect}, regardless of the sign of {@link #height}.
-     */
-    @Override
-    public int y2()
-    {
-        return Math.max(top(), bottom());
-    }
-    
-    /**
-     * @return The center x value of the {@code Rect}.
-     */
-    @Override
-    public int centerX()
-    {
-        return left() + (width() >> 1);
-    }
-    
-    /**
-     * Sets the center x value of the {@code Rect}
-     *
-     * @param centerX The new center x value.
-     * @return This instance for call chaining.
-     */
-    public Rect centerX(int centerX)
-    {
-        this.left = centerX - (this.width >> 1);
-        return this;
-    }
-    
-    /**
-     * @return The center y value of the {@code Rect}.
-     */
-    @Override
-    public int centerY()
-    {
-        return top() + (height() >> 1);
-    }
-    
-    /**
-     * Sets the center y value of the {@code Rect}
-     *
-     * @param centerY The new center y value.
-     * @return This instance for call chaining.
-     */
-    public Rect centerY(int centerY)
-    {
-        this.top = centerY - (this.height >> 1);
+        int dif = bottom - bottom();
+        if (this.h < 0)
+        {
+            this.y = bottom;
+            this.h -= dif;
+        }
+        else
+        {
+            this.h += dif;
+        }
         return this;
     }
     
@@ -261,7 +324,7 @@ public class Rect implements Rectc
     @Override
     public Vector2ic topLeft()
     {
-        return this.topLeft.set(top(), left());
+        return this.topLeft.set(left(), top());
     }
     
     /**
@@ -293,7 +356,7 @@ public class Rect implements Rectc
     @Override
     public Vector2ic topRight()
     {
-        return this.topRight.set(top(), right());
+        return this.topRight.set(right(), top());
     }
     
     /**
@@ -325,7 +388,7 @@ public class Rect implements Rectc
     @Override
     public Vector2ic bottomLeft()
     {
-        return this.bottomLeft.set(bottom(), left());
+        return this.bottomLeft.set(left(), bottom());
     }
     
     /**
@@ -357,7 +420,7 @@ public class Rect implements Rectc
     @Override
     public Vector2ic bottomRight()
     {
-        return this.bottomRight.set(bottom(), right());
+        return this.bottomRight.set(right(), bottom());
     }
     
     /**
@@ -512,6 +575,48 @@ public class Rect implements Rectc
     }
     
     /**
+     * @return The center x value of the {@code Rect}.
+     */
+    @Override
+    public int centerX()
+    {
+        return this.x + (this.w >> 1);
+    }
+    
+    /**
+     * Sets the center x value of the {@code Rect}
+     *
+     * @param centerX The new center x value.
+     * @return This instance for call chaining.
+     */
+    public Rect centerX(int centerX)
+    {
+        this.x = centerX - (this.w >> 1);
+        return this;
+    }
+    
+    /**
+     * @return The center y value of the {@code Rect}.
+     */
+    @Override
+    public int centerY()
+    {
+        return this.y + (this.h >> 1);
+    }
+    
+    /**
+     * Sets the center y value of the {@code Rect}
+     *
+     * @param centerY The new center y value.
+     * @return This instance for call chaining.
+     */
+    public Rect centerY(int centerY)
+    {
+        this.y = centerY - (this.h >> 1);
+        return this;
+    }
+    
+    /**
      * @return The center point of the {@code Rect}.
      */
     @Override
@@ -544,84 +649,20 @@ public class Rect implements Rectc
     }
     
     /**
-     * @return The pos of the {@code Rect}
-     */
-    @Override
-    public Vector2ic pos()
-    {
-        return this.pos.set(left(), top());
-    }
-    
-    /**
-     * Sets the position of the {@code Rect}.
-     *
-     * @param x The new x value.
-     * @param y The new y value.
-     * @return This instance for call chaining.
-     */
-    public Rect pos(int x, int y)
-    {
-        return left(x).top(y);
-    }
-    
-    /**
-     * Sets the position of the {@code Rect}.
-     *
-     * @param pos The new pos value.
-     * @return This instance for call chaining.
-     */
-    public Rect pos(Vector2ic pos)
-    {
-        return left(pos.x()).top(pos.y());
-    }
-    
-    /**
-     * @return The size of the {@code Rect}. Can be negative
-     */
-    @Override
-    public Vector2ic size()
-    {
-        return this.size.set(width(), height());
-    }
-    
-    /**
-     * Sets the size of the {@code Rect}.
-     *
-     * @param width  The new width value.
-     * @param height The new height value.
-     * @return This instance for call chaining.
-     */
-    public Rect size(int width, int height)
-    {
-        return width(width).height(height);
-    }
-    
-    /**
-     * Sets the size of the {@code Rect}.
-     *
-     * @param size The new size value.
-     * @return This instance for call chaining.
-     */
-    public Rect size(Vector2ic size)
-    {
-        return width(size.x()).height(size.y());
-    }
-    
-    /**
      * Sets the value of this {@code Rect}.
      *
-     * @param left   The new left value.
-     * @param top    The new top value.
+     * @param x      The new left value.
+     * @param y      The new top value.
      * @param width  The new width value.
      * @param height The new height value.
      * @return This instance for call chaining.
      */
-    public Rect set(int left, int top, int width, int height)
+    public Rect set(int x, int y, int width, int height)
     {
-        this.left   = left;
-        this.top    = top;
-        this.width  = width;
-        this.height = height;
+        this.x = x;
+        this.y = y;
+        this.w = width;
+        this.h = height;
         return this;
     }
     
@@ -634,10 +675,10 @@ public class Rect implements Rectc
      */
     public Rect set(Vector2ic pos, Vector2ic size)
     {
-        this.left   = pos.x();
-        this.top    = pos.y();
-        this.width  = size.x();
-        this.height = size.y();
+        this.x = pos.x();
+        this.y = pos.y();
+        this.w = size.x();
+        this.h = size.y();
         return this;
     }
     
@@ -649,10 +690,10 @@ public class Rect implements Rectc
      */
     public Rect set(Rectc other)
     {
-        this.left   = other.left();
-        this.top    = other.top();
-        this.width  = other.width();
-        this.height = other.height();
+        this.x = other.x();
+        this.y = other.y();
+        this.w = other.width();
+        this.h = other.height();
         return this;
     }
     
@@ -798,19 +839,19 @@ public class Rect implements Rectc
     public Rect clamp(Rectc other, Rect result)
     {
         result.width(Math.abs(width()));
-        if (result.width() < other.width())
+        if (Math.abs(result.width()) < Math.abs(other.width()))
         {
-            if (x1() < other.x1())
+            if (left() < other.left())
             {
-                result.left(other.x1());
+                result.x(other.left());
             }
-            else if (other.x2() < x2())
+            else if (other.right() < right())
             {
-                result.left(other.x2() - result.width() + 1);
+                result.x(other.right() - result.width() + 1);
             }
             else
             {
-                result.left(x1());
+                result.x(left());
             }
         }
         else
@@ -818,19 +859,19 @@ public class Rect implements Rectc
             result.centerX(other.centerX());
         }
         result.height(Math.abs(height()));
-        if (result.height() < other.height())
+        if (Math.abs(result.height()) < Math.abs(other.height()))
         {
-            if (y1() < other.y1())
+            if (top() < other.top())
             {
-                result.top(other.y1());
+                result.y(other.top());
             }
-            else if (other.y2() < y2())
+            else if (other.bottom() < bottom())
             {
-                result.top(other.y2() - result.height() + 1);
+                result.y(other.bottom() - result.height() + 1);
             }
             else
             {
-                result.top(y1());
+                result.y(top());
             }
         }
         else
@@ -854,11 +895,12 @@ public class Rect implements Rectc
     @Override
     public Rect clip(Rectc other, Rect result)
     {
-        if (!other.collide(this)) return result.set(left(), top(), 1, 1);
-        result.left(x1() < other.x1() ? other.x1() : x1());
-        result.right(other.x2() < x2() ? other.x2() : x2());
-        result.top(y1() < other.y1() ? other.y1() : y1());
-        result.bottom(other.y2() < y2() ? other.y2() : y2());
+        result.set(this);
+        if (!other.collide(this)) return result.size(0, 0);
+        result.left(left() <= other.left() ? other.left() : left());
+        result.right(other.right() <= right() ? other.right() : right());
+        result.top(top() <= other.top() ? other.top() : top());
+        result.bottom(other.bottom() <= bottom() ? other.bottom() : bottom());
         return result;
     }
     
@@ -875,10 +917,10 @@ public class Rect implements Rectc
     @Override
     public Rect union(Rectc other, Rect result)
     {
-        result.left(Math.min(x1(), other.x1()));
-        result.top(Math.min(y1(), other.y1()));
-        result.right(Math.max(x2(), other.x2()));
-        result.bottom(Math.max(y2(), other.y2()));
+        result.left(Math.min(left(), other.left()));
+        result.top(Math.min(top(), other.top()));
+        result.right(Math.max(right(), other.right()));
+        result.bottom(Math.max(bottom(), other.bottom()));
         return result;
     }
     
@@ -896,9 +938,14 @@ public class Rect implements Rectc
     @Override
     public Rect fit(Rectc other, Rect result)
     {
-        int aspect = (int) width() / (int) height();
-        result.size(other.width(), (int) (other.width() / aspect));
-        if (result.height() > other.height()) result.size((int) (other.height() * aspect), other.height());
+        double aspect = (double) Math.abs(width()) / (double) Math.abs(height());
+        
+        int otherWidth = Math.abs(other.width());
+        int otherHeight = Math.abs(other.height());
+        
+        result.size(otherWidth, (int) (otherWidth / aspect));
+        
+        if (Math.abs(result.height()) > otherHeight) result.size((int) (otherHeight * aspect), otherHeight);
         
         result.center(other.center());
         return result;
@@ -917,23 +964,23 @@ public class Rect implements Rectc
     {
         if (width() > 0)
         {
-            result.left(left());
             result.width(width());
+            result.left(left());
         }
         else
         {
-            result.left(right());
             result.width(-width());
+            result.left(right());
         }
         if (height() > 0)
         {
-            result.top(top());
             result.height(height());
+            result.top(top());
         }
         else
         {
-            result.top(bottom());
             result.height(-height());
+            result.top(bottom());
         }
         return result;
     }
@@ -947,7 +994,7 @@ public class Rect implements Rectc
     @Override
     public boolean contains(Rectc other)
     {
-        return other.x1() <= x1() && x2() <= other.x2() && other.y1() <= y1() && y2() <= other.y2();
+        return other.left() <= left() && right() <= other.right() && other.top() <= top() && bottom() <= other.bottom();
     }
     
     /**
@@ -960,7 +1007,7 @@ public class Rect implements Rectc
     @Override
     public boolean collide(int x, int y)
     {
-        return x1() <= x && x <= x2() && y1() <= y && y <= y2();
+        return left() <= x && x <= right() && top() <= y && y <= bottom();
     }
     
     /**
@@ -984,7 +1031,7 @@ public class Rect implements Rectc
     @Override
     public boolean collide(Rectc other)
     {
-        return (Math.max(x1(), other.x1()) <= Math.min(x2(), other.x2()) && Math.max(y1(), other.y1()) <= Math.min(y2(), other.y2()));
+        return (Math.max(left(), other.left()) <= Math.min(right(), other.right()) && Math.max(top(), other.top()) <= Math.min(bottom(), other.bottom()));
     }
     
     protected Rect thisOrNew()

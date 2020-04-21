@@ -192,6 +192,11 @@ public interface Colorc
     int toInt();
     
     /**
+     * @return The Hex String representation of the color.
+     */
+    String toHex();
+    
+    /**
      * @return the hue of the color [0..359]
      */
     int hue();

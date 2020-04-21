@@ -18,12 +18,15 @@ public class EngineTest extends Engine
     Texture texture;
     
     @Override
-    protected void setup()
+    public void setup()
     {
         // size(200, 200, 2, 2);
         // size(100, 100, 8, 8);
         // size(400, 400, 2, 2, SOFTWARE);
         size(800, 800, 1, 1, OPENGL);
+        
+        // println(Color.RED.toHex());
+        // stop();
     
         texture = new Texture(30, 30);
         Color c = new Color();
@@ -40,7 +43,7 @@ public class EngineTest extends Engine
     }
     
     @Override
-    protected void draw(double elapsedTime)
+    public void draw(double elapsedTime)
     {
         clear();
         // push();
@@ -178,7 +181,7 @@ public class EngineTest extends Engine
     }
     
     @Override
-    protected void destroy()
+    public void destroy()
     {
     
     }

@@ -61,7 +61,7 @@ public class CT002_MengerSponge extends Engine
     ArrayList<Box> sponge = new ArrayList<>();
     
     @Override
-    protected void setup()
+    public void setup()
     {
         size(400, 400, 1, 1, OPENGL);
         
@@ -69,7 +69,7 @@ public class CT002_MengerSponge extends Engine
     }
     
     @Override
-    protected void draw(double elapsedTime)
+    public void draw(double elapsedTime)
     {
         for (Event e : Events.get(EventMouseButtonDown.class))
         {
@@ -92,7 +92,7 @@ public class CT002_MengerSponge extends Engine
     }
     
     @Override
-    protected void destroy()
+    public void destroy()
     {
     
     }

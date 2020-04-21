@@ -148,7 +148,18 @@ public class Engine
             try
             {
                 String name = ext.getSimpleName();
-                Engine.extensions.put(name, ext.getConstructor().newInstance());
+                Extension extInstance;
+                try
+                {
+                    extInstance = (Extension) ext.getField("INSTANCE").get(ext);
+                    Engine.LOGGER.fine("Using %s.INSTANCE", name);
+                }
+                catch (NoSuchFieldException ignored)
+                {
+                    Engine.LOGGER.fine("Extension instance created for %s", name);
+                    extInstance = ext.getConstructor().newInstance();
+                }
+                Engine.extensions.put(name, extInstance);
                 Engine.LOGGER.info("Loaded: %s", name);
             }
             catch (ReflectiveOperationException ignored) { }
@@ -299,7 +310,7 @@ public class Engine
                                                         Engine.profiler.startSection(name);
                                                         {
                                                             Engine.renderer.push();
-                                                            Engine.extensions.get(name).beforeDraw(Engine.profiler, dt / 1_000_000_000D);
+                                                            Engine.extensions.get(name).beforeDraw(dt / 1_000_000_000D);
                                                             Engine.renderer.pop();
                                                         }
                                                         Engine.profiler.endSection();
@@ -325,7 +336,7 @@ public class Engine
                                                         Engine.profiler.startSection(name);
                                                         {
                                                             Engine.renderer.push();
-                                                            Engine.extensions.get(name).afterDraw(Engine.profiler, dt / 1_000_000_000D);
+                                                            Engine.extensions.get(name).afterDraw(dt / 1_000_000_000D);
                                                             Engine.renderer.pop();
                                                         }
                                                         Engine.profiler.endSection();
@@ -578,7 +589,7 @@ public class Engine
      * @param pixelH   The height of the drawable pixels in actual pixels.
      * @param renderer The optional renderer to use.
      */
-    protected static void size(int screenW, int screenH, int pixelW, int pixelH, String renderer)
+    public static void size(int screenW, int screenH, int pixelW, int pixelH, String renderer)
     {
         Engine.screenSize.set(screenW, screenH);
         Engine.LOGGER.finest("Screen Size %s", Engine.screenSize);
@@ -622,7 +633,7 @@ public class Engine
      * @param pixelW  The width of the drawable pixels in actual pixels.
      * @param pixelH  The height of the drawable pixels in actual pixels.
      */
-    protected static void size(int screenW, int screenH, int pixelW, int pixelH)
+    public static void size(int screenW, int screenH, int pixelW, int pixelH)
     {
         size(screenW, screenH, pixelW, pixelH, Engine.DEFAULT);
     }
@@ -637,7 +648,7 @@ public class Engine
      * @param screenH  The height of the screen in drawable pixels.
      * @param renderer The optional renderer to use.
      */
-    protected static void size(int screenW, int screenH, String renderer)
+    public static void size(int screenW, int screenH, String renderer)
     {
         size(screenW, screenH, 4, 4, renderer);
     }
@@ -650,7 +661,7 @@ public class Engine
      * @param screenW The width of the screen in drawable pixels.
      * @param screenH The height of the screen in drawable pixels.
      */
-    protected static void size(int screenW, int screenH)
+    public static void size(int screenW, int screenH)
     {
         size(screenW, screenH, 4, 4, Engine.DEFAULT);
     }
@@ -1486,6 +1497,8 @@ public class Engine
     // -- Renderer Instance --
     // -----------------------
     
+    // TODO - Add profiler methods to render methods
+    
     /**
      * @return The engine's render instance. This should only be used for {@link Overloads} methods.
      */
@@ -2246,17 +2259,17 @@ public class Engine
      * <p>
      * This is where you call {@link #size} to enable rendering. At which point you can create textures and render to them.
      */
-    protected void setup() { }
+    public void setup() { }
     
     /**
      * This method is called once per frame.
      *
      * @param elapsedTime The time in seconds since the last frame.
      */
-    protected void draw(double elapsedTime) { }
+    public void draw(double elapsedTime) { }
     
     /**
      * This method is called after the render loop has exited for any reason, exception or otherwise. This is only called once.
      */
-    protected void destroy() { }
+    public void destroy() { }
 }

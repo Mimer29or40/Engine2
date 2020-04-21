@@ -24,7 +24,7 @@ public class EventTests extends Engine
     }
     
     @Override
-    protected void setup()
+    public void setup()
     {
         size(800, 400, 2, 2, OPENGL);
         // frameRate(10);
@@ -41,7 +41,7 @@ public class EventTests extends Engine
     }
     
     @Override
-    protected void draw(double elapsedTime)
+    public void draw(double elapsedTime)
     {
         if (keyboard().SPACE.down()) window().toggleFullscreen();
         if (keyboard().C.down()) mouse().toggleCaptured();
@@ -72,7 +72,7 @@ public class EventTests extends Engine
     }
     
     @Override
-    protected void destroy()
+    public void destroy()
     {
         
     }

@@ -366,6 +366,15 @@ public class Color implements Colorc
     }
     
     /**
+     * @return The Hex String representation of the color.
+     */
+    @Override
+    public String toHex()
+    {
+        return String.format("#%02X%02X%02X%02X", r(), g(), b(), a());
+    }
+    
+    /**
      * @return the hue of the color [0..359]
      */
     public int hue()
@@ -656,6 +665,27 @@ public class Color implements Colorc
     public Color fromInt(int x)
     {
         return set(x, x >> 8, x >> 16, x >> 24);
+    }
+    
+    public Color fromHex(String hex)
+    {
+        if (!hex.startsWith("#")) throw new RuntimeException("Invalid Hex Color String: " + hex);
+        if (hex.length() == 7)
+        {
+            r(Integer.parseInt(hex.substring(1, 2), 16));
+            g(Integer.parseInt(hex.substring(3, 4), 16));
+            b(Integer.parseInt(hex.substring(5, 6), 16));
+            return this;
+        }
+        else if (hex.length() == 9)
+        {
+            r(Integer.parseInt(hex.substring(1, 2), 16));
+            g(Integer.parseInt(hex.substring(3, 4), 16));
+            b(Integer.parseInt(hex.substring(5, 6), 16));
+            a(Integer.parseInt(hex.substring(7, 8), 16));
+            return this;
+        }
+        throw new RuntimeException("Invalid Hex Color String: " + hex);
     }
     
     private static int toColorInt(Number x)

@@ -37,7 +37,7 @@ public class PolygonTest extends Engine
     }
     
     @Override
-    protected void setup()
+    public void setup()
     {
         vertices = new Vector2f[]
                 {
@@ -104,7 +104,7 @@ public class PolygonTest extends Engine
     }
     
     @Override
-    protected void destroy()
+    public void destroy()
     {
     
     }

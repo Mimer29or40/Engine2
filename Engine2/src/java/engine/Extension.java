@@ -1,7 +1,5 @@
 package engine;
 
-import engine.util.Profiler;
-
 @SuppressWarnings("unused")
 public abstract class Extension
 {
@@ -44,18 +42,16 @@ public abstract class Extension
     /**
      * This is called once per frame before the {@link Engine#draw} method is called.
      *
-     * @param profiler    The profiler to track the time taken by the extension.
      * @param elapsedTime The time in seconds since the last frame.
      */
-    public abstract void beforeDraw(Profiler profiler, double elapsedTime);
+    public abstract void beforeDraw(double elapsedTime);
     
     /**
      * This is called once per frame after the {@link Engine#draw} method is called.
      *
-     * @param profiler    The profiler to track the time taken by the extension.
      * @param elapsedTime The time in seconds since the last frame.
      */
-    public abstract void afterDraw(Profiler profiler, double elapsedTime);
+    public abstract void afterDraw(double elapsedTime);
     
     /**
      * This is called once before the {@link Engine#destroy} method is called.

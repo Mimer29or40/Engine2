@@ -72,7 +72,7 @@ public class CT001_StarField extends Engine
     final ArrayList<Star> stars = new ArrayList<>();
     
     @Override
-    protected void setup()
+    public void setup()
     {
         size(800, 800, 1, 1, OPENGL);
         // size(800, 800, 1, 1, SOFTWARE);
@@ -84,7 +84,7 @@ public class CT001_StarField extends Engine
     }
     
     @Override
-    protected void draw(double elapsedTime)
+    public void draw(double elapsedTime)
     {
         speed = map(mouse().x(), 0, screenWidth(), 0, 50);
     
@@ -105,7 +105,7 @@ public class CT001_StarField extends Engine
     }
     
     @Override
-    protected void destroy()
+    public void destroy()
     {
     
     }

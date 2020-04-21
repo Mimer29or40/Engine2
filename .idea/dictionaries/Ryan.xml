@@ -2,12 +2,18 @@
   <dictionary name="Ryan">
     <words>
       <w>colorc</w>
+      <w>eext</w>
       <w>glfw</w>
       <w>joml</w>
       <w>menger</w>
       <w>opengl</w>
       <w>proj</w>
+      <w>pygame</w>
+      <w>rectc</w>
       <w>shaders</w>
+      <w>themeing</w>
+      <w>unfocus</w>
+      <w>unpaused</w>
       <w>uuuu</w>
     </words>
   </dictionary>

@@ -40,7 +40,7 @@ public class CT004_PurpleRain extends Engine
     final ArrayList<Drop> drops = new ArrayList<>();
     
     @Override
-    protected void setup()
+    public void setup()
     {
         size(400, 300, 2, 2, OPENGL);
         
@@ -51,7 +51,7 @@ public class CT004_PurpleRain extends Engine
     }
     
     @Override
-    protected void draw(double elapsedTime)
+    public void draw(double elapsedTime)
     {
         clear();
         
@@ -63,7 +63,7 @@ public class CT004_PurpleRain extends Engine
     }
     
     @Override
-    protected void destroy()
+    public void destroy()
     {
         
     }

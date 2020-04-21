@@ -130,9 +130,14 @@ public class Logger
         if (applyFilters(this.name)) return;
         try
         {
-            Logger.OUT.write(('[' + getCurrentTimeString() + "] [" + Thread.currentThread().getName() + '/' + level + "]").getBytes());
-            if (!this.name.equals("")) Logger.OUT.write((" [" + this.name + "]").getBytes());
-            Logger.OUT.write((": " + message + '\n').getBytes());
+            String prefix = '[' + getCurrentTimeString() + "] [" + Thread.currentThread().getName() + '/' + level + "]";
+            if (!this.name.equals("")) prefix += " [" + this.name + "]";
+            prefix += ": ";
+            for (String line : message.split("\n"))
+            {
+                Logger.OUT.write(prefix.getBytes());
+                Logger.OUT.write((line + '\n').getBytes());
+            }
             Logger.OUT.flush();
         }
         catch (IOException ignored) { }

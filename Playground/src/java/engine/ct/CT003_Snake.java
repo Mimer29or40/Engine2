@@ -79,7 +79,7 @@ public class CT003_Snake extends Engine
     final Vector2i food  = new Vector2i();
     
     @Override
-    protected void setup()
+    public void setup()
     {
         size(400, 400, 2, 2, OPENGL);
         
@@ -89,7 +89,7 @@ public class CT003_Snake extends Engine
     }
     
     @Override
-    protected void draw(double elapsedTime)
+    public void draw(double elapsedTime)
     {
         if (keyboard().UP.down()) snake.dir.set(0, -1);
         if (keyboard().DOWN.down()) snake.dir.set(0, 1);
@@ -111,7 +111,7 @@ public class CT003_Snake extends Engine
     }
     
     @Override
-    protected void destroy()
+    public void destroy()
     {
     
     }

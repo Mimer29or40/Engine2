@@ -12,7 +12,7 @@ public class FontTests extends Engine
     Font font;
     
     @Override
-    protected void setup()
+    public void setup()
     {
         // size(800, 800, 1, 1, "software");
         size(800, 800, 1, 1, "opengl");
@@ -22,7 +22,7 @@ public class FontTests extends Engine
     }
     
     @Override
-    protected void draw(double elapsedTime)
+    public void draw(double elapsedTime)
     {
         clear();
         
@@ -65,7 +65,7 @@ public class FontTests extends Engine
     }
     
     @Override
-    protected void destroy()
+    public void destroy()
     {
     
     }

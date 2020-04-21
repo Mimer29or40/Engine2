@@ -1,8 +1,8 @@
 package engine.event;
 
 import engine.input.Mouse;
-import org.joml.Vector2i;
-import org.joml.Vector2ic;
+import org.joml.Vector2d;
+import org.joml.Vector2dc;
 
 /**
  * This event is generated when ever a mouse button is held and the mouse is moved, with the
@@ -21,47 +21,47 @@ public class EventMouseButtonDragged extends Event
         return (Mouse.Button) this.values[0];
     }
     
-    public Vector2ic dragPos()
+    public Vector2dc dragPos()
     {
-        return (Vector2i) this.values[1];
+        return (Vector2d) this.values[1];
     }
     
-    public Vector2ic pos()
+    public Vector2dc pos()
     {
-        return (Vector2i) this.values[2];
+        return (Vector2d) this.values[2];
     }
     
-    public Vector2ic rel()
+    public Vector2dc rel()
     {
-        return (Vector2i) this.values[3];
+        return (Vector2d) this.values[3];
     }
     
-    public int dragX()
+    public double dragX()
     {
         return dragPos().x();
     }
     
-    public int dragY()
+    public double dragY()
     {
         return dragPos().y();
     }
     
-    public int x()
+    public double x()
     {
         return pos().x();
     }
     
-    public int y()
+    public double y()
     {
         return pos().y();
     }
     
-    public int relX()
+    public double relX()
     {
         return rel().x();
     }
     
-    public int relY()
+    public double relY()
     {
         return rel().y();
     }

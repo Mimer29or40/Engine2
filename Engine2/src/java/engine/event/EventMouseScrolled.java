@@ -1,7 +1,7 @@
 package engine.event;
 
-import org.joml.Vector2i;
-import org.joml.Vector2ic;
+import org.joml.Vector2d;
+import org.joml.Vector2dc;
 
 /**
  * This event is generated when ever the mouse is scrolled, with the x and y direction and magnitude.
@@ -14,17 +14,17 @@ public class EventMouseScrolled extends Event
         super(new String[] {"scroll"}, values);
     }
     
-    public Vector2ic scroll()
+    public Vector2dc scroll()
     {
-        return (Vector2i) this.values[0];
+        return (Vector2d) this.values[0];
     }
     
-    public int x()
+    public double x()
     {
         return scroll().x();
     }
     
-    public int y()
+    public double y()
     {
         return scroll().y();
     }

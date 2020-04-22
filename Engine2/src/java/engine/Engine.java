@@ -62,8 +62,8 @@ public class Engine
     private static String   rendererType;
     private static Renderer renderer;
     
-    private static Texture     screen;
-    private static Shader      screenShader;
+    private static Texture screenTexture;
+    private static Shader  screenShader;
     private static VertexArray screenVAO;
     
     private static Shader      debugShader;
@@ -362,7 +362,7 @@ public class Engine
                                             Engine.pixelSize.y = Math.max(Engine.window.viewH() / Engine.screenSize.y, 1);
                                         }
                                         
-                                        Engine.screen.bindTexture().unbindFramebuffer();
+                                        Engine.screenTexture.bindTexture().unbindFramebuffer();
                                         Engine.screenShader.bind();
                                         Engine.screenVAO.bind().draw(GL_QUADS).unbind();
                                     }
@@ -398,7 +398,6 @@ public class Engine
                                         try (MemoryStack frame = stackPush())
                                         {
                                             ByteBuffer textBuffer = frame.malloc(24 * 1024);
-                                            glEnable(GL_BLEND);
                                             for (Tuple<Integer, Integer, String> line : Engine.debugLines)
                                             {
                                                 int quads  = stb_easy_font_print(line.a + 2, line.b + 2, line.c, null, textBuffer);
@@ -415,7 +414,6 @@ public class Engine
                                                 
                                                 textBuffer.clear();
                                             }
-                                            glDisable(GL_BLEND);
                                         }
                                         Engine.debugLines.clear();
                                     }
@@ -609,8 +607,9 @@ public class Engine
         GL.createCapabilities();
         
         glEnable(GL_TEXTURE_2D);
+        glEnable(GL_BLEND);
         
-        Engine.renderer = Renderer.getRenderer(Engine.screen = new Texture(screenW, screenH), Engine.rendererType = renderer);
+        Engine.renderer = Renderer.getRenderer(Engine.screenTexture = new Texture(screenW, screenH), Engine.rendererType = renderer);
         
         Engine.screenShader = new Shader().loadVertexFile("shader/pixel.vert").loadFragmentFile("shader/pixel.frag").validate().unbind();
         Engine.screenVAO    = new VertexArray().bind().add(new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, GL_DYNAMIC_DRAW, 2);

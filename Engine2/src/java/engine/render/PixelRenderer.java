@@ -750,14 +750,7 @@ public class PixelRenderer extends Renderer
     private void pointImpl(int x, int y, Colorc color)
     {
         PixelRenderer.COLOR.set(color).tint(this.tint);
-        if (this.blend.enabled())
-        {
-            this.target.setPixel(x, y, this.blend.blend(PixelRenderer.COLOR, this.target.getPixel(x, y), PixelRenderer.COLOR));
-        }
-        else
-        {
-            if (PixelRenderer.COLOR.a() > 0) this.target.setPixel(x, y, PixelRenderer.COLOR);
-        }
+        this.target.setPixel(x, y, this.blend.blend(PixelRenderer.COLOR, this.target.getPixel(x, y), PixelRenderer.COLOR));
     }
     
     private void pointsImpl(Colorc color)

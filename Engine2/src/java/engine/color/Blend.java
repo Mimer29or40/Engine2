@@ -1,7 +1,6 @@
 package engine.color;
 
 import engine.util.Logger;
-import engine.util.Pair;
 import engine.util.Tuple;
 
 import static org.lwjgl.opengl.GL46.*;
@@ -15,15 +14,12 @@ public class Blend implements IBlend
 {
     private static final Logger LOGGER = new Logger();
     
-    private boolean enabled;
-    
     private Func     srcFactor;
     private Func     dstFactor;
     private Equation equation;
     
     public Blend()
     {
-        enabled(false);
         blendFunc(Func.SRC_ALPHA, Func.ONE_MINUS_SRC_ALPHA);
         blendEquation(Equation.ADD);
     }
@@ -32,38 +28,6 @@ public class Blend implements IBlend
     public String toString()
     {
         return "Blend{" + "srcFactor=" + this.srcFactor + ", dstFactor=" + this.dstFactor + ", equation=" + this.equation + '}';
-    }
-    
-    /**
-     * @return If blend is enabled.
-     */
-    public boolean enabled()
-    {
-        return this.enabled;
-    }
-    
-    /**
-     * Sets if blend is enabled.
-     *
-     * @param enabled The new enabled state.
-     * @return This instance for call chaining.
-     */
-    public Blend enabled(boolean enabled)
-    {
-        this.enabled = enabled;
-        if (this.enabled) glEnable(GL_BLEND);
-        if (!this.enabled) glDisable(GL_BLEND);
-        return this;
-    }
-    
-    /**
-     * Toggles if the blend is enabled or not.
-     *
-     * @return This instance for call chaining.
-     */
-    public Blend toggle()
-    {
-        return enabled(!enabled());
     }
     
     /**
@@ -135,24 +99,20 @@ public class Blend implements IBlend
     @Override
     public Color blend(int rs, int gs, int bs, int as, int rd, int gd, int bd, int ad, Color result)
     {
-        if (this.enabled)
-        {
-            int sr = this.srcFactor.func.apply(rs, as, rd, ad);
-            int sg = this.srcFactor.func.apply(gs, as, gd, ad);
-            int sb = this.srcFactor.func.apply(bs, as, bd, ad);
-            int sa = this.srcFactor.func.apply(as, as, ad, ad);
-            
-            int dr = this.dstFactor.func.apply(rs, as, rd, ad);
-            int dg = this.dstFactor.func.apply(gs, as, gd, ad);
-            int db = this.dstFactor.func.apply(bs, as, bd, ad);
-            int da = this.dstFactor.func.apply(as, as, ad, ad);
-            
-            return result.r(this.equation.func.apply(rs * sr, rd * dr) / 255)
-                         .g(this.equation.func.apply(gs * sg, gd * dg) / 255)
-                         .b(this.equation.func.apply(bs * sb, bd * db) / 255)
-                         .a(this.equation.func.apply(as * sa, ad * da) / 255);
-        }
-        return result.set(rs, gs, bs, as);
+        int sr = this.srcFactor.func.apply(rs, as, rd, ad);
+        int sg = this.srcFactor.func.apply(gs, as, gd, ad);
+        int sb = this.srcFactor.func.apply(bs, as, bd, ad);
+        int sa = this.srcFactor.func.apply(as, as, ad, ad);
+    
+        int dr = this.dstFactor.func.apply(rs, as, rd, ad);
+        int dg = this.dstFactor.func.apply(gs, as, gd, ad);
+        int db = this.dstFactor.func.apply(bs, as, bd, ad);
+        int da = this.dstFactor.func.apply(as, as, ad, ad);
+    
+        return result.r(this.equation.func.apply(rs * sr, rd * dr) / 255)
+                     .g(this.equation.func.apply(gs * sg, gd * dg) / 255)
+                     .b(this.equation.func.apply(bs * sb, bd * db) / 255)
+                     .a(this.equation.func.apply(as * sa, ad * da) / 255);
     }
     
     /**
@@ -217,7 +177,7 @@ public class Blend implements IBlend
         int apply(int source, int dest);
     }
     
-    public static final class BTuple extends Tuple<Boolean, Pair<Func, Func>, Equation>
+    public static final class BTuple extends Tuple<Func, Func, Equation>
     {
         /**
          * Creates a new tuple with the blends information
@@ -226,13 +186,12 @@ public class Blend implements IBlend
          */
         public BTuple(Blend blend)
         {
-            super(blend.enabled, new Pair<>(blend.srcFactor, blend.dstFactor), blend.equation);
+            super(blend.srcFactor, blend.dstFactor, blend.equation);
         }
         
         public Blend setBlend(Blend blend)
         {
-            blend.enabled(this.a);
-            blend.blendFunc(this.b.a, this.b.b);
+            blend.blendFunc(this.a, this.b);
             blend.blendEquation(this.c);
             return blend;
         }

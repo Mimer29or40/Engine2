@@ -169,6 +169,7 @@ public class OpenGLRenderer extends Renderer
         this.pointShader.bind();
         this.pointShader.setMat4("pv", this.view);
         this.pointShader.setColor("color", this.stroke);
+        this.pointShader.setColor("tint", this.tint);
         this.pointShader.setVec2("viewport", this.target.width(), this.target.height());
         this.pointShader.setFloat("thickness", (float) this.weight);
         
@@ -194,6 +195,7 @@ public class OpenGLRenderer extends Renderer
         this.lineShader.bind();
         this.lineShader.setMat4("pv", this.view);
         this.lineShader.setColor("color", this.stroke);
+        this.lineShader.setColor("tint", this.tint);
         this.lineShader.setVec2("viewport", this.target.width(), this.target.height());
         this.lineShader.setFloat("thickness", (float) this.weight);
         
@@ -239,6 +241,7 @@ public class OpenGLRenderer extends Renderer
         this.linesShader.bind();
         this.linesShader.setMat4("pv", this.view);
         this.linesShader.setColor("color", this.stroke);
+        this.linesShader.setColor("tint", this.tint);
         this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
         this.linesShader.setFloat("thickness", (float) this.weight);
         
@@ -270,6 +273,7 @@ public class OpenGLRenderer extends Renderer
         this.triangleShader.bind();
         this.triangleShader.setMat4("pv", this.view);
         this.triangleShader.setColor("color", this.fill);
+        this.triangleShader.setColor("tint", this.tint);
         
         this.triangleVAO.bind().getBuffer(0).bind().set(new float[] {(float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3}, GL_DYNAMIC_DRAW).unbind();
         this.triangleVAO.draw(GL_TRIANGLES).unbind();
@@ -361,6 +365,7 @@ public class OpenGLRenderer extends Renderer
         this.linesShader.bind();
         this.linesShader.setMat4("pv", this.view);
         this.linesShader.setColor("color", this.stroke);
+        this.linesShader.setColor("tint", this.tint);
         this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
         this.linesShader.setFloat("thickness", (float) this.weight);
         
@@ -397,6 +402,7 @@ public class OpenGLRenderer extends Renderer
         this.quadShader.bind();
         this.quadShader.setMat4("pv", this.view);
         this.quadShader.setColor("color", this.fill);
+        this.quadShader.setColor("tint", this.tint);
         
         this.quadVAO.bind().getBuffer(0).bind().set(new float[] {(float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4}, GL_DYNAMIC_DRAW).unbind();
         this.quadVAO.draw(GL_QUADS).unbind();
@@ -421,6 +427,7 @@ public class OpenGLRenderer extends Renderer
         this.linesShader.bind();
         this.linesShader.setMat4("pv", this.view);
         this.linesShader.setColor("color", this.stroke);
+        this.linesShader.setColor("tint", this.tint);
         this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
         this.linesShader.setFloat("thickness", (float) this.weight);
         
@@ -465,6 +472,7 @@ public class OpenGLRenderer extends Renderer
         this.polygonShader.bind();
         this.polygonShader.setMat4("pv", this.view);
         this.polygonShader.setColor("color", this.fill);
+        this.polygonShader.setColor("tint", this.tint);
         
         float[] array = new float[points.length];
         for (int i = 0, n = points.length; i < n; i++) array[i] = (float) points[i];
@@ -521,6 +529,7 @@ public class OpenGLRenderer extends Renderer
         this.ellipseOutlineShader.bind();
         this.ellipseOutlineShader.setMat4("pv", this.view);
         this.ellipseOutlineShader.setColor("color", this.stroke);
+        this.ellipseOutlineShader.setColor("tint", this.tint);
         this.ellipseOutlineShader.setVec2("radius", (float) rx, (float) ry);
         this.ellipseOutlineShader.setVec2("viewport", this.target.width(), this.target.height());
         this.ellipseOutlineShader.setFloat("thickness", (float) this.weight);
@@ -547,6 +556,7 @@ public class OpenGLRenderer extends Renderer
         this.ellipseShader.bind();
         this.ellipseShader.setMat4("pv", this.view);
         this.ellipseShader.setColor("color", this.fill);
+        this.ellipseShader.setColor("tint", this.tint);
         this.ellipseShader.setVec2("radius", (float) rx, (float) ry);
         
         this.ellipseVAO.bind().getBuffer(0).bind().set(new float[] {(float) x, (float) y}, GL_DYNAMIC_DRAW).unbind();
@@ -573,6 +583,7 @@ public class OpenGLRenderer extends Renderer
         this.arcOutlineShader.bind();
         this.arcOutlineShader.setMat4("pv", this.view);
         this.arcOutlineShader.setColor("color", this.stroke);
+        this.arcOutlineShader.setColor("tint", this.tint);
         this.arcOutlineShader.setVec2("radius", (float) rx, (float) ry);
         this.arcOutlineShader.setVec2("viewport", this.target.width(), this.target.height());
         this.arcOutlineShader.setFloat("thickness", (float) this.weight);
@@ -603,6 +614,7 @@ public class OpenGLRenderer extends Renderer
         this.arcShader.bind();
         this.arcShader.setMat4("pv", this.view);
         this.arcShader.setColor("color", this.fill);
+        this.arcShader.setColor("tint", this.tint);
         this.arcShader.setVec2("radius", (float) rx, (float) ry);
         this.arcShader.setVec2("bounds", (float) start, (float) stop);
         this.arcShader.setInt("mode", this.arcMode.ordinal());
@@ -637,6 +649,7 @@ public class OpenGLRenderer extends Renderer
         
         this.textureShader.bind();
         this.textureShader.setMat4("pv", this.view);
+        this.textureShader.setColor("tint", this.tint);
         
         this.textureVAO.bind().getBuffer(0).bind().set(new float[] {
                 (float) x1, (float) y1, (float) u1, (float) v1,
@@ -670,6 +683,7 @@ public class OpenGLRenderer extends Renderer
         this.textShader.bind();
         this.textShader.setMat4("pv", this.view);
         this.textShader.setColor("color", this.fill);
+        this.textShader.setColor("tint", this.tint);
         
         float[] data = new float[text.length() * 16];
         

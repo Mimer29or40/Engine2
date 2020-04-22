@@ -1590,6 +1590,62 @@ public class Engine
     }
     
     /**
+     * See {@link Renderer#tint()}
+     */
+    public static Colorc tint()
+    {
+        return Engine.renderer.tint();
+    }
+    
+    /**
+     * See {@link Renderer#tint(Number, Number, Number, Number)}
+     */
+    public static void tint(Number r, Number g, Number b, Number a)
+    {
+        Engine.renderer.tint(r, g, b, a);
+    }
+    
+    /**
+     * See {@link Renderer#tint(Number, Number, Number)}
+     */
+    public static void tint(Number r, Number g, Number b)
+    {
+        Engine.renderer.tint(r, g, b);
+    }
+    
+    /**
+     * See {@link Renderer#tint(Number, Number)}
+     */
+    public static void tint(Number grey, Number a)
+    {
+        Engine.renderer.tint(grey, a);
+    }
+    
+    /**
+     * See {@link Renderer#tint(Number)}
+     */
+    public static void tinte(Number grey)
+    {
+        Engine.renderer.tint(grey);
+    }
+    
+    /**
+     * See {@link Renderer#tint(Colorc)}
+     */
+    public static void tint(Colorc tint)
+    {
+        Engine.renderer.tint(tint);
+    }
+    
+    /**
+     * See {@link Renderer#noTint()}
+     */
+    public static void noTint()
+    {
+        Engine.renderer.noTint();
+    }
+    
+    /**
      * See {@link Renderer#weight()}
      */
     public static double weight()

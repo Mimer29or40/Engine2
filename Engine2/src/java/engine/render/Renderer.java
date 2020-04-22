@@ -22,6 +22,7 @@ public abstract class Renderer
     private static final Blend.BTuple DEFAULT_BLEND        = new Blend.BTuple(new Blend());
     private static final Color        DEFAULT_FILL         = new Color(255);
     private static final Color        DEFAULT_STROKE       = new Color(0);
+    private static final Color        DEFAULT_TINT         = new Color(255);
     private static final double       DEFAULT_WEIGHT       = 5;
     private static final RectMode     DEFAULT_RECT_MODE    = RectMode.CORNER;
     private static final EllipseMode  DEFAULT_ELLIPSE_MODE = EllipseMode.CENTER;
@@ -72,7 +73,6 @@ public abstract class Renderer
     
     protected Texture target;
     
-    // protected boolean blend = false;
     protected boolean debug = false;
     
     protected final Blend               blend  = Renderer.DEFAULT_BLEND.setBlend(new Blend());
@@ -83,6 +83,9 @@ public abstract class Renderer
     
     protected final Color        stroke  = new Color(Renderer.DEFAULT_STROKE);
     protected final Stack<Color> strokes = new Stack<>();
+    
+    protected final Color        tint  = new Color(Renderer.DEFAULT_TINT);
+    protected final Stack<Color> tints = new Stack<>();
     
     protected       double        weight  = Renderer.DEFAULT_WEIGHT;
     protected final Stack<Double> weights = new Stack<>();
@@ -339,6 +342,90 @@ public abstract class Renderer
         this.stroke.a(0);
         
         Renderer.LOGGER.finest("Setting No Stroke");
+    }
+    
+    /**
+     * @return The current tint color.
+     */
+    public Colorc tint()
+    {
+        return this.tint;
+    }
+    
+    /**
+     * Sets the tint color.
+     *
+     * @param r The red value of the color [0-255] [0.0-1.0]
+     * @param g The green value of the color [0-255] [0.0-1.0]
+     * @param b The blue value of the color [0-255] [0.0-1.0]
+     * @param a The alpha value of the color [0-255] [0.0-1.0]
+     */
+    public void tint(Number r, Number g, Number b, Number a)
+    {
+        this.tint.set(r, g, b, a);
+        
+        Renderer.LOGGER.finest("Setting Tint Color:", this.tint);
+    }
+    
+    /**
+     * Sets the tint color.
+     *
+     * @param r The red value of the color [0-255] [0.0-1.0]
+     * @param g The green value of the color [0-255] [0.0-1.0]
+     * @param b The blue value of the color [0-255] [0.0-1.0]
+     */
+    public void tint(Number r, Number g, Number b)
+    {
+        this.tint.set(r, g, b);
+        
+        Renderer.LOGGER.finest("Setting Tint Color:", this.tint);
+    }
+    
+    /**
+     * Sets the tint color.
+     *
+     * @param grey The red, green and blue value of the color [0-255] [0.0-1.0]
+     * @param a    The alpha value of the color [0-255] [0.0-1.0]
+     */
+    public void tint(Number grey, Number a)
+    {
+        this.tint.set(grey, a);
+        
+        Renderer.LOGGER.finest("Setting Tint Color:", this.tint);
+    }
+    
+    /**
+     * Sets the tint color.
+     *
+     * @param grey The red, green and blue value of the color [0-255] [0.0-1.0]
+     */
+    public void tint(Number grey)
+    {
+        this.tint.set(grey);
+        
+        Renderer.LOGGER.finest("Setting Tint Color:", this.tint);
+    }
+    
+    /**
+     * Sets the tint color.
+     *
+     * @param tint The color to set fill to.
+     */
+    public void tint(Colorc tint)
+    {
+        this.tint.set(tint);
+        
+        Renderer.LOGGER.finest("Setting Tint Color:", this.tint);
+    }
+    
+    /**
+     * Disabled the stroke of shapes
+     */
+    public void noTint()
+    {
+        this.tint.set(255, 255);
+        
+        Renderer.LOGGER.finest("Setting No Tint");
     }
     
     /**
@@ -607,6 +694,9 @@ public abstract class Renderer
         this.stroke.set(Renderer.DEFAULT_STROKE);
         this.strokes.clear();
         
+        this.tint.set(Renderer.DEFAULT_TINT);
+        this.tints.clear();
+        
         this.weight = Renderer.DEFAULT_WEIGHT;
         this.weights.clear();
         
@@ -653,6 +743,7 @@ public abstract class Renderer
         this.blends.push(new Blend.BTuple(this.blend));
         this.fills.push(new Color(this.fill));
         this.strokes.push(new Color(this.stroke));
+        this.tints.push(new Color(this.tint));
         this.weights.push(this.weight);
         this.rectModes.push(this.rectMode);
         this.ellipseModes.push(this.ellipseMode);
@@ -672,6 +763,7 @@ public abstract class Renderer
         this.blends.pop().setBlend(this.blend);
         this.fill.set(this.fills.pop());
         this.stroke.set(this.strokes.pop());
+        this.tint.set(this.tints.pop());
         this.weight      = this.weights.pop();
         this.rectMode    = this.rectModes.pop();
         this.ellipseMode = this.ellipseModes.pop();

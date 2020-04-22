@@ -699,13 +699,14 @@ public class SoftwareRenderer extends Renderer
     
     private void pointImpl(int x, int y, Colorc color)
     {
+        SoftwareRenderer.COLOR.set(color).tint(this.tint);
         if (this.blend.enabled())
         {
-            this.target.setPixel(x, y, this.blend.blend(color, this.target.getPixel(x, y), SoftwareRenderer.COLOR));
+            this.target.setPixel(x, y, this.blend.blend(SoftwareRenderer.COLOR, this.target.getPixel(x, y), SoftwareRenderer.COLOR));
         }
         else
         {
-            if (color.a() > 0) this.target.setPixel(x, y, color);
+            if (SoftwareRenderer.COLOR.a() > 0) this.target.setPixel(x, y, SoftwareRenderer.COLOR);
         }
     }
     

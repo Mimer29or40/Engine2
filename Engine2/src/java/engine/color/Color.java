@@ -657,6 +657,34 @@ public class Color implements Colorc
     }
     
     /**
+     * Returns a color that is tinted by the color.
+     *
+     * @param tint   the tint
+     * @param result the result
+     * @return result
+     */
+    @Override
+    public Color tint(Colorc tint, Color result)
+    {
+        if (tint.r() < 255) result.r(r() * tint.r() / 255);
+        if (tint.g() < 255) result.g(g() * tint.g() / 255);
+        if (tint.b() < 255) result.b(b() * tint.b() / 255);
+        if (tint.a() < 255) result.a(a() * tint.a() / 255);
+        return result;
+    }
+    
+    /**
+     * Returns this color that is a tinted.
+     *
+     * @param tint the tint
+     * @return this
+     */
+    public Color tint(Colorc tint)
+    {
+        return tint(tint, thisOrNew());
+    }
+    
+    /**
      * Sets this color to the value described by a 32-bit integer.
      *
      * @param x the 32-bit integer

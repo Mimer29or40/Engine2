@@ -322,4 +322,13 @@ public interface Colorc
      * @return result
      */
     Color darker(double factor, Color result);
+    
+    /**
+     * Returns a color that is tinted by the color.
+     *
+     * @param tint   the tint
+     * @param result the result
+     * @return result
+     */
+    Color tint(Colorc tint, Color result);
 }

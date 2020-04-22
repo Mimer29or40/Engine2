@@ -4,7 +4,6 @@ import engine.color.Color;
 import engine.render.ArcMode;
 import engine.render.RectMode;
 import engine.render.Texture;
-import engine.util.Logger;
 
 import java.util.logging.Level;
 
@@ -13,8 +12,8 @@ import static engine.util.Util.println;
 
 public class EngineTest extends Engine
 {
-    Logger  logger = new Logger();
-    int     state  = 8;
+    // Logger  logger = new Logger();
+    int     state = 6;
     Texture texture;
     
     @Override
@@ -27,7 +26,7 @@ public class EngineTest extends Engine
         
         // println(Color.RED.toHex());
         // stop();
-    
+        
         texture = new Texture(30, 30);
         Color c = new Color();
         for (int j = 0; j < texture.height(); j++)
@@ -37,8 +36,8 @@ public class EngineTest extends Engine
                 texture.setPixel(i, j, c.set((double) i / (double) texture.width(), (double) j / (double) texture.height(), 255, 255));
             }
         }
-        texture.upload();
-    
+        texture.bindTexture().upload();
+        
         renderer().blend().enabled(true);
     }
     
@@ -47,6 +46,7 @@ public class EngineTest extends Engine
     {
         clear();
         // push();
+        tint(255, 100, 100);
         switch (state)
         {
             case 1:
@@ -62,7 +62,7 @@ public class EngineTest extends Engine
                 break;
             case 3:
                 stroke(255, 0, 0, 100);
-                int thick = 80;
+                // int thick = 80;
                 weight(5);
                 // scale(10, 10);
                 // translate(screenWidth() / 4., screenHeight() / 4.);
@@ -130,7 +130,7 @@ public class EngineTest extends Engine
                 rotate(Math.sin(seconds()));
                 // rotate(seconds());
                 // arc(0, 0, 300, 100, 0, map(Math.sin(seconds()), -1, 1, 0, 2.0 * Math.PI));
-                arc(0, 0, 300, 100, 0, seconds() + 1 * Math.sin(4 * seconds()));
+                arc(0, 0, 300, 100, seconds() - 8 * Math.cos(0.25 * -seconds()), seconds() + 1 * Math.sin(4 * seconds()));
                 break;
             case 9:
                 push();
@@ -147,12 +147,12 @@ public class EngineTest extends Engine
                 pop();
                 // fill(Color.WHITE);
                 break;
-            case 10:
-                break;
-            case 11:
-                break;
-            case 12:
-                break;
+            // case 10:
+            //     break;
+            // case 11:
+            //     break;
+            // case 12:
+            //     break;
         }
         // pop();
         // fill(Color.GREEN);
@@ -163,7 +163,7 @@ public class EngineTest extends Engine
         if (keyboard().D.down()) rendererDebug(!rendererDebug());
         if (keyboard().F.down()) window().toggleFullscreen();
         if (keyboard().V.down()) window().toggleVsync();
-    
+        
         if (keyboard().F1.down(modifiers().NONE)) state = 1;
         if (keyboard().F2.down(modifiers().NONE)) state = 2;
         if (keyboard().F3.down(modifiers().NONE)) state = 3;
@@ -176,7 +176,7 @@ public class EngineTest extends Engine
         if (keyboard().F10.down(modifiers().NONE)) state = 10;
         if (keyboard().F11.down(modifiers().NONE)) state = 11;
         if (keyboard().F12.down(modifiers().NONE)) state = 12;
-    
+        
         if (keyboard().ESCAPE.down()) stop();
     }
     

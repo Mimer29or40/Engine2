@@ -76,12 +76,12 @@ public abstract class UIElement
     
     public int absX()
     {
-        return (this.container != null ? this.container.absX() : 0) + this.rect.x1();
+        return (this.container != null ? this.container.absX() : 0) + this.rect.left();
     }
     
     public int absY()
     {
-        return (this.container != null ? this.container.absY() : 0) + this.rect.y1();
+        return (this.container != null ? this.container.absY() : 0) + this.rect.top();
     }
     
     public UIElement position(int x, int y)

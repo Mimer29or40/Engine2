@@ -42,7 +42,7 @@ public class UIWindow extends UIElement implements IUIContainerLike
         
         if (this.rootContainer != null)
         {
-            this.rootContainer.position(this.rect.x1() + this.shadowWidth, this.rect.y1() + this.shadowWidth);
+            this.rootContainer.position(this.rect.x() + this.shadowWidth, this.rect.y() + this.shadowWidth);
         }
         
         return this;
@@ -58,12 +58,12 @@ public class UIWindow extends UIElement implements IUIContainerLike
         
         if (this.rootContainer != null)
         {
-            int newWidth = this.rect.width() - (2 * this.shadowWidth);
+            int newWidth  = this.rect.width() - (2 * this.shadowWidth);
             int newHeight = this.rect.height() - (2 * this.shadowWidth);
             if (this.rootContainer.rect.width() != newWidth || this.rootContainer.rect.height() != newHeight)
             {
                 this.rootContainer.dimensions(newWidth, newHeight);
-                this.rootContainer.position(this.rect.x1() + this.shadowWidth, this.rect.y1() + this.shadowWidth);
+                this.rootContainer.position(this.rect.x() + this.shadowWidth, this.rect.y() + this.shadowWidth);
             }
         }
         
@@ -75,8 +75,8 @@ public class UIWindow extends UIElement implements IUIContainerLike
     {
         if (this.rootContainer == null)
         {
-            this.rootContainer = new UIContainer(new Rect(this.rect.x1() + this.shadowWidth,
-                                                          this.rect.y1() + this.shadowWidth,
+            this.rootContainer = new UIContainer(new Rect(this.rect.x() + this.shadowWidth,
+                                                          this.rect.y() + this.shadowWidth,
                                                           this.rect.width() - (2 * this.shadowWidth),
                                                           this.rect.height() - (2 * this.shadowWidth)),
                                                  null);

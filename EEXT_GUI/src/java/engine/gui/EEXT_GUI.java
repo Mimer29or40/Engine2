@@ -4,9 +4,9 @@ import engine.Engine;
 import engine.Extension;
 import engine.color.Color;
 import engine.event.*;
+import engine.gui.util.Rect;
 import engine.render.Renderer;
 import engine.render.Texture;
-import org.joml.Vector2i;
 
 import java.util.ArrayList;
 
@@ -16,10 +16,11 @@ public class EEXT_GUI extends Extension
 {
     public static EEXT_GUI INSTANCE = new EEXT_GUI();
     
-    private final Vector2i resolution = new Vector2i();
+    private final Rect rect = new Rect();
     
     private Texture  texture;
     private Renderer renderer;
+    private Texture  emptyTexture;
     
     final ArrayList<UIElement> elements = new ArrayList<>();
     
@@ -27,6 +28,12 @@ public class EEXT_GUI extends Extension
     private UIElement focusedElement = null;
     
     private double hoverTime = 0.0;
+    
+    public EEXT_GUI()
+    {
+        super();
+        this.enabled = false;
+    }
     
     /**
      * This is called once before the {@link Engine#setup} method is called.
@@ -43,9 +50,8 @@ public class EEXT_GUI extends Extension
     @Override
     public void afterSetup()
     {
-        if (this.resolution.x <= 0 || this.resolution.y <= 0) this.resolution.set(screenSize());
-        
-        this.renderer = Renderer.getRenderer(this.texture = new Texture(this.resolution.x, this.resolution.y, 4), rendererType());
+        this.renderer     = Renderer.getRenderer(this.texture = new Texture(this.rect.width(), this.rect.height(), 4), rendererType());
+        this.emptyTexture = new Texture(0, 0);
     }
     
     /**
@@ -201,7 +207,9 @@ public class EEXT_GUI extends Extension
         
         this.renderer.finish();
         
-        texture(this.texture, 0, 0, screenWidth(), screenHeight());
+        renderer().blend().enabled(true);
+        texture(this.texture, this.rect.left(), this.rect.top(), this.rect.width(), this.rect.height());
+        renderer().blend().enabled(false);
     }
     
     /**
@@ -222,9 +230,24 @@ public class EEXT_GUI extends Extension
     
     }
     
-    public static void size(int width, int height)
+    public Renderer renderer()
     {
-        EEXT_GUI.INSTANCE.resolution.set(width, height);
+        return this.renderer;
+    }
+    
+    public Texture getEmptyTexture()
+    {
+        return this.emptyTexture;
+    }
+    
+    public static void createGUI(int x, int y, int width, int height)
+    {
+        EEXT_GUI.INSTANCE.rect.set(x, y, width, height);
+    }
+    
+    public static void createGUI()
+    {
+        createGUI(0, 0, screenWidth(), screenHeight());
     }
     
     public static void setFocused(UIElement element)

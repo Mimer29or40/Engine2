@@ -2,7 +2,7 @@ package engine.gui.shapes;
 
 import engine.render.Texture;
 
-public class ShapeState
+public class ShapeStatePGGUI
 {
     public final String id;
     
@@ -11,9 +11,9 @@ public class ShapeState
     public boolean freshSurface       = false;
     public String  cachedBackgroundId = null;
     
-    public StateTransition transition;
+    public StateTransitionPGGUI transition;
     
-    public ShapeState(String id)
+    public ShapeStatePGGUI(String id)
     {
         this.id = id;
     }

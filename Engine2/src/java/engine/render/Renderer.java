@@ -71,9 +71,11 @@ public abstract class Renderer
         return new SoftwareRenderer(target);
     }
     
-    protected Texture target;
-    
     protected boolean debug = false;
+    
+    protected       Texture        defaultTarget;
+    protected       Texture        target;
+    protected final Stack<Texture> targets = new Stack<>();
     
     protected final Blend               blend  = Renderer.DEFAULT_BLEND.setBlend(new Blend());
     protected final Stack<Blend.BTuple> blends = new Stack<>();
@@ -114,31 +116,12 @@ public abstract class Renderer
     
     protected Renderer(Texture target)
     {
-        this.target = target;
+        this.defaultTarget = this.target = target;
     }
     
     // ----------------
     // -- Properties --
     // ----------------
-    
-    /**
-     * @return Gets the current render target.
-     */
-    public Texture target()
-    {
-        return this.target;
-    }
-    
-    /**
-     * Sets the render target of the renderer.
-     *
-     * @param target The new target.
-     */
-    public void target(Texture target)
-    {
-        this.target = target;
-        identity();
-    }
     
     /**
      * @return If debug is enabled for the renderer.
@@ -166,6 +149,25 @@ public abstract class Renderer
     public void toggleDebug()
     {
         debug(!this.debug);
+    }
+    
+    /**
+     * @return Gets the current render target.
+     */
+    public Texture target()
+    {
+        return this.target;
+    }
+    
+    /**
+     * Sets the render target of the renderer.
+     *
+     * @param target The new target.
+     */
+    public void target(Texture target)
+    {
+        this.target = target;
+        identity();
     }
     
     /**
@@ -685,6 +687,9 @@ public abstract class Renderer
         
         this.drawing = true;
         
+        this.target = this.defaultTarget;
+        this.targets.clear();
+        
         Renderer.DEFAULT_BLEND.setBlend(this.blend);
         this.blends.clear();
         
@@ -740,6 +745,7 @@ public abstract class Renderer
     {
         Renderer.LOGGER.finer("Pushing Renderer State");
         
+        this.targets.push(this.target);
         this.blends.push(new Blend.BTuple(this.blend));
         this.fills.push(new Color(this.fill));
         this.strokes.push(new Color(this.stroke));
@@ -760,6 +766,7 @@ public abstract class Renderer
     {
         Renderer.LOGGER.finer("Popping Renderer State");
         
+        this.target = this.targets.pop();
         this.blends.pop().setBlend(this.blend);
         this.fill.set(this.fills.pop());
         this.stroke.set(this.strokes.pop());

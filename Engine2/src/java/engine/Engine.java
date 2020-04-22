@@ -2182,6 +2182,46 @@ public class Engine
     }
     
     /**
+     * See {@link Renderer#drawInterpolatedTexture(Texture, Texture, double, double, double, double, double, double, double, double, double)}
+     */
+    public static void drawInterpolatedTexture(Texture texture1, Texture texture2, double amount, double x1, double y1, double x2, double y2, double u1, double v1, double v2, double u2)
+    {
+        Engine.renderer.drawInterpolatedTexture(texture1, texture2, amount, x1, y1, x2, y2, u1, v1, u2, v2);
+    }
+    
+    /**
+     * See {@link Renderer#interpolateTexture(Texture, Texture, double, double, double, double, double, double, double, double, double)}
+     */
+    public static void interpolateTexture(Texture texture1, Texture texture2, double amount, double a, double b, double c, double d, double u1, double v1, double v2, double u2)
+    {
+        Engine.renderer.interpolateTexture(texture1, texture2, amount, a, b, c, d, u1, v1, v2, u2);
+    }
+    
+    /**
+     * See {@link Renderer#interpolateTexture(Texture, Texture, double, double, double, double, double, double, double)}
+     */
+    public static void interpolateTexture(Texture texture1, Texture texture2, double amount, double x, double y, double u1, double v1, double v2, double u2)
+    {
+        Engine.renderer.interpolateTexture(texture1, texture2, amount, x, y, u1, v1, v2, u2);
+    }
+    
+    /**
+     * See {@link Renderer#interpolateTexture(Texture, Texture, double, double, double, double, double)}
+     */
+    public static void interpolateTexture(Texture texture1, Texture texture2, double amount, double a, double b, double c, double d)
+    {
+        Engine.renderer.interpolateTexture(texture1, texture2, amount, a, b, c, d);
+    }
+    
+    /**
+     * See {@link Renderer#interpolateTexture(Texture, Texture, double, double, double)}
+     */
+    public static void interpolateTexture(Texture texture1, Texture texture2, double amount, double x, double y)
+    {
+        Engine.renderer.interpolateTexture(texture1, texture2, amount, x, y);
+    }
+    
+    /**
      * See {@link Renderer#drawText(String, double, double)}
      */
     public static void drawText(String text, double x, double y)

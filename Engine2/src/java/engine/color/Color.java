@@ -685,6 +685,38 @@ public class Color implements Colorc
     }
     
     /**
+     * Returns a color that is interpolated between this color and other.
+     *
+     * @param other  the other color
+     * @param amount the amount to interpolate
+     * @param result the result
+     * @return result
+     */
+    @Override
+    public Color interpolate(Colorc other, double amount, Color result)
+    {
+        if (amount <= 0) return result.set(this);
+        if (1 <= amount) return result.set(other);
+        double inverse = 1 - amount;
+        return result.r((int) (inverse * r() + amount * other.r()))
+                     .g((int) (inverse * g() + amount * other.g()))
+                     .b((int) (inverse * b() + amount * other.b()))
+                     .a((int) (inverse * a() + amount * other.a()));
+    }
+    
+    /**
+     * Returns this color that is interpolated between this color and other.
+     *
+     * @param other  the other color
+     * @param amount the amount to interpolate
+     * @return this
+     */
+    public Color interpolate(Colorc other, double amount)
+    {
+        return interpolate(other, amount, thisOrNew());
+    }
+    
+    /**
      * Sets this color to the value described by a 32-bit integer.
      *
      * @param x the 32-bit integer

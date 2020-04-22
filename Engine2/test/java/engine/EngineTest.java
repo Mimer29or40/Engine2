@@ -14,7 +14,7 @@ public class EngineTest extends Engine
 {
     // Logger  logger = new Logger();
     int     state = 6;
-    Texture texture;
+    Texture texture1, texture2;
     
     @Override
     public void setup()
@@ -27,16 +27,27 @@ public class EngineTest extends Engine
         // println(Color.RED.toHex());
         // stop();
         
-        texture = new Texture(30, 30);
         Color c = new Color();
-        for (int j = 0; j < texture.height(); j++)
+    
+        texture1 = new Texture(30, 30);
+        for (int j = 0; j < texture1.height(); j++)
         {
-            for (int i = 0; i < texture.width(); i++)
+            for (int i = 0; i < texture1.width(); i++)
             {
-                texture.setPixel(i, j, c.set((double) i / (double) texture.width(), (double) j / (double) texture.height(), 255, 255));
+                texture1.setPixel(i, j, c.set((double) i / (double) texture1.width(), (double) j / (double) texture1.height(), 255, 255));
             }
         }
-        texture.bindTexture().upload();
+        texture1.bindTexture().upload();
+    
+        texture2 = new Texture(30, 30);
+        for (int j = 0; j < texture2.height(); j++)
+        {
+            for (int i = 0; i < texture2.width(); i++)
+            {
+                texture2.setPixel(i, j, c.set((double) i / (double) texture1.width(), 255, (double) j / (double) texture1.height(), 255));
+            }
+        }
+        texture2.bindTexture().upload();
         
         renderer().blend().enabled(true);
     }
@@ -46,7 +57,7 @@ public class EngineTest extends Engine
     {
         clear();
         // push();
-        tint(255, 100, 100);
+        if (keyboard().SPACE.held()) tint(255, 100, 100);
         switch (state)
         {
             case 1:
@@ -106,7 +117,7 @@ public class EngineTest extends Engine
                 circle(0, 0, 200 * Math.sqrt(2));
                 rotate(seconds());
                 // scale(0.5, 2);
-                texture(texture, 0, 0, 200, 200);
+                interpolateTexture(texture1, texture2, map(Math.sin(4 * seconds()), -1, 1, 0, 1), 0, 0, 200, 200);
                 break;
             case 7:
                 stroke(255, 0, 0, 100);

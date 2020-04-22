@@ -650,7 +650,55 @@ public class OpenGLRenderer extends Renderer
         this.textureShader.bind();
         this.textureShader.setMat4("pv", this.view);
         this.textureShader.setColor("tint", this.tint);
+        this.textureShader.setFloat("interpolate", -1);
+        this.textureShader.setInt("texture1", 0);
+        this.textureShader.setInt("texture2", 1);
         
+        this.textureVAO.bind().getBuffer(0).bind().set(new float[] {
+                (float) x1, (float) y1, (float) u1, (float) v1,
+                (float) x1, (float) y2, (float) u1, (float) v2,
+                (float) x2, (float) y2, (float) u2, (float) v2,
+                (float) x2, (float) y1, (float) u2, (float) v1
+        }, GL_DYNAMIC_DRAW).unbind();
+        this.textureVAO.draw(GL_QUADS).unbind();
+    }
+    
+    /**
+     * Draws an interpolated textured rectangle whose top left corner is at {@code (x1, y1)} and is {@code x2-x1} pixels wide and {@code y2-y1} tall.
+     * <p>
+     * You can specify the coordinate of the texture to pull from.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param texture1 The first texture to draw.
+     * @param texture2 The second texture to draw.
+     * @param amount   The amount to interpolate.
+     * @param x1       The top left corner x coordinate of the rectangle.
+     * @param y1       The top left corner y coordinate of the rectangle.
+     * @param x2       The bottom right corner x coordinate of the rectangle.
+     * @param y2       The bottom right corner y coordinate of the rectangle.
+     * @param u1       The top left corner u texture coordinate of the rectangle.
+     * @param v1       The top left corner v texture coordinate of the rectangle.
+     * @param u2       The bottom right corner u texture coordinate of the rectangle.
+     * @param v2       The bottom right corner v texture coordinate of the rectangle.
+     */
+    @Override
+    public void drawInterpolatedTexture(Texture texture1, Texture texture2, double amount, double x1, double y1, double x2, double y2, double u1, double v1, double u2, double v2)
+    {
+        makeCurrent();
+    
+        texture1.bindTexture();
+        glActiveTexture(GL_TEXTURE1);
+        texture2.bindTexture();
+        glActiveTexture(GL_TEXTURE0);
+    
+        this.textureShader.bind();
+        this.textureShader.setMat4("pv", this.view);
+        this.textureShader.setColor("tint", this.tint);
+        this.textureShader.setFloat("interpolate", (float) amount);
+        this.textureShader.setInt("texture1", 0);
+        this.textureShader.setInt("texture2", 1);
+    
         this.textureVAO.bind().getBuffer(0).bind().set(new float[] {
                 (float) x1, (float) y1, (float) u1, (float) v1,
                 (float) x1, (float) y2, (float) u1, (float) v2,

@@ -591,6 +591,77 @@ public class SoftwareRenderer extends Renderer
     }
     
     /**
+     * Draws an interpolated textured rectangle whose top left corner is at {@code (x1, y1)} and is {@code x2-x1} pixels wide and {@code y2-y1} tall.
+     * <p>
+     * You can specify the coordinate of the texture to pull from.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param texture1 The first texture to draw.
+     * @param texture2 The second texture to draw.
+     * @param amount   The amount to interpolate.
+     * @param x1       The top left corner x coordinate of the rectangle.
+     * @param y1       The top left corner y coordinate of the rectangle.
+     * @param x2       The bottom right corner x coordinate of the rectangle.
+     * @param y2       The bottom right corner y coordinate of the rectangle.
+     * @param u1       The top left corner u texture coordinate of the rectangle.
+     * @param v1       The top left corner v texture coordinate of the rectangle.
+     * @param u2       The bottom right corner u texture coordinate of the rectangle.
+     * @param v2       The bottom right corner v texture coordinate of the rectangle.
+     */
+    @Override
+    public void drawInterpolatedTexture(Texture texture1, Texture texture2, double amount, double x1, double y1, double x2, double y2, double u1, double v1, double u2, double v2)
+    {
+        if (x2 <= 0 || y2 <= 0 || u2 <= 0 || v2 <= 0) return;
+    
+        texture1.bindTexture().download();
+    
+        PairD topLeft     = transform(x1, y1);
+        PairD topRight    = transform(x2, y1);
+        PairD bottomLeft  = transform(x1, y2);
+        PairD bottomRight = transform(x2, y2);
+    
+        int topLeftX     = (int) round(topLeft.a());
+        int topLeftY     = (int) round(topLeft.b());
+        int topRightX    = (int) round(topRight.a());
+        int topRightY    = (int) round(topRight.b());
+        int bottomLeftX  = (int) round(bottomLeft.a());
+        int bottomLeftY  = (int) round(bottomLeft.b());
+        int bottomRightX = (int) round(bottomRight.a());
+        int bottomRightY = (int) round(bottomRight.b());
+    
+        int u1i = (int) round(u1 * texture1.width());
+        int v1i = (int) round(v1 * texture1.height());
+        int u2i = (int) round(u2 * texture1.width());
+        int v2i = (int) round(v2 * texture1.height());
+    
+        lineImpl(topLeftX, topLeftY, topRightX, topRightY, 1, LINE_OVERLAP_NONE);
+        lineImpl(topRightX, topRightY, bottomRightX, bottomRightY, 1, LINE_OVERLAP_NONE);
+        lineImpl(bottomRightX, bottomRightY, bottomLeftX, bottomLeftY, 1, LINE_OVERLAP_NONE);
+        lineImpl(bottomLeftX, bottomLeftY, topLeftX, topLeftY, 1, LINE_OVERLAP_NONE);
+        fillBetweenLines();
+    
+        int xAxisX   = topRightX - topLeftX;
+        int xAxisY   = topRightY - topLeftY;
+        int yAxisX   = bottomLeftX - topLeftX;
+        int yAxisY   = bottomLeftY - topLeftY;
+        int xAxisLen = xAxisX * xAxisX + xAxisY * xAxisY;
+        int yAxisLen = yAxisX * yAxisX + yAxisY * yAxisY;
+        if (xAxisLen == 0) xAxisLen = 1;
+        if (yAxisLen == 0) yAxisLen = 1;
+    
+        for (PairI point : SoftwareRenderer.POINTS)
+        {
+            int dx    = point.a() - topLeftX;
+            int dy    = point.b() - topLeftY;
+            int textX = u1i + ((dx * xAxisX + dy * xAxisY) * (u2i - u1i) / xAxisLen);
+            int textY = v1i + ((dx * yAxisX + dy * yAxisY) * (v2i - v1i) / yAxisLen);
+            pointImpl(point.a(), point.b(), texture1.getPixel(textX, textY).interpolate(texture2.getPixel(textX, textY), amount, SoftwareRenderer.COLOR));
+        }
+        SoftwareRenderer.POINTS.clear();
+    }
+    
+    /**
      * Draws a string of text to the screen. The coordinate specified will be the top left of the text.
      * <p>
      * You can change the font with {@link #textFont()}.

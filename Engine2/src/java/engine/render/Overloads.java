@@ -4155,19 +4155,1634 @@ public class Overloads
         r.texture(t, ab.x(), ab.y(), cd.x(), cd.y());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2ic ab)
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, double c, double d, double u1, double v1, Vector2ic uv2)
     {
-        r.texture(t, ab.x(), ab.y());
+        r.interpolateTexture(t1, t2, amount, a, b, c, d, u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2fc ab)
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, double c, double d, double u1, double v1, Vector2fc uv2)
     {
-        r.texture(t, ab.x(), ab.y());
+        r.interpolateTexture(t1, t2, amount, a, b, c, d, u1, v1, uv2.y(), uv2.x());
     }
     
-    public static void texture(Renderer r, Texture t, Vector2dc ab)
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, double c, double d, double u1, double v1, Vector2dc uv2)
     {
-        r.texture(t, ab.x(), ab.y());
+        r.interpolateTexture(t1, t2, amount, a, b, c, d, u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, double c, double d, Vector2ic uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, c, d, uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, double c, double d, Vector2fc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, c, d, uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, double c, double d, Vector2dc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, c, d, uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, double c, double d, Vector2ic uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, double c, double d, Vector2ic uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, double c, double d, Vector2ic uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, double c, double d, Vector2fc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, double c, double d, Vector2fc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, double c, double d, Vector2fc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, double c, double d, Vector2dc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, double c, double d, Vector2dc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, double c, double d, Vector2dc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2ic cd, double u1, double v1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2ic cd, double u1, double v1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2ic cd, double u1, double v1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2fc cd, double u1, double v1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2fc cd, double u1, double v1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2fc cd, double u1, double v1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2dc cd, double u1, double v1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2dc cd, double u1, double v1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2dc cd, double u1, double v1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2ic cd, Vector2ic uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2ic cd, Vector2fc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2ic cd, Vector2dc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2fc cd, Vector2ic uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2fc cd, Vector2fc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2fc cd, Vector2dc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2dc cd, Vector2ic uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2dc cd, Vector2fc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2dc cd, Vector2dc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, double c, double d, double u1, double v1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, double c, double d, double u1, double v1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, double c, double d, double u1, double v1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, double c, double d, double u1, double v1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, double c, double d, double u1, double v1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, double c, double d, double u1, double v1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, double c, double d, double u1, double v1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, double c, double d, double u1, double v1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, double c, double d, double u1, double v1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, double c, double d, Vector2ic uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, double c, double d, Vector2fc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, double c, double d, Vector2dc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, double c, double d, Vector2ic uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, double c, double d, Vector2fc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, double c, double d, Vector2dc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, double c, double d, Vector2ic uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, double c, double d, Vector2fc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, double c, double d, Vector2dc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2ic cd, double u1, double v1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2fc cd, double u1, double v1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2dc cd, double u1, double v1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2ic cd, double u1, double v1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2fc cd, double u1, double v1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2dc cd, double u1, double v1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2ic cd, double u1, double v1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2fc cd, double u1, double v1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2dc cd, double u1, double v1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2ic cd, Vector2ic uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2ic cd, Vector2ic uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2ic cd, Vector2ic uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2ic cd, Vector2fc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2ic cd, Vector2fc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2ic cd, Vector2fc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2ic cd, Vector2dc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2ic cd, Vector2dc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2ic cd, Vector2dc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2fc cd, Vector2ic uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2fc cd, Vector2ic uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2fc cd, Vector2ic uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2fc cd, Vector2fc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2fc cd, Vector2fc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2fc cd, Vector2fc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2fc cd, Vector2dc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2fc cd, Vector2dc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2fc cd, Vector2dc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2dc cd, Vector2ic uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2dc cd, Vector2ic uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2dc cd, Vector2ic uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2dc cd, Vector2fc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2dc cd, Vector2fc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2dc cd, Vector2fc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2dc cd, Vector2dc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2dc cd, Vector2dc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, double c, double d, Vector2ic uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, double c, double d, Vector2ic uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, double c, double d, Vector2ic uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, double c, double d, Vector2fc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, double c, double d, Vector2fc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, double c, double d, Vector2fc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, double c, double d, Vector2dc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, double c, double d, Vector2dc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, double c, double d, Vector2dc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, double c, double d, Vector2ic uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, double c, double d, Vector2ic uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, double c, double d, Vector2ic uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, double c, double d, Vector2fc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, double c, double d, Vector2fc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, double c, double d, Vector2fc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, double c, double d, Vector2dc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, double c, double d, Vector2dc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, double c, double d, Vector2dc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, double c, double d, Vector2ic uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, double c, double d, Vector2ic uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, double c, double d, Vector2ic uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, double c, double d, Vector2fc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, double c, double d, Vector2fc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, double c, double d, Vector2fc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, double c, double d, Vector2dc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, double c, double d, Vector2dc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d, uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2ic cd, double u1, double v1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2ic cd, double u1, double v1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2ic cd, double u1, double v1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2fc cd, double u1, double v1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2fc cd, double u1, double v1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2fc cd, double u1, double v1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2dc cd, double u1, double v1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2dc cd, double u1, double v1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2dc cd, double u1, double v1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2ic cd, double u1, double v1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2ic cd, double u1, double v1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2ic cd, double u1, double v1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2fc cd, double u1, double v1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2fc cd, double u1, double v1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2fc cd, double u1, double v1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2dc cd, double u1, double v1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2dc cd, double u1, double v1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2dc cd, double u1, double v1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2ic cd, double u1, double v1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2ic cd, double u1, double v1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2ic cd, double u1, double v1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2fc cd, double u1, double v1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2fc cd, double u1, double v1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2fc cd, double u1, double v1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2dc cd, double u1, double v1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2dc cd, double u1, double v1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), u1, v1, uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2ic cd, Vector2ic uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2ic cd, Vector2fc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2ic cd, Vector2dc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2fc cd, Vector2ic uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2fc cd, Vector2fc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2fc cd, Vector2dc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2dc cd, Vector2ic uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2dc cd, Vector2fc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2dc cd, Vector2dc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2ic cd, Vector2ic uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2ic cd, Vector2fc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2ic cd, Vector2dc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2fc cd, Vector2ic uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2fc cd, Vector2fc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2fc cd, Vector2dc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2dc cd, Vector2ic uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2dc cd, Vector2fc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2dc cd, Vector2dc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2ic cd, Vector2ic uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2ic cd, Vector2fc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2ic cd, Vector2dc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2fc cd, Vector2ic uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2fc cd, Vector2fc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2fc cd, Vector2dc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2dc cd, Vector2ic uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2dc cd, Vector2fc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), v2, u2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2ic cd, Vector2ic uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2ic cd, Vector2ic uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2ic cd, Vector2ic uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2ic cd, Vector2fc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2ic cd, Vector2fc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2ic cd, Vector2fc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2ic cd, Vector2dc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2ic cd, Vector2dc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2ic cd, Vector2dc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2fc cd, Vector2ic uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2fc cd, Vector2ic uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2fc cd, Vector2ic uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2fc cd, Vector2fc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2fc cd, Vector2fc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2fc cd, Vector2fc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2fc cd, Vector2dc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2fc cd, Vector2dc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2fc cd, Vector2dc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2dc cd, Vector2ic uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2dc cd, Vector2ic uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2dc cd, Vector2ic uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2dc cd, Vector2fc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2dc cd, Vector2fc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2dc cd, Vector2fc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2dc cd, Vector2dc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2dc cd, Vector2dc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2dc cd, Vector2dc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2ic cd, Vector2ic uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2ic cd, Vector2ic uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2ic cd, Vector2ic uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2ic cd, Vector2fc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2ic cd, Vector2fc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2ic cd, Vector2fc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2ic cd, Vector2dc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2ic cd, Vector2dc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2ic cd, Vector2dc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2fc cd, Vector2ic uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2fc cd, Vector2ic uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2fc cd, Vector2ic uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2fc cd, Vector2fc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2fc cd, Vector2fc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2fc cd, Vector2fc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2fc cd, Vector2dc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2fc cd, Vector2dc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2fc cd, Vector2dc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2dc cd, Vector2ic uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2dc cd, Vector2ic uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2dc cd, Vector2ic uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2dc cd, Vector2fc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2dc cd, Vector2fc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2dc cd, Vector2fc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2dc cd, Vector2dc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2dc cd, Vector2dc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2dc cd, Vector2dc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2ic cd, Vector2ic uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2ic cd, Vector2ic uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2ic cd, Vector2ic uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2ic cd, Vector2fc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2ic cd, Vector2fc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2ic cd, Vector2fc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2ic cd, Vector2dc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2ic cd, Vector2dc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2ic cd, Vector2dc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2fc cd, Vector2ic uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2fc cd, Vector2ic uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2fc cd, Vector2ic uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2fc cd, Vector2fc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2fc cd, Vector2fc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2fc cd, Vector2fc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2fc cd, Vector2dc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2fc cd, Vector2dc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2fc cd, Vector2dc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2dc cd, Vector2ic uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2dc cd, Vector2ic uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2dc cd, Vector2ic uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2dc cd, Vector2fc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2dc cd, Vector2fc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2dc cd, Vector2fc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2dc cd, Vector2dc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2dc cd, Vector2dc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2dc cd, Vector2dc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y(), uv1.x(), uv1.y(), uv2.y(), uv2.x());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double x, double y, double u1, double v1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, x, y, u1, v1, uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double x, double y, double u1, double v1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, x, y, u1, v1, uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double x, double y, double u1, double v1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, x, y, u1, v1, uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double x, double y, Vector2ic uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, x, y, uv1.x(), uv1.y(), u2, v2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double x, double y, Vector2fc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, x, y, uv1.x(), uv1.y(), u2, v2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double x, double y, Vector2dc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, x, y, uv1.x(), uv1.y(), u2, v2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic pos, double u1, double v1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), u1, v1, u2, v2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc pos, double u1, double v1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), u1, v1, u2, v2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc pos, double u1, double v1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), u1, v1, u2, v2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double x, double y, Vector2ic uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, x, y, uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double x, double y, Vector2ic uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, x, y, uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double x, double y, Vector2ic uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, x, y, uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double x, double y, Vector2fc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, x, y, uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double x, double y, Vector2fc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, x, y, uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double x, double y, Vector2fc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, x, y, uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double x, double y, Vector2dc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, x, y, uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double x, double y, Vector2dc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, x, y, uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double x, double y, Vector2dc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, x, y, uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic pos, double u1, double v1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), u1, v1, uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic pos, double u1, double v1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), u1, v1, uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic pos, double u1, double v1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), u1, v1, uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc pos, double u1, double v1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), u1, v1, uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc pos, double u1, double v1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), u1, v1, uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc pos, double u1, double v1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), u1, v1, uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc pos, double u1, double v1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), u1, v1, uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc pos, double u1, double v1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), u1, v1, uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc pos, double u1, double v1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), u1, v1, uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic pos, Vector2ic uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), u2, v2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic pos, Vector2fc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), u2, v2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic pos, Vector2dc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), u2, v2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc pos, Vector2ic uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), u2, v2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc pos, Vector2fc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), u2, v2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc pos, Vector2dc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), u2, v2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc pos, Vector2ic uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), u2, v2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc pos, Vector2fc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), u2, v2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc pos, Vector2dc uv1, double u2, double v2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), u2, v2);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic pos, Vector2ic uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic pos, Vector2ic uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic pos, Vector2ic uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic pos, Vector2fc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic pos, Vector2fc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic pos, Vector2fc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic pos, Vector2dc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic pos, Vector2dc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic pos, Vector2dc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc pos, Vector2ic uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc pos, Vector2ic uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc pos, Vector2ic uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc pos, Vector2fc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc pos, Vector2fc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc pos, Vector2fc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc pos, Vector2dc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc pos, Vector2dc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc pos, Vector2dc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc pos, Vector2ic uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc pos, Vector2ic uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc pos, Vector2ic uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc pos, Vector2fc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc pos, Vector2fc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc pos, Vector2fc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc pos, Vector2dc uv1, Vector2ic uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc pos, Vector2dc uv1, Vector2fc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc pos, Vector2dc uv1, Vector2dc uv2)
+    {
+        r.interpolateTexture(t1, t2, amount, pos.x(), pos.y(), uv1.x(), uv1.y(), uv2.x(), uv2.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2ic cd)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2fc cd)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, double a, double b, Vector2dc cd)
+    {
+        r.interpolateTexture(t1, t2, amount, a, b, cd.x(), cd.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, double c, double d)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, double c, double d)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, double c, double d)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), c, d);
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2ic cd)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2fc cd)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab, Vector2dc cd)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2ic cd)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2fc cd)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab, Vector2dc cd)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2ic cd)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2fc cd)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab, Vector2dc cd)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y(), cd.x(), cd.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2ic ab)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2fc ab)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y());
+    }
+    
+    public static void interpolateTexture(Renderer r, Texture t1, Texture t2, double amount, Vector2dc ab)
+    {
+        r.interpolateTexture(t1, t2, amount, ab.x(), ab.y());
     }
     
     public static void text(Renderer r, String text, double a, double b, Vector2ic cd)

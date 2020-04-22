@@ -1621,6 +1621,131 @@ public abstract class Renderer
         drawTexture(texture, x, y, x + texture.width(), y + texture.height(), 0, 0, 1, 1);
     }
     
+    /**
+     * Draws an interpolated textured rectangle whose top left corner is at {@code (x1, y1)} and is {@code x2-x1} pixels wide and {@code y2-y1} tall.
+     * <p>
+     * You can specify the coordinate of the texture to pull from.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param texture1 The first texture to draw.
+     * @param texture2 The second texture to draw.
+     * @param amount   The amount to interpolate.
+     * @param x1       The top left corner x coordinate of the rectangle.
+     * @param y1       The top left corner y coordinate of the rectangle.
+     * @param x2       The bottom right corner x coordinate of the rectangle.
+     * @param y2       The bottom right corner y coordinate of the rectangle.
+     * @param u1       The top left corner u texture coordinate of the rectangle.
+     * @param v1       The top left corner v texture coordinate of the rectangle.
+     * @param u2       The bottom right corner u texture coordinate of the rectangle.
+     * @param v2       The bottom right corner v texture coordinate of the rectangle.
+     */
+    public abstract void drawInterpolatedTexture(Texture texture1, Texture texture2, double amount, double x1, double y1, double x2, double y2, double u1, double v1, double u2, double v2);
+    
+    /**
+     * Draws an interpolated textured rectangle based on {@link #rectMode()}, with uv coordinates.
+     * <p>
+     * See {@link RectMode} for how the points get transformed.
+     * <p>
+     * You can specify the coordinate of the texture to pull from.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param texture1 The first texture to draw.
+     * @param texture2 The second texture to draw.
+     * @param amount   The amount to interpolate.
+     * @param a        The a value.
+     * @param b        The b value.
+     * @param c        The c value.
+     * @param d        The d value.
+     * @param u1       The top left corner x texture coordinate of the rectangle.
+     * @param v1       The top left corner y texture coordinate of the rectangle.
+     * @param u2       The bottom right corner u texture coordinate of the rectangle.
+     * @param v2       The bottom right corner v texture coordinate of the rectangle.
+     */
+    public void interpolateTexture(Texture texture1, Texture texture2, double amount, double a, double b, double c, double d, double u1, double v1, double v2, double u2)
+    {
+        Renderer.LOGGER.finer("Drawing Texture", a, b, c, d, u1, v1, u2, v2);
+        
+        switch (this.rectMode)
+        {
+            case CORNER:
+            default:
+                drawInterpolatedTexture(texture1, texture2, amount, a, b, c - a, d - b, u1, v1, u2, v2);
+                break;
+            case CORNERS:
+                drawInterpolatedTexture(texture1, texture2, amount, a, b, c, d, u1, v1, u2, v2);
+                break;
+            case CENTER:
+                drawInterpolatedTexture(texture1, texture2, amount, a - c * 0.5, b - d * 0.5, a + c * 0.5, b + d * 0.5, u1, v1, u2, v2);
+                break;
+            case RADIUS:
+                drawInterpolatedTexture(texture1, texture2, amount, a - c, b - d, a + c, b + d, u1, v1, u2, v2);
+                break;
+        }
+    }
+    
+    /**
+     * Draws an interpolated textured rectangle whose top left coordinate is at {@code (x, y)} the size of {@code texture}, with uv coordinates.
+     * <p>
+     * You can specify the coordinate of the texture to pull from.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param texture1 The first texture to draw.
+     * @param texture2 The second texture to draw.
+     * @param amount   The amount to interpolate.
+     * @param x        The top left x coordinate of the textured rectangle.
+     * @param y        The top left y coordinate of the textured rectangle.
+     * @param u1       The top left corner x texture coordinate of the rectangle.
+     * @param v1       The top left corner y texture coordinate of the rectangle.
+     * @param u2       The bottom right corner u texture coordinate of the rectangle.
+     * @param v2       The bottom right corner v texture coordinate of the rectangle.
+     */
+    public void interpolateTexture(Texture texture1, Texture texture2, double amount, double x, double y, double u1, double v1, double v2, double u2)
+    {
+        Renderer.LOGGER.finer("Drawing Texture", x, y, u1, v1, u2, v2);
+        
+        drawInterpolatedTexture(texture1, texture2, amount, x, y, x + texture1.width(), y + texture1.height(), u1, v1, u2, v2);
+    }
+    
+    /**
+     * Draws an interpolated textured rectangle based on {@link #rectMode()}.
+     * <p>
+     * See {@link RectMode} for how the points get transformed.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param texture1 The first texture to draw.
+     * @param texture2 The second texture to draw.
+     * @param amount   The amount to interpolate.
+     * @param a        The a value.
+     * @param b        The b value.
+     * @param c        The c value.
+     * @param d        The d value.
+     */
+    public void interpolateTexture(Texture texture1, Texture texture2, double amount, double a, double b, double c, double d)
+    {
+        interpolateTexture(texture1, texture2, amount, a, b, c, d, 0, 0, 1, 1);
+    }
+    
+    /**
+     * Draws an interpolated textured rectangle whose top left coordinate is at {@code (x, y)} the size of {@code texture}.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param texture1 The first texture to draw.
+     * @param texture2 The second texture to draw.
+     * @param x        The top left x coordinate of the textured rectangle.
+     * @param y        The top left y coordinate of the textured rectangle.
+     */
+    public void interpolateTexture(Texture texture1, Texture texture2, double amount, double x, double y)
+    {
+        Renderer.LOGGER.finer("Drawing Texture", x, y);
+        
+        drawInterpolatedTexture(texture1, texture2, amount, x, y, x + texture1.width(), y + texture1.height(), 0, 0, 1, 1);
+    }
+    
     // ------------------
     // -- Text Methods --
     // ------------------

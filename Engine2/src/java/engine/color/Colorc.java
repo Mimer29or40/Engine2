@@ -331,4 +331,14 @@ public interface Colorc
      * @return result
      */
     Color tint(Colorc tint, Color result);
+    
+    /**
+     * Returns a color that is interpolated between this color and other.
+     *
+     * @param other  the other color
+     * @param amount the amount to interpolate
+     * @param result the result
+     * @return result
+     */
+    Color interpolate(Colorc other, double amount, Color result);
 }

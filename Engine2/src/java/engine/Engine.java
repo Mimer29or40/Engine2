@@ -62,8 +62,10 @@ public class Engine
     private static String   rendererType;
     private static Renderer renderer;
     
-    private static Texture screenTexture;
-    private static Shader  screenShader;
+    private static int         layerCount;
+    private static Texture[]   layers;
+    private static boolean[]   activeLayers;
+    private static Shader      screenShader;
     private static VertexArray screenVAO;
     
     private static Shader      debugShader;
@@ -362,9 +364,17 @@ public class Engine
                                             Engine.pixelSize.y = Math.max(Engine.window.viewH() / Engine.screenSize.y, 1);
                                         }
                                         
-                                        Engine.screenTexture.bindTexture().unbindFramebuffer();
                                         Engine.screenShader.bind();
-                                        Engine.screenVAO.bind().draw(GL_QUADS).unbind();
+                                        Engine.screenVAO.bind();
+                                        for (int i = 0; i < Engine.layerCount; i++)
+                                        {
+                                            if (Engine.activeLayers[i])
+                                            {
+                                                Engine.layers[i].bindTexture().unbindFramebuffer();
+                                                Engine.screenVAO.draw(GL_QUADS);
+                                            }
+                                        }
+                                        Engine.screenVAO.unbind();
                                     }
                                     Engine.profiler.endSection();
                                     
@@ -609,7 +619,12 @@ public class Engine
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_BLEND);
         
-        Engine.renderer = Renderer.getRenderer(Engine.screenTexture = new Texture(screenW, screenH), Engine.rendererType = renderer);
+        Engine.layerCount   = 100;
+        Engine.layers       = new Texture[Engine.layerCount];
+        Engine.activeLayers = new boolean[Engine.layerCount];
+        
+        Engine.renderer        = Renderer.getRenderer(Engine.layers[0] = new Texture(screenW, screenH), Engine.rendererType = renderer);
+        Engine.activeLayers[0] = true;
         
         Engine.screenShader = new Shader().loadVertexFile("shader/pixel.vert").loadFragmentFile("shader/pixel.frag").validate().unbind();
         Engine.screenVAO    = new VertexArray().bind().add(new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, GL_DYNAMIC_DRAW, 2);
@@ -617,7 +632,7 @@ public class Engine
         Engine.debugShader  = new Shader().bind().loadVertexFile("shader/debug.vert").loadFragmentFile("shader/debug.frag").validate().unbind();
         Engine.debugTextVAO = new VertexArray().bind().add(24 * 1024, GL_DYNAMIC_DRAW, GL_FLOAT, 3, GL_UNSIGNED_BYTE, 4).unbind();
         Engine.debugBoxVAO  = new VertexArray().bind().add(8, GL_DYNAMIC_DRAW, GL_FLOAT, 2).unbind();
-        Engine.debugView    = new Matrix4f().setOrtho(0F, Engine.window.viewW(), Engine.window.height(), 0F, -1F, 1F);
+        Engine.debugView    = new Matrix4f().setOrtho(0F, Engine.window.viewW(), Engine.window.viewH(), 0F, -1F, 1F);
     }
     
     /**
@@ -1406,6 +1421,99 @@ public class Engine
         return Engine.random.nextColor();
     }
     
+    // ----------------------
+    // -- Layer Methods --
+    // ----------------------
+    
+    /**
+     * @return The current render layer.
+     */
+    public static int layer()
+    {
+        for (int i = 0; i < Engine.layerCount; i++)
+        {
+            if (Engine.renderer.target() == Engine.layers[i]) return i;
+        }
+        return -1;
+    }
+    
+    /**
+     * Sets the current layer. The layer must have been created first.
+     *
+     * @param layer The new layer.
+     */
+    public static void layer(int layer)
+    {
+        Engine.renderer.target(Engine.layers[layer]);
+    }
+    
+    /**
+     * Creates a new layer at the layer specified.
+     *
+     * @param layer  The layer number.
+     * @param width  The layer width.
+     * @param height The layer height.
+     */
+    public static void createLayer(int layer, int width, int height)
+    {
+        if (layer < 0 || Engine.layerCount <= layer) throw new RuntimeException("Invalid Layer: " + layer);
+        
+        if (layer == 0) throw new RuntimeException("Cannot overwrite default layer");
+        
+        boolean create = Engine.layers[layer] == null;
+        
+        Engine.layers[layer]       = new Texture(width, height);
+        Engine.activeLayers[layer] = true;
+        
+        Engine.LOGGER.fine("Layer " + (create ? "Created" : "Overwritten") + ": " + layer);
+    }
+    
+    /**
+     * Creates a new layer at the next available layer.
+     *
+     * @param width  The layer width.
+     * @param height The layer height.
+     */
+    public static void createLayer(int width, int height)
+    {
+        for (int i = 0; i < Engine.layerCount; i++)
+        {
+            if (Engine.layers[i] == null)
+            {
+                createLayer(i, width, height);
+                return;
+            }
+        }
+    }
+    
+    /**
+     * Enables the layer to be drawn to the screen.
+     *
+     * @param layer The layer.
+     */
+    public static void enableLayer(int layer)
+    {
+        if (Engine.layers[layer] == null) throw new RuntimeException("Layer not created: " + layer);
+        
+        Engine.LOGGER.finest("Enabling Layer: " + layer);
+        
+        Engine.activeLayers[layer] = true;
+    }
+    
+    /**
+     * Disables the layer from being drawn to the screen.
+     *
+     * @param layer The layer.
+     */
+    public static void disableLayer(int layer)
+    {
+        if (Engine.layers[layer] == null) throw new RuntimeException("Layer not created: " + layer);
+        
+        Engine.LOGGER.finest("Disabling Layer: " + layer);
+        
+        Engine.activeLayers[layer] = false;
+    }
+    
     // -----------------------
     // -- Renderer Instance --
     // -----------------------
@@ -1623,7 +1731,7 @@ public class Engine
     /**
      * See {@link Renderer#tint(Number)}
      */
-    public static void tinte(Number grey)
+    public static void tint(Number grey)
     {
         Engine.renderer.tint(grey);
     }

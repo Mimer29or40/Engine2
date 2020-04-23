@@ -1,11 +1,12 @@
 #version 460 core
 
-uniform sampler2D text;
+uniform sampler2D tex;
 
 in vec2 cord;
-out vec4 color;
+
+out vec4 FragColor;
 
 void main(void)
 {
-    color = texture(text, cord);
+    FragColor = texture(tex, cord);
 }

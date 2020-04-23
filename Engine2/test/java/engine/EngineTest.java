@@ -14,7 +14,7 @@ public class EngineTest extends Engine
 {
     // Logger  logger = new Logger();
     int     state = 6;
-    Texture texture1, texture2;
+    Texture texture1, texture2, texture3;
     
     @Override
     public void setup()
@@ -37,17 +37,21 @@ public class EngineTest extends Engine
                 texture1.setPixel(i, j, c.set((double) i / (double) texture1.width(), (double) j / (double) texture1.height(), 255, 255));
             }
         }
-        texture1.bindTexture().upload();
+        texture1.bindTexture().upload().unbindTexture();
     
         texture2 = new Texture(30, 30);
         for (int j = 0; j < texture2.height(); j++)
         {
             for (int i = 0; i < texture2.width(); i++)
             {
-                texture2.setPixel(i, j, c.set((double) i / (double) texture1.width(), 255, (double) j / (double) texture1.height(), 255));
+                texture2.setPixel(i, j, c.set((double) i / (double) texture1.width(), (double) j / (double) texture1.height(), 0, 255));
             }
         }
-        texture2.bindTexture().upload();
+        texture2.bindTexture().upload().unbindTexture();
+    
+        // texture3 = texture1.copy();
+        // texture3.bindTexture().download();
+        // texture3.saveImage("image");
     }
     
     @Override

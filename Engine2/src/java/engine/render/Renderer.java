@@ -167,6 +167,9 @@ public abstract class Renderer
     public void target(Texture target)
     {
         this.target = target;
+    
+        Renderer.LOGGER.finest("Setting Render Target:", this.target);
+    
         identity();
     }
     

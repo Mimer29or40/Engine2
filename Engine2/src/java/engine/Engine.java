@@ -75,7 +75,7 @@ public class Engine
     
     private static final Profiler profiler = new Profiler();
     
-    private static final Color debugLineBackground = new Color(255, 50);
+    private static final Color debugLineBackground = new Color(0, 50);
     
     private static final ArrayList<Tuple<Integer, Integer, String>> debugLines = new ArrayList<>();
     
@@ -301,10 +301,11 @@ public class Engine
                                         }
                                         Engine.profiler.endSection();
                                         
-                                        Engine.profiler.startSection("Update");
+                                        Engine.profiler.startSection("Draw");
                                         {
-                                            Engine.profiler.startSection("PEX Pre");
+                                            Engine.profiler.startSection("Extension Pre Draw");
                                             {
+                                                Engine.LOGGER.finer("Extension Pre Draw");
                                                 for (String name : Engine.extensions.keySet())
                                                 {
                                                     if (Engine.extensions.get(name).enabled())
@@ -323,14 +324,16 @@ public class Engine
                                             
                                             Engine.profiler.startSection("User");
                                             {
+                                                Engine.LOGGER.finer("User Draw");
                                                 Engine.renderer.push();
                                                 Engine.logic.draw(dt / 1_000_000_000D);
                                                 Engine.renderer.pop();
                                             }
                                             Engine.profiler.endSection();
                                             
-                                            Engine.profiler.startSection("PEX Post");
+                                            Engine.profiler.startSection("Extension Post Draw");
                                             {
+                                                Engine.LOGGER.finer("Extension Post Draw");
                                                 for (String name : Engine.extensions.keySet())
                                                 {
                                                     if (Engine.extensions.get(name).enabled())

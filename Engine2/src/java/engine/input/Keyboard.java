@@ -168,8 +168,6 @@ public class Keyboard extends Device<Keyboard.Key>
     @Override
     protected void postEvents(Key input, long time, long delta)
     {
-        Keyboard.LOGGER.finer("Posting Keyboard Events");
-        
         if (input.down) Events.post(EventKeyboardKeyDown.class, input);
         if (input.up)
         {

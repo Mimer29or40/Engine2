@@ -266,7 +266,7 @@ public class Profiler
         for (int i = header ? 0 : 1, n = apply.size(); i < n; i++)
         {
             Data point = apply.get(i);
-            builder.append(String.format("[%02d] ", level));
+            // builder.append(String.format("[%02d] ", level));
             builder.append("|   ".repeat(Math.max(0, level)));
             builder.append(point.name.contains(".") ? point.name.substring(point.name.lastIndexOf(".") + 1) : point.name);
             builder.append(" - ").append(point.values()).append('\n');
@@ -291,7 +291,7 @@ public class Profiler
     
     private ArrayList<SectionData> getAverageData(String parent)
     {
-        Function<String, Boolean> check = s -> (parent == null && !s.contains(".")) || (s.startsWith(parent + '.') && !s.replaceAll(parent + '.', "").contains("."));
+        Function<String, Boolean> check = s -> (parent == null && !s.contains(".")) || (s.startsWith(parent + '.') && !s.replaceFirst(parent + '.', "").contains("."));
         
         ArrayList<SectionData> data = new ArrayList<>();
         for (String section : this.sectionsTimeList.keySet())

@@ -215,8 +215,6 @@ public class Mouse extends Device<Mouse.Button>
     @Override
     protected void postEvents(Button input, long time, long delta)
     {
-        Mouse.LOGGER.finer("Posting Mouse Events");
-        
         if (input.down)
         {
             Events.post(EventMouseButtonDown.class, input, this.pos);

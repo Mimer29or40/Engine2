@@ -6,7 +6,7 @@ import engine.input.Mouse;
 
 import java.util.logging.Level;
 
-import static engine.gui.EEXT_GUI.createGUI;
+import static engine.gui.GUI.createGUI;
 import static engine.util.Util.println;
 
 public class GuiTest extends Engine
@@ -22,7 +22,7 @@ public class GuiTest extends Engine
     public void setup()
     {
         size(100, 100, 4, 4, OPENGL);
-        createGUI(0, 0, 20, 100);
+        createGUI(400, 400);
         
         element = new UIWindow(new Rect(0, 0, 50, 50), "Title", true)
         {
@@ -49,7 +49,11 @@ public class GuiTest extends Engine
     @Override
     public void draw(double elapsedTime)
     {
+        clear();
         
+        translate(screenWidth() >> 1, screenHeight() >> 1);
+        
+        circle(0, 0, 100);
     }
     
     /**

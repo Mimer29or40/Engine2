@@ -26,8 +26,6 @@ public class RectTest extends Engine
     
         r1.size(20, 30);
         r2.set(30, 30, 40, 40);
-    
-        renderer().blend().enabled(true);
     }
     
     /**

@@ -3,6 +3,7 @@ package engine.gui;
 import engine.gui.interfaces.IUIContainerLike;
 import engine.gui.util.Rect;
 import engine.gui.util.Rectc;
+import engine.input.Keyboard;
 import engine.input.Mouse;
 import engine.render.Texture;
 
@@ -39,7 +40,7 @@ public abstract class UIElement
         }
         else
         {
-            EEXT_GUI.INSTANCE.elements.add(this);
+            GUI.INSTANCE.elements.add(this);
         }
         
         this.rect.set(rect);
@@ -60,7 +61,7 @@ public abstract class UIElement
         }
         else
         {
-            EEXT_GUI.INSTANCE.elements.remove(this);
+            GUI.INSTANCE.elements.remove(this);
         }
     }
     
@@ -86,7 +87,7 @@ public abstract class UIElement
     
     public UIElement position(int x, int y)
     {
-        if (this.rect.left() != x || this.rect.top() != y)
+        if (this.rect.x() != x || this.rect.y() != y)
         {
             this.rect.pos(x, y);
             
@@ -131,11 +132,42 @@ public abstract class UIElement
                     if (top == null || (topChild != null && topChild.layer >= top.layer)) top = topChild;
                 }
             }
-            // int widgetX = mouseX - getAbsX(), widgetY = mouseY - getAbsY();
-            // return top != null ? top : 0 <= widgetX && widgetX < this.rect.width() && 0 <= widgetY && widgetY < this.rect.height() ? this : null;
-            return top != null ? top : this.rect.collide(mouseX - absX(), mouseY - absY()) ? this : null;
+            return top != null ? top : mouseOver(mouseX, mouseY) ? this : null;
         }
         return null;
+    }
+    
+    public boolean mouseOver(int mouseX, int mouseY)
+    {
+        return this.rect.collide(mouseX - absX(), mouseY - absY());
+    }
+    
+    // -------------------
+    // ----- UPDATES -----
+    // -------------------
+    
+    /**
+     * Updates the element.
+     * @param elapsedTime The amount of time in seconds since the last update.
+     * @return If the GUI should be redrawn.
+     */
+    public boolean update(double elapsedTime, int mouseX, int mouseY)
+    {
+        return false;
+    }
+    
+    // -------------------
+    // ----- Drawing -----
+    // -------------------
+    
+    /**
+     * Updates the element.
+     * @param elapsedTime The amount of time in seconds since the last update.
+     * @return If the GUI should be redrawn.
+     */
+    public boolean draw(double elapsedTime, int mouseX, int mouseY)
+    {
+        return false;
     }
     
     // ------------------
@@ -175,25 +207,21 @@ public abstract class UIElement
     
     public boolean onMouseButtonUp(Mouse.Button button, double x, double y)
     {
-        // return this.mBDown != null && this.mBDown.fire(button, widgetX, widgetY);
-        return false;
-    }
-    
-    public boolean onMouseButtonClicked(Mouse.Button button, double x, double y, boolean doubleClicked)
-    {
-        // return this.mBDown != null && this.mBDown.fire(button, widgetX, widgetY);
         return false;
     }
     
     public boolean onMouseButtonHeld(Mouse.Button button, double x, double y)
     {
-        // return this.mBDown != null && this.mBDown.fire(button, widgetX, widgetY);
         return false;
     }
     
     public boolean onMouseButtonRepeated(Mouse.Button button, double x, double y)
     {
-        // return this.mBDown != null && this.mBDown.fire(button, widgetX, widgetY);
+        return false;
+    }
+    
+    public boolean onMouseButtonClicked(Mouse.Button button, double x, double y, boolean doubleClicked)
+    {
         return false;
     }
     
@@ -203,6 +231,36 @@ public abstract class UIElement
     }
     
     public boolean onMouseScrolled(double x, double y)
+    {
+        return false;
+    }
+    
+    public boolean onKeyboardKeyDown(Keyboard.Key key)
+    {
+        return false;
+    }
+    
+    public boolean onKeyboardKeyUp(Keyboard.Key key)
+    {
+        return false;
+    }
+    
+    public boolean onKeyboardKeyHeld(Keyboard.Key key)
+    {
+        return false;
+    }
+    
+    public boolean onKeyboardKeyRepeated(Keyboard.Key key)
+    {
+        return false;
+    }
+    
+    public boolean onKeyboardKeyPressed(Keyboard.Key key, boolean doublePressed)
+    {
+        return false;
+    }
+    
+    public boolean onKeyboardKeyTyped(char key)
     {
         return false;
     }

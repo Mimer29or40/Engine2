@@ -73,6 +73,8 @@ public class UIWindow extends UIElement implements IUIContainerLike
     @Override
     public void rebuild()
     {
+        super.rebuild();
+        
         if (this.rootContainer == null)
         {
             this.rootContainer = new UIContainer(new Rect(this.rect.x() + this.shadowWidth,

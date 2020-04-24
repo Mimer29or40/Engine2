@@ -48,6 +48,10 @@ public class EngineTest extends Engine
             }
         }
         texture2.bindTexture().upload().unbindTexture();
+        
+        // texture3 = texture1.subTexture(10, 10, 10, 10);
+        // texture1.saveImage("texture1");
+        // texture3.saveImage("texture3");
     
         // texture3 = texture1.copy();
         // texture3.bindTexture().download();

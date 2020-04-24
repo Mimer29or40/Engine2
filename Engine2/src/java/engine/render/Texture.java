@@ -478,6 +478,39 @@ public class Texture
     }
     
     /**
+     * Creates a new texture that is a sub region of this one.
+     *
+     * @param x      the left coordinate of the sub region
+     * @param y      the top coordinate of the sub region
+     * @param width  the width of the sub region
+     * @param height the height of the sub region
+     * @return the new Texture.
+     */
+    public Texture subTexture(int x, int y, int width, int height)
+    {
+        if (x + width > this.width) throw new RuntimeException("Sub-Region exceeds texture width");
+        if (y + height > this.height) throw new RuntimeException("Sub-Region exceeds texture height");
+        
+        Texture other = new Texture(width, height, this.channels);
+        
+        for (int j = 0; j < height; j++)
+        {
+            this.data.limit((j + y) * this.width * this.channels + (x + width) * this.channels);
+            this.data.position((j + y) * this.width * this.channels + x * this.channels);
+    
+            other.data.limit(j * other.width * other.channels + width * other.channels);
+            other.data.position(j * other.width * other.channels);
+            
+            MemoryUtil.memCopy(this.data, other.data);
+        }
+        
+        this.data.clear();
+        other.data.clear();
+        
+        return other;
+    }
+    
+    /**
      * Saves the texture in a custom format to disk. This is only useful for loading the texture from disk at another run time.
      *
      * @param filePath THe path to the file.

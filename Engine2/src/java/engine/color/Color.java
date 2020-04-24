@@ -98,6 +98,11 @@ public class Color implements Colorc
         this(color.r(), color.g(), color.b(), color.a());
     }
     
+    public Color(String hex)
+    {
+        fromHex(hex);
+    }
+    
     public Color()
     {
         this(0, 0, 0, 255);

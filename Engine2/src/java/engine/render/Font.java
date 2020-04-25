@@ -25,8 +25,8 @@ public class Font
     private static final HashMap<String, Font>       FONT_CACHE = new HashMap<>();
     private static final HashMap<String, ByteBuffer> FILE_CACHE = new HashMap<>();
     
-    private static final String DEFAULT_FONT_FAMILY = "default";
-    private static final int    DEFAULT_FONT_SIZE   = 12;
+    public static final String DEFAULT_FONT_FAMILY = "default";
+    public static final int    DEFAULT_FONT_SIZE   = 12;
     
     static
     {

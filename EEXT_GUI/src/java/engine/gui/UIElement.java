@@ -1,11 +1,14 @@
 package engine.gui;
 
+import engine.color.Color;
 import engine.gui.interfaces.IUIContainerLike;
 import engine.gui.util.Rect;
 import engine.gui.util.Rectc;
 import engine.input.Keyboard;
 import engine.input.Mouse;
 import engine.render.Texture;
+
+import static engine.Engine.*;
 
 public abstract class UIElement
 {
@@ -18,9 +21,7 @@ public abstract class UIElement
     
     protected Texture texture;
     
-    protected int shadowWidth;
-    protected int borderWidth;
-    protected int shapeCornerWidth;
+    protected int borderSize;
     
     protected boolean alive = true;
     
@@ -160,14 +161,15 @@ public abstract class UIElement
     // ----- Drawing -----
     // -------------------
     
-    /**
-     * Updates the element.
-     * @param elapsedTime The amount of time in seconds since the last update.
-     * @return If the GUI should be redrawn.
-     */
-    public boolean draw(double elapsedTime, int mouseX, int mouseY)
+    public void draw(double elapsedTime, int mouseX, int mouseY)
     {
-        return false;
+        push();
+        
+        target(this.texture);
+        
+        clear(Color.GREEN);
+        
+        pop();
     }
     
     // ------------------

@@ -40,10 +40,10 @@ public class UIWindow extends UIElement implements IUIContainerLike
     {
         super.position(x, y);
         
-        if (this.rootContainer != null)
-        {
-            this.rootContainer.position(this.rect.x() + this.shadowWidth, this.rect.y() + this.shadowWidth);
-        }
+        // if (this.rootContainer != null)
+        // {
+        //     this.rootContainer.position(this.rect.x() + this.shadowSize, this.rect.y() + this.shadowWidth);
+        // }
         
         return this;
     }
@@ -58,13 +58,13 @@ public class UIWindow extends UIElement implements IUIContainerLike
         
         if (this.rootContainer != null)
         {
-            int newWidth  = this.rect.width() - (2 * this.shadowWidth);
-            int newHeight = this.rect.height() - (2 * this.shadowWidth);
-            if (this.rootContainer.rect.width() != newWidth || this.rootContainer.rect.height() != newHeight)
-            {
-                this.rootContainer.dimensions(newWidth, newHeight);
-                this.rootContainer.position(this.rect.x() + this.shadowWidth, this.rect.y() + this.shadowWidth);
-            }
+            // int newWidth  = this.rect.width() - (2 * this.shadowWidth);
+            // int newHeight = this.rect.height() - (2 * this.shadowWidth);
+            // if (this.rootContainer.rect.width() != newWidth || this.rootContainer.rect.height() != newHeight)
+            // {
+            //     this.rootContainer.dimensions(newWidth, newHeight);
+            //     this.rootContainer.position(this.rect.x() + this.shadowWidth, this.rect.y() + this.shadowWidth);
+            // }
         }
         
         return this;
@@ -77,18 +77,18 @@ public class UIWindow extends UIElement implements IUIContainerLike
         
         if (this.rootContainer == null)
         {
-            this.rootContainer = new UIContainer(new Rect(this.rect.x() + this.shadowWidth,
-                                                          this.rect.y() + this.shadowWidth,
-                                                          this.rect.width() - (2 * this.shadowWidth),
-                                                          this.rect.height() - (2 * this.shadowWidth)),
-                                                 null);
+            // this.rootContainer = new UIContainer(new Rect(this.rect.x() + this.shadowWidth,
+            //                                               this.rect.y() + this.shadowWidth,
+            //                                               this.rect.width() - (2 * this.shadowWidth),
+            //                                               this.rect.height() - (2 * this.shadowWidth)),
+            //                                      null);
         }
         if (this.elementContainer == null)
         {
-            this.elementContainer = new UIContainer(new Rect(this.borderWidth,
+            this.elementContainer = new UIContainer(new Rect(this.borderSize,
                                                              this.titleHeight,
-                                                             this.rootContainer.rect.width() - (2 * this.borderWidth),
-                                                             this.rootContainer.rect.height() - (this.titleHeight + this.borderWidth)),
+                                                             this.rootContainer.rect.width() - (2 * this.borderSize),
+                                                             this.rootContainer.rect.height() - (this.titleHeight + this.borderSize)),
                                                     this.rootContainer);
         }
     }

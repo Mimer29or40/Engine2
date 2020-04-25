@@ -4,6 +4,7 @@ import engine.Engine;
 import engine.Extension;
 import engine.color.Color;
 import engine.event.*;
+import engine.gui.theme.Theme;
 import engine.render.RectMode;
 import engine.render.Renderer;
 import engine.render.Texture;
@@ -18,6 +19,8 @@ public class GUI extends Extension
     public static GUI INSTANCE = new GUI();
     
     private final Vector2i size = new Vector2i();
+    
+    private Theme theme;
     
     private boolean redrawScreen = true;
     
@@ -336,26 +339,34 @@ public class GUI extends Extension
     
     }
     
-    public Renderer renderer()
-    {
-        return this.renderer;
-    }
-    
-    public Texture getEmptyTexture()
-    {
-        return this.emptyTexture;
-    }
-    
-    public static void createGUI(int width, int height)
+    public static void createGUI(int width, int height, String themePath)
     {
         GUI.INSTANCE.size.set(width, height);
         createLayer(99, width, height);
         GUI.INSTANCE.renderer = Renderer.getRenderer(GUI.INSTANCE.emptyTexture = new Texture(width, height), rendererType());
+        
+        GUI.INSTANCE.theme = new Theme();
+        if (themePath != null) GUI.INSTANCE.theme.loadTheme(themePath);
+    }
+    
+    public static void createGUI(int width, int height)
+    {
+        createGUI(width, height, null);
+    }
+    
+    public static void createGUI(String theme)
+    {
+        createGUI(screenWidth(), screenHeight(), theme);
     }
     
     public static void createGUI()
     {
-        createGUI(screenWidth(), screenHeight());
+        createGUI(screenWidth(), screenHeight(), null);
+    }
+    
+    public static Theme theme()
+    {
+        return GUI.INSTANCE.theme;
     }
     
     public static void setFocused(UIElement element)

@@ -21,8 +21,9 @@ public class GuiTest extends Engine
     @Override
     public void setup()
     {
+        // size(100, 100, 4, 4, SOFTWARE);
         size(100, 100, 4, 4, OPENGL);
-        createGUI(400, 400);
+        createGUI(400, 400, null);
         
         element = new UIWindow(new Rect(0, 0, 50, 50), "Title", true)
         {

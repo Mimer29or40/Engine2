@@ -12,6 +12,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.HashMap;
+import java.util.Objects;
 
 import static engine.util.Util.resourceToByteBuffer;
 import static org.lwjgl.stb.STBTruetype.*;
@@ -134,6 +135,21 @@ public class Font
     public String toString()
     {
         return "Font{" + getFontID(this.name, this.size, this.bold, this.italic) + '}';
+    }
+    
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Font font = (Font) o;
+        return this.name.equals(font.name) && this.size == font.size && this.bold == font.bold && this.italic == font.italic;
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(this.name, this.size, this.bold, this.italic);
     }
     
     /**

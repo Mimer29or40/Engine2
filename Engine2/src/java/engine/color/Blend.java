@@ -3,6 +3,8 @@ package engine.color;
 import engine.util.Logger;
 import engine.util.Tuple;
 
+import java.util.Objects;
+
 import static org.lwjgl.opengl.GL46.*;
 
 /**
@@ -28,6 +30,21 @@ public class Blend implements IBlend
     public String toString()
     {
         return "Blend{" + "srcFactor=" + this.srcFactor + ", dstFactor=" + this.dstFactor + ", equation=" + this.equation + '}';
+    }
+    
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Blend blend = (Blend) o;
+        return this.srcFactor == blend.srcFactor && this.dstFactor == blend.dstFactor && this.equation == blend.equation;
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(this.srcFactor, this.dstFactor, this.equation);
     }
     
     /**

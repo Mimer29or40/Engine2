@@ -1,5 +1,7 @@
 package engine.event;
 
+import java.util.Arrays;
+
 /**
  * Generic {@link Event} that represents a group of information related to something happening with the engine.
  * <p>
@@ -29,5 +31,20 @@ public class Event
             if (i + 1 < n) s.append(" ");
         }
         return s.append("]").toString();
+    }
+    
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (!(o instanceof Event)) return false;
+        Event event = (Event) o;
+        return Arrays.equals(this.keys, event.keys) && Arrays.equals(this.values, event.values);
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        return 31 * Arrays.hashCode(this.keys) + Arrays.hashCode(this.values);
     }
 }

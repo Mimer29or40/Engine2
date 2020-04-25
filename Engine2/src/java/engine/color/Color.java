@@ -318,13 +318,13 @@ public class Color implements Colorc
     @Override
     public int hashCode()
     {
-        return Objects.hash(r(), g(), b(), a());
+        return Objects.hash(this.r, this.g, this.b, this.a);
     }
     
     @Override
     public String toString()
     {
-        return "Color{r=" + r() + ", g=" + g() + ", b=" + b() + ", a=" + a() + "}";
+        return "Color{r=" + this.r + ", g=" + this.g + ", b=" + this.b + ", a=" + this.a + "}";
     }
     
     /**

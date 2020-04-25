@@ -26,9 +26,9 @@ public abstract class Renderer
     private static final double       DEFAULT_WEIGHT       = 5;
     private static final RectMode     DEFAULT_RECT_MODE    = RectMode.CORNER;
     private static final EllipseMode  DEFAULT_ELLIPSE_MODE = EllipseMode.CENTER;
-    private static final ArcMode      DEFAULT_ARC_MODE     = ArcMode.DEFAULT;
-    private static final Font.FTuple  DEFAULT_FONT         = new Font.FTuple(new Font());
-    private static final TextAlign    DEFAULT_TEXT_ALIGN   = TextAlign.TOP_LEFT;
+    private static final ArcMode   DEFAULT_ARC_MODE   = ArcMode.DEFAULT;
+    private static final Font      DEFAULT_FONT       = Font.DEFAULT_FONT;
+    private static final TextAlign DEFAULT_TEXT_ALIGN = TextAlign.TOP_LEFT;
     
     protected static final Color CLEAR = new Color();
     
@@ -101,8 +101,8 @@ public abstract class Renderer
     protected       ArcMode        arcMode  = Renderer.DEFAULT_ARC_MODE;
     protected final Stack<ArcMode> arcModes = new Stack<>();
     
-    protected       Font               font  = Renderer.DEFAULT_FONT.setFont(new Font());
-    protected final Stack<Font.FTuple> fonts = new Stack<>();
+    protected       Font        font  = Renderer.DEFAULT_FONT;
+    protected final Stack<Font> fonts = new Stack<>();
     
     protected       TextAlign        textAlign  = Renderer.DEFAULT_TEXT_ALIGN;
     protected final Stack<TextAlign> textAligns = new Stack<>();
@@ -167,9 +167,9 @@ public abstract class Renderer
     public void target(Texture target)
     {
         this.target = target;
-    
+        
         Renderer.LOGGER.finest("Setting Render Target:", this.target);
-    
+        
         identity();
     }
     
@@ -545,7 +545,7 @@ public abstract class Renderer
      */
     public void textFont(String font)
     {
-        this.font = new Font(font);
+        this.font = Font.getFont(font);
         
         Renderer.LOGGER.finest("Setting Font:", this.font);
     }
@@ -558,7 +558,7 @@ public abstract class Renderer
      */
     public void textFont(String font, int size)
     {
-        this.font = new Font(font, size);
+        this.font = Font.getFont(font, size);
         
         Renderer.LOGGER.finest("Setting Font:", this.font);
     }
@@ -568,7 +568,7 @@ public abstract class Renderer
      */
     public int textSize()
     {
-        return this.font.getSize();
+        return this.font.size();
     }
     
     /**
@@ -579,8 +579,8 @@ public abstract class Renderer
     public void textSize(int textSize)
     {
         Renderer.LOGGER.finest("Setting Font Size:", textSize);
-        
-        this.font.setSize(textSize);
+    
+        this.font = Font.getFont(textSize);
     }
     
     /**
@@ -588,7 +588,7 @@ public abstract class Renderer
      */
     public double textAscent()
     {
-        return this.font.getAscent();
+        return this.font.ascent();
     }
     
     /**
@@ -596,7 +596,7 @@ public abstract class Renderer
      */
     public double textDescent()
     {
-        return this.font.getDescent();
+        return this.font.descent();
     }
     
     /**
@@ -717,7 +717,7 @@ public abstract class Renderer
         this.arcMode = Renderer.DEFAULT_ARC_MODE;
         this.arcModes.clear();
         
-        Renderer.DEFAULT_FONT.setFont(this.font);
+        this.font = Renderer.DEFAULT_FONT;
         this.fonts.clear();
         
         this.textAlign = Renderer.DEFAULT_TEXT_ALIGN;
@@ -757,7 +757,7 @@ public abstract class Renderer
         this.rectModes.push(this.rectMode);
         this.ellipseModes.push(this.ellipseMode);
         this.arcModes.push(this.arcMode);
-        this.fonts.push(new Font.FTuple(this.font));
+        this.fonts.push(this.font);
         this.textAligns.push(this.textAlign);
         this.views.push(new Matrix4f(this.view));
     }
@@ -778,7 +778,7 @@ public abstract class Renderer
         this.rectMode    = this.rectModes.pop();
         this.ellipseMode = this.ellipseModes.pop();
         this.arcMode     = this.arcModes.pop();
-        this.fonts.pop().setFont(this.font);
+        this.font        = this.fonts.pop();
         this.textAlign = this.textAligns.pop();
         this.view.set(this.views.pop());
     }
@@ -1842,7 +1842,7 @@ public abstract class Renderer
                             if (this.font.getStringWidth(builder.toString() + " " + subLines[j]) > w)
                             {
                                 if (this.font.getStringWidth(builder.toString()) > w) break;
-                                if ((lines.size() + 1) * this.font.getSize() > h) break;
+                                if ((lines.size() + 1) * this.font.size() > h) break;
                                 lines.add(builder.toString());
                                 builder.setLength(0);
                                 builder.append(subLines[j]);
@@ -1851,12 +1851,12 @@ public abstract class Renderer
                             builder.append(" ").append(subLines[j]);
                         }
                         if (this.font.getStringWidth(builder.toString()) > w) break;
-                        if ((lines.size() + 1) * this.font.getSize() > h) break;
+                        if ((lines.size() + 1) * this.font.size() > h) break;
                         lines.add(builder.toString());
                     }
                     else
                     {
-                        if ((lines.size() + 1) * this.font.getSize() > h) break;
+                        if ((lines.size() + 1) * this.font.size() > h) break;
                         lines.add(line);
                     }
                 }
@@ -1866,7 +1866,7 @@ public abstract class Renderer
                 lines = Arrays.asList(text.split("\n"));
             }
             
-            double actualHeight = lines.size() * this.font.getSize();
+            double actualHeight = this.font.getStringHeight(text);
             
             int    hPos    = this.textAlign.getHorizontal();
             int    vPos    = this.textAlign.getVertical();
@@ -1878,7 +1878,7 @@ public abstract class Renderer
                 
                 drawText(line, x + xOffset, y + yOffset);
                 
-                yOffset += this.font.getSize();
+                yOffset += this.font.getStringHeight(line);
             }
         }
     }

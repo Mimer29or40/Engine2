@@ -211,8 +211,7 @@ public class Util
     {
         int n = array.length;
         if (array.length == 0) return "";
-        StringBuilder b = new StringBuilder(prefix);
-        b.append(array[0]);
+        StringBuilder b = new StringBuilder(prefix).append(array[0]);
         for (int i = 1; i < n; i++) b.append(between).append(array[i]);
         return b.append(suffix).toString();
     }

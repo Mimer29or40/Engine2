@@ -11,6 +11,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Joml" level="application" />
+    <orderEntry type="library" name="Gson" level="application" />
     <orderEntry type="module-library">
       <library name="Reflections" type="repository">
         <properties maven-id="org.reflections:reflections:0.9.12" />

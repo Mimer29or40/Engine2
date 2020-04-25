@@ -1,7 +1,6 @@
 package engine.render;
 
 import engine.util.Logger;
-import engine.util.Tuple;
 import org.lwjgl.stb.STBTTAlignedQuad;
 import org.lwjgl.stb.STBTTFontinfo;
 import org.lwjgl.stb.STBTTPackContext;
@@ -17,250 +16,175 @@ import java.util.HashMap;
 import static engine.util.Util.resourceToByteBuffer;
 import static org.lwjgl.stb.STBTruetype.*;
 
-/**
- * This class turns a TrueType Font into a texture that can be used to render text to the screen.
- */
-@SuppressWarnings("unused")
 public class Font
 {
     private static final Logger LOGGER = new Logger();
     
+    private static final HashMap<String, String[]>   FONT_PATHS = new HashMap<>();
+    private static final HashMap<String, Font>       FONT_CACHE = new HashMap<>();
     private static final HashMap<String, ByteBuffer> FILE_CACHE = new HashMap<>();
     
-    private static final String  DEFAULT_FONT      = "BetterPixels.ttf";
-    private static final int     DEFAULT_SIZE      = 12;
-    private static final boolean DEFAULT_ALIGNMENT = false;
+    private static final String DEFAULT_FONT_FAMILY = "default";
+    private static final int    DEFAULT_FONT_SIZE   = 12;
     
-    protected String        font;
-    protected ByteBuffer    data;
-    protected STBTTFontinfo info;
-    
-    protected int size;
-    
-    protected boolean pixelAligned;
-    
-    protected final HashMap<Integer, STBTTPackedchar.Buffer> charDataMap = new HashMap<>();
-    
-    protected final HashMap<Integer, Double> scaleMap   = new HashMap<>();
-    protected final HashMap<Integer, Double> ascentMap  = new HashMap<>();
-    protected final HashMap<Integer, Double> descentMap = new HashMap<>();
-    protected final HashMap<Integer, Double> lineGapMap = new HashMap<>();
-    
-    protected final HashMap<Integer, Texture> textureMap = new HashMap<>();
-    
-    /**
-     * Creates a new font from a ttf file.
-     *
-     * @param font         The path to the file.
-     * @param size         The size in pixels to generate the glyphs at.
-     * @param pixelAligned If the text should be drawn at pixel coordinates.
-     */
-    public Font(String font, int size, boolean pixelAligned)
+    static
     {
-        this.font = font;
-        this.data = Font.FILE_CACHE.computeIfAbsent(this.font, r -> {
-            Font.LOGGER.finer("Loading new Font file:", r);
-            return resourceToByteBuffer(r);
-        });
+        registerFont(Font.DEFAULT_FONT_FAMILY, "fonts/BetterPixels.ttf", null, null, null);
+    }
+    
+    public static final Font DEFAULT_FONT = Font.getFont(Font.DEFAULT_FONT_FAMILY, Font.DEFAULT_FONT_SIZE, false, false);
+    
+    private final String name;
+    private final int    size;
+    
+    private final boolean bold;
+    private final boolean italic;
+    
+    private final double scale;
+    private final double ascent;
+    private final double descent;
+    private final double lineGap;
+    
+    private Texture texture;
+    
+    private final STBTTFontinfo          info;
+    private final STBTTPackedchar.Buffer charData;
+    
+    private Font(String name, String filePath, int size, boolean bold, boolean italic)
+    {
+        this.name = name;
+        this.size = size;
+        
+        this.bold   = bold;
+        this.italic = italic;
+        
+        if (!Font.FILE_CACHE.containsKey(filePath))
+        {
+            Font.LOGGER.finer("Loading new Font file:", filePath);
+            Font.FILE_CACHE.put(filePath, resourceToByteBuffer(filePath));
+        }
+        ByteBuffer data = Font.FILE_CACHE.get(filePath);
+        
         this.info = STBTTFontinfo.create();
-        if (!stbtt_InitFont(this.info, this.data)) throw new RuntimeException("Font could not be loaded: " + font);
+        if (!stbtt_InitFont(this.info, data)) throw new RuntimeException("Font could not be loaded: " + getFontID(name, size, bold, italic));
         
-        this.size = Math.max(4, size);
+        this.charData = STBTTPackedchar.create(128);
         
-        this.pixelAligned = pixelAligned;
+        Font.LOGGER.finer("Generating new font size for size=%s", this.size);
         
-        setup();
-    }
-    
-    /**
-     * Creates a new font from a ttf file.
-     *
-     * @param font The path to the file.
-     * @param size The size in pixels to generate the glyphs at.
-     */
-    public Font(String font, int size)
-    {
-        this(font, size, Font.DEFAULT_ALIGNMENT);
-    }
-    
-    /**
-     * Creates a new font from a ttf file at the default size.
-     *
-     * @param font         The path to the file.
-     * @param pixelAligned If the text should be drawn at pixel coordinates.
-     */
-    public Font(String font, boolean pixelAligned)
-    {
-        this(font, Font.DEFAULT_SIZE, pixelAligned);
-    }
-    
-    /**
-     * Creates a new font from the default font.
-     *
-     * @param size         The size in pixels to generate the glyphs at.
-     * @param pixelAligned If the text should be drawn at pixel coordinates.
-     */
-    public Font(int size, boolean pixelAligned)
-    {
-        this(Font.DEFAULT_FONT, size, pixelAligned);
-    }
-    
-    /**
-     * Creates a new font from a ttf file at the default size.
-     *
-     * @param font The path to the file.
-     */
-    public Font(String font)
-    {
-        this(font, Font.DEFAULT_SIZE, Font.DEFAULT_ALIGNMENT);
-    }
-    
-    /**
-     * Creates a new font from the default font.
-     *
-     * @param size The size in pixels to generate the glyphs at.
-     */
-    public Font(int size)
-    {
-        this(Font.DEFAULT_FONT, size, Font.DEFAULT_ALIGNMENT);
-    }
-    
-    /**
-     * Creates a new font from the default font at the default size.
-     *
-     * @param pixelAligned If the text should be drawn at pixel coordinates.
-     */
-    public Font(boolean pixelAligned)
-    {
-        this(Font.DEFAULT_FONT, Font.DEFAULT_SIZE, pixelAligned);
-    }
-    
-    /**
-     * Creates a new font from the default font at the default size.
-     */
-    public Font()
-    {
-        this(Font.DEFAULT_FONT, Font.DEFAULT_SIZE, Font.DEFAULT_ALIGNMENT);
-    }
-    
-    /**
-     * Creates a new font from another font.
-     */
-    @SuppressWarnings("CopyConstructorMissesField")
-    public Font(Font other)
-    {
-        this(other.font, other.size, other.pixelAligned);
+        this.scale = stbtt_ScaleForPixelHeight(this.info, this.size);
+        
+        try (MemoryStack stack = MemoryStack.stackPush())
+        {
+            IntBuffer ascent  = stack.mallocInt(1);
+            IntBuffer descent = stack.mallocInt(1);
+            IntBuffer lineGap = stack.mallocInt(1);
+            
+            stbtt_GetFontVMetrics(this.info, ascent, descent, lineGap);
+            
+            this.ascent  = ascent.get(0) * this.scale;
+            this.descent = descent.get(0) * this.scale;
+            this.lineGap = lineGap.get(0) * this.scale;
+        }
+        
+        boolean success = false;
+        
+        int width   = 32;
+        int samples = 2;
+        while (!success && width < 1000)
+        {
+            try (STBTTPackContext pc = STBTTPackContext.malloc())
+            {
+                this.texture = new Texture(width * this.size, this.size * samples, 1);
+                stbtt_PackBegin(pc, this.texture.data(), this.texture.width(), this.texture.height(), 0, 2, MemoryUtil.NULL);
+                this.charData.position(32);
+                stbtt_PackSetOversampling(pc, samples, samples);
+                success = stbtt_PackFontRange(pc, data, 0, (float) this.size, this.charData.position(), this.charData);
+                this.charData.clear();
+                this.texture.data().clear();
+                stbtt_PackEnd(pc);
+                width *= 2;
+            }
+        }
+        texture.bindTexture().upload();
     }
     
     @Override
     public String toString()
     {
-        return "Font{" + "font='" + this.font + '\'' + ", size=" + this.size + '}';
+        return "Font{" + getFontID(this.name, this.size, this.bold, this.italic) + '}';
     }
     
     /**
-     * @return Gets the font path.
+     * @return The name of the font family
      */
-    public String getFont()
+    public String name()
     {
-        return this.font;
+        return this.name;
     }
     
     /**
-     * Sets the font from a ttf file.
-     *
-     * @param font The new font.
+     * @return The size of the font
      */
-    public void setFont(String font)
-    {
-        if (this.font.equals(font)) return;
-        
-        this.font = font;
-        this.data = Font.FILE_CACHE.computeIfAbsent(this.font, r -> {
-            Font.LOGGER.finer("Loading new Font file:", r);
-            return resourceToByteBuffer(r);
-        });
-        this.info = STBTTFontinfo.create();
-        if (!stbtt_InitFont(this.info, this.data)) throw new RuntimeException("Font could not be loaded: " + font);
-        
-        setup();
-    }
-    
-    /**
-     * @return Gets the size of the font in pixels.
-     */
-    public int getSize()
+    public int size()
     {
         return this.size;
     }
     
     /**
-     * Sets the size in pixels for the font.
-     *
-     * @param size The new size.
+     * @return If the font is bolded
      */
-    public void setSize(int size)
+    public boolean bold()
     {
-        this.size = Math.max(4, size);
-        setup();
+        return this.bold;
     }
     
     /**
-     * @return If the font will be drawn at integer coordinates
+     * @return If the font is italicized
      */
-    public boolean isPixelAligned()
+    public boolean italic()
     {
-        return this.pixelAligned;
-    }
-    
-    /**
-     * Sets if the font will be drawn at integer coordinates
-     *
-     * @param pixelAligned The new value
-     */
-    public void setPixelAligned(boolean pixelAligned)
-    {
-        this.pixelAligned = pixelAligned;
+        return this.italic;
     }
     
     /**
      * @return Gets the scale of the font.
      */
-    public double getScale()
+    public double scale()
     {
-        return this.scaleMap.get(this.size);
+        return this.scale;
     }
     
     /**
      * @return Gets the ascent of the font.
      */
-    public double getAscent()
+    public double ascent()
     {
-        return this.ascentMap.get(this.size);
+        return this.ascent;
     }
     
     /**
      * @return Gets the descent of the font.
      */
-    public double getDescent()
+    public double descent()
     {
-        return this.descentMap.get(this.size);
+        return this.descent;
     }
     
     /**
      * @return Gets the lineGap of the font.
      */
-    public double getLineGap()
+    public double lineGap()
     {
-        return this.lineGapMap.get(this.size);
+        return this.lineGap;
     }
     
     /**
      * @return Gets the texture map of the font.
      */
-    public Texture getTexture()
+    public Texture texture()
     {
-        return this.textureMap.get(this.size);
+        return this.texture;
     }
     
     /**
@@ -277,24 +201,24 @@ public class Font
         {
             try (MemoryStack stack = MemoryStack.stackPush())
             {
-                IntBuffer cpBuffer      = stack.mallocInt(1);
-                IntBuffer advBuffer     = stack.mallocInt(1);
-                IntBuffer bearingBuffer = stack.mallocInt(1);
+                IntBuffer codePoint = stack.mallocInt(1);
+                IntBuffer advance   = stack.mallocInt(1);
+                IntBuffer bearing   = stack.mallocInt(1);
                 
                 for (int i = 0, n = text.length(); i < n; )
                 {
-                    i += getCP(text, n, i, cpBuffer);
-                    int cp = cpBuffer.get(0);
-                    stbtt_GetCodepointHMetrics(this.info, cp, advBuffer, bearingBuffer);
-                    width += advBuffer.get(0);
+                    i += getCP(text, n, i, codePoint);
+                    int cp = codePoint.get(0);
+                    stbtt_GetCodepointHMetrics(this.info, cp, advance, bearing);
+                    width += advance.get(0);
                     
                     if (i < n)
                     {
-                        getCP(text, n, i, cpBuffer);
-                        width += stbtt_GetCodepointKernAdvance(this.info, cp, cpBuffer.get(0));
+                        getCP(text, n, i, codePoint);
+                        width += stbtt_GetCodepointKernAdvance(this.info, cp, codePoint.get(0));
                     }
                 }
-                return width * this.scaleMap.get(this.size);
+                return width * this.scale;
             }
         }
         else
@@ -332,13 +256,6 @@ public class Font
     {
         int n = text.length();
         
-        STBTTPackedchar.Buffer charData = this.charDataMap.get(this.size);
-        
-        int width  = this.textureMap.get(this.size).width();
-        int height = this.textureMap.get(this.size).height();
-        
-        double ascent = this.ascentMap.get(this.size);
-        
         double[] vertices = new double[n * 8];
         try (MemoryStack stack = MemoryStack.stackPush())
         {
@@ -355,12 +272,12 @@ public class Font
             {
                 index     = i * 8;
                 character = text.charAt(i);
-                stbtt_GetPackedQuad(charData, width, height, character, x, y, quad, this.pixelAligned);
+                stbtt_GetPackedQuad(this.charData, this.texture.width(), this.texture.height(), character, x, y, quad, false);
                 if (character == ' ') continue;
                 vertices[index]     = quad.x0();
-                vertices[index + 1] = quad.y0() + ascent;
+                vertices[index + 1] = quad.y0() + this.ascent;
                 vertices[index + 2] = quad.x1();
-                vertices[index + 3] = quad.y1() + ascent;
+                vertices[index + 3] = quad.y1() + this.ascent;
                 vertices[index + 4] = quad.s0();
                 vertices[index + 5] = quad.t0();
                 vertices[index + 6] = quad.s1();
@@ -375,63 +292,97 @@ public class Font
      */
     public void destroy()
     {
-        this.charDataMap.clear();
-        this.scaleMap.clear();
-        this.descentMap.clear();
-        this.lineGapMap.clear();
-        for (Texture texture : this.textureMap.values()) texture.destroy();
-        this.textureMap.clear();
+        this.texture.destroy();
+        this.texture = null;
     }
     
-    private void setup()
+    public static void registerFont(String fontName, String fontPath, String boldPath, String italicPath, String boldItalicPath)
     {
-        if (this.charDataMap.containsKey(this.size))
+        if (Font.FONT_PATHS.containsKey(fontName))
         {
-            Font.LOGGER.finest("Font States already cached for size=%s", this.size);
+            Font.LOGGER.info("Font already registered: " + fontName);
             return;
         }
-        Font.LOGGER.finer("Generating new font size for size=%s", this.size);
         
-        STBTTPackedchar.Buffer charData = STBTTPackedchar.create(128);
-        this.charDataMap.put(this.size, charData);
+        if (boldPath == null) boldPath = fontPath;
+        if (italicPath == null) italicPath = fontPath;
+        if (boldItalicPath == null) boldItalicPath = fontPath;
         
-        double scale = stbtt_ScaleForPixelHeight(this.info, this.size);
-        this.scaleMap.put(this.size, scale);
-        
-        try (MemoryStack stack = MemoryStack.stackPush())
+        Font.FONT_PATHS.put(fontName, new String[] {fontPath, boldPath, italicPath, boldItalicPath});
+    }
+    
+    public static String getFontID(String name, int size, boolean bold, boolean italic)
+    {
+        StringBuilder id = new StringBuilder(name).append('_').append(size).append('_');
+        if (bold && italic)
         {
-            IntBuffer ascent  = stack.mallocInt(1);
-            IntBuffer descent = stack.mallocInt(1);
-            IntBuffer lineGap = stack.mallocInt(1);
-            
-            stbtt_GetFontVMetrics(this.info, ascent, descent, lineGap);
-            
-            this.ascentMap.put(this.size, ascent.get(0) * scale);
-            this.descentMap.put(this.size, descent.get(0) * scale);
-            this.lineGapMap.put(this.size, lineGap.get(0) * scale);
+            id.append("bold_italic");
+        }
+        else if (italic)
+        {
+            id.append("italic");
+        }
+        else if (bold)
+        {
+            id.append("bold");
+        }
+        else
+        {
+            id.append("regular");
+        }
+        return id.toString();
+    }
+    
+    public static Font getFont(String name, int size, boolean bold, boolean italic)
+    {
+        String fontID = getFontID(name, size, bold, italic);
+        
+        if (Font.FONT_CACHE.containsKey(fontID)) return Font.FONT_CACHE.get(fontID);
+        
+        if (!Font.FONT_PATHS.containsKey(name))
+        {
+            Font.LOGGER.warning("Font not registered: " + name);
+            return Font.DEFAULT_FONT;
         }
         
-        Texture texture      = null;
-        boolean success      = false;
-        int     textureWidth = 32;
-        int     sampleSize   = 2;
-        while (!success && textureWidth < 1000)
+        String[] fontPaths = Font.FONT_PATHS.get(name);
+        
+        String filePath;
+        if (bold && italic)
         {
-            try (STBTTPackContext pc = STBTTPackContext.malloc())
-            {
-                texture = new Texture(textureWidth * this.size, this.size * sampleSize, 1);
-                stbtt_PackBegin(pc, texture.data(), texture.width(), texture.height(), 0, 2, MemoryUtil.NULL);
-                charData.position(32);
-                stbtt_PackSetOversampling(pc, sampleSize, sampleSize);
-                success = stbtt_PackFontRange(pc, this.data, 0, (float) this.size, 32, charData);
-                charData.clear();
-                texture.data().clear();
-                stbtt_PackEnd(pc);
-                textureWidth *= 2;
-            }
+            filePath = fontPaths[3];
         }
-        texture.bindTexture().upload();
-        this.textureMap.put(this.size, texture);
+        else if (italic)
+        {
+            filePath = fontPaths[2];
+        }
+        else if (bold)
+        {
+            filePath = fontPaths[1];
+        }
+        else
+        {
+            filePath = fontPaths[0];
+        }
+        
+        Font.FONT_CACHE.put(fontID, new Font(name, filePath, size, bold, italic));
+        
+        return Font.FONT_CACHE.get(fontID);
+    }
+    
+    public static Font getFont(String name, int size)
+    {
+        return getFont(name, size, false, false);
+    }
+    
+    public static Font getFont(String name)
+    {
+        return getFont(name, Font.DEFAULT_FONT_SIZE, false, false);
+    }
+    
+    public static Font getFont(int size)
+    {
+        return getFont(Font.DEFAULT_FONT_FAMILY, size, false, false);
     }
     
     private static int getCP(String text, int to, int i, IntBuffer codePoint)
@@ -448,26 +399,5 @@ public class Font
         }
         codePoint.put(0, c1);
         return 1;
-    }
-    
-    public static final class FTuple extends Tuple<String, Integer, Boolean>
-    {
-        /**
-         * Creates a new tuple with the fonts information
-         *
-         * @param font The font object.
-         */
-        public FTuple(Font font)
-        {
-            super(font.font, font.size, font.pixelAligned);
-        }
-        
-        public Font setFont(Font font)
-        {
-            font.setFont(this.a);
-            font.setSize(this.b);
-            font.setPixelAligned(this.c);
-            return font;
-        }
     }
 }

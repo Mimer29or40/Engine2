@@ -726,7 +726,7 @@ public class OpenGLRenderer extends Renderer
     {
         makeCurrent();
         
-        this.font.getTexture().bindTexture();
+        this.font.texture().bindTexture();
         
         this.textShader.bind();
         this.textShader.setMat4("pv", this.view);

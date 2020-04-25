@@ -684,10 +684,10 @@ public class PixelRenderer extends Renderer
             int bottomRightX = (int) round(x2);
             int bottomRightY = (int) round(y2);
             
-            int u1i = (int) round(u1 * this.font.getTexture().width());
-            int v1i = (int) round(v1 * this.font.getTexture().height());
-            int u2i = (int) round(u2 * this.font.getTexture().width());
-            int v2i = (int) round(v2 * this.font.getTexture().height());
+            int u1i = (int) round(u1 * this.font.texture().width());
+            int v1i = (int) round(v1 * this.font.texture().height());
+            int u2i = (int) round(u2 * this.font.texture().width());
+            int v2i = (int) round(v2 * this.font.texture().height());
             
             lineImpl(topLeftX, topLeftY, topRightX, topRightY, 1, LINE_OVERLAP_NONE);
             lineImpl(topRightX, topRightY, bottomRightX, bottomRightY, 1, LINE_OVERLAP_NONE);
@@ -710,7 +710,7 @@ public class PixelRenderer extends Renderer
                 int dy    = point.b() - topLeftY;
                 int textX = u1i + ((dx * xAxisX + dy * xAxisY) * (u2i - u1i) / xAxisLen);
                 int textY = v1i + ((dx * yAxisX + dy * yAxisY) * (v2i - v1i) / yAxisLen);
-                int red   = this.font.getTexture().getPixel(textX, textY).r();
+                int red   = this.font.texture().getPixel(textX, textY).r();
                 if (red > 0) pointImpl(point.a(), point.b(), PixelRenderer.COLOR.set(this.fill).scale((double) red / 255, true));
             }
             PixelRenderer.POINTS.clear();

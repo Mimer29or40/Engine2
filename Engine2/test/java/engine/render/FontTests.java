@@ -16,9 +16,10 @@ public class FontTests extends Engine
     {
         // size(800, 800, 1, 1, "software");
         size(800, 800, 1, 1, "opengl");
-    
+        
         // font = new Font("demo/FiraSans.ttf", 24, false);
-        font = new Font("BetterPixels.ttf", 24, false);
+        // font = new Font("fonts/BetterPixels.ttf", 24, false);
+        font = Font.getFont(24);
     }
     
     @Override
@@ -30,7 +31,7 @@ public class FontTests extends Engine
         // textSize(64);
         
         translate(screenWidth() / 2., screenHeight() / 2.);
-        rotate(nanoseconds() / 4000000000.);
+        rotate(seconds());
         
         if (keyboard().F1.held()) textAlign(TextAlign.TOP_LEFT);
         if (keyboard().F2.held()) textAlign(TextAlign.TOP);
@@ -46,7 +47,7 @@ public class FontTests extends Engine
         if (keyboard().K2.held()) rectMode(RectMode.CORNERS);
         if (keyboard().K3.held()) rectMode(RectMode.CENTER);
         if (keyboard().K4.held()) rectMode(RectMode.RADIUS);
-    
+        
         fill(Color.DARK_GREEN);
         
         String text;

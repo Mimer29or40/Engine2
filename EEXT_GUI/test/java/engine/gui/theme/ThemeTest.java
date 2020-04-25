@@ -16,10 +16,6 @@ public class ThemeTest extends Engine
     {
         size(400, 400, 2, 2, OPENGL);
         createGUI();
-        
-        Theme theme = new Theme();
-        
-        theme.loadTheme("themes/default.json");
     }
     
     /**

@@ -3,6 +3,8 @@ package engine.gui.util;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
+import java.util.Objects;
+
 @SuppressWarnings("UnusedReturnValue")
 public class Rect implements Rectc
 {
@@ -48,6 +50,27 @@ public class Rect implements Rectc
         this.y = other.y();
         this.w = other.width();
         this.h = other.height();
+    }
+    
+    @Override
+    public String toString()
+    {
+        return "Rect{" + "x=" + this.x + ", y=" + this.y + ", w=" + this.w + ", h=" + this.h + '}';
+    }
+    
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Rect rect = (Rect) o;
+        return this.x == rect.x && this.y == rect.y && this.w == rect.w && this.h == rect.h;
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(this.x, this.y, this.w, this.h);
     }
     
     /**

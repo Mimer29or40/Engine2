@@ -6,8 +6,6 @@ import engine.color.Color;
 import engine.event.*;
 import engine.gui.theme.Theme;
 import engine.render.RectMode;
-import engine.render.Renderer;
-import engine.render.Texture;
 import org.joml.Vector2i;
 
 import java.util.ArrayList;
@@ -24,9 +22,6 @@ public class GUI extends Extension
     
     private boolean redrawScreen = true;
     
-    private Renderer renderer;
-    private Texture  emptyTexture;
-    
     final ArrayList<UIElement> elements = new ArrayList<>();
     
     private UIElement topElement     = null;
@@ -34,11 +29,11 @@ public class GUI extends Extension
     
     private double hoverTime = 0.0;
     
-    // public GUI()
-    // {
-    //     super();
-    //     this.enabled = false;
-    // }
+    public GUI()
+    {
+        super();
+        this.enabled = false;
+    }
     
     /**
      * This is called once before the {@link Engine#setup} method is called.
@@ -341,9 +336,10 @@ public class GUI extends Extension
     
     public static void createGUI(int width, int height, String themePath)
     {
+        GUI.INSTANCE.enabled = true;
+        
         GUI.INSTANCE.size.set(width, height);
         createLayer(99, width, height);
-        GUI.INSTANCE.renderer = Renderer.getRenderer(GUI.INSTANCE.emptyTexture = new Texture(width, height), rendererType());
         
         GUI.INSTANCE.theme = new Theme();
         if (themePath != null) GUI.INSTANCE.theme.loadTheme(themePath);
@@ -364,11 +360,6 @@ public class GUI extends Extension
         createGUI(screenWidth(), screenHeight(), null);
     }
     
-    public static Theme theme()
-    {
-        return GUI.INSTANCE.theme;
-    }
-    
     public static void setFocused(UIElement element)
     {
         if (element == GUI.INSTANCE.focusedElement) return;
@@ -381,5 +372,10 @@ public class GUI extends Extension
         {
             GUI.INSTANCE.focusedElement.onFocus();
         }
+    }
+    
+    public static Theme theme()
+    {
+        return GUI.INSTANCE.theme;
     }
 }

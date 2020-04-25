@@ -32,7 +32,7 @@ public class Theme
     
     private final HashMap<String, HashMap<String, Color>>   elementColors    = new HashMap<>();
     private final HashMap<String, HashMap<String, IData>>   elementImageData = new HashMap<>();
-    private final HashMap<String, HashMap<String, Texture>> elementTextures  = new HashMap<>();
+    private final HashMap<String, HashMap<String, Texture>> elementImages    = new HashMap<>();
     private final HashMap<String, FData>                    elementFontData  = new HashMap<>();
     private final HashMap<String, Font>                     elementFonts     = new HashMap<>();
     private final HashMap<String, HashMap<String, String>>  elementMiscData  = new HashMap<>();
@@ -81,6 +81,8 @@ public class Theme
     
     public void loadTheme(String filePath)
     {
+        Theme.LOGGER.fine("Loading Theme: " + filePath);
+        
         Path path = getPath(this.themeResourcePath = filePath);
         try
         {
@@ -96,9 +98,9 @@ public class Theme
             jsonReader.beginObject();
             while (jsonReader.hasNext())
             {
-                String elementName = jsonReader.nextName();
+                String element = jsonReader.nextName();
                 
-                if (elementName.equals("defaults"))
+                if (element.equals("defaults"))
                 {
                     loadDefaultColors(jsonReader);
                 }
@@ -115,25 +117,25 @@ public class Theme
                                 loadPrototype(dataTypeName, jsonReader.nextString());
                                 break;
                             case "font":
-                                loadElementFont(jsonReader, elementName);
+                                loadElementFont(jsonReader, element);
                                 break;
                             default:
                                 jsonReader.beginObject();
                                 while (jsonReader.hasNext())
                                 {
-                                    String stateName = jsonReader.nextName();
+                                    String state = jsonReader.nextName();
                                     
                                     switch (dataTypeName)
                                     {
                                         case "colors":
                                         case "colours":
-                                            loadElementColor(elementName, stateName, jsonReader.nextString());
+                                            loadElementColor(element, state, jsonReader.nextString());
                                             break;
                                         case "images":
-                                            loadElementImage(jsonReader, elementName, stateName);
+                                            loadElementImage(jsonReader, element, state);
                                             break;
                                         case "misc":
-                                            loadElementMisc(elementName, stateName, jsonReader.nextString());
+                                            loadElementMisc(element, state, jsonReader.nextString());
                                             break;
                                     }
                                 }
@@ -185,6 +187,8 @@ public class Theme
     
     private void loadDefaultColors(JsonReader jsonReader) throws IOException
     {
+        Theme.LOGGER.finer("Loading Default Colors");
+        
         jsonReader.beginObject();
         while (jsonReader.hasNext())
         {
@@ -195,9 +199,12 @@ public class Theme
                 jsonReader.beginObject();
                 while (jsonReader.hasNext())
                 {
-                    String colorName = jsonReader.nextName();
-                    Color  color     = new Color(jsonReader.nextString());
-                    this.baseColors.put(colorName, color);
+                    String element = jsonReader.nextName();
+                    Color  color   = new Color(jsonReader.nextString());
+                    
+                    Theme.LOGGER.finest("Found color (%s) for element (%s)", element, color);
+                    
+                    this.baseColors.put(element, color);
                 }
                 jsonReader.endObject();
             }
@@ -207,30 +214,40 @@ public class Theme
     
     private void loadPrototype(String element, String prototype)
     {
+        Theme.LOGGER.finer("Loading prototype (%s) for element (%s)", prototype, element);
+        
         ArrayList<String> foundPrototypes = new ArrayList<>();
         
         if (this.elementColors.containsKey(prototype))
         {
+            Theme.LOGGER.finest("Adding colors from prototype (%s) to element (%s)", prototype, element);
+            
             if (!this.elementColors.containsKey(element)) this.elementColors.put(element, new HashMap<>());
             this.elementColors.get(element).putAll(this.elementColors.get(prototype));
             foundPrototypes.addAll(this.elementColors.get(prototype).keySet());
         }
         
-        if (this.elementTextures.containsKey(prototype))
+        if (this.elementImages.containsKey(prototype))
         {
-            if (!this.elementTextures.containsKey(element)) this.elementTextures.put(element, new HashMap<>());
-            this.elementTextures.get(element).putAll(this.elementTextures.get(prototype));
-            foundPrototypes.addAll(this.elementTextures.get(prototype).keySet());
+            Theme.LOGGER.finest("Adding images from prototype (%s) to element (%s)", prototype, element);
+            
+            if (!this.elementImages.containsKey(element)) this.elementImages.put(element, new HashMap<>());
+            this.elementImages.get(element).putAll(this.elementImages.get(prototype));
+            foundPrototypes.addAll(this.elementImages.get(prototype).keySet());
         }
         
         if (this.elementFontData.containsKey(prototype))
         {
+            Theme.LOGGER.finest("Adding font from prototype (%s) to element (%s)", prototype, element);
+            
             this.elementFontData.put(element, this.elementFontData.get(prototype));
             foundPrototypes.add(element);
         }
         
         if (this.elementMiscData.containsKey(prototype))
         {
+            Theme.LOGGER.finest("Adding misc data from prototype (%s) to element (%s)", prototype, element);
+            
             if (!this.elementMiscData.containsKey(element)) this.elementMiscData.put(element, new HashMap<>());
             this.elementMiscData.get(element).putAll(this.elementMiscData.get(prototype));
             foundPrototypes.addAll(this.elementMiscData.get(prototype).keySet());
@@ -239,24 +256,26 @@ public class Theme
         if (foundPrototypes.isEmpty()) Theme.LOGGER.warning("Failed to find any prototype data with ID: " + prototype);
     }
     
-    private void loadElementFont(JsonReader jsonReader, String elementName) throws IOException
+    private void loadElementFont(JsonReader jsonReader, String element) throws IOException
     {
-        if (!this.elementFontData.containsKey(elementName)) this.elementFontData.put(elementName, new FData());
+        Theme.LOGGER.finer("Loading font data for element (%s)", element);
         
-        FData fData = this.elementFontData.get(elementName);
+        if (!this.elementFontData.containsKey(element)) this.elementFontData.put(element, new FData());
+        
+        FData fData = this.elementFontData.get(element);
         
         jsonReader.beginObject();
         while (jsonReader.hasNext())
         {
-            String dataName = jsonReader.nextName();
-            String data     = jsonReader.nextString();
-            switch (dataName)
+            String name = jsonReader.nextName();
+            String data = jsonReader.nextString();
+            switch (name)
             {
                 case "name":
                     fData.name = data;
                     break;
                 case "size":
-                    fData.size = Integer.parseInt(data); // TODO - Default font size
+                    fData.size = Integer.parseInt(data);
                     break;
                 case "bold":
                     fData.bold = Integer.parseInt(data) == 1;
@@ -281,24 +300,28 @@ public class Theme
         jsonReader.endObject();
     }
     
-    private void loadElementColor(String elementName, String colorKey, String colorString)
+    private void loadElementColor(String element, String colorKey, String colorString)
     {
-        if (!this.elementColors.containsKey(elementName)) this.elementColors.put(elementName, new HashMap<>());
-        this.elementColors.get(elementName).put(colorKey, new Color(colorString));
+        Theme.LOGGER.finer("Loading color (%s) with value, (%s) for element (%s)", colorKey, colorString, element);
+        
+        if (!this.elementColors.containsKey(element)) this.elementColors.put(element, new HashMap<>());
+        this.elementColors.get(element).put(colorKey, new Color(colorString));
     }
     
-    private void loadElementImage(JsonReader jsonReader, String elementName, String imageKey) throws IOException
+    private void loadElementImage(JsonReader jsonReader, String element, String imageKey) throws IOException
     {
+        Theme.LOGGER.finer("Loading image data (%s) for element (%s)", imageKey, element);
+        
         String path       = null;
         String rectString = null;
         
         jsonReader.beginObject();
         while (jsonReader.hasNext())
         {
-            String imageData = jsonReader.nextName();
-            String data      = jsonReader.nextString();
+            String name = jsonReader.nextName();
+            String data = jsonReader.nextString();
             
-            switch (imageData)
+            switch (name)
             {
                 case "path":
                     path = data;
@@ -310,18 +333,18 @@ public class Theme
         }
         jsonReader.endObject();
         
-        if (!this.elementImageData.containsKey(elementName)) this.elementImageData.put(elementName, new HashMap<>());
-        if (!this.elementImageData.get(elementName).containsKey(imageKey))
+        if (!this.elementImageData.containsKey(element)) this.elementImageData.put(element, new HashMap<>());
+        if (!this.elementImageData.get(element).containsKey(imageKey))
         {
-            this.elementImageData.get(elementName).put(imageKey, new IData());
+            this.elementImageData.get(element).put(imageKey, new IData());
         }
         else
         {
-            this.elementImageData.get(elementName).get(imageKey).changed = false;
+            this.elementImageData.get(element).get(imageKey).changed = false;
         }
         String imagePath = path;
-        if (!this.elementImageData.get(elementName).get(imageKey).path.equals(imagePath)) this.elementImageData.get(elementName).get(imageKey).changed = true;
-        this.elementImageData.get(elementName).get(imageKey).path = imagePath;
+        if (!this.elementImageData.get(element).get(imageKey).path.equals(imagePath)) this.elementImageData.get(element).get(imageKey).changed = true;
+        this.elementImageData.get(element).get(imageKey).path = imagePath;
         if (rectString != null)
         {
             String[] rectList = rectString.strip().split(",");
@@ -331,24 +354,28 @@ public class Theme
                                      Integer.parseInt(rectList[1].strip()),
                                      Integer.parseInt(rectList[2].strip()),
                                      Integer.parseInt(rectList[3].strip()));
-                if (!this.elementImageData.get(elementName).get(imageKey).rect.equals(rect)) this.elementImageData.get(elementName).get(imageKey).changed = true;
-                this.elementImageData.get(elementName).get(imageKey).rect = rect;
+                if (!this.elementImageData.get(element).get(imageKey).rect.equals(rect)) this.elementImageData.get(element).get(imageKey).changed = true;
+                this.elementImageData.get(element).get(imageKey).rect = rect;
             }
         }
     }
     
-    private void loadElementMisc(String elementName, String miscKey, String miscString)
+    private void loadElementMisc(String element, String miscKey, String miscString)
     {
-        if (!this.elementMiscData.containsKey(elementName)) this.elementMiscData.put(elementName, new HashMap<>());
-        this.elementMiscData.get(elementName).put(miscKey, miscString);
+        Theme.LOGGER.finer("Loading misc data (%s) with value (%s) for element (%s)", miscKey, miscString, element);
+    
+        if (!this.elementMiscData.containsKey(element)) this.elementMiscData.put(element, new HashMap<>());
+        this.elementMiscData.get(element).put(miscKey, miscString);
     }
     
     private void loadImages()
     {
+        Theme.LOGGER.finer("Loading found images");
+        
         for (String elementKey : this.elementImageData.keySet())
         {
             HashMap<String, IData> dataMap = this.elementImageData.get(elementKey);
-            if (!this.elementTextures.containsKey(elementKey)) this.elementTextures.put(elementKey, new HashMap<>());
+            if (!this.elementImages.containsKey(elementKey)) this.elementImages.put(elementKey, new HashMap<>());
             for (String imageKey : dataMap.keySet())
             {
                 IData data = dataMap.get(imageKey);
@@ -357,18 +384,27 @@ public class Theme
                     Texture image;
                     if (this.loadedImages.containsKey(data.path))
                     {
+                        Theme.LOGGER.finest("Image already loaded: " + data.path);
+    
                         image = this.loadedImages.get(data.path);
                     }
                     else
                     {
+                        Theme.LOGGER.finest("Loading image: " + data.path);
+    
                         image = Texture.loadImage(data.path);
                         if (image.width() == 0) image = null;
                         if (image != null) this.loadedImages.put(data.path, image);
                     }
                     if (image != null)
                     {
-                        if (data.rect != null) image = image.subTexture(data.rect.x(), data.rect.y(), data.rect.width(), data.rect.height());
-                        this.elementTextures.get(elementKey).put(imageKey, image);
+                        if (data.rect != null)
+                        {
+                            Theme.LOGGER.finest("Creating sub texture: " + data.rect);
+    
+                            image = image.subTexture(data.rect.x(), data.rect.y(), data.rect.width(), data.rect.height());
+                        }
+                        this.elementImages.get(elementKey).put(imageKey, image);
                     }
                 }
             }
@@ -449,9 +485,9 @@ public class Theme
     {
         for (String combinedElementID : buildAllCombinedIDs(objectIDs, elementIDs))
         {
-            if (this.elementTextures.containsKey(combinedElementID) && this.elementTextures.get(combinedElementID).containsKey(imageID))
+            if (this.elementImages.containsKey(combinedElementID) && this.elementImages.get(combinedElementID).containsKey(imageID))
             {
-                return this.elementTextures.get(combinedElementID).get(imageID);
+                return this.elementImages.get(combinedElementID).get(imageID);
             }
         }
         return null;
@@ -553,14 +589,16 @@ public class Theme
     
     private static final class FData
     {
-        private String  name;
-        private int     size;
-        private boolean bold;
-        private boolean italic;
-        private String  regularPath;
-        private String  boldPath;
-        private String  italicPath;
-        private String  boldItalicPath;
+        private String name = Font.DEFAULT_FONT_FAMILY;
+        private int    size = Font.DEFAULT_FONT_SIZE;
+        
+        private boolean bold   = false;
+        private boolean italic = false;
+        
+        private String regularPath;
+        private String boldPath       = null;
+        private String italicPath     = null;
+        private String boldItalicPath = null;
     }
     
     public static final class FontData

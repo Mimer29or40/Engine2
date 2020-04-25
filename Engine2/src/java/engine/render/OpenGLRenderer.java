@@ -56,43 +56,43 @@ public class OpenGLRenderer extends Renderer
     {
         super(target);
         
-        this.pointShader = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/point.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.pointShader = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/point.geom").loadFragmentFile("shaders/shared.frag").validate();
         this.pointVAO    = new VertexArray().bind().add(2, GL_DYNAMIC_DRAW, GL_FLOAT, 2).unbind();
         
-        this.lineShader = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/line.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.lineShader = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/line.geom").loadFragmentFile("shaders/shared.frag").validate();
         this.lineVAO    = new VertexArray().bind().add(4, GL_DYNAMIC_DRAW, GL_FLOAT, 2).unbind();
         
-        this.linesShader = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/lines.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.linesShader = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/lines.geom").loadFragmentFile("shaders/shared.frag").validate();
         
         this.triangleLinesVAO = new VertexArray().bind().add(24, GL_DYNAMIC_DRAW, GL_FLOAT, 2).unbind();
-        this.triangleShader   = new Shader().loadVertexFile("shader/shared.vert").loadFragmentFile("shader/shared.frag").validate();
+        this.triangleShader   = new Shader().loadVertexFile("shaders/shared.vert").loadFragmentFile("shaders/shared.frag").validate();
         this.triangleVAO      = new VertexArray().bind().add(6, GL_DYNAMIC_DRAW, GL_FLOAT, 2).unbind();
         
         this.quadLinesVAO = new VertexArray().bind().add(32, GL_DYNAMIC_DRAW, GL_FLOAT, 2).unbind();
-        this.quadShader   = new Shader().loadVertexFile("shader/shared.vert").loadFragmentFile("shader/shared.frag").validate();
+        this.quadShader   = new Shader().loadVertexFile("shaders/shared.vert").loadFragmentFile("shaders/shared.frag").validate();
         this.quadVAO      = new VertexArray().bind().add(8, GL_DYNAMIC_DRAW, GL_FLOAT, 2).unbind();
         
         this.polygonLinesVAO = new VertexArray().bind().add(new GLBuffer(GL_ARRAY_BUFFER), GL_FLOAT, 2).unbind();
-        this.polygonShader   = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/poly.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.polygonShader   = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/poly.geom").loadFragmentFile("shaders/shared.frag").validate();
         this.polygonVAO      = new VertexArray().bind().add(2, GL_DYNAMIC_DRAW, GL_FLOAT, 2).unbind();
         this.polygonSSBO     = new GLBuffer(GL_SHADER_STORAGE_BUFFER).bind().base(1).unbind();
         
-        this.ellipseOutlineShader = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/ellipseOutline.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.ellipseOutlineShader = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/ellipseOutline.geom").loadFragmentFile("shaders/shared.frag").validate();
         this.ellipseOutlineVAO    = new VertexArray().bind().add(2, GL_DYNAMIC_DRAW, GL_FLOAT, 2).unbind();
         
-        this.ellipseShader = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/ellipse.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.ellipseShader = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/ellipse.geom").loadFragmentFile("shaders/shared.frag").validate();
         this.ellipseVAO    = new VertexArray().bind().add(2, GL_DYNAMIC_DRAW, GL_FLOAT, 2).unbind();
         
-        this.arcOutlineShader = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/arcOutline.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.arcOutlineShader = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/arcOutline.geom").loadFragmentFile("shaders/shared.frag").validate();
         this.arcOutlineVAO    = new VertexArray().bind().add(2, GL_DYNAMIC_DRAW, GL_FLOAT, 2).unbind();
         
-        this.arcShader = new Shader().loadVertexFile("shader/shared.vert").loadGeometryFile("shader/arc.geom").loadFragmentFile("shader/shared.frag").validate();
+        this.arcShader = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/arc.geom").loadFragmentFile("shaders/shared.frag").validate();
         this.arcVAO    = new VertexArray().bind().add(2, GL_DYNAMIC_DRAW, GL_FLOAT, 2).unbind();
         
-        this.textureShader = new Shader().loadVertexFile("shader/texture.vert").loadFragmentFile("shader/texture.frag").validate();
+        this.textureShader = new Shader().loadVertexFile("shaders/texture.vert").loadFragmentFile("shaders/texture.frag").validate();
         this.textureVAO    = new VertexArray().bind().add(16, GL_DYNAMIC_DRAW, GL_FLOAT, 2, GL_FLOAT, 2).unbind();
         
-        this.textShader = new Shader().loadVertexFile("shader/texture.vert").loadFragmentFile("shader/text.frag").validate();
+        this.textShader = new Shader().loadVertexFile("shaders/texture.vert").loadFragmentFile("shaders/text.frag").validate();
         this.textVAO    = new VertexArray().bind().add(new GLBuffer(GL_ARRAY_BUFFER), GL_FLOAT, 2, GL_FLOAT, 2).unbind();
     }
     

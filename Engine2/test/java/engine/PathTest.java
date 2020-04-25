@@ -8,6 +8,6 @@ public class PathTest
 {
     public static void main(String[] args)
     {
-        Path path = getPath("shader/pixel.vert");
+        Path path = getPath("shaders/pixel.vert");
     }
 }

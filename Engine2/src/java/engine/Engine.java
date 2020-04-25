@@ -629,10 +629,10 @@ public class Engine
         Engine.renderer        = Renderer.getRenderer(Engine.layers[0] = new Texture(screenW, screenH), Engine.rendererType = renderer);
         Engine.activeLayers[0] = true;
         
-        Engine.screenShader = new Shader().loadVertexFile("shader/pixel.vert").loadFragmentFile("shader/pixel.frag").validate().unbind();
+        Engine.screenShader = new Shader().loadVertexFile("shaders/pixel.vert").loadFragmentFile("shaders/pixel.frag").validate().unbind();
         Engine.screenVAO    = new VertexArray().bind().add(new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, GL_DYNAMIC_DRAW, 2);
         
-        Engine.debugShader  = new Shader().bind().loadVertexFile("shader/debug.vert").loadFragmentFile("shader/debug.frag").validate().unbind();
+        Engine.debugShader  = new Shader().bind().loadVertexFile("shaders/debug.vert").loadFragmentFile("shaders/debug.frag").validate().unbind();
         Engine.debugTextVAO = new VertexArray().bind().add(24 * 1024, GL_DYNAMIC_DRAW, GL_FLOAT, 3, GL_UNSIGNED_BYTE, 4).unbind();
         Engine.debugBoxVAO  = new VertexArray().bind().add(8, GL_DYNAMIC_DRAW, GL_FLOAT, 2).unbind();
         Engine.debugView    = new Matrix4f().setOrtho(0F, Engine.window.viewW(), Engine.window.viewH(), 0F, -1F, 1F);

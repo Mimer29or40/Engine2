@@ -16,6 +16,7 @@ import java.util.HashMap;
 import static engine.util.Util.resourceToByteBuffer;
 import static org.lwjgl.stb.STBTruetype.*;
 
+@SuppressWarnings("unused")
 public class Font
 {
     private static final Logger LOGGER = new Logger();
@@ -50,13 +51,33 @@ public class Font
     private final STBTTFontinfo          info;
     private final STBTTPackedchar.Buffer charData;
     
-    private Font(String name, String filePath, int size, boolean bold, boolean italic)
+    private Font(String name, int size, boolean bold, boolean italic)
     {
         this.name = name;
         this.size = size;
         
         this.bold   = bold;
         this.italic = italic;
+        
+        String[] fontPaths = Font.FONT_PATHS.get(name);
+        
+        String filePath;
+        if (bold && italic)
+        {
+            filePath = fontPaths[3];
+        }
+        else if (italic)
+        {
+            filePath = fontPaths[2];
+        }
+        else if (bold)
+        {
+            filePath = fontPaths[1];
+        }
+        else
+        {
+            filePath = fontPaths[0];
+        }
         
         if (!Font.FILE_CACHE.containsKey(filePath))
         {
@@ -132,7 +153,7 @@ public class Font
     }
     
     /**
-     * @return If the font is bolded
+     * @return If the font is bold
      */
     public boolean bold()
     {
@@ -296,6 +317,15 @@ public class Font
         this.texture = null;
     }
     
+    /**
+     * Registers a font with a name so font can be created with the name and not a file path.
+     *
+     * @param fontName       The name of the font family
+     * @param fontPath       The path to the regular ttf file.
+     * @param boldPath       The path to the bold ttf file. Can be null, will use regular if not provided.
+     * @param italicPath     The path to the italicized ttf file. Can be null, will use regular if not provided.
+     * @param boldItalicPath The path to the bold and italicized ttf file. Can be null, will use regular if not provided.
+     */
     public static void registerFont(String fontName, String fontPath, String boldPath, String italicPath, String boldItalicPath)
     {
         if (Font.FONT_PATHS.containsKey(fontName))
@@ -311,6 +341,38 @@ public class Font
         Font.FONT_PATHS.put(fontName, new String[] {fontPath, boldPath, italicPath, boldItalicPath});
     }
     
+    /**
+     * Lets us load a font at a particular size and style before we use it. While you can get
+     * away with relying on dynamic font loading during development, it is better to eventually
+     * pre-load all your font data at a controlled time, which is where this method comes in.
+     *
+     * @param name   The name of the font to load.
+     * @param size   The size of the font to load.
+     * @param bold   Whether the font is bold styled or not.
+     * @param italic Whether the font is italic styled or not.
+     */
+    public static void preloadFont(String name, int size, boolean bold, boolean italic)
+    {
+        String fontID = getFontID(name, size, bold, italic);
+        
+        if (Font.FONT_CACHE.containsKey(fontID)) return;
+        if (!Font.FONT_PATHS.containsKey(name))
+        {
+            Font.LOGGER.warning("Could not load unregistered font: " + name);
+            return;
+        }
+        Font.FONT_CACHE.put(fontID, new Font(name, size, bold, italic));
+    }
+    
+    /**
+     * Builds a font id with the provided properties.
+     *
+     * @param name   The font family name
+     * @param size   The size of the font
+     * @param bold   If the font is bold
+     * @param italic If the font is italicized.
+     * @return The id string.
+     */
     public static String getFontID(String name, int size, boolean bold, boolean italic)
     {
         StringBuilder id = new StringBuilder(name).append('_').append(size).append('_');
@@ -333,6 +395,15 @@ public class Font
         return id.toString();
     }
     
+    /**
+     * Gets a font with the specified properties.
+     *
+     * @param name   The font family name
+     * @param size   The size of the font
+     * @param bold   If the font is bold
+     * @param italic If the font is italicized.
+     * @return The font object.
+     */
     public static Font getFont(String name, int size, boolean bold, boolean italic)
     {
         String fontID = getFontID(name, size, bold, italic);
@@ -345,41 +416,40 @@ public class Font
             return Font.DEFAULT_FONT;
         }
         
-        String[] fontPaths = Font.FONT_PATHS.get(name);
-        
-        String filePath;
-        if (bold && italic)
-        {
-            filePath = fontPaths[3];
-        }
-        else if (italic)
-        {
-            filePath = fontPaths[2];
-        }
-        else if (bold)
-        {
-            filePath = fontPaths[1];
-        }
-        else
-        {
-            filePath = fontPaths[0];
-        }
-        
-        Font.FONT_CACHE.put(fontID, new Font(name, filePath, size, bold, italic));
+        preloadFont(name, size, bold, italic);
         
         return Font.FONT_CACHE.get(fontID);
     }
     
+    /**
+     * Gets a font with the specified properties.
+     *
+     * @param name The font family name
+     * @param size The size of the font
+     * @return The font object.
+     */
     public static Font getFont(String name, int size)
     {
         return getFont(name, size, false, false);
     }
     
+    /**
+     * Gets a font with the specified properties.
+     *
+     * @param name The font family name
+     * @return The font object.
+     */
     public static Font getFont(String name)
     {
         return getFont(name, Font.DEFAULT_FONT_SIZE, false, false);
     }
     
+    /**
+     * Gets a font with the specified properties.
+     *
+     * @param size The size of the font
+     * @return The font object.
+     */
     public static Font getFont(int size)
     {
         return getFont(Font.DEFAULT_FONT_FAMILY, size, false, false);

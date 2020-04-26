@@ -34,5 +34,7 @@
     <orderEntry type="library" name="lwjgl-opengl" level="application" />
     <orderEntry type="library" name="lwjgl-stb" level="application" />
     <orderEntry type="library" name="lwjglx-debug" level="application" />
+    <orderEntry type="library" name="NightConfig" level="application" />
+    <orderEntry type="library" name="NightConfig-JSON" level="application" />
   </component>
 </module>

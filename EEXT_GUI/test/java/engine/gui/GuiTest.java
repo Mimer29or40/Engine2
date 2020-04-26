@@ -25,7 +25,7 @@ public class GuiTest extends Engine
         size(100, 100, 4, 4, OPENGL);
         createGUI(400, 400, null);
         
-        element = new UIWindow(new Rect(0, 0, 50, 50), "Title", true)
+        element = new UIWindow(new Rect(0, 0, 50, 50), "Title", true, "#element")
         {
             @Override
             public boolean blocking()

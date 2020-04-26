@@ -1,0 +1,8 @@
+{
+	"profiler_frequency": 1.0,
+	"debug_background_color": "#32000000",
+	"title_frequency": 1.0,
+	"layer_count": 100,
+	"debug_text_color": "#FFFFFFFF",
+	"notification_duration": 2.0
+}

@@ -737,18 +737,18 @@ public class Color implements Colorc
         if (!hex.startsWith("#")) throw new RuntimeException("Invalid Hex Color String: " + hex);
         if (hex.length() == 7)
         {
+            a(255);
             r(Integer.parseInt(hex.substring(1, 3), 16));
             g(Integer.parseInt(hex.substring(3, 5), 16));
             b(Integer.parseInt(hex.substring(5, 7), 16));
-            a(255);
             return this;
         }
         else if (hex.length() == 9)
         {
-            r(Integer.parseInt(hex.substring(1, 3), 16));
-            g(Integer.parseInt(hex.substring(3, 5), 16));
-            b(Integer.parseInt(hex.substring(5, 7), 16));
-            a(Integer.parseInt(hex.substring(7, 9), 16));
+            a(Integer.parseInt(hex.substring(1, 3), 16));
+            r(Integer.parseInt(hex.substring(3, 5), 16));
+            g(Integer.parseInt(hex.substring(5, 7), 16));
+            b(Integer.parseInt(hex.substring(7, 9), 16));
             return this;
         }
         throw new RuntimeException("Invalid Hex Color String: " + hex);

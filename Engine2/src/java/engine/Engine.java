@@ -1,5 +1,7 @@
 package engine;
 
+import com.electronwill.nightconfig.core.ConfigSpec;
+import com.electronwill.nightconfig.core.file.FileConfig;
 import engine.color.Blend;
 import engine.color.Color;
 import engine.color.Colorc;
@@ -21,6 +23,7 @@ import org.reflections.Reflections;
 
 import java.lang.Math;
 import java.nio.ByteBuffer;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,6 +31,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 
 import static engine.util.Util.getCurrentDateTimeString;
+import static engine.util.Util.getPath;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.opengl.GL43.*;
 import static org.lwjgl.stb.STBEasyFont.*;
@@ -39,6 +43,8 @@ public class Engine
 {
     private static final String TITLE  = "Engine - %s - FPS(%s) SPF(Avg: %s us, Min: %s us, Max: %s us)";
     private static final Logger LOGGER = new Logger();
+    
+    private static FileConfig config;
     
     private static Engine  logic;
     private static boolean running;
@@ -75,17 +81,21 @@ public class Engine
     
     private static final Profiler profiler = new Profiler();
     
-    private static final Color debugLineBackground = new Color(0, 50);
+    private static final Color debugLineText       = new Color();
+    private static final Color debugLineBackground = new Color();
     
     private static final ArrayList<Tuple<Integer, Integer, String>> debugLines = new ArrayList<>();
     
+    private static long    titleFrequency;
     private static boolean debug;
     private static String  notification;
     private static long    notificationTime;
-    private static int     profileMode;
+    private static long    notificationDuration;
+    private static long    profilerFrequency;
+    private static int     profilerMode;
+    private static String  profilerOutput;
     private static boolean paused;
     
-    private static String profilerOutput;
     private static String screenshot;
     
     public static final String SOFTWARE = "software";
@@ -139,6 +149,27 @@ public class Engine
         Engine.LOGGER.info("Engine Started");
         
         if (Engine.logic != null) throw new RuntimeException("start can only be called once");
+        
+        Path configPath = getPath("engine_config.json");
+        
+        Engine.config = FileConfig.of(configPath);
+        Engine.config.load();
+        
+        ConfigSpec spec = new ConfigSpec();
+        spec.defineInRange("layer_count", 100, 1, 1000);
+        spec.define("debug_text_color", "#FFFFFFFF");
+        spec.define("debug_background_color", "#32000000");
+        spec.define("notification_duration", 2.0);
+        spec.define("profiler_frequency", 1.0);
+        spec.define("title_frequency", 1.0);
+        spec.correct(Engine.config);
+        
+        Engine.layerCount = Engine.config.getInt("layer_count");
+        Engine.debugLineText.fromHex(Engine.config.get("debug_text_color"));
+        Engine.debugLineBackground.fromHex(Engine.config.get("debug_background_color"));
+        Engine.notificationDuration = 1_000_000_000L * Engine.config.getLong("notification_duration");
+        Engine.profilerFrequency    = 1_000_000_000L * Engine.config.getLong("profiler_frequency");
+        Engine.titleFrequency       = 1_000_000_000L * Engine.config.getLong("title_frequency");
         
         Engine.logic     = logic;
         Engine.running   = true;
@@ -245,28 +276,28 @@ public class Engine
                                             if (Engine.keyboard.F1.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
                                             {
                                                 Engine.profiler.enabled(false);
-                                                Engine.profileMode      = 0;
+                                                Engine.profilerMode     = 0;
                                                 Engine.notification     = "Profile Mode: Off";
                                                 Engine.notificationTime = t;
                                             }
                                             if (Engine.keyboard.F2.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
                                             {
                                                 Engine.profiler.enabled(true);
-                                                Engine.profileMode      = 1;
+                                                Engine.profilerMode     = 1;
                                                 Engine.notification     = "Profile Mode: Average";
                                                 Engine.notificationTime = t;
                                             }
                                             if (Engine.keyboard.F3.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
                                             {
                                                 Engine.profiler.enabled(true);
-                                                Engine.profileMode      = 2;
+                                                Engine.profilerMode     = 2;
                                                 Engine.notification     = "Profile Mode: Min";
                                                 Engine.notificationTime = t;
                                             }
                                             if (Engine.keyboard.F4.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
                                             {
                                                 Engine.profiler.enabled(true);
-                                                Engine.profileMode      = 3;
+                                                Engine.profilerMode     = 3;
                                                 Engine.notification     = "Profile Mode: Max";
                                                 Engine.notificationTime = t;
                                             }
@@ -384,7 +415,7 @@ public class Engine
                                     Engine.profiler.startSection("Debug Text");
                                     {
                                         dt = t - Engine.notificationTime;
-                                        if (dt < 2_000_000_000L && Engine.notification != null)
+                                        if (dt < Engine.notificationDuration && Engine.notification != null)
                                         {
                                             int x = (Engine.window.viewW() - stb_easy_font_width(Engine.notification)) >> 1;
                                             int y = (Engine.window.viewH() - stb_easy_font_height(Engine.notification)) >> 1;
@@ -483,11 +514,11 @@ public class Engine
                             }
                             
                             dt = t - lastProfile;
-                            if (dt >= Engine.profiler.frequencyRaw() && !Engine.paused)
+                            if (dt >= Engine.profilerFrequency && !Engine.paused)
                             {
                                 lastProfile = t;
                                 
-                                switch (Engine.profileMode)
+                                switch (Engine.profilerMode)
                                 {
                                     case 0:
                                         Engine.profilerOutput = null;
@@ -506,7 +537,7 @@ public class Engine
                             }
                             
                             dt = t - lastTitle;
-                            if (dt >= 1_000_000_000L && totalFrames > 0 && !Engine.paused)
+                            if (dt >= Engine.titleFrequency && totalFrames > 0 && !Engine.paused)
                             {
                                 lastTitle = t;
                                 
@@ -546,7 +577,7 @@ public class Engine
                 }
             }
         }
-        catch (InterruptedException ignored) { }
+        catch (Exception ignored) { }
         finally
         {
             Engine.LOGGER.fine("Extension Pre Destruction");
@@ -565,6 +596,9 @@ public class Engine
                 
                 Engine.window.destroy();
             }
+            
+            Engine.config.save();
+            Engine.config.close();
         }
         
         Engine.LOGGER.info("Engine Finished");
@@ -622,7 +656,6 @@ public class Engine
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_BLEND);
         
-        Engine.layerCount   = 100;
         Engine.layers       = new Texture[Engine.layerCount];
         Engine.activeLayers = new boolean[Engine.layerCount];
         
@@ -1427,6 +1460,14 @@ public class Engine
     // ----------------------
     // -- Layer Methods --
     // ----------------------
+    
+    /**
+     * @return The layer count.
+     */
+    public static int layerCount()
+    {
+        return Engine.layerCount;
+    }
     
     /**
      * @return The current render layer.

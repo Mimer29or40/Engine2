@@ -1,6 +1,5 @@
 package engine.gui;
 
-import engine.color.Color;
 import engine.gui.interfaces.IUIContainerLike;
 import engine.gui.util.Rect;
 import engine.gui.util.Rectc;
@@ -21,7 +20,10 @@ public abstract class UIElement
     
     protected Texture texture;
     
-    protected int borderSize;
+    // ----- Theme Stuffs -----
+    protected String[] objectIDs;
+    protected String[] elementIDs;
+    protected int borderWidth = 1;
     
     protected boolean alive = true;
     
@@ -31,7 +33,7 @@ public abstract class UIElement
     protected boolean hover   = false;
     protected boolean enabled = false;
     
-    public UIElement(Rectc rect, IUIContainerLike container)
+    public UIElement(Rectc rect, IUIContainerLike container, String objectID)
     {
         this.container = container != null ? container.getContainer() : null;
         
@@ -47,6 +49,11 @@ public abstract class UIElement
         this.rect.set(rect);
         
         rebuild();
+    }
+    
+    public UIElement addThemeInformation(UIElement parent, String objectID)
+    {
+        return this;
     }
     
     public boolean alive()
@@ -143,6 +150,43 @@ public abstract class UIElement
         return this.rect.collide(mouseX - absX(), mouseY - absY());
     }
     
+    // --------------------
+    // ----- THEMEING -----
+    // --------------------
+    
+    public void rebuildTheme()
+    {
+        boolean anyChange = false;
+        
+        if (checkThemeSizeChange(1)) anyChange = true;
+        
+        if (anyChange) rebuild();
+    }
+    
+    protected boolean checkThemeSizeChange(int defaultBorderWidth)
+    {
+        boolean anyChange = false;
+    
+        String borderWidthString = GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "border_width");
+    
+        int borderWidth = defaultBorderWidth;
+        if (borderWidthString != null)
+        {
+            try
+            {
+                borderWidth = Integer.parseInt(borderWidthString);
+            }
+            catch (NumberFormatException ignored) { }
+        }
+        if (this.borderWidth != borderWidth)
+        {
+            this.borderWidth = borderWidth;
+            anyChange        = true;
+        }
+        
+        return anyChange;
+    }
+    
     // -------------------
     // ----- UPDATES -----
     // -------------------
@@ -154,6 +198,11 @@ public abstract class UIElement
      */
     public boolean update(double elapsedTime, int mouseX, int mouseY)
     {
+        if (mouseX != this.rect.x() || mouseY != this.rect.y())
+        {
+            this.rect.pos(mouseX, mouseY);
+            return true;
+        }
         return false;
     }
     
@@ -167,7 +216,13 @@ public abstract class UIElement
         
         target(this.texture);
         
-        clear(Color.GREEN);
+        // clear(Color.BLANK);
+        
+        fill(GUI.theme().getColor(this.objectIDs, this.elementIDs, "normal_border"));
+        fillRect(0, 0, this.rect.width(), this.rect.height());
+        
+        fill(GUI.theme().getColor(this.objectIDs, this.elementIDs, "normal_bg"));
+        fillRect(this.borderWidth, this.borderWidth, this.rect.width() - (this.borderWidth << 1), this.rect.height() - (this.borderWidth << 1));
         
         pop();
     }

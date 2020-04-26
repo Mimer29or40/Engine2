@@ -9,9 +9,9 @@ public class UIContainer extends UIElement implements IUIContainerLike
 {
     protected final ArrayList<UIElement> elements = new ArrayList<>();
     
-    public UIContainer(Rectc rect, IUIContainerLike parent)
+    public UIContainer(Rectc rect, IUIContainerLike parent, String objectID)
     {
-        super(rect, parent);
+        super(rect, parent, objectID);
     }
     
     @Override

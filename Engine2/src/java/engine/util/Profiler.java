@@ -18,39 +18,12 @@ public class Profiler
     
     private static final long WARN_TIME_THRESHOLD = 100_000_000L;
     
-    private long    frequency = 1_000_000_000L;
     private boolean enabled, newEnabled, started;
     
     private final Stack<Pair<String, Long>> sections = new Stack<>();
     
     private final ArrayList<Long>                  frameTimeList    = new ArrayList<>();
     private final HashMap<String, ArrayList<Long>> sectionsTimeList = new HashMap<>();
-    
-    /**
-     * @return The time in seconds before the average is calculated.
-     */
-    public double frequency()
-    {
-        return this.frequency > 0 ? (double) (1_000_000_000L / this.frequency) : 0;
-    }
-    
-    /**
-     * @return The time in nanoseconds before the average is calculated.
-     */
-    public long frequencyRaw()
-    {
-        return this.frequency;
-    }
-    
-    /**
-     * The time in seconds before the average is calculated. Zero for only only one frame.
-     *
-     * @param frequency The new frequency.
-     */
-    public void frequency(int frequency)
-    {
-        this.frequency = frequency > 0 ? 1_000_000_000L / (long) frequency : 0L;
-    }
     
     /**
      * @return If the profiler is enabled.

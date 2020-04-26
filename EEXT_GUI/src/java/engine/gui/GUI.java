@@ -18,7 +18,9 @@ public class GUI extends Extension
     
     private final Vector2i size = new Vector2i();
     
-    private Theme theme;
+    private Theme   theme;
+    private boolean liveThemeUpdates = true;
+    private double  themeUpdateTime  = 0.0;
     
     private boolean redrawScreen = true;
     
@@ -61,6 +63,22 @@ public class GUI extends Extension
     @Override
     public void beforeDraw(double elapsedTime)
     {
+        if (this.liveThemeUpdates)
+        {
+            if ((this.themeUpdateTime += elapsedTime) >= 1.0)
+            {
+                this.themeUpdateTime = 0.0;
+                if (this.theme.shouldReload())
+                {
+                    this.redrawScreen = true;
+                    for (UIElement element : this.elements)
+                    {
+                        element.rebuildTheme();
+                    }
+                }
+            }
+        }
+        
         int mouseX = (int) (mouse().x() * this.size.x() / screenWidth());
         int mouseY = (int) (mouse().y() * this.size.y() / screenHeight());
         
@@ -297,7 +315,7 @@ public class GUI extends Extension
             int mouseX = (int) (mouse().x() * this.size.x() / screenWidth());
             int mouseY = (int) (mouse().y() * this.size.y() / screenHeight());
             
-            layer(99);
+            layer(layerCount() - 1);
             
             clear(Color.BLANK);
             
@@ -334,30 +352,47 @@ public class GUI extends Extension
     
     }
     
-    public static void createGUI(int width, int height, String themePath)
+    public static void createGUI(int width, int height, String themePath, boolean liveThemeUpdates)
     {
         GUI.INSTANCE.enabled = true;
         
         GUI.INSTANCE.size.set(width, height);
-        createLayer(99, width, height);
+        createLayer(layerCount() - 1, width, height);
         
         GUI.INSTANCE.theme = new Theme();
         if (themePath != null) GUI.INSTANCE.theme.loadTheme(themePath);
+        
+        GUI.INSTANCE.liveThemeUpdates = liveThemeUpdates;
     }
     
-    public static void createGUI(int width, int height)
+    public static void createGUI(int width, int height, String themePath)
     {
-        createGUI(width, height, null);
+        createGUI(width, height, themePath, false);
+    }
+    
+    public static void createGUI(int width, int height, boolean liveThemeUpdates)
+    {
+        createGUI(width, height, null, liveThemeUpdates);
+    }
+    
+    public static void createGUI(String theme, boolean liveThemeUpdates)
+    {
+        createGUI(screenWidth(), screenHeight(), theme, liveThemeUpdates);
     }
     
     public static void createGUI(String theme)
     {
-        createGUI(screenWidth(), screenHeight(), theme);
+        createGUI(screenWidth(), screenHeight(), theme, false);
+    }
+    
+    public static void createGUI(boolean liveThemeUpdates)
+    {
+        createGUI(screenWidth(), screenHeight(), null, liveThemeUpdates);
     }
     
     public static void createGUI()
     {
-        createGUI(screenWidth(), screenHeight(), null);
+        createGUI(screenWidth(), screenHeight(), null, false);
     }
     
     public static void setFocused(UIElement element)

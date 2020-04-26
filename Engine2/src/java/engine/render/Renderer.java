@@ -1561,7 +1561,7 @@ public abstract class Renderer
         {
             case CORNER:
             default:
-                drawTexture(texture, a, b, c - a, d - b, u1, v1, u2, v2);
+                drawTexture(texture, a, b, a + c, b + d, u1, v1, u2, v2);
                 break;
             case CORNERS:
                 drawTexture(texture, a, b, c, d, u1, v1, u2, v2);

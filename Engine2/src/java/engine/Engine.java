@@ -2120,7 +2120,7 @@ public class Engine
      */
     public static void fillRect(double x, double y, double w, double h)
     {
-        Engine.renderer.drawRect(x, y, w, h);
+        Engine.renderer.fillRect(x, y, w, h);
     }
     
     /**

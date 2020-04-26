@@ -1,12 +1,13 @@
 package engine.util;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * A Generic tuple of three objects. The objects can be modified or completely replaced.
  */
 @SuppressWarnings("unused")
-public class Tuple<A, B, C> implements ITuple<A, B, C>
+public class Tuple<A, B, C> implements ITuple<A, B, C>, Comparable<ITuple<A, B, C>>, Serializable
 {
     public A a;
     public B b;
@@ -72,5 +73,57 @@ public class Tuple<A, B, C> implements ITuple<A, B, C>
     public String toString()
     {
         return getClass().getName() + '{' + this.a + ", " + this.b + ", " + this.c + '}';
+    }
+    @Override
+    public int compareTo(ITuple<A, B, C> o)
+    {
+        int comparison;
+    
+        if (getA() != o.getA())
+        {
+            if (getA() == null)
+            {
+                return -1;
+            }
+            if (o.getA() == null)
+            {
+                return 1;
+            }
+            @SuppressWarnings("unchecked") // assume this can be done; if not throw CCE as per Javadoc
+            final Comparable<Object> comparable = (Comparable<Object>) getA();
+            if ((comparison = comparable.compareTo(o.getA())) != 0) return comparison;
+        }
+    
+        if (getB() != o.getB())
+        {
+            if (getB() == null)
+            {
+                return -1;
+            }
+            if (o.getB() == null)
+            {
+                return 1;
+            }
+            @SuppressWarnings("unchecked") // assume this can be done; if not throw CCE as per Javadoc
+            final Comparable<Object> comparable = (Comparable<Object>) getB();
+            if ((comparison = comparable.compareTo(o.getB())) != 0) return comparison;
+        }
+    
+        if (getC() != o.getC())
+        {
+            if (getC() == null)
+            {
+                return -1;
+            }
+            if (o.getC() == null)
+            {
+                return 1;
+            }
+            @SuppressWarnings("unchecked") // assume this can be done; if not throw CCE as per Javadoc
+            final Comparable<Object> comparable = (Comparable<Object>) getC();
+            if ((comparison = comparable.compareTo(o.getC())) != 0) return comparison;
+        }
+    
+        return 0;
     }
 }

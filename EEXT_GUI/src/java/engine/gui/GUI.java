@@ -63,21 +63,25 @@ public class GUI extends Extension
     @Override
     public void beforeDraw(double elapsedTime)
     {
-        if (this.liveThemeUpdates)
+        profiler().startSection("Theme Update");
         {
-            if ((this.themeUpdateTime += elapsedTime) >= 1.0)
+            if (this.liveThemeUpdates)
             {
-                this.themeUpdateTime = 0.0;
-                if (this.theme.shouldReload())
+                if ((this.themeUpdateTime += elapsedTime) >= 1.0)
                 {
-                    this.redrawScreen = true;
-                    for (UIElement element : this.elements)
+                    this.themeUpdateTime = 0.0;
+                    if (this.theme.shouldReload())
                     {
-                        element.rebuildTheme();
+                        this.redrawScreen = true;
+                        for (UIElement element : this.elements)
+                        {
+                            element.rebuildTheme();
+                        }
                     }
                 }
             }
         }
+        profiler().endSection();
         
         int mouseX = (int) (mouse().x() * this.size.x() / screenWidth());
         int mouseY = (int) (mouse().y() * this.size.y() / screenHeight());
@@ -123,176 +127,180 @@ public class GUI extends Extension
             }
         }
         profiler().endSection();
-        
-        profiler().startSection("Mouse Events");
+    
+        profiler().startSection("Events");
         {
-            for (Event e : Events.get(Events.MOUSE_EVENTS))
+            profiler().startSection("Mouse");
             {
-                if (e instanceof EventMouseButtonDown)
+                for (Event e : Events.get(Events.MOUSE_EVENTS))
                 {
-                    EventMouseButtonDown event = (EventMouseButtonDown) e;
+                    if (e instanceof EventMouseButtonDown)
+                    {
+                        EventMouseButtonDown event = (EventMouseButtonDown) e;
                     
-                    UIElement element = this.topElement;
-                    while (element != null)
-                    {
-                        if (element.onMouseButtonDown(event.button(), event.x() - element.absX(), event.y() - element.absY())) break;
-                        element = element.container();
-                    }
-                    setFocused(element);
-                }
-                else if (e instanceof EventMouseButtonUp)
-                {
-                    // this.drag = null;
-                    EventMouseButtonUp event = (EventMouseButtonUp) e;
-                    
-                    UIElement element = this.topElement;
-                    while (element != null)
-                    {
-                        if (element.onMouseButtonUp(event.button(), event.x() - element.absX(), event.y() - element.absY())) break;
-                        element = element.container();
-                    }
-                }
-                else if (e instanceof EventMouseButtonClicked)
-                {
-                    EventMouseButtonClicked event = (EventMouseButtonClicked) e;
-                    
-                    UIElement element = this.topElement;
-                    while (element != null)
-                    {
-                        if (element.onMouseButtonClicked(event.button(), event.x() - element.absX(), event.y() - element.absY(), event.doubleClicked())) break;
-                        element = element.container();
-                    }
-                }
-                else if (e instanceof EventMouseButtonHeld)
-                {
-                    EventMouseButtonHeld event = (EventMouseButtonHeld) e;
-                    
-                    UIElement element = this.topElement;
-                    while (element != null)
-                    {
-                        if (element.onMouseButtonHeld(event.button(), event.x() - element.absX(), event.y() - element.absY())) break;
-                        element = element.container();
-                    }
-                }
-                else if (e instanceof EventMouseButtonRepeat)
-                {
-                    EventMouseButtonRepeat event = (EventMouseButtonRepeat) e;
-                    
-                    UIElement element = this.topElement;
-                    while (element != null)
-                    {
-                        if (element.onMouseButtonRepeated(event.button(), event.x() - element.absX(), event.y() - element.absY())) break;
-                        element = element.container();
-                    }
-                }
-                else if (e instanceof EventMouseButtonDragged)
-                {
-                    EventMouseButtonDragged event = (EventMouseButtonDragged) e;
-                    
-                    UIElement element = this.topElement;
-                    while (element != null)
-                    {
-                        if (element.onMouseButtonDragged(event.button(), event.x() - element.absX(), event.y() - element.absY(), event.dragX(), event.dragY(), event.relX(), event.relY()))
-                        {
-                            // this.drag = element;
-                            break;
-                        }
-                        element = element.container();
-                    }
-                }
-                else if (e instanceof EventMouseScrolled)
-                {
-                    EventMouseScrolled event = (EventMouseScrolled) e;
-                    
-                    UIElement element = this.topElement;
-                    while (element != null)
-                    {
-                        if (element.onMouseScrolled(event.x(), event.y())) break;
-                        element = element.container();
-                    }
-                }
-            }
-        }
-        profiler().endSection();
-        
-        profiler().startSection("Keyboard Events");
-        {
-            if (this.focusedElement != null)
-            {
-                for (Event e : Events.get(Events.KEYBOARD_EVENTS))
-                {
-                    if (e instanceof EventKeyboardKeyDown)
-                    {
-                        EventKeyboardKeyDown event = (EventKeyboardKeyDown) e;
-                        
-                        UIElement element = this.focusedElement;
+                        UIElement element = this.topElement;
                         while (element != null)
                         {
-                            if (element.onKeyboardKeyDown(event.key())) break;
+                            if (element.onMouseButtonDown(event.button(), event.x() - element.absX(), event.y() - element.absY())) break;
+                            element = element.container();
+                        }
+                        setFocused(element);
+                    }
+                    else if (e instanceof EventMouseButtonUp)
+                    {
+                        // this.drag = null;
+                        EventMouseButtonUp event = (EventMouseButtonUp) e;
+                    
+                        UIElement element = this.topElement;
+                        while (element != null)
+                        {
+                            if (element.onMouseButtonUp(event.button(), event.x() - element.absX(), event.y() - element.absY())) break;
                             element = element.container();
                         }
                     }
-                    else if (e instanceof EventKeyboardKeyUp)
+                    else if (e instanceof EventMouseButtonClicked)
                     {
-                        EventKeyboardKeyUp event = (EventKeyboardKeyUp) e;
-                        
-                        UIElement element = this.focusedElement;
+                        EventMouseButtonClicked event = (EventMouseButtonClicked) e;
+                    
+                        UIElement element = this.topElement;
                         while (element != null)
                         {
-                            if (element.onKeyboardKeyUp(event.key())) break;
+                            if (element.onMouseButtonClicked(event.button(), event.x() - element.absX(), event.y() - element.absY(), event.doubleClicked())) break;
                             element = element.container();
                         }
                     }
-                    else if (e instanceof EventKeyboardKeyHeld)
+                    else if (e instanceof EventMouseButtonHeld)
                     {
-                        EventKeyboardKeyHeld event = (EventKeyboardKeyHeld) e;
-                        
-                        UIElement element = this.focusedElement;
+                        EventMouseButtonHeld event = (EventMouseButtonHeld) e;
+                    
+                        UIElement element = this.topElement;
                         while (element != null)
                         {
-                            if (element.onKeyboardKeyHeld(event.key())) break;
+                            if (element.onMouseButtonHeld(event.button(), event.x() - element.absX(), event.y() - element.absY())) break;
                             element = element.container();
                         }
                     }
-                    else if (e instanceof EventKeyboardKeyRepeat)
+                    else if (e instanceof EventMouseButtonRepeat)
                     {
-                        EventKeyboardKeyRepeat event = (EventKeyboardKeyRepeat) e;
-                        
-                        UIElement element = this.focusedElement;
+                        EventMouseButtonRepeat event = (EventMouseButtonRepeat) e;
+                    
+                        UIElement element = this.topElement;
                         while (element != null)
                         {
-                            if (element.onKeyboardKeyRepeated(event.key())) break;
+                            if (element.onMouseButtonRepeated(event.button(), event.x() - element.absX(), event.y() - element.absY())) break;
                             element = element.container();
                         }
                     }
-                    else if (e instanceof EventKeyboardKeyPressed)
+                    else if (e instanceof EventMouseButtonDragged)
                     {
-                        EventKeyboardKeyPressed event = (EventKeyboardKeyPressed) e;
-                        
-                        UIElement element = this.focusedElement;
+                        EventMouseButtonDragged event = (EventMouseButtonDragged) e;
+                    
+                        UIElement element = this.topElement;
                         while (element != null)
                         {
-                            if (element.onKeyboardKeyPressed(event.key(), event.doublePressed())) break;
+                            if (element.onMouseButtonDragged(event.button(), event.x() - element.absX(), event.y() - element.absY(), event.dragX(), event.dragY(), event.relX(), event.relY()))
+                            {
+                                // this.drag = element;
+                                break;
+                            }
                             element = element.container();
                         }
                     }
-                    else if (e instanceof EventKeyboardKeyTyped)
+                    else if (e instanceof EventMouseScrolled)
                     {
-                        EventKeyboardKeyTyped event = (EventKeyboardKeyTyped) e;
-                        
-                        UIElement element = this.focusedElement;
+                        EventMouseScrolled event = (EventMouseScrolled) e;
+                    
+                        UIElement element = this.topElement;
                         while (element != null)
                         {
-                            if (element.onKeyboardKeyTyped(event.charTyped())) break;
+                            if (element.onMouseScrolled(event.x(), event.y())) break;
                             element = element.container();
                         }
                     }
                 }
             }
+            profiler().endSection();
+        
+            profiler().startSection("Keyboard");
+            {
+                if (this.focusedElement != null)
+                {
+                    for (Event e : Events.get(Events.KEYBOARD_EVENTS))
+                    {
+                        if (e instanceof EventKeyboardKeyDown)
+                        {
+                            EventKeyboardKeyDown event = (EventKeyboardKeyDown) e;
+                        
+                            UIElement element = this.focusedElement;
+                            while (element != null)
+                            {
+                                if (element.onKeyboardKeyDown(event.key())) break;
+                                element = element.container();
+                            }
+                        }
+                        else if (e instanceof EventKeyboardKeyUp)
+                        {
+                            EventKeyboardKeyUp event = (EventKeyboardKeyUp) e;
+                        
+                            UIElement element = this.focusedElement;
+                            while (element != null)
+                            {
+                                if (element.onKeyboardKeyUp(event.key())) break;
+                                element = element.container();
+                            }
+                        }
+                        else if (e instanceof EventKeyboardKeyHeld)
+                        {
+                            EventKeyboardKeyHeld event = (EventKeyboardKeyHeld) e;
+                        
+                            UIElement element = this.focusedElement;
+                            while (element != null)
+                            {
+                                if (element.onKeyboardKeyHeld(event.key())) break;
+                                element = element.container();
+                            }
+                        }
+                        else if (e instanceof EventKeyboardKeyRepeat)
+                        {
+                            EventKeyboardKeyRepeat event = (EventKeyboardKeyRepeat) e;
+                        
+                            UIElement element = this.focusedElement;
+                            while (element != null)
+                            {
+                                if (element.onKeyboardKeyRepeated(event.key())) break;
+                                element = element.container();
+                            }
+                        }
+                        else if (e instanceof EventKeyboardKeyPressed)
+                        {
+                            EventKeyboardKeyPressed event = (EventKeyboardKeyPressed) e;
+                        
+                            UIElement element = this.focusedElement;
+                            while (element != null)
+                            {
+                                if (element.onKeyboardKeyPressed(event.key(), event.doublePressed())) break;
+                                element = element.container();
+                            }
+                        }
+                        else if (e instanceof EventKeyboardKeyTyped)
+                        {
+                            EventKeyboardKeyTyped event = (EventKeyboardKeyTyped) e;
+                        
+                            UIElement element = this.focusedElement;
+                            while (element != null)
+                            {
+                                if (element.onKeyboardKeyTyped(event.charTyped())) break;
+                                element = element.container();
+                            }
+                        }
+                    }
+                }
+            }
+            profiler().endSection();
         }
         profiler().endSection();
         
-        profiler().startSection("Update UIElements");
+        profiler().startSection("UIElements Update");
         {
             for (UIElement element : this.elements)
             {

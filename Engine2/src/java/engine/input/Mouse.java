@@ -6,8 +6,7 @@ import engine.util.Vector;
 import org.joml.Vector2d;
 import org.joml.Vector2dc;
 
-import static engine.Engine.screenHeight;
-import static engine.Engine.screenWidth;
+import static engine.Engine.*;
 import static org.lwjgl.glfw.GLFW.*;
 
 @SuppressWarnings("unused")
@@ -174,6 +173,7 @@ public class Mouse extends Device<Mouse.Button>
     {
         Mouse.LOGGER.finer("Handling Mouse Events");
         
+        profiler().startSection("Captured");
         if (this.captured != this.newCaptured)
         {
             this.captured = this.newCaptured;
@@ -181,28 +181,37 @@ public class Mouse extends Device<Mouse.Button>
             if (!this.captured) this.newPos.set(this.pos.set(this.capPos));
             Events.post(EventMouseCaptured.class, this.captured);
         }
-        
+        profiler().endSection();
+    
+        profiler().startSection("Entered");
         if (this.entered != this.newEntered)
         {
             this.entered = this.newEntered;
             Events.post(EventMouseEntered.class, this.entered);
         }
-        
+        profiler().endSection();
+    
+        profiler().startSection("Position");
         if (Double.compare(this.pos.x, this.newPos.x) != 0 || Double.compare(this.pos.y, this.newPos.y) != 0)
         {
             this.newPos.sub(this.pos, this.rel);
             this.pos.set(this.newPos);
             Events.post(EventMouseMoved.class, this.captured ? Vector.ZERO2d : this.pos, this.rel);
         }
-        
+        profiler().endSection();
+    
+        profiler().startSection("Scroll");
         if (Double.compare(this.scroll.x, this.newScroll.x) != 0 || Double.compare(this.scroll.y, this.newScroll.y) != 0)
         {
             this.scroll.set(this.newScroll);
             this.newScroll.set(0);
             Events.post(EventMouseScrolled.class, this.scroll);
         }
-        
+        profiler().endSection();
+    
+        profiler().startSection("Device");
         super.handleEvents(time, delta);
+        profiler().endSection();
     }
     
     /**

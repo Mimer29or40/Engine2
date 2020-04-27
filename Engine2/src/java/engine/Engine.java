@@ -156,7 +156,7 @@ public class Engine
         Engine.config.load();
         
         ConfigSpec spec = new ConfigSpec();
-        spec.defineInRange("layer_count", 100, 1, 1000);
+        spec.defineInRange("layer_count", 10, 1, 100);
         spec.define("debug_text_color", "#FFFFFFFF");
         spec.define("debug_background_color", "#32000000");
         spec.define("notification_duration", 2.0);
@@ -253,19 +253,19 @@ public class Engine
                                     {
                                         Events.clear();
                                         
-                                        Engine.profiler.startSection("Mouse Events");
+                                        Engine.profiler.startSection("Mouse");
                                         {
                                             Engine.mouse.handleEvents(t, dt);
                                         }
                                         Engine.profiler.endSection();
                                         
-                                        Engine.profiler.startSection("Key Events");
+                                        Engine.profiler.startSection("Keyboard");
                                         {
                                             Engine.keyboard.handleEvents(t, dt);
                                         }
                                         Engine.profiler.endSection();
                                         
-                                        Engine.profiler.startSection("Window Events");
+                                        Engine.profiler.startSection("Window");
                                         {
                                             Engine.window.handleEvents(t, dt);
                                         }
@@ -326,14 +326,14 @@ public class Engine
                                     
                                     if (!Engine.paused)
                                     {
-                                        Engine.profiler.startSection("Renderer Begin");
-                                        {
-                                            Engine.renderer.start();
-                                        }
-                                        Engine.profiler.endSection();
-                                        
                                         Engine.profiler.startSection("Draw");
                                         {
+                                            Engine.profiler.startSection("Start");
+                                            {
+                                                Engine.renderer.start();
+                                            }
+                                            Engine.profiler.endSection();
+    
                                             Engine.profiler.startSection("Extension Pre Draw");
                                             {
                                                 Engine.LOGGER.finer("Extension Pre Draw");
@@ -380,17 +380,17 @@ public class Engine
                                                 }
                                             }
                                             Engine.profiler.endSection();
-                                        }
-                                        Engine.profiler.endSection();
-                                        
-                                        Engine.profiler.startSection("Renderer Finish");
-                                        {
-                                            Engine.renderer.finish();
+    
+                                            Engine.profiler.startSection("Finish");
+                                            {
+                                                Engine.renderer.finish();
+                                            }
+                                            Engine.profiler.endSection();
                                         }
                                         Engine.profiler.endSection();
                                     }
                                     
-                                    Engine.profiler.startSection("Render Screen");
+                                    Engine.profiler.startSection("Render");
                                     {
                                         if (window.updateViewport())
                                         {
@@ -412,7 +412,7 @@ public class Engine
                                     }
                                     Engine.profiler.endSection();
                                     
-                                    Engine.profiler.startSection("Debug Text");
+                                    Engine.profiler.startSection("Debug");
                                     {
                                         dt = t - Engine.notificationTime;
                                         if (dt < Engine.notificationDuration && Engine.notification != null)
@@ -435,31 +435,35 @@ public class Engine
                                                 drawDebugText(0, y += stb_easy_font_height(line), line);
                                             }
                                         }
-                                        
-                                        Engine.debugShader.bind();
-                                        Engine.debugShader.setMat4("pv", Engine.debugView.setOrtho(0F, Engine.window.viewW(), Engine.window.viewH(), 0F, -1F, 1F));
-                                        
-                                        try (MemoryStack frame = stackPush())
+    
+                                        Engine.profiler.startSection("Text");
                                         {
-                                            ByteBuffer textBuffer = frame.malloc(24 * 1024);
-                                            for (Tuple<Integer, Integer, String> line : Engine.debugLines)
+                                            Engine.debugShader.bind();
+                                            Engine.debugShader.setMat4("pv", Engine.debugView.setOrtho(0F, Engine.window.viewW(), Engine.window.viewH(), 0F, -1F, 1F));
+        
+                                            try (MemoryStack frame = stackPush())
                                             {
-                                                int quads  = stb_easy_font_print(line.a + 2, line.b + 2, line.c, null, textBuffer);
-                                                int width  = stb_easy_font_width(line.c);
-                                                int height = stb_easy_font_height(line.c);
-                                                
-                                                Engine.debugShader.setColor("color", Engine.debugLineBackground);
-                                                Engine.debugBoxVAO.bind().set(0, new float[] {
-                                                        line.a, line.b, line.a + width + 2, line.b, line.a + width + 2, line.b + height, line.a, line.b + height
-                                                }, GL_DYNAMIC_DRAW).draw(GL_QUADS).unbind();
-                                                
-                                                Engine.debugShader.setColor("color", Color.WHITE);
-                                                Engine.debugTextVAO.bind().set(0, textBuffer.limit(quads * 64), GL_DYNAMIC_DRAW).draw(GL_QUADS).unbind();
-                                                
-                                                textBuffer.clear();
+                                                ByteBuffer textBuffer = frame.malloc(24 * 1024);
+                                                for (Tuple<Integer, Integer, String> line : Engine.debugLines)
+                                                {
+                                                    int quads  = stb_easy_font_print(line.a + 2, line.b + 2, line.c, null, textBuffer);
+                                                    int width  = stb_easy_font_width(line.c);
+                                                    int height = stb_easy_font_height(line.c);
+                
+                                                    Engine.debugShader.setColor("color", Engine.debugLineBackground);
+                                                    Engine.debugBoxVAO.bind().set(0, new float[] {
+                                                            line.a, line.b, line.a + width + 2, line.b, line.a + width + 2, line.b + height, line.a, line.b + height
+                                                    }, GL_DYNAMIC_DRAW).draw(GL_QUADS).unbind();
+                
+                                                    Engine.debugShader.setColor("color", Engine.debugLineText);
+                                                    Engine.debugTextVAO.bind().set(0, textBuffer.limit(quads * 64), GL_DYNAMIC_DRAW).draw(GL_QUADS).unbind();
+                
+                                                    textBuffer.clear();
+                                                }
                                             }
+                                            Engine.debugLines.clear();
                                         }
-                                        Engine.debugLines.clear();
+                                        Engine.profiler.endSection();
                                     }
                                     Engine.profiler.endSection();
                                     
@@ -518,6 +522,7 @@ public class Engine
                             {
                                 lastProfile = t;
                                 
+                                // TODO - Add navigable profiler tree
                                 switch (Engine.profilerMode)
                                 {
                                     case 0:
@@ -1562,8 +1567,6 @@ public class Engine
     // -- Renderer Instance --
     // -----------------------
     
-    // TODO - Add profiler methods to render methods
-    
     /**
      * @return The type of the renderer.
      */
@@ -1593,7 +1596,9 @@ public class Engine
      */
     public static void target(Texture target)
     {
+        Engine.profiler.startSection("target");
         Engine.renderer.target(target);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1641,7 +1646,9 @@ public class Engine
      */
     public static void fill(Number r, Number g, Number b, Number a)
     {
+        Engine.profiler.startSection("fill");
         Engine.renderer.fill(r, g, b, a);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1649,7 +1656,9 @@ public class Engine
      */
     public static void fill(Number r, Number g, Number b)
     {
+        Engine.profiler.startSection("fill");
         Engine.renderer.fill(r, g, b);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1657,7 +1666,9 @@ public class Engine
      */
     public static void fill(Number grey, Number a)
     {
+        Engine.profiler.startSection("fill");
         Engine.renderer.fill(grey, a);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1665,7 +1676,9 @@ public class Engine
      */
     public static void fill(Number grey)
     {
+        Engine.profiler.startSection("fill");
         Engine.renderer.fill(grey);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1673,7 +1686,9 @@ public class Engine
      */
     public static void fill(Colorc fill)
     {
+        Engine.profiler.startSection("fill");
         Engine.renderer.fill(fill);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1681,7 +1696,9 @@ public class Engine
      */
     public static void noFill()
     {
+        Engine.profiler.startSection("noFill");
         Engine.renderer.noFill();
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1697,7 +1714,9 @@ public class Engine
      */
     public static void stroke(Number r, Number g, Number b, Number a)
     {
+        Engine.profiler.startSection("stroke");
         Engine.renderer.stroke(r, g, b, a);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1705,7 +1724,9 @@ public class Engine
      */
     public static void stroke(Number r, Number g, Number b)
     {
+        Engine.profiler.startSection("stroke");
         Engine.renderer.stroke(r, g, b);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1713,7 +1734,9 @@ public class Engine
      */
     public static void stroke(Number grey, Number a)
     {
+        Engine.profiler.startSection("stroke");
         Engine.renderer.stroke(grey, a);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1721,7 +1744,9 @@ public class Engine
      */
     public static void stroke(Number grey)
     {
+        Engine.profiler.startSection("stroke");
         Engine.renderer.stroke(grey);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1729,7 +1754,9 @@ public class Engine
      */
     public static void stroke(Colorc stroke)
     {
+        Engine.profiler.startSection("stroke");
         Engine.renderer.stroke(stroke);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1737,7 +1764,9 @@ public class Engine
      */
     public static void noStroke()
     {
+        Engine.profiler.startSection("noStroke");
         Engine.renderer.noStroke();
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1745,6 +1774,7 @@ public class Engine
      */
     public static Colorc tint()
     {
+        Engine.profiler.startSection("tint");
         return Engine.renderer.tint();
     }
     
@@ -1753,7 +1783,9 @@ public class Engine
      */
     public static void tint(Number r, Number g, Number b, Number a)
     {
+        Engine.profiler.startSection("tint");
         Engine.renderer.tint(r, g, b, a);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1761,7 +1793,9 @@ public class Engine
      */
     public static void tint(Number r, Number g, Number b)
     {
+        Engine.profiler.startSection("tint");
         Engine.renderer.tint(r, g, b);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1769,7 +1803,9 @@ public class Engine
      */
     public static void tint(Number grey, Number a)
     {
+        Engine.profiler.startSection("tint");
         Engine.renderer.tint(grey, a);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1777,7 +1813,9 @@ public class Engine
      */
     public static void tint(Number grey)
     {
+        Engine.profiler.startSection("tint");
         Engine.renderer.tint(grey);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1785,7 +1823,9 @@ public class Engine
      */
     public static void tint(Colorc tint)
     {
+        Engine.profiler.startSection("tint");
         Engine.renderer.tint(tint);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1793,7 +1833,9 @@ public class Engine
      */
     public static void noTint()
     {
+        Engine.profiler.startSection("noTint");
         Engine.renderer.noTint();
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1809,7 +1851,9 @@ public class Engine
      */
     public static void weight(double weight)
     {
+        Engine.profiler.startSection("weight");
         Engine.renderer.weight(weight);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1825,7 +1869,9 @@ public class Engine
      */
     public static void rectMode(RectMode rectMode)
     {
+        Engine.profiler.startSection("rectMode");
         Engine.renderer.rectMode(rectMode);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1841,7 +1887,9 @@ public class Engine
      */
     public static void ellipseMode(EllipseMode ellipseMode)
     {
+        Engine.profiler.startSection("ellipseMode");
         Engine.renderer.ellipseMode(ellipseMode);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1857,7 +1905,9 @@ public class Engine
      */
     public static void arcMode(ArcMode arcMode)
     {
+        Engine.profiler.startSection("arcMode");
         Engine.renderer.arcMode(arcMode);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1873,7 +1923,9 @@ public class Engine
      */
     public static void textFont(Font font)
     {
+        Engine.profiler.startSection("textFont");
         Engine.renderer.textFont(font);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1881,7 +1933,9 @@ public class Engine
      */
     public static void textFont(String font)
     {
+        Engine.profiler.startSection("textFont");
         Engine.renderer.textFont(font);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1889,7 +1943,9 @@ public class Engine
      */
     public static void textFont(String font, int size)
     {
+        Engine.profiler.startSection("textFont");
         Engine.renderer.textFont(font, size);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1905,7 +1961,9 @@ public class Engine
      */
     public static void textSize(int textSize)
     {
+        Engine.profiler.startSection("textSize");
         Engine.renderer.textSize(textSize);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1937,7 +1995,9 @@ public class Engine
      */
     public static void textAlign(TextAlign textAlign)
     {
+        Engine.profiler.startSection("textAlign");
         Engine.renderer.textAlign(textAlign);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1945,7 +2005,9 @@ public class Engine
      */
     public static void identity()
     {
+        Engine.profiler.startSection("identity");
         Engine.renderer.identity();
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1953,7 +2015,9 @@ public class Engine
      */
     public static void translate(double x, double y)
     {
+        Engine.profiler.startSection("translate");
         Engine.renderer.translate(x, y);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1961,7 +2025,9 @@ public class Engine
      */
     public static void rotate(double angle)
     {
+        Engine.profiler.startSection("rotate");
         Engine.renderer.rotate(angle);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1969,7 +2035,9 @@ public class Engine
      */
     public static void scale(double x, double y)
     {
+        Engine.profiler.startSection("scale");
         Engine.renderer.scale(x, y);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1977,7 +2045,9 @@ public class Engine
      */
     public static void start()
     {
+        Engine.profiler.startSection("start");
         Engine.renderer.start();
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1985,7 +2055,9 @@ public class Engine
      */
     public static void finish()
     {
+        Engine.profiler.startSection("finish");
         Engine.renderer.finish();
+        Engine.profiler.endSection();
     }
     
     /**
@@ -1993,7 +2065,9 @@ public class Engine
      */
     public static void push()
     {
+        Engine.profiler.startSection("push");
         Engine.renderer.push();
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2001,7 +2075,9 @@ public class Engine
      */
     public static void pop()
     {
+        Engine.profiler.startSection("pop");
         Engine.renderer.pop();
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2009,7 +2085,9 @@ public class Engine
      */
     public static void clear(Number r, Number g, Number b, Number a)
     {
+        Engine.profiler.startSection("clear");
         Engine.renderer.clear(r, g, b, a);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2017,7 +2095,9 @@ public class Engine
      */
     public static void clear(Number r, Number g, Number b)
     {
+        Engine.profiler.startSection("clear");
         Engine.renderer.clear(r, g, b);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2025,7 +2105,9 @@ public class Engine
      */
     public static void clear(Number grey, Number a)
     {
+        Engine.profiler.startSection("clear");
         Engine.renderer.clear(grey, a);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2033,7 +2115,9 @@ public class Engine
      */
     public static void clear(Number grey)
     {
+        Engine.profiler.startSection("clear");
         Engine.renderer.clear(grey);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2041,7 +2125,9 @@ public class Engine
      */
     public static void clear()
     {
+        Engine.profiler.startSection("clear");
         Engine.renderer.clear();
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2049,7 +2135,9 @@ public class Engine
      */
     public static void clear(Colorc color)
     {
+        Engine.profiler.startSection("clear");
         Engine.renderer.clear(color);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2057,7 +2145,9 @@ public class Engine
      */
     public static void drawPoint(double x, double y)
     {
+        Engine.profiler.startSection("drawPoint");
         Engine.renderer.drawPoint(x, y);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2065,7 +2155,9 @@ public class Engine
      */
     public static void point(double x, double y)
     {
+        Engine.profiler.startSection("point");
         Engine.renderer.point(x, y);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2073,7 +2165,9 @@ public class Engine
      */
     public static void drawLine(double x1, double y1, double x2, double y2)
     {
+        Engine.profiler.startSection("drawLine");
         Engine.renderer.drawLine(x1, y1, x2, y2);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2081,7 +2175,9 @@ public class Engine
      */
     public static void line(double x1, double y1, double x2, double y2)
     {
+        Engine.profiler.startSection("line");
         Engine.renderer.line(x1, y1, x2, y2);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2089,7 +2185,9 @@ public class Engine
      */
     public static void drawBezier(double x1, double y1, double x2, double y2, double x3, double y3)
     {
+        Engine.profiler.startSection("drawBezier");
         Engine.renderer.drawBezier(x1, y1, x2, y2, x3, y3);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2097,7 +2195,9 @@ public class Engine
      */
     public static void bezier(double x1, double y1, double x2, double y2, double x3, double y3)
     {
+        Engine.profiler.startSection("bezier");
         Engine.renderer.bezier(x1, y1, x2, y2, x3, y3);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2105,7 +2205,9 @@ public class Engine
      */
     public static void drawTriangle(double x1, double y1, double x2, double y2, double x3, double y3)
     {
+        Engine.profiler.startSection("drawTriangle");
         Engine.renderer.drawTriangle(x1, y1, x2, y2, x3, y3);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2113,7 +2215,9 @@ public class Engine
      */
     public static void fillTriangle(double x1, double y1, double x2, double y2, double x3, double y3)
     {
+        Engine.profiler.startSection("fillTriangle");
         Engine.renderer.fillTriangle(x1, y1, x2, y2, x3, y3);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2121,7 +2225,9 @@ public class Engine
      */
     public static void triangle(double x1, double y1, double x2, double y2, double x3, double y3)
     {
+        Engine.profiler.startSection("triangle");
         Engine.renderer.triangle(x1, y1, x2, y2, x3, y3);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2129,7 +2235,9 @@ public class Engine
      */
     public static void drawSquare(double x, double y, double w)
     {
+        Engine.profiler.startSection("drawSquare");
         Engine.renderer.drawSquare(x, y, w);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2137,7 +2245,9 @@ public class Engine
      */
     public static void fillSquare(double x, double y, double w)
     {
+        Engine.profiler.startSection("startSection");
         Engine.renderer.fillSquare(x, y, w);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2145,7 +2255,9 @@ public class Engine
      */
     public static void square(double a, double b, double c)
     {
+        Engine.profiler.startSection("square");
         Engine.renderer.square(a, b, c);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2153,7 +2265,9 @@ public class Engine
      */
     public static void drawRect(double x, double y, double w, double h)
     {
+        Engine.profiler.startSection("drawRect");
         Engine.renderer.drawRect(x, y, w, h);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2161,7 +2275,9 @@ public class Engine
      */
     public static void fillRect(double x, double y, double w, double h)
     {
+        Engine.profiler.startSection("fillRect");
         Engine.renderer.fillRect(x, y, w, h);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2169,7 +2285,9 @@ public class Engine
      */
     public static void rect(double a, double b, double c, double d)
     {
+        Engine.profiler.startSection("rect");
         Engine.renderer.rect(a, b, c, d);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2177,7 +2295,9 @@ public class Engine
      */
     public static void drawQuad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
     {
+        Engine.profiler.startSection("drawQuad");
         Engine.renderer.drawQuad(x1, y1, x2, y2, x3, y3, x4, y4);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2185,7 +2305,9 @@ public class Engine
      */
     public static void fillQuad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
     {
+        Engine.profiler.startSection("fillQuad");
         Engine.renderer.fillQuad(x1, y1, x2, y2, x3, y3, x4, y4);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2193,7 +2315,9 @@ public class Engine
      */
     public static void quad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
     {
+        Engine.profiler.startSection("quad");
         Engine.renderer.quad(x1, y1, x2, y2, x3, y3, x4, y4);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2201,7 +2325,9 @@ public class Engine
      */
     public static void drawPolygon(double... points)
     {
+        Engine.profiler.startSection("drawPolygon");
         Engine.renderer.drawPolygon(points);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2209,7 +2335,9 @@ public class Engine
      */
     public static void fillPolygon(double... points)
     {
+        Engine.profiler.startSection("fillPolygon");
         Engine.renderer.fillPolygon(points);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2217,7 +2345,9 @@ public class Engine
      */
     public static void polygon(double... points)
     {
+        Engine.profiler.startSection("polygon");
         Engine.renderer.polygon(points);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2225,7 +2355,9 @@ public class Engine
      */
     public static void drawCircle(double x, double y, double r)
     {
+        Engine.profiler.startSection("drawCircle");
         Engine.renderer.drawCircle(x, y, r);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2233,7 +2365,9 @@ public class Engine
      */
     public static void fillCircle(double x, double y, double r)
     {
+        Engine.profiler.startSection("fillCircle");
         Engine.renderer.fillCircle(x, y, r);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2241,7 +2375,9 @@ public class Engine
      */
     public static void circle(double a, double b, double c)
     {
+        Engine.profiler.startSection("circle");
         Engine.renderer.circle(a, b, c);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2249,7 +2385,9 @@ public class Engine
      */
     public static void drawEllipse(double x, double y, double rx, double ry)
     {
+        Engine.profiler.startSection("drawEllipse");
         Engine.renderer.drawEllipse(x, y, rx, ry);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2257,7 +2395,9 @@ public class Engine
      */
     public static void fillEllipse(double x, double y, double rx, double ry)
     {
+        Engine.profiler.startSection("fillEllipse");
         Engine.renderer.fillEllipse(x, y, rx, ry);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2265,7 +2405,9 @@ public class Engine
      */
     public static void ellipse(double a, double b, double c, double d)
     {
+        Engine.profiler.startSection("ellipse");
         Engine.renderer.ellipse(a, b, c, d);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2273,7 +2415,9 @@ public class Engine
      */
     public static void drawArc(double x, double y, double rx, double ry, double start, double stop)
     {
+        Engine.profiler.startSection("drawArc");
         Engine.renderer.drawArc(x, y, rx, ry, start, stop);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2281,7 +2425,9 @@ public class Engine
      */
     public static void fillArc(double x, double y, double rx, double ry, double start, double stop)
     {
+        Engine.profiler.startSection("fillArc");
         Engine.renderer.fillArc(x, y, rx, ry, start, stop);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2289,7 +2435,9 @@ public class Engine
      */
     public static void arc(double a, double b, double c, double d, double start, double stop)
     {
+        Engine.profiler.startSection("arc");
         Engine.renderer.arc(a, b, c, d, start, stop);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2297,7 +2445,9 @@ public class Engine
      */
     public static void drawTexture(Texture texture, double x1, double y1, double x2, double y2, double u1, double v1, double v2, double u2)
     {
+        Engine.profiler.startSection("drawTexture");
         Engine.renderer.drawTexture(texture, x1, y1, x2, y2, u1, v1, u2, v2);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2305,7 +2455,9 @@ public class Engine
      */
     public static void texture(Texture texture, double a, double b, double c, double d, double u1, double v1, double v2, double u2)
     {
+        Engine.profiler.startSection("texture");
         Engine.renderer.texture(texture, a, b, c, d, u1, v1, v2, u2);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2313,7 +2465,9 @@ public class Engine
      */
     public static void texture(Texture t, double x, double y, double u1, double v1, double v2, double u2)
     {
+        Engine.profiler.startSection("texture");
         Engine.renderer.texture(t, x, y, u1, v1, v2, u2);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2321,7 +2475,9 @@ public class Engine
      */
     public static void texture(Texture t, double a, double b, double c, double d)
     {
+        Engine.profiler.startSection("texture");
         Engine.renderer.texture(t, a, b, c, d);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2329,7 +2485,9 @@ public class Engine
      */
     public static void texture(Texture t, double x, double y)
     {
+        Engine.profiler.startSection("texture");
         Engine.renderer.texture(t, x, y);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2337,7 +2495,9 @@ public class Engine
      */
     public static void drawInterpolatedTexture(Texture texture1, Texture texture2, double amount, double x1, double y1, double x2, double y2, double u1, double v1, double v2, double u2)
     {
+        Engine.profiler.startSection("drawInterpolatedTexture");
         Engine.renderer.drawInterpolatedTexture(texture1, texture2, amount, x1, y1, x2, y2, u1, v1, u2, v2);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2345,7 +2505,9 @@ public class Engine
      */
     public static void interpolateTexture(Texture texture1, Texture texture2, double amount, double a, double b, double c, double d, double u1, double v1, double v2, double u2)
     {
+        Engine.profiler.startSection("interpolateTexture");
         Engine.renderer.interpolateTexture(texture1, texture2, amount, a, b, c, d, u1, v1, v2, u2);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2353,7 +2515,9 @@ public class Engine
      */
     public static void interpolateTexture(Texture texture1, Texture texture2, double amount, double x, double y, double u1, double v1, double v2, double u2)
     {
+        Engine.profiler.startSection("interpolateTexture");
         Engine.renderer.interpolateTexture(texture1, texture2, amount, x, y, u1, v1, v2, u2);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2361,7 +2525,9 @@ public class Engine
      */
     public static void interpolateTexture(Texture texture1, Texture texture2, double amount, double a, double b, double c, double d)
     {
+        Engine.profiler.startSection("interpolateTexture");
         Engine.renderer.interpolateTexture(texture1, texture2, amount, a, b, c, d);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2369,7 +2535,9 @@ public class Engine
      */
     public static void interpolateTexture(Texture texture1, Texture texture2, double amount, double x, double y)
     {
+        Engine.profiler.startSection("interpolateTexture");
         Engine.renderer.interpolateTexture(texture1, texture2, amount, x, y);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2377,7 +2545,9 @@ public class Engine
      */
     public static void drawText(String text, double x, double y)
     {
+        Engine.profiler.startSection("drawText");
         Engine.renderer.drawText(text, x, y);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2385,7 +2555,9 @@ public class Engine
      */
     public static void text(String text, double a, double b, double c, double d)
     {
+        Engine.profiler.startSection("text");
         Engine.renderer.text(text, a, b, c, d);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2393,7 +2565,9 @@ public class Engine
      */
     public static void text(String text, double x, double y)
     {
+        Engine.profiler.startSection("text");
         Engine.renderer.text(text, x, y);
+        Engine.profiler.endSection();
     }
     
     /**
@@ -2401,7 +2575,10 @@ public class Engine
      */
     public static int[] loadPixels()
     {
-        return Engine.renderer.loadPixels();
+        Engine.profiler.startSection("loadPixels");
+        int[] pixels = Engine.renderer.loadPixels();
+        Engine.profiler.endSection();
+        return pixels;
     }
     
     /**
@@ -2409,7 +2586,9 @@ public class Engine
      */
     public static void updatePixels()
     {
+        Engine.profiler.startSection("updatePixels");
         Engine.renderer.updatePixels();
+        Engine.profiler.endSection();
     }
     
     // --------------------

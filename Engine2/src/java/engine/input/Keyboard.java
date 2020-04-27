@@ -3,6 +3,7 @@ package engine.input;
 import engine.event.*;
 import engine.util.Logger;
 
+import static engine.Engine.profiler;
 import static org.lwjgl.glfw.GLFW.*;
 
 @SuppressWarnings("unused")
@@ -148,14 +149,18 @@ public class Keyboard extends Device<Keyboard.Key>
     public void handleEvents(long time, long delta)
     {
         Keyboard.LOGGER.finer("Handling Keyboard Events");
-        
+    
+        profiler().startSection("Captured Text");
         for (int i = 0, n = this.capturedText.length(); i < n; i++)
         {
             Events.post(EventKeyboardKeyTyped.class, this.capturedText.charAt(i));
         }
         this.capturedText = "";
-        
+        profiler().endSection();
+    
+        profiler().startSection("Device");
         super.handleEvents(time, delta);
+        profiler().endSection();
     }
     
     /**

@@ -1,13 +1,12 @@
 package engine.gui;
 
 import engine.Engine;
+import engine.gui.elment.UIButton;
 import engine.gui.util.Rect;
-import engine.input.Mouse;
 
 import java.util.logging.Level;
 
 import static engine.gui.GUI.createGUI;
-import static engine.util.Util.println;
 
 public class GuiTest extends Engine
 {
@@ -22,24 +21,10 @@ public class GuiTest extends Engine
     public void setup()
     {
         // size(100, 100, 4, 4, SOFTWARE);
-        size(100, 100, 4, 4, OPENGL);
-        createGUI(400, 400, null);
+        size(100, 100, 8, 8, OPENGL);
+        createGUI(100, 100);
         
-        element = new UIWindow(new Rect(0, 0, 50, 50), "Title", true, "#element")
-        {
-            @Override
-            public boolean blocking()
-            {
-                return true;
-            }
-    
-            @Override
-            public boolean onMouseButtonDown(Mouse.Button button, double x, double y)
-            {
-                println("Mouse Down");
-                return super.onMouseButtonDown(button, x, y);
-            }
-        };
+        element = new UIButton(new Rect(0, 0, 50, 50), null, "Button", "ToolTip", null, "#button");
     }
     
     /**
@@ -55,6 +40,9 @@ public class GuiTest extends Engine
         translate(screenWidth() >> 1, screenHeight() >> 1);
         
         circle(0, 0, 100);
+    
+        // if (keyboard().A.down()) element.setState("active");
+        // if (keyboard().S.down()) element.setState("normal");
     }
     
     /**

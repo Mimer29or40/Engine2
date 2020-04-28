@@ -644,15 +644,16 @@ public class OpenGLRenderer extends Renderer
     public void drawTexture(Texture texture, double x1, double y1, double x2, double y2, double u1, double v1, double u2, double v2)
     {
         makeCurrent();
-        
+    
+        glActiveTexture(GL_TEXTURE0);
         texture.bindTexture();
         
         this.textureShader.bind();
         this.textureShader.setMat4("pv", this.view);
         this.textureShader.setColor("tint", this.tint);
         this.textureShader.setFloat("interpolate", -1);
-        this.textureShader.setInt("texture1", 0);
-        this.textureShader.setInt("texture2", 1);
+        this.textureShader.setInt("tex1", 0);
+        this.textureShader.setInt("tex2", 0);
         
         this.textureVAO.bind().getBuffer(0).bind().set(new float[] {
                 (float) x1, (float) y1, (float) u1, (float) v1,
@@ -687,17 +688,18 @@ public class OpenGLRenderer extends Renderer
     {
         makeCurrent();
     
-        texture1.bindTexture();
         glActiveTexture(GL_TEXTURE1);
         texture2.bindTexture();
+        
         glActiveTexture(GL_TEXTURE0);
+        texture1.bindTexture();
     
         this.textureShader.bind();
         this.textureShader.setMat4("pv", this.view);
         this.textureShader.setColor("tint", this.tint);
         this.textureShader.setFloat("interpolate", (float) amount);
-        this.textureShader.setInt("texture1", 0);
-        this.textureShader.setInt("texture2", 1);
+        this.textureShader.setInt("tex1", 0);
+        this.textureShader.setInt("tex2", 1);
     
         this.textureVAO.bind().getBuffer(0).bind().set(new float[] {
                 (float) x1, (float) y1, (float) u1, (float) v1,

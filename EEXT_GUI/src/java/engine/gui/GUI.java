@@ -4,6 +4,7 @@ import engine.Engine;
 import engine.Extension;
 import engine.color.Color;
 import engine.event.*;
+import engine.gui.elment.UIWindow;
 import engine.gui.theme.Theme;
 import engine.render.RectMode;
 import org.joml.Vector2i;
@@ -83,8 +84,8 @@ public class GUI extends Extension
         }
         profiler().endSection();
         
-        int mouseX = (int) (mouse().x() * this.size.x() / screenWidth());
-        int mouseY = (int) (mouse().y() * this.size.y() / screenHeight());
+        double mouseX = mouse().x() * this.size.x() / screenWidth();
+        double mouseY = mouse().y() * this.size.y() / screenHeight();
         
         profiler().startSection("Stack Solving");
         {
@@ -120,14 +121,14 @@ public class GUI extends Extension
                 if (prevTopElement != null) prevTopElement.onMouseExit();
                 if (this.topElement != null) this.topElement.onMouseEnter();
             }
-            else if (this.topElement != null)
+            else if (this.topElement != null && this.topElement.canHover())
             {
-                this.topElement.onMouseHover(this.hoverTime);
+                this.topElement.onMouseHover(this.hoverTime, mouseX - this.topElement.absX(), mouseY - this.topElement.absY());
                 this.hoverTime += elapsedTime;
             }
         }
         profiler().endSection();
-    
+        
         profiler().startSection("Events");
         {
             profiler().startSection("Mouse");
@@ -137,7 +138,7 @@ public class GUI extends Extension
                     if (e instanceof EventMouseButtonDown)
                     {
                         EventMouseButtonDown event = (EventMouseButtonDown) e;
-                    
+                        
                         UIElement element = this.topElement;
                         while (element != null)
                         {
@@ -150,7 +151,7 @@ public class GUI extends Extension
                     {
                         // this.drag = null;
                         EventMouseButtonUp event = (EventMouseButtonUp) e;
-                    
+                        
                         UIElement element = this.topElement;
                         while (element != null)
                         {
@@ -161,7 +162,7 @@ public class GUI extends Extension
                     else if (e instanceof EventMouseButtonClicked)
                     {
                         EventMouseButtonClicked event = (EventMouseButtonClicked) e;
-                    
+                        
                         UIElement element = this.topElement;
                         while (element != null)
                         {
@@ -172,7 +173,7 @@ public class GUI extends Extension
                     else if (e instanceof EventMouseButtonHeld)
                     {
                         EventMouseButtonHeld event = (EventMouseButtonHeld) e;
-                    
+                        
                         UIElement element = this.topElement;
                         while (element != null)
                         {
@@ -183,7 +184,7 @@ public class GUI extends Extension
                     else if (e instanceof EventMouseButtonRepeat)
                     {
                         EventMouseButtonRepeat event = (EventMouseButtonRepeat) e;
-                    
+                        
                         UIElement element = this.topElement;
                         while (element != null)
                         {
@@ -194,7 +195,7 @@ public class GUI extends Extension
                     else if (e instanceof EventMouseButtonDragged)
                     {
                         EventMouseButtonDragged event = (EventMouseButtonDragged) e;
-                    
+                        
                         UIElement element = this.topElement;
                         while (element != null)
                         {
@@ -209,7 +210,7 @@ public class GUI extends Extension
                     else if (e instanceof EventMouseScrolled)
                     {
                         EventMouseScrolled event = (EventMouseScrolled) e;
-                    
+                        
                         UIElement element = this.topElement;
                         while (element != null)
                         {
@@ -220,7 +221,7 @@ public class GUI extends Extension
                 }
             }
             profiler().endSection();
-        
+            
             profiler().startSection("Keyboard");
             {
                 if (this.focusedElement != null)
@@ -230,7 +231,7 @@ public class GUI extends Extension
                         if (e instanceof EventKeyboardKeyDown)
                         {
                             EventKeyboardKeyDown event = (EventKeyboardKeyDown) e;
-                        
+                            
                             UIElement element = this.focusedElement;
                             while (element != null)
                             {
@@ -241,7 +242,7 @@ public class GUI extends Extension
                         else if (e instanceof EventKeyboardKeyUp)
                         {
                             EventKeyboardKeyUp event = (EventKeyboardKeyUp) e;
-                        
+                            
                             UIElement element = this.focusedElement;
                             while (element != null)
                             {
@@ -252,7 +253,7 @@ public class GUI extends Extension
                         else if (e instanceof EventKeyboardKeyHeld)
                         {
                             EventKeyboardKeyHeld event = (EventKeyboardKeyHeld) e;
-                        
+                            
                             UIElement element = this.focusedElement;
                             while (element != null)
                             {
@@ -263,7 +264,7 @@ public class GUI extends Extension
                         else if (e instanceof EventKeyboardKeyRepeat)
                         {
                             EventKeyboardKeyRepeat event = (EventKeyboardKeyRepeat) e;
-                        
+                            
                             UIElement element = this.focusedElement;
                             while (element != null)
                             {
@@ -274,7 +275,7 @@ public class GUI extends Extension
                         else if (e instanceof EventKeyboardKeyPressed)
                         {
                             EventKeyboardKeyPressed event = (EventKeyboardKeyPressed) e;
-                        
+                            
                             UIElement element = this.focusedElement;
                             while (element != null)
                             {
@@ -285,7 +286,7 @@ public class GUI extends Extension
                         else if (e instanceof EventKeyboardKeyTyped)
                         {
                             EventKeyboardKeyTyped event = (EventKeyboardKeyTyped) e;
-                        
+                            
                             UIElement element = this.focusedElement;
                             while (element != null)
                             {
@@ -329,12 +330,15 @@ public class GUI extends Extension
             
             for (UIElement element : this.elements)
             {
+                push();
                 element.draw(elapsedTime, mouseX, mouseY);
+                pop();
                 
-                if (element.visible)
+                if (element.visible())
                 {
+                    layer(layerCount() - 1);
                     rectMode(RectMode.CORNER);
-                    texture(element.texture, element.rect.x(), element.rect.y(), element.rect.width(), element.rect.height());
+                    texture(element.texture(), element.rect.x(), element.rect.y(), element.rect.width(), element.rect.height());
                 }
             }
             
@@ -386,6 +390,11 @@ public class GUI extends Extension
     public static void createGUI(String theme, boolean liveThemeUpdates)
     {
         createGUI(screenWidth(), screenHeight(), theme, liveThemeUpdates);
+    }
+    
+    public static void createGUI(int width, int height)
+    {
+        createGUI(width, height, null, false);
     }
     
     public static void createGUI(String theme)

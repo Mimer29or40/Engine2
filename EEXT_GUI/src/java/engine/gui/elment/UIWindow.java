@@ -1,5 +1,7 @@
-package engine.gui;
+package engine.gui.elment;
 
+import engine.gui.UIContainer;
+import engine.gui.UIElement;
 import engine.gui.interfaces.IUIContainerLike;
 import engine.gui.util.Rect;
 import engine.gui.util.Rectc;
@@ -16,9 +18,9 @@ public class UIWindow extends UIElement implements IUIContainerLike
     
     protected boolean blocking = false;
     
-    public UIWindow(Rectc rect, String title, boolean resizable, String objectID)
+    public UIWindow(Rectc rect, String title, boolean resizable, String objectID, String elementID)
     {
-        super(rect, null, objectID);
+        super(rect, null, null, objectID, elementID != null ? elementID : "window");
         
         this.title     = title;
         this.resizable = resizable;
@@ -77,19 +79,15 @@ public class UIWindow extends UIElement implements IUIContainerLike
         
         if (this.rootContainer == null)
         {
-            this.rootContainer = new UIContainer(new Rect(this.rect.x(),
-                                                          this.rect.y(),
-                                                          this.rect.width(),
-                                                          this.rect.height()),
-                                                 null, "#root_container");
+            this.rootContainer = new UIContainer(this.rect.copy(), null, this, "#window_root_container");
         }
         if (this.elementContainer == null)
         {
-            this.elementContainer = new UIContainer(new Rect(this.borderWidth,
-                                                             this.titleHeight,
-                                                             this.rootContainer.rect.width() - (2 * this.borderWidth),
-                                                             this.rootContainer.rect.height() - (this.titleHeight + this.borderWidth)),
-                                                    this.rootContainer, "#element_container");
+            Rect rect = new Rect(this.borderWidth,
+                                 this.titleHeight,
+                                 this.rootContainer.rect().width() - (2 * this.borderWidth),
+                                 this.rootContainer.rect().height() - (this.titleHeight + this.borderWidth));
+            this.elementContainer = new UIContainer(rect, this.rootContainer, this, "#window_element_container");
         }
     }
     

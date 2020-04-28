@@ -12,10 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 
 import static engine.util.Util.getPath;
 import static engine.util.Util.join;
@@ -464,7 +461,7 @@ public class Theme
         
         if (this.baseColors.containsKey(colorID)) return this.baseColors.get(colorID);
         
-        ArrayList<String> colorParts = (ArrayList<String>) Arrays.asList(colorID.split("_"));
+        List<String> colorParts = Arrays.asList(colorID.split("_"));
         
         int   bestFitKeyCount = 0;
         Color bestFitColor    = this.baseColors.get("normal_bg");

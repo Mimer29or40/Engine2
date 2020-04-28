@@ -3,7 +3,10 @@ package engine.util;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
@@ -21,6 +24,79 @@ public class Logger
     
     private static final Pattern      PATTERN = Pattern.compile("%(\\d+\\$)?([-#+ 0,(<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])"); // Taken from java.lang.Formatter
     private static final OutputStream OUT     = new BufferedOutputStream(System.out);
+    
+    // Reset
+    public static final String RESET = "\033[0m";
+    
+    // Regular Colors
+    public static final String BLACK  = "\033[0;30m";
+    public static final String RED    = "\033[0;31m";
+    public static final String GREEN  = "\033[0;32m";
+    public static final String YELLOW = "\033[0;33m";
+    public static final String BLUE   = "\033[0;34m";
+    public static final String PURPLE = "\033[0;35m";
+    public static final String CYAN   = "\033[0;36m";
+    public static final String WHITE  = "\033[0;37m";
+    
+    // Bold
+    public static final String BLACK_BOLD  = "\033[1;30m";
+    public static final String RED_BOLD    = "\033[1;31m";
+    public static final String GREEN_BOLD  = "\033[1;32m";
+    public static final String YELLOW_BOLD = "\033[1;33m";
+    public static final String BLUE_BOLD   = "\033[1;34m";
+    public static final String PURPLE_BOLD = "\033[1;35m";
+    public static final String CYAN_BOLD   = "\033[1;36m";
+    public static final String WHITE_BOLD  = "\033[1;37m";
+    
+    // Underline
+    public static final String BLACK_UNDERLINED  = "\033[4;30m";
+    public static final String RED_UNDERLINED    = "\033[4;31m";
+    public static final String GREEN_UNDERLINED  = "\033[4;32m";
+    public static final String YELLOW_UNDERLINED = "\033[4;33m";
+    public static final String BLUE_UNDERLINED   = "\033[4;34m";
+    public static final String PURPLE_UNDERLINED = "\033[4;35m";
+    public static final String CYAN_UNDERLINED   = "\033[4;36m";
+    public static final String WHITE_UNDERLINED  = "\033[4;37m";
+    
+    // Background
+    public static final String BLACK_BACKGROUND  = "\033[40m";
+    public static final String RED_BACKGROUND    = "\033[41m";
+    public static final String GREEN_BACKGROUND  = "\033[42m";
+    public static final String YELLOW_BACKGROUND = "\033[43m";
+    public static final String BLUE_BACKGROUND   = "\033[44m";
+    public static final String PURPLE_BACKGROUND = "\033[45m";
+    public static final String CYAN_BACKGROUND   = "\033[46m";
+    public static final String WHITE_BACKGROUND  = "\033[47m";
+    
+    // High Intensity
+    public static final String BLACK_BRIGHT  = "\033[0;90m";
+    public static final String RED_BRIGHT    = "\033[0;91m";
+    public static final String GREEN_BRIGHT  = "\033[0;92m";
+    public static final String YELLOW_BRIGHT = "\033[0;93m";
+    public static final String BLUE_BRIGHT   = "\033[0;94m";
+    public static final String PURPLE_BRIGHT = "\033[0;95m";
+    public static final String CYAN_BRIGHT   = "\033[0;96m";
+    public static final String WHITE_BRIGHT  = "\033[0;97m";
+    
+    // Bold High Intensity
+    public static final String BLACK_BOLD_BRIGHT  = "\033[1;90m";
+    public static final String RED_BOLD_BRIGHT    = "\033[1;91m";
+    public static final String GREEN_BOLD_BRIGHT  = "\033[1;92m";
+    public static final String YELLOW_BOLD_BRIGHT = "\033[1;93m";
+    public static final String BLUE_BOLD_BRIGHT   = "\033[1;94m";
+    public static final String PURPLE_BOLD_BRIGHT = "\033[1;95m";
+    public static final String CYAN_BOLD_BRIGHT   = "\033[1;96m";
+    public static final String WHITE_BOLD_BRIGHT  = "\033[1;97m";
+    
+    // High Intensity backgrounds
+    public static final String BLACK_BACKGROUND_BRIGHT  = "\033[0;100m";
+    public static final String RED_BACKGROUND_BRIGHT    = "\033[0;101m";
+    public static final String GREEN_BACKGROUND_BRIGHT  = "\033[0;102m";
+    public static final String YELLOW_BACKGROUND_BRIGHT = "\033[0;103m";
+    public static final String BLUE_BACKGROUND_BRIGHT   = "\033[0;104m";
+    public static final String PURPLE_BACKGROUND_BRIGHT = "\033[0;105m";
+    public static final String CYAN_BACKGROUND_BRIGHT   = "\033[0;106m";
+    public static final String WHITE_BACKGROUND_BRIGHT  = "\033[0;107m";
     
     private static Level level = Level.INFO;
     
@@ -124,20 +200,21 @@ public class Logger
         this.name = elements.length > 2 ? elements[2].getClassName() : "";
     }
     
-    private void log(Level level, String message)
+    private void logImpl(Level level, String message)
     {
-        if (level.intValue() < Logger.level.intValue()) return;
-        if (applyFilters(this.name)) return;
         try
         {
-            String prefix = '[' + getCurrentTimeString() + "] [" + Thread.currentThread().getName() + '/' + level + "]";
-            if (!this.name.equals("")) prefix += " [" + this.name + "]";
-            prefix += ": ";
+            StringBuilder prefix = new StringBuilder();
+            if (level.intValue() >= Level.SEVERE.intValue()) prefix.append(Logger.RED);
+            prefix.append('[').append(getCurrentTimeString()).append("] [").append(Thread.currentThread().getName()).append('/').append(level).append(']');
+            if (!this.name.equals("")) prefix.append(" [").append(this.name).append(']');
+            prefix.append(": ");
             for (String line : message.split("\n"))
             {
-                Logger.OUT.write(prefix.getBytes());
+                Logger.OUT.write(prefix.toString().getBytes());
                 Logger.OUT.write((line + '\n').getBytes());
             }
+            if (level.intValue() >= Level.SEVERE.intValue()) Logger.OUT.write(Logger.RESET.getBytes());
             Logger.OUT.flush();
         }
         catch (IOException ignored) { }
@@ -155,9 +232,9 @@ public class Logger
         if (applyFilters(this.name)) return;
         int n = objects.length;
         if (n == 0) return;
-        StringBuilder builder = new StringBuilder(String.valueOf(objects[0]));
-        for (int i = 1; i < n; i++) builder.append(' ').append(objects[i]);
-        log(level, builder.toString());
+        StringBuilder builder = new StringBuilder().append(objects[0] instanceof Throwable ? printThrowable((Throwable) objects[0]) : objects[0]);
+        for (int i = 1; i < n; i++) builder.append(' ').append(objects[i] instanceof Throwable ? printThrowable((Throwable) objects[i]) : objects[i]);
+        logImpl(level, builder.toString());
     }
     
     /**
@@ -173,13 +250,13 @@ public class Logger
         if (applyFilters(this.name)) return;
         if (Logger.PATTERN.matcher(format).find())
         {
-            log(level, String.format(format, objects));
+            logImpl(level, String.format(format, objects));
         }
         else
         {
             StringBuilder builder = new StringBuilder(format);
-            for (Object object : objects) builder.append(' ').append(object);
-            log(level, builder.toString());
+            for (Object object : objects) builder.append(' ').append(object instanceof Throwable ? printThrowable((Throwable) object) : object);
+            logImpl(level, builder.toString());
         }
     }
     
@@ -190,7 +267,7 @@ public class Logger
      */
     public void severe(Object object)
     {
-        log(Level.SEVERE, String.valueOf(object));
+        log(Level.SEVERE, object);
     }
     
     /**
@@ -221,7 +298,7 @@ public class Logger
      */
     public void warning(Object object)
     {
-        log(Level.WARNING, String.valueOf(object));
+        log(Level.WARNING, object);
     }
     
     /**
@@ -252,7 +329,7 @@ public class Logger
      */
     public void info(Object object)
     {
-        log(Level.INFO, String.valueOf(object));
+        log(Level.INFO, object);
     }
     
     /**
@@ -283,7 +360,7 @@ public class Logger
      */
     public void config(Object object)
     {
-        log(Level.CONFIG, String.valueOf(object));
+        log(Level.CONFIG, object);
     }
     
     /**
@@ -314,7 +391,7 @@ public class Logger
      */
     public void fine(Object object)
     {
-        log(Level.FINE, String.valueOf(object));
+        log(Level.FINE, object);
     }
     
     /**
@@ -345,7 +422,7 @@ public class Logger
      */
     public void finer(Object object)
     {
-        log(Level.FINER, String.valueOf(object));
+        log(Level.FINER, object);
     }
     
     /**
@@ -376,7 +453,7 @@ public class Logger
      */
     public void finest(Object object)
     {
-        log(Level.FINEST, String.valueOf(object));
+        log(Level.FINEST, object);
     }
     
     /**
@@ -407,7 +484,7 @@ public class Logger
      */
     public void all(Object object)
     {
-        log(Level.ALL, String.valueOf(object));
+        log(Level.ALL, object);
     }
     
     /**
@@ -429,5 +506,62 @@ public class Logger
     public void all(String format, Object... objects)
     {
         log(Level.ALL, format, objects);
+    }
+    
+    private String printThrowable(Throwable throwable)
+    {
+        Set<Throwable> dejaVu = Collections.newSetFromMap(new IdentityHashMap<>());
+        dejaVu.add(throwable);
+        
+        StringBuilder builder = new StringBuilder();
+        
+        // Print our stack trace
+        builder.append(throwable.toString()).append('\n');
+        StackTraceElement[] trace = throwable.getStackTrace();
+        for (StackTraceElement traceElement : trace) builder.append("\tat ").append(traceElement).append('\n');
+        
+        // Print suppressed exceptions, if any
+        for (Throwable se : throwable.getSuppressed()) enclosedStackTrace(builder, se, trace, "Suppressed: ", "\t", dejaVu);
+        
+        // Print cause, if any
+        Throwable ourCause = throwable.getCause();
+        if (ourCause != null) enclosedStackTrace(builder, ourCause, trace, "Caused by: ", "", dejaVu);
+        
+        return builder.toString();
+    }
+    
+    private void enclosedStackTrace(StringBuilder builder, Throwable throwable, StackTraceElement[] enclosingTrace, String caption, String prefix, Set<Throwable> dejaVu)
+    {
+        if (dejaVu.contains(throwable))
+        {
+            builder.append("\t[CIRCULAR REFERENCE:").append(throwable).append("]").append('\n');
+        }
+        else
+        {
+            dejaVu.add(throwable);
+            // Compute number of frames in common between this and enclosing trace
+            StackTraceElement[] trace = throwable.getStackTrace();
+            
+            int m = trace.length - 1;
+            int n = enclosingTrace.length - 1;
+            while (m >= 0 && n >= 0 && trace[m].equals(enclosingTrace[n]))
+            {
+                m--;
+                n--;
+            }
+            int framesInCommon = trace.length - 1 - m;
+            
+            // Print our stack trace
+            builder.append(prefix).append(caption).append(throwable).append('\n');
+            for (int i = 0; i <= m; i++) builder.append(prefix).append("\tat ").append(trace[i]).append('\n');
+            if (framesInCommon != 0) builder.append(prefix).append("\t... ").append(framesInCommon).append(" more").append('\n');
+            
+            // Print suppressed exceptions, if any
+            for (Throwable se : throwable.getSuppressed()) enclosedStackTrace(builder, throwable, trace, "Suppressed: ", prefix + "\t", dejaVu);
+            
+            // Print cause, if any
+            Throwable ourCause = throwable.getCause();
+            if (ourCause != null) enclosedStackTrace(builder, ourCause, trace, "Caused by: ", prefix, dejaVu);
+        }
     }
 }

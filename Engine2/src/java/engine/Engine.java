@@ -2,6 +2,7 @@ package engine;
 
 import com.electronwill.nightconfig.core.ConfigSpec;
 import com.electronwill.nightconfig.core.file.FileConfig;
+import com.electronwill.nightconfig.core.io.ParsingException;
 import engine.color.Blend;
 import engine.color.Color;
 import engine.color.Colorc;
@@ -153,16 +154,28 @@ public class Engine
         Path configPath = getPath("engine_config.json");
         
         Engine.config = FileConfig.of(configPath);
-        Engine.config.load();
-        
-        ConfigSpec spec = new ConfigSpec();
-        spec.defineInRange("layer_count", 10, 1, 100);
-        spec.define("debug_text_color", "#FFFFFFFF");
-        spec.define("debug_background_color", "#32000000");
-        spec.define("notification_duration", 2.0);
-        spec.define("profiler_frequency", 1.0);
-        spec.define("title_frequency", 1.0);
-        spec.correct(Engine.config);
+        try
+        {
+            Engine.config.load();
+            
+            ConfigSpec spec = new ConfigSpec();
+            spec.defineInRange("layer_count", 10, 1, 100);
+            spec.define("debug_text_color", "#FFFFFFFF");
+            spec.define("debug_background_color", "#32000000");
+            spec.define("notification_duration", 2.0);
+            spec.define("profiler_frequency", 1.0);
+            spec.define("title_frequency", 1.0);
+            spec.correct(Engine.config);
+        }
+        catch (ParsingException ignored)
+        {
+            Engine.config.set("layer_count", 10);
+            Engine.config.set("debug_text_color", "#FFFFFFFF");
+            Engine.config.set("debug_background_color", "#32000000");
+            Engine.config.set("notification_duration", 2.0);
+            Engine.config.set("profiler_frequency", 1.0);
+            Engine.config.set("title_frequency", 1.0);
+        }
         
         Engine.layerCount = Engine.config.getInt("layer_count");
         Engine.debugLineText.fromHex(Engine.config.get("debug_text_color"));
@@ -333,7 +346,7 @@ public class Engine
                                                 Engine.renderer.start();
                                             }
                                             Engine.profiler.endSection();
-    
+                                            
                                             Engine.profiler.startSection("Extension Pre Draw");
                                             {
                                                 Engine.LOGGER.finer("Extension Pre Draw");
@@ -380,7 +393,7 @@ public class Engine
                                                 }
                                             }
                                             Engine.profiler.endSection();
-    
+                                            
                                             Engine.profiler.startSection("Finish");
                                             {
                                                 Engine.renderer.finish();
@@ -435,12 +448,12 @@ public class Engine
                                                 drawDebugText(0, y += stb_easy_font_height(line), line);
                                             }
                                         }
-    
+                                        
                                         Engine.profiler.startSection("Text");
                                         {
                                             Engine.debugShader.bind();
                                             Engine.debugShader.setMat4("pv", Engine.debugView.setOrtho(0F, Engine.window.viewW(), Engine.window.viewH(), 0F, -1F, 1F));
-        
+                                            
                                             try (MemoryStack frame = stackPush())
                                             {
                                                 ByteBuffer textBuffer = frame.malloc(24 * 1024);
@@ -449,15 +462,15 @@ public class Engine
                                                     int quads  = stb_easy_font_print(line.a + 2, line.b + 2, line.c, null, textBuffer);
                                                     int width  = stb_easy_font_width(line.c);
                                                     int height = stb_easy_font_height(line.c);
-                
+                                                    
                                                     Engine.debugShader.setColor("color", Engine.debugLineBackground);
                                                     Engine.debugBoxVAO.bind().set(0, new float[] {
                                                             line.a, line.b, line.a + width + 2, line.b, line.a + width + 2, line.b + height, line.a, line.b + height
                                                     }, GL_DYNAMIC_DRAW).draw(GL_QUADS).unbind();
-                
+                                                    
                                                     Engine.debugShader.setColor("color", Engine.debugLineText);
                                                     Engine.debugTextVAO.bind().set(0, textBuffer.limit(quads * 64), GL_DYNAMIC_DRAW).draw(GL_QUADS).unbind();
-                
+                                                    
                                                     textBuffer.clear();
                                                 }
                                             }
@@ -559,6 +572,10 @@ public class Engine
                             }
                         }
                     }
+                    catch (Exception e)
+                    {
+                        Engine.LOGGER.severe(e);
+                    }
                     finally
                     {
                         Engine.window.unmakeCurrent();
@@ -582,7 +599,10 @@ public class Engine
                 }
             }
         }
-        catch (Exception ignored) { }
+        catch (Exception e)
+        {
+            Engine.LOGGER.severe(e);
+        }
         finally
         {
             Engine.LOGGER.fine("Extension Pre Destruction");

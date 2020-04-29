@@ -300,15 +300,6 @@ public class GUI extends Extension
             profiler().endSection();
         }
         profiler().endSection();
-        
-        profiler().startSection("UIElements Update");
-        {
-            for (UIElement element : this.elements)
-            {
-                if (element.update(elapsedTime, mouseX, mouseY)) this.redrawScreen = true;
-            }
-        }
-        profiler().endSection();
     }
     
     /**
@@ -319,11 +310,20 @@ public class GUI extends Extension
     @Override
     public void afterDraw(double elapsedTime)
     {
+        double mouseX = mouse().x() * this.size.x() / screenWidth();
+        double mouseY = mouse().y() * this.size.y() / screenHeight();
+        
+        profiler().startSection("UIElements Update");
+        {
+            for (UIElement element : this.elements)
+            {
+                this.redrawScreen |= element.update(elapsedTime, mouseX, mouseY);
+            }
+        }
+        profiler().endSection();
+        
         if (this.redrawScreen)
         {
-            int mouseX = (int) (mouse().x() * this.size.x() / screenWidth());
-            int mouseY = (int) (mouse().y() * this.size.y() / screenHeight());
-            
             layer(layerCount() - 1);
             
             clear(Color.BLANK);
@@ -336,9 +336,8 @@ public class GUI extends Extension
                 
                 if (element.visible())
                 {
-                    layer(layerCount() - 1);
                     rectMode(RectMode.CORNER);
-                    texture(element.texture(), element.rect.x(), element.rect.y(), element.rect.width(), element.rect.height());
+                    texture(element.texture, element.rect.x(), element.rect.y(), element.rect.width(), element.rect.height());
                 }
             }
             

@@ -38,7 +38,7 @@ public class UIWindow extends UIElement implements IUIContainerLike
     }
     
     @Override
-    public UIElement position(int x, int y)
+    public void position(int x, int y)
     {
         super.position(x, y);
         
@@ -46,12 +46,10 @@ public class UIWindow extends UIElement implements IUIContainerLike
         // {
         //     this.rootContainer.position(this.rect.x() + this.shadowSize, this.rect.y() + this.shadowWidth);
         // }
-        
-        return this;
     }
     
     @Override
-    public UIElement dimensions(int width, int height)
+    public void dimensions(int width, int height)
     {
         // width = Math.min(this.container.rect.width(), Math.max(this.minWidth, width));
         // height = Math.min(this.container.rect.height(), Math.max(this.minHeight, height));
@@ -68,8 +66,6 @@ public class UIWindow extends UIElement implements IUIContainerLike
             //     this.rootContainer.position(this.rect.x() + this.shadowWidth, this.rect.y() + this.shadowWidth);
             // }
         }
-        
-        return this;
     }
     
     @Override

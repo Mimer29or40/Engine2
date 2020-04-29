@@ -5,12 +5,14 @@ import engine.gui.util.Rect;
 import engine.gui.util.Rectc;
 import engine.input.Keyboard;
 import engine.input.Mouse;
+import engine.render.RectMode;
 import engine.render.Texture;
 import engine.util.PairS;
 
 import java.util.HashMap;
 
 import static engine.Engine.*;
+import static engine.util.Util.println;
 
 public abstract class UIElement
 {
@@ -21,28 +23,22 @@ public abstract class UIElement
     
     protected final UIContainer container;
     
-    // ----- Theme Stuffs -----
+    protected Texture texture;
+    
+    // ----- Draw Stuffs -----
     protected String state, prevState;
     protected Texture stateTexture, prevStateTexture;
     protected boolean redrawStates;
     
-    
-    protected       Texture                transitionTexture;
     protected       double                 transitionRemaining  = 0;
     protected       double                 transitionDuration   = 0;
     protected       double                 transitionPercentage = 0;
     protected final HashMap<PairS, Double> transitionTimes      = new HashMap<>();
     
+    // ----- Theme Stuffs -----
     protected String[] objectIDs;
     protected String[] elementIDs;
     protected int      borderWidth = 1;
-    
-    // ----- Property Stuffs -----
-    protected boolean alive   = true;
-    protected boolean visible = true;
-    protected boolean focused = false;
-    protected boolean hovered = false;
-    protected boolean enabled = false;
     
     public UIElement(Rectc rect, IUIContainerLike container, UIElement parent, String objectID, String elementID)
     {
@@ -112,7 +108,7 @@ public abstract class UIElement
         return (this.container != null ? this.container.absY() : 0) + this.rect.top();
     }
     
-    public UIElement position(int x, int y)
+    public void position(int x, int y)
     {
         if (this.rect.x() != x || this.rect.y() != y)
         {
@@ -120,11 +116,9 @@ public abstract class UIElement
             
             if (this.container != null) this.container.recalculateLayers();
         }
-        
-        return this;
     }
     
-    public UIElement dimensions(int width, int height)
+    public void dimensions(int width, int height)
     {
         if (this.rect.width() != width || this.rect.height() != height)
         {
@@ -132,20 +126,17 @@ public abstract class UIElement
             
             if (this.container != null) this.container.recalculateLayers();
             
-            // if (width > 0 && height > 0)
-            // {
-            //
-            // }
+            rebuild();
         }
-        
-        return this;
     }
     
     public void rebuild()
     {
-        this.stateTexture      = new Texture(this.rect.width(), this.rect.height(), 4);
-        this.prevStateTexture  = new Texture(this.rect.width(), this.rect.height(), 4);
-        this.transitionTexture = new Texture(this.rect.width(), this.rect.height(), 4);
+        this.texture          = new Texture(this.rect.width(), this.rect.height(), 4);
+        this.stateTexture     = new Texture(this.rect.width(), this.rect.height(), 4);
+        this.prevStateTexture = new Texture(this.rect.width(), this.rect.height(), 4);
+        
+        redraw();
     }
     
     public UIElement getTopElement(double mouseX, double mouseY)
@@ -175,6 +166,12 @@ public abstract class UIElement
     // ----- PROPERTIES -----
     // ----------------------
     
+    protected boolean alive   = true;
+    protected boolean focused = false;
+    protected boolean hovered = false;
+    protected boolean visible = true;
+    protected boolean enabled = true;
+    
     public boolean alive()
     {
         return this.alive;
@@ -183,11 +180,6 @@ public abstract class UIElement
     public boolean focused()
     {
         return this.focused;
-    }
-    
-    public boolean visible()
-    {
-        return this.visible;
     }
     
     public boolean hovered()
@@ -200,9 +192,77 @@ public abstract class UIElement
         return this.alive;
     }
     
+    /**
+     * @return True if the element is visible
+     */
+    public boolean visible()
+    {
+        return this.visible;
+    }
+    
+    /**
+     * Sets the visible state of the element
+     *
+     * @param visible The new state.
+     */
+    public void visible(boolean visible)
+    {
+        if (this.visible != visible)
+        {
+            boolean prev = this.visible;
+            this.visible = visible;
+            visibleChanged(prev, this.visible);
+        }
+    }
+    
+    /**
+     * Toggles the visible state of the element.
+     */
+    public void toggleVisibility()
+    {
+        visible(!visible());
+    }
+    
+    protected void visibleChanged(boolean prevState, boolean newState)
+    {
+        redraw();
+    }
+    
+    /**
+     * @return True if the element is enabled
+     */
     public boolean enabled()
     {
         return this.enabled;
+    }
+    
+    /**
+     * Sets the enabled state of the element
+     *
+     * @param enabled The new state.
+     */
+    public void enabled(boolean enabled)
+    {
+        if (this.enabled != enabled)
+        {
+            boolean prev = this.enabled;
+            this.enabled = enabled;
+            enabledChanged(prev, this.enabled);
+        }
+    }
+    
+    /**
+     * Toggles the enabled state of the element.
+     */
+    public void toggleEnabled()
+    {
+        enabled(!enabled());
+    }
+    
+    protected void enabledChanged(boolean prevState, boolean newState)
+    {
+        setState(!newState ? "disabled" : canHover() && hovered() ? "hovered" : "normal");
+        redraw();
     }
     
     // --------------------
@@ -213,9 +273,11 @@ public abstract class UIElement
     {
         if (!state.equals(this.state))
         {
+            println(state);
             this.prevState = this.state;
             this.state     = state;
             
+            this.redraw       = true;
             this.redrawStates = true;
             
             PairS statePair = new PairS(this.prevState, this.state);
@@ -270,38 +332,48 @@ public abstract class UIElement
     // -------------------
     
     /**
-     * Updates the element.
+     * Updates the element. This is called and past along to its children as long as it is alive.
      *
      * @param elapsedTime The amount of time in seconds since the last update.
-     * @return If the GUI should be redrawn.
+     * @param mouseX      The x position of the mouse.
+     * @param mouseY      The y position of the mouse.
+     * @return If the element should be redrawn.
      */
-    public boolean update(double elapsedTime, double mouseX, double mouseY)
+    protected boolean update(double elapsedTime, double mouseX, double mouseY)
     {
         if (alive())
         {
-            boolean redraw = false;
-    
             if (this.transitionDuration > 0)
             {
                 this.transitionRemaining -= elapsedTime;
                 if (this.transitionRemaining > 0)
                 {
                     this.transitionPercentage = 1 - (this.transitionRemaining / this.transitionDuration);
-                    redraw                    = true;
+                    
+                    this.redraw = true;
                 }
                 else
                 {
                     this.transitionRemaining = 0;
                 }
             }
-    
-    
-            return redraw | this.redrawStates;
+            
+            this.redraw |= updateElement(elapsedTime, mouseX, mouseY);
+            
+            if (this instanceof UIContainer)
+            {
+                for (UIElement child : ((UIContainer) this).elements)
+                {
+                    this.redraw |= child.update(elapsedTime, mouseX, mouseY);
+                }
+            }
+            
+            return this.redraw | this.redrawStates;
         }
         return false;
     }
     
-    protected boolean updateWindow(double elapsedTime, double mouseX, double mouseY)
+    protected boolean updateElement(double elapsedTime, double mouseX, double mouseY)
     {
         return false;
     }
@@ -310,32 +382,71 @@ public abstract class UIElement
     // ----- Drawing -----
     // -------------------
     
-    public Texture texture()
+    private boolean redraw = true;
+    
+    public void redraw()
     {
-        return this.transitionRemaining > 0 ? this.transitionTexture : this.stateTexture;
+        this.redraw = true;
     }
     
-    public void draw(double elapsedTime, int mouseX, int mouseY)
+    public void draw(double elapsedTime, double mouseX, double mouseY)
     {
-        if (this.redrawStates)
+        if (alive())
         {
-            if (this.prevState != null)
+            if (this.redrawStates)
             {
-                target(this.prevStateTexture);
-                drawState(this.prevState);
+                if (this.prevState != null && this.prevStateTexture != null)
+                {
+                    target(this.prevStateTexture);
+                    drawState(this.prevState);
+                }
+                
+                if (this.stateTexture != null)
+                {
+                    target(this.stateTexture);
+                    drawState(this.state);
+                }
+                
+                this.redrawStates = false;
             }
             
-            target(this.stateTexture);
-            drawState(this.state);
-            
-            this.redrawStates = false;
+            if (this.redraw)
+            {
+                target(this.texture);
+                if (this.transitionRemaining > 0)
+                {
+                    interpolateTexture(this.prevStateTexture, this.stateTexture, this.transitionPercentage, 0, 0);
+                }
+                else if (this.stateTexture != null)
+                {
+                    texture(this.stateTexture, 0, 0);
+                }
+                drawElement(elapsedTime, mouseX, mouseY);
+                
+                if (this instanceof UIContainer)
+                {
+                    for (UIElement child : ((UIContainer) this).elements)
+                    {
+                        push();
+                        child.draw(elapsedTime, mouseX, mouseY);
+                        pop();
+                        
+                        if (child.visible())
+                        {
+                            target(this.texture);
+                            rectMode(RectMode.CORNER);
+                            texture(child.texture, child.rect.x(), child.rect.y(), child.rect.width(), child.rect.height());
+                        }
+                    }
+                }
+                this.redraw = false;
+            }
         }
-        
-        if (this.transitionRemaining > 0)
-        {
-            target(this.transitionTexture);
-            interpolateTexture(this.prevStateTexture, this.stateTexture, this.transitionPercentage, 0, 0);
-        }
+    }
+    
+    protected void drawElement(double elapsedTime, double mouseX, double mouseY)
+    {
+    
     }
     
     public void drawState(String state)

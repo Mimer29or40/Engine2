@@ -511,8 +511,7 @@ public class Theme
                 return this.elementFonts.get(combinedElementID);
             }
         }
-        // return this.fontDictionary.findFont(this.baseFontInfo.name, this.baseFontInfo.size, this.baseFontInfo.bold, this.baseFontInfo.italic);
-        return null;
+        return Font.getFont(this.baseFontInfo.name, this.baseFontInfo.size, this.baseFontInfo.bold, this.baseFontInfo.italic);
     }
     
     public String getMiscData(String[] objectIDs, String[] elementIDs, String miscDataID)

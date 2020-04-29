@@ -2,6 +2,7 @@ package engine.gui;
 
 import engine.Engine;
 import engine.gui.elment.UIButton;
+import engine.gui.elment.UILabel;
 import engine.gui.util.Rect;
 
 import java.util.logging.Level;
@@ -11,6 +12,7 @@ import static engine.gui.GUI.createGUI;
 public class GuiTest extends Engine
 {
     UIElement element;
+    UILabel label;
     
     /**
      * This method is called once the engine's environment is fully setup. This is only called once.
@@ -25,6 +27,7 @@ public class GuiTest extends Engine
         createGUI(100, 100);
         
         element = new UIButton(new Rect(0, 0, 50, 50), null, "Button", "ToolTip", null, "#button");
+        label = new UILabel("This is a label", new Rect(0, 0, 100, 10), null, null, "#label");
     }
     
     /**
@@ -41,6 +44,9 @@ public class GuiTest extends Engine
         
         circle(0, 0, 100);
     
+        if (keyboard().T.down()) ((UIButton) element).toggleToggleable();
+        if (keyboard().V.down()) element.toggleVisibility();
+        if (keyboard().SPACE.down()) element.toggleEnabled();
         // if (keyboard().A.down()) element.setState("active");
         // if (keyboard().S.down()) element.setState("normal");
     }

@@ -9,7 +9,6 @@ public class UIButton extends UIElement
 {
     protected String text, tooltipText;
     
-    protected boolean down;
     protected boolean selected;
     
     public UIButton(Rectc rect, IUIContainerLike container, String text, String toolTipText, UIElement parent, String objectID)
@@ -18,16 +17,6 @@ public class UIButton extends UIElement
         
         this.text = text;
         this.tooltipText = toolTipText;
-    }
-    
-    public void setActive()
-    {
-        setState("active");
-    }
-    
-    public void setInactive()
-    {
-        setState(canHover() && this.hovered ? "hovered" : "normal");
     }
     
     public void select()
@@ -39,7 +28,62 @@ public class UIButton extends UIElement
     public void unselect()
     {
         this.selected = false;
-        setState(canHover() && this.hovered ? "hovered" : "normal");
+        setState(canHover() && hovered() ? "hovered" : "normal");
+    }
+    
+    // ----------------------
+    // ----- PROPERTIES -----
+    // ----------------------
+    
+    @Override
+    protected void enabledChanged(boolean prevState, boolean newState)
+    {
+        pushed(false);
+        setState(!newState ? "disabled" : canHover() && hovered() ? "hovered" : "normal");
+        redraw();
+    }
+    
+    public boolean pushed;
+    
+    public boolean pushed()
+    {
+        return this.pushed;
+    }
+    
+    public void pushed(boolean pushed)
+    {
+        if (this.pushed != pushed)
+        {
+            this.pushed = pushed;
+            setState(pushed() ? "active" : canHover() && hovered() ? "hovered" : "normal");
+            redraw();
+        }
+    }
+    
+    public void togglePushed()
+    {
+        pushed(!pushed());
+    }
+    
+    private boolean toggleable = false;
+    
+    public boolean toggleable()
+    {
+        return this.toggleable;
+    }
+    
+    public void toggleable(boolean toggleable)
+    {
+        if (this.toggleable != toggleable)
+        {
+            this.toggleable = toggleable;
+            pushed(false);
+        }
+    }
+    
+    public void toggleToggleable()
+    {
+        toggleable(!toggleable());
     }
     
     // -------------------
@@ -47,15 +91,15 @@ public class UIButton extends UIElement
     // -------------------
     
     /**
-     * Updates the element.
+     * Updates the element. This is called and past along to its children as long as it is alive.
      *
      * @param elapsedTime The amount of time in seconds since the last update.
-     * @param mouseX
-     * @param mouseY
-     * @return If the GUI should be redrawn.
+     * @param mouseX      The x position of the mouse.
+     * @param mouseY      The y position of the mouse.
+     * @return If the element should be redrawn.
      */
     @Override
-    public boolean update(double elapsedTime, int mouseX, int mouseY)
+    public boolean update(double elapsedTime, double mouseX, double mouseY)
     {
         boolean redraw = super.update(elapsedTime, mouseX, mouseY);
         
@@ -74,7 +118,7 @@ public class UIButton extends UIElement
     {
         super.onMouseEnter();
         
-        if (canHover()) setState("hovered");
+        if (enabled() && canHover() && !pushed()) setState("hovered");
     }
     
     @Override
@@ -82,7 +126,11 @@ public class UIButton extends UIElement
     {
         super.onMouseExit();
     
-        setState("normal");
+        if (enabled() && (!toggleable() || !pushed()))
+        {
+            setState("normal");
+            pushed(false);
+        }
         
         // if (this.tooltip != null)
         // {
@@ -92,7 +140,7 @@ public class UIButton extends UIElement
     }
     
     @Override
-    protected void onMouseHover(double hoverTime, int elementX, int elementY)
+    protected void onMouseHover(double hoverTime, double elementX, double elementY)
     {
         super.onMouseHover(hoverTime, elementX, elementY);
     
@@ -106,38 +154,54 @@ public class UIButton extends UIElement
     }
     
     @Override
-    public boolean onMouseButtonDown(Mouse.Button button, double x, double y)
+    public boolean onMouseButtonDown(Mouse.Button button, double elementX, double elementY)
     {
-        boolean consumed = super.onMouseButtonDown(button, x, y);
-        
-        if (!consumed)
+        if (!super.onMouseButtonDown(button, elementX, elementY) && enabled())
         {
-            setActive();
+            if (toggleable())
+            {
+                togglePushed();
+                // onButtonDown(button, elementX, elementY);
+                // onButtonToggled(button, elementX, elementY, pushed());
+            }
+            else if (!pushed())
+            {
+                pushed(true);
+                // onButtonDown(button, elementX, elementY);
+            }
             // if (this.tooltip != null)
             // {
             //     this.tooltip.kill();
             //     this.tooltip = null;
             // }
+            return true;
         }
         
-        return consumed;
+        return false;
     }
     
     @Override
-    public boolean onMouseButtonUp(Mouse.Button button, double x, double y)
+    public boolean onMouseButtonUp(Mouse.Button button, double elementX, double elementY)
     {
-        boolean consumed = super.onMouseButtonUp(button, x, y);
-    
-        if (!consumed)
+        if (!super.onMouseButtonUp(button, elementX, elementY) && enabled())
         {
-            setInactive();
+            if (toggleable())
+            {
+                // onButtonUp(button, elementX, elementY);
+            }
+            else if (pushed())
+            {
+                pushed(false);
+                // onButtonUp(button, elementX, elementY);
+            }
             // if (this.tooltip != null)
             // {
             //     this.tooltip.kill();
             //     this.tooltip = null;
             // }
+            return true;
         }
         
-        return consumed;
+        return false;
     }
 }

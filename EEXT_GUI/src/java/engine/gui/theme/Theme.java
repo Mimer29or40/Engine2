@@ -126,13 +126,13 @@ public class Theme
                                     {
                                         case "colors":
                                         case "colours":
-                                            loadElementColor(element, state, jsonReader.nextString());
+                                            loadElementColor(jsonReader, element, state);
                                             break;
                                         case "images":
                                             loadElementImage(jsonReader, element, state);
                                             break;
                                         case "misc":
-                                            loadElementMisc(element, state, jsonReader.nextString());
+                                            loadElementMisc(jsonReader, element, state);
                                             break;
                                     }
                                 }
@@ -297,8 +297,10 @@ public class Theme
         jsonReader.endObject();
     }
     
-    private void loadElementColor(String element, String colorKey, String colorString)
+    private void loadElementColor(JsonReader jsonReader, String element, String colorKey) throws IOException
     {
+        String colorString = jsonReader.nextString();
+        
         Theme.LOGGER.finer("Loading color (%s) with value, (%s) for element (%s)", colorKey, colorString, element);
         
         if (!this.elementColors.containsKey(element)) this.elementColors.put(element, new HashMap<>());
@@ -357,12 +359,34 @@ public class Theme
         }
     }
     
-    private void loadElementMisc(String element, String miscKey, String miscString)
+    private void loadElementMisc(JsonReader jsonReader, String element, String miscKey) throws IOException
     {
-        Theme.LOGGER.finer("Loading misc data (%s) with value (%s) for element (%s)", miscKey, miscString, element);
-    
         if (!this.elementMiscData.containsKey(element)) this.elementMiscData.put(element, new HashMap<>());
-        this.elementMiscData.get(element).put(miscKey, miscString);
+        
+        if (miscKey.equals("state_transitions"))
+        {
+            Theme.LOGGER.finer("Loading misc data (%s) for element (%s)", miscKey, element);
+    
+            StringBuilder transitionString = new StringBuilder();
+            
+            jsonReader.beginObject();
+            while (jsonReader.hasNext())
+            {
+                transitionString.append(jsonReader.nextName()).append(":").append(jsonReader.nextString());
+                if (jsonReader.hasNext()) transitionString.append("-");
+            }
+            jsonReader.endObject();
+    
+            this.elementMiscData.get(element).put(miscKey, transitionString.toString());
+        }
+        else
+        {
+            String miscString = jsonReader.nextString();
+            
+            Theme.LOGGER.finer("Loading misc data (%s) with value (%s) for element (%s)", miscKey, miscString, element);
+            
+            this.elementMiscData.get(element).put(miscKey, miscString);
+        }
     }
     
     private void loadImages()
@@ -382,13 +406,13 @@ public class Theme
                     if (this.loadedImages.containsKey(data.path))
                     {
                         Theme.LOGGER.finest("Image already loaded: " + data.path);
-    
+                        
                         image = this.loadedImages.get(data.path);
                     }
                     else
                     {
                         Theme.LOGGER.finest("Loading image: " + data.path);
-    
+                        
                         image = Texture.loadImage(data.path);
                         if (image.width() == 0) image = null;
                         if (image != null) this.loadedImages.put(data.path, image);
@@ -398,7 +422,7 @@ public class Theme
                         if (data.rect != null)
                         {
                             Theme.LOGGER.finest("Creating sub texture: " + data.rect);
-    
+                            
                             image = image.subTexture(data.rect.x(), data.rect.y(), data.rect.width(), data.rect.height());
                         }
                         this.elementImages.get(elementKey).put(imageKey, image);

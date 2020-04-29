@@ -79,10 +79,10 @@ public class UIWindow extends UIElement implements IUIContainerLike
         }
         if (this.elementContainer == null)
         {
-            Rect rect = new Rect(this.borderWidth,
+            Rect rect = new Rect(borderWidth(),
                                  this.titleHeight,
-                                 this.rootContainer.rect().width() - (2 * this.borderWidth),
-                                 this.rootContainer.rect().height() - (this.titleHeight + this.borderWidth));
+                                 this.rootContainer.rect().width() - (2 * borderWidth()),
+                                 this.rootContainer.rect().height() - (this.titleHeight + borderWidth()));
             this.elementContainer = new UIContainer(rect, this.rootContainer, this, "#window_element_container");
         }
     }

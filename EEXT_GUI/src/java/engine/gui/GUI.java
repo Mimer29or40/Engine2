@@ -111,7 +111,8 @@ public class GUI extends Extension
             {
                 for (UIElement element : this.elements)
                 {
-                    if ((this.topElement = element.getTopElement(mouseX, mouseY)) != null) break;
+                    UIElement topElement = element.getTopElement(mouseX, mouseY);
+                    if (topElement != null) this.topElement = topElement;
                 }
             }
             

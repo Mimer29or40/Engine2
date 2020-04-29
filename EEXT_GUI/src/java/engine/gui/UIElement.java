@@ -14,6 +14,9 @@ import java.util.HashMap;
 import static engine.Engine.*;
 import static engine.util.Util.println;
 
+/**
+ * A base class for UI elements.
+ */
 public abstract class UIElement
 {
     protected int layer          = 0;
@@ -22,23 +25,6 @@ public abstract class UIElement
     protected final Rect rect = new Rect();
     
     protected final UIContainer container;
-    
-    protected Texture texture;
-    
-    // ----- Draw Stuffs -----
-    protected String state, prevState;
-    protected Texture stateTexture, prevStateTexture;
-    protected boolean redrawStates;
-    
-    protected       double                 transitionRemaining  = 0;
-    protected       double                 transitionDuration   = 0;
-    protected       double                 transitionPercentage = 0;
-    protected final HashMap<PairS, Double> transitionTimes      = new HashMap<>();
-    
-    // ----- Theme Stuffs -----
-    protected String[] objectIDs;
-    protected String[] elementIDs;
-    protected int      borderWidth = 1;
     
     public UIElement(Rectc rect, IUIContainerLike container, UIElement parent, String objectID, String elementID)
     {
@@ -70,11 +56,11 @@ public abstract class UIElement
         
         setState("normal");
         rebuild();
-        
-        this.transitionTimes.put(new PairS("hovered", "normal"), 1.0);
-        this.transitionTimes.put(new PairS("normal", "hovered"), 1.0);
     }
     
+    /**
+     * Removes the element from its container and prevents further updates.
+     */
     public void kill()
     {
         this.alive = false;
@@ -88,26 +74,44 @@ public abstract class UIElement
         }
     }
     
+    /**
+     * @return Gets the containing element. If its null then the element is attached to the main GUI elements.
+     */
     public UIContainer container()
     {
         return this.container;
     }
     
+    /**
+     * @return The containing rect of the element. The x and y positions are relative to the container.
+     */
     public Rectc rect()
     {
         return this.rect;
     }
     
+    /**
+     * @return Gets the x position relative to the top left corner of the screen.
+     */
     public int absX()
     {
         return (this.container != null ? this.container.absX() : 0) + this.rect.left();
     }
     
+    /**
+     * @return Gets the y position relative to the top left corner of the screen.
+     */
     public int absY()
     {
         return (this.container != null ? this.container.absY() : 0) + this.rect.top();
     }
     
+    /**
+     * Sets the position of the element in its parent coordinate space.
+     *
+     * @param x The new x position.
+     * @param y The new y position.
+     */
     public void position(int x, int y)
     {
         if (this.rect.x() != x || this.rect.y() != y)
@@ -118,6 +122,12 @@ public abstract class UIElement
         }
     }
     
+    /**
+     * Sets the new dimensions of the element.
+     *
+     * @param width  The new width.
+     * @param height The new height.
+     */
     public void dimensions(int width, int height)
     {
         if (this.rect.width() != width || this.rect.height() != height)
@@ -130,6 +140,9 @@ public abstract class UIElement
         }
     }
     
+    /**
+     * Rebuilds the necessary textures and sub elements of the element.
+     */
     public void rebuild()
     {
         this.texture          = new Texture(this.rect.width(), this.rect.height(), 4);
@@ -139,6 +152,13 @@ public abstract class UIElement
         redraw();
     }
     
+    /**
+     * Gets the top element if its alive, visible and the mouse it over it.
+     *
+     * @param mouseX The mouse x position
+     * @param mouseY The mouse y position
+     * @return The top element or null of the mouse is not over anything.
+     */
     public UIElement getTopElement(double mouseX, double mouseY)
     {
         UIElement top = null;
@@ -157,6 +177,13 @@ public abstract class UIElement
         return null;
     }
     
+    /**
+     * Check to see if the mouse is over the element.
+     *
+     * @param mouseX The mouse x position
+     * @param mouseY The mouse y position
+     * @return True if the mouse is over the element.
+     */
     public boolean mouseOver(double mouseX, double mouseY)
     {
         return this.rect.collide((int) mouseX - absX() + this.rect.x(), (int) mouseY - absY() + this.rect.y());
@@ -166,34 +193,46 @@ public abstract class UIElement
     // ----- PROPERTIES -----
     // ----------------------
     
-    protected boolean alive   = true;
-    protected boolean focused = false;
-    protected boolean hovered = false;
-    protected boolean visible = true;
-    protected boolean enabled = true;
+    private boolean alive   = true;
+    private boolean focused = false;
+    private boolean hovered = false;
+    private boolean visible = true;
+    private boolean enabled = true;
     
+    /**
+     * @return If the element is alive and updatable.
+     */
     public boolean alive()
     {
         return this.alive;
     }
     
+    /**
+     * @return If the element has GUI focus.
+     */
     public boolean focused()
     {
         return this.focused;
     }
     
+    /**
+     * @return If the mouse is over the element and the element is hoverable.
+     */
     public boolean hovered()
     {
         return this.hovered;
     }
     
+    /**
+     * @return If the element goes into hovered state when the mouse if over the element.
+     */
     public boolean canHover()
     {
-        return this.alive;
+        return alive();
     }
     
     /**
-     * @return True if the element is visible
+     * @return If the element can be seen.
      */
     public boolean visible()
     {
@@ -223,6 +262,12 @@ public abstract class UIElement
         visible(!visible());
     }
     
+    /**
+     * Called whenever the visible state is changed.
+     *
+     * @param prevState The previous visible state
+     * @param newState  The new visible state
+     */
     protected void visibleChanged(boolean prevState, boolean newState)
     {
         redraw();
@@ -259,16 +304,51 @@ public abstract class UIElement
         enabled(!enabled());
     }
     
+    /**
+     * Called whenever the enabled state is changed.
+     *
+     * @param prevState The previous enabled state
+     * @param newState  The new enabled state
+     */
     protected void enabledChanged(boolean prevState, boolean newState)
     {
         setState(!newState ? "disabled" : canHover() && hovered() ? "hovered" : "normal");
-        redraw();
     }
     
     // --------------------
     // ----- THEMEING -----
     // --------------------
     
+    protected String[] objectIDs;
+    protected String[] elementIDs;
+    
+    private int borderWidth = 1;
+    
+    private double tooltipDelay = 1;
+    
+    protected final HashMap<PairS, Double> transitionTimes = new HashMap<>();
+    
+    /**
+     * @return The border width defined by the theme.
+     */
+    public int borderWidth()
+    {
+        return this.borderWidth;
+    }
+    
+    /**
+     * @return The time in seconds before the tooltip will appear.
+     */
+    public double tooltipDelay()
+    {
+        return this.tooltipDelay;
+    }
+    
+    /**
+     * Sets the state of the element. If a transition is available, it will initiate it.
+     *
+     * @param state The new state.
+     */
     protected void setState(String state)
     {
         if (!state.equals(this.state))
@@ -277,7 +357,7 @@ public abstract class UIElement
             this.prevState = this.state;
             this.state     = state;
             
-            this.redraw       = true;
+            redraw();
             this.redrawStates = true;
             
             PairS statePair = new PairS(this.prevState, this.state);
@@ -294,15 +374,59 @@ public abstract class UIElement
         }
     }
     
+    /**
+     * Rebuild all theme information. If anything changed, then redraw the states.
+     */
     public void rebuildTheme()
     {
-        boolean anyChange = false;
-        
-        if (checkThemeSizeChange(1)) anyChange = true;
-        
-        if (anyChange) rebuild();
+        if (rebuildTheme(false)) redrawStates();
     }
     
+    /**
+     * Rebuilds all theme information. This method can be overridden by elements.
+     *
+     * @param anyChanged pass-through
+     * @return anyChanged pass-through
+     */
+    public boolean rebuildTheme(boolean anyChanged)
+    {
+        if (checkThemeSizeChange(1)) anyChanged = true;
+        
+        String toolTipDelayString = GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "tool_tip_delay");
+        if (toolTipDelayString != null)
+        {
+            double toolTipDelay = Double.parseDouble(toolTipDelayString);
+            if (this.tooltipDelay != toolTipDelay)
+            {
+                this.tooltipDelay = toolTipDelay;
+                anyChanged        = true;
+            }
+        }
+        
+        String stateTransitionString = GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "state_transitions");
+        if (stateTransitionString != null)
+        {
+            this.transitionTimes.clear();
+            for (String transitionTime : stateTransitionString.split("-"))
+            {
+                String[] split  = transitionTime.split(":");
+                String[] states = split[0].split("_");
+                if (split.length == 2 && states.length == 2)
+                {
+                    this.transitionTimes.put(new PairS(states[0], states[1]), Double.parseDouble(split[1]));
+                }
+            }
+        }
+        
+        return anyChanged;
+    }
+    
+    /**
+     * Checks if the border width has changed in the theme.
+     *
+     * @param defaultBorderWidth The default border width;
+     * @return If the border width has changed.
+     */
     protected boolean checkThemeSizeChange(int defaultBorderWidth)
     {
         boolean anyChange = false;
@@ -332,12 +456,12 @@ public abstract class UIElement
     // -------------------
     
     /**
-     * Updates the element. This is called and past along to its children as long as it is alive.
+     * Updates the element and sub elements. This is called and past along to its children as long as it is alive.
      *
      * @param elapsedTime The amount of time in seconds since the last update.
      * @param mouseX      The x position of the mouse.
      * @param mouseY      The y position of the mouse.
-     * @return If the element should be redrawn.
+     * @return If the GUI window should be redrawn.
      */
     protected boolean update(double elapsedTime, double mouseX, double mouseY)
     {
@@ -368,11 +492,21 @@ public abstract class UIElement
                 }
             }
             
-            return this.redraw | this.redrawStates;
+            return this.redraw;
         }
         return false;
     }
     
+    /**
+     * Updates the element. This is called and past along to its children as long as it is alive.
+     * <p>
+     * Can be overridden.
+     *
+     * @param elapsedTime The amount of time in seconds since the last update.
+     * @param mouseX      The x position of the mouse.
+     * @param mouseY      The y position of the mouse.
+     * @return If the GUI window should be redrawn.
+     */
     protected boolean updateElement(double elapsedTime, double mouseX, double mouseY)
     {
         return false;
@@ -382,13 +516,43 @@ public abstract class UIElement
     // ----- Drawing -----
     // -------------------
     
-    private boolean redraw = true;
+    protected Texture texture;
+    protected String  state, prevState;
+    protected Texture stateTexture, prevStateTexture;
     
+    protected double transitionRemaining  = 0;
+    protected double transitionDuration   = 0;
+    protected double transitionPercentage = 0;
+    
+    private boolean redraw       = true;
+    private boolean redrawStates = true;
+    
+    /**
+     * Triggers this element to redraw. Also triggers all parent containers and finally the GUI screen to redraw.
+     */
     public void redraw()
     {
         this.redraw = true;
     }
     
+    /**
+     * Triggers this element to redraw its current state. Also triggers all parent containers and finally the GUI screen to redraw.
+     */
+    public void redrawStates()
+    {
+        this.redrawStates = true;
+        redraw();
+    }
+    
+    /**
+     * Draws the element and sub elements. This is called and past along to its children as long as it is alive and is set to be redrawn.
+     * <p>
+     * Can be overridden.
+     *
+     * @param elapsedTime The amount of time in seconds since the last update.
+     * @param mouseX      The x position of the mouse.
+     * @param mouseY      The y position of the mouse.
+     */
     public void draw(double elapsedTime, double mouseX, double mouseY)
     {
         if (alive())
@@ -444,11 +608,25 @@ public abstract class UIElement
         }
     }
     
+    /**
+     * Draws the element and sub elements. This is called and past along to its children as long as it is alive.
+     * <p>
+     * Can be overridden.
+     *
+     * @param elapsedTime The amount of time in seconds since the last update.
+     * @param mouseX      The x position of the mouse.
+     * @param mouseY      The y position of the mouse.
+     */
     protected void drawElement(double elapsedTime, double mouseX, double mouseY)
     {
     
     }
     
+    /**
+     * Draws the requested state with theme information.
+     *
+     * @param state The state.
+     */
     public void drawState(String state)
     {
         String stateBorder     = state + "_border";
@@ -458,7 +636,7 @@ public abstract class UIElement
         fillRect(0, 0, this.rect.width(), this.rect.height());
         
         fill(GUI.theme().getColor(this.objectIDs, this.elementIDs, stateBackground));
-        fillRect(this.borderWidth, this.borderWidth, this.rect.width() - (this.borderWidth << 1), this.rect.height() - (this.borderWidth << 1));
+        fillRect(borderWidth(), borderWidth(), this.rect.width() - (borderWidth() << 1), this.rect.height() - (borderWidth() << 1));
     }
     
     // ------------------

@@ -205,7 +205,8 @@ public class Logger
         try
         {
             StringBuilder prefix = new StringBuilder();
-            if (level.intValue() >= Level.SEVERE.intValue()) prefix.append(Logger.RED);
+            if (level.intValue() >= Level.SEVERE.intValue()) { prefix.append(Logger.RED); }
+            else if (level.intValue() >= Level.WARNING.intValue()) { prefix.append(Logger.YELLOW); }
             prefix.append('[').append(getCurrentTimeString()).append("] [").append(Thread.currentThread().getName()).append('/').append(level).append(']');
             if (!this.name.equals("")) prefix.append(" [").append(this.name).append(']');
             prefix.append(": ");
@@ -214,7 +215,7 @@ public class Logger
                 Logger.OUT.write(prefix.toString().getBytes());
                 Logger.OUT.write((line + '\n').getBytes());
             }
-            if (level.intValue() >= Level.SEVERE.intValue()) Logger.OUT.write(Logger.RESET.getBytes());
+            Logger.OUT.write(Logger.RESET.getBytes());
             Logger.OUT.flush();
         }
         catch (IOException ignored) { }

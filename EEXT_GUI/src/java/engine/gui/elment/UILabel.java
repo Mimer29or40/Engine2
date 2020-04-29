@@ -23,7 +23,7 @@ public class UILabel extends UIElement
     {
         super(rect, container, parent, objectID, "label");
         
-        this.text = text;
+        text(text);
         rebuildTheme();
     }
     
@@ -31,6 +31,8 @@ public class UILabel extends UIElement
     public void rebuild()
     {
         this.texture = new Texture(this.rect.width(), this.rect.height(), 4);
+        
+        redraw();
     }
     
     // ----------------
@@ -185,33 +187,34 @@ public class UILabel extends UIElement
     @Override
     protected void drawElement(double elapsedTime, double mouseX, double mouseY)
     {
-        int textWidth  = (int) Math.ceil(this.font.getStringWidth(this.text));
-        int textHeight = (int) Math.ceil(this.font.getStringHeight(this.text));
+        int textWidth  = (int) Math.ceil(font().getStringWidth(text()));
+        int textHeight = (int) Math.ceil(font().getStringHeight(text()));
         
-        if (textWidth > this.rect.width() || textHeight > this.rect.height())
+        if (textWidth > rect().width() || textHeight > rect().height())
         {
-            int widthOverlap  = this.rect.width() - textWidth;
-            int heightOverlap = this.rect.height() - textHeight;
-            UILabel.LOGGER.warning("Label is too small for text: %s Overlap(%s,%s)", this.text, widthOverlap, heightOverlap);
+            int widthOverlap  = rect().width() - textWidth;
+            int heightOverlap = rect().height() - textHeight;
+            UILabel.LOGGER.warning("Label is too small for text: %s Overlap(%s,%s)", text(), widthOverlap, heightOverlap);
         }
         
         target(this.texture);
         
-        clear(this.bgColor);
+        clear(bgColor());
         
+        textFont(font());
         textAlign(TextAlign.CENTER);
-        if (this.enableTextShadow)
+        if (enableTextShadow())
         {
-            stroke(this.textShadowColor);
-            for (int i = -this.textShadowSize; i <= this.textShadowSize; i++)
+            stroke(textShadowColor());
+            for (int i = -textShadowSize(); i <= textShadowSize(); i++)
             {
-                Engine.text(this.text, this.rect.centerX() + this.textShadowOffset.x + i, this.rect.centerY() + this.textShadowOffset.y);
-                Engine.text(this.text, this.rect.centerX() + this.textShadowOffset.x, this.rect.centerY() + this.textShadowOffset.y + i);
-                Engine.text(this.text, this.rect.centerX() + this.textShadowOffset.x + i, this.rect.centerY() + this.textShadowOffset.y + i);
-                Engine.text(this.text, this.rect.centerX() + this.textShadowOffset.x - i, this.rect.centerY() + this.textShadowOffset.y + i);
+                Engine.text(text(), rect().centerX() + textShadowOffset().x() + i, rect().centerY() + textShadowOffset().y());
+                Engine.text(text(), rect().centerX() + textShadowOffset().x(), rect().centerY() + textShadowOffset().y() + i);
+                Engine.text(text(), rect().centerX() + textShadowOffset().x() + i, rect().centerY() + textShadowOffset().y() + i);
+                Engine.text(text(), rect().centerX() + textShadowOffset().x() - i, rect().centerY() + textShadowOffset().y() + i);
             }
         }
-        stroke(this.textColor);
-        Engine.text(this.text, this.rect.centerX(), this.rect.centerY());
+        stroke(textColor());
+        Engine.text(text(), rect().centerX(), rect().centerY());
     }
 }

@@ -81,7 +81,7 @@ public class CT003_Snake extends Engine
     @Override
     public void setup()
     {
-        size(400, 400, 2, 2, OPENGL);
+        size(400, 400, 2, 2);
         
         frameRate(10);
         

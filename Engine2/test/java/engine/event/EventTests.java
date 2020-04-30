@@ -26,7 +26,7 @@ public class EventTests extends Engine
     @Override
     public void setup()
     {
-        size(800, 400, 2, 2, OPENGL);
+        size(800, 400, 2, 2);
         // frameRate(10);
         profiler().enabled(true);
         

@@ -63,7 +63,7 @@ public class CT002_MengerSponge extends Engine
     @Override
     public void setup()
     {
-        size(400, 400, 1, 1, OPENGL);
+        size(400, 400, 1, 1);
         
         sponge.add(new Box(new Vector2d(0, 0), 300));
     }

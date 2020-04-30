@@ -43,6 +43,8 @@ public class Texture
     
     protected final int fbo;
     
+    private boolean cpuDirty, gpuDirty;
+    
     /**
      * Creates a texture from an existing buffer. This is only used internally by {@link #loadImage} and {@link #loadTexture}
      *
@@ -50,8 +52,9 @@ public class Texture
      * @param height   The height of the texture.
      * @param channels The number of channels in the texture.
      * @param data     The color data.
+     * @param initial  The initial color.
      */
-    protected Texture(int width, int height, int channels, ByteBuffer data)
+    protected Texture(int width, int height, int channels, ByteBuffer data, Colorc initial)
     {
         if (channels < 1 || 4 < channels) throw new RuntimeException("Sprites can only have 1-4 channels");
         
@@ -64,6 +67,25 @@ public class Texture
         this.format   = getFormat(channels);
         
         this.data = data;
+        
+        if (initial != null)
+        {
+            if (this.channels == 4)
+            {
+                int color = initial.toInt();
+                for (int i = 0; i < this.width * this.height; i++)
+                {
+                    this.data.putInt(i * this.channels, color);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < width * height; i++)
+                {
+                    for (int j = 0; j < this.channels; j++) this.data.put(i * channels + j, (byte) initial.getComponent(j));
+                }
+            }
+        }
         
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, this.wrapS);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, this.wrapT);
@@ -93,23 +115,7 @@ public class Texture
      */
     public Texture(int width, int height, int channels, Colorc initial)
     {
-        this(width, height, channels, BufferUtils.createByteBuffer(width * height * channels));
-        
-        if (this.channels == 4)
-        {
-            int color = initial.toInt();
-            for (int i = 0; i < this.width * this.height; i++)
-            {
-                this.data.putInt(i * this.channels, color);
-            }
-        }
-        else
-        {
-            for (int i = 0; i < width * height; i++)
-            {
-                for (int j = 0; j < this.channels; j++) this.data.put(i * channels + j, (byte) initial.getComponent(j));
-            }
-        }
+        this(width, height, channels, BufferUtils.createByteBuffer(width * height * channels), initial);
     }
     
     /**
@@ -236,25 +242,29 @@ public class Texture
         return this;
     }
     
+    /**
+     * @return A new copy of this texture.
+     */
     public Texture copy()
     {
-        Texture other = new Texture(this.width, this.height, this.channels);
-        MemoryUtil.memCopy(this.data, other.data);
-        glCopyImageSubData(this.id, GL_TEXTURE_2D, 0, 0, 0, 0, other.id, GL_TEXTURE_2D, 0, 0, 0, 0, this.width, this.height, this.channels);
-        return other;
+        return copy(new Texture(this.width, this.height, this.channels));
     }
     
     /**
      * Copies this texture into the other texture.
      *
      * @param other The other texture.
+     * @return The other texture.
      */
-    public void copy(Texture other)
+    public Texture copy(Texture other)
     {
         if (this.width != other.width || this.height != other.height || this.channels != other.channels) throw new RuntimeException("Sprites are not same size.");
         
         MemoryUtil.memCopy(this.data, other.data);
-        glCopyImageSubData(this.id, GL_TEXTURE_2D, 0, 0, 0, 0, other.id, GL_TEXTURE_2D, 0, 0, 0, 0, this.width, this.height, this.channels);
+        // glCopyImageSubData(this.id, GL_TEXTURE_2D, 0, 0, 0, 0, other.id, GL_TEXTURE_2D, 0, 0, 0, 0, this.width, this.height, this.channels);
+        glBlitNamedFramebuffer(this.id, other.id, 0, 0, this.width, this.height, 0, 0, other.width, other.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        
+        return other;
     }
     
     /**
@@ -311,10 +321,11 @@ public class Texture
                 for (int i = 0; i < this.channels; i++) this.data.put(index + i, (byte) color.getComponent(i));
             }
         }
+        markCPUDirty();
     }
     
     /**
-     * Gets the color that is at the uv coordinate specified.
+     * Gets the color that is at the uv coordinate specified. Rounds to the nearest pixel value.
      *
      * @param u The u coordinate.
      * @param v The v coordinate.
@@ -328,6 +339,13 @@ public class Texture
         return getPixel(sx, sy);
     }
     
+    /**
+     * Gets the color that is at the uv coordinate specified. Samples the 4 nearest pixels.
+     *
+     * @param u The u coordinate.
+     * @param v The v coordinate.
+     * @return The color at the coordinate.
+     */
     public Colorc sampleBL(float u, float v)
     {
         u = u * this.width - 0.5f;
@@ -354,22 +372,27 @@ public class Texture
     
     /**
      * Clears all the color data from the texture.
+     *
+     * @return This instance for call chaining.
      */
-    public void clear()
+    public Texture clear()
     {
         if (this.data != null)
         {
             BufferUtils.zeroBuffer(this.data);
             this.data.clear();
         }
+        markCPUDirty();
+        return this;
     }
     
     /**
      * Clears the texture to the specified color.
      *
      * @param color The color.
+     * @return This instance for call chaining.
      */
-    public void clear(Colorc color)
+    public Texture clear(Colorc color)
     {
         if (this.channels == 4)
         {
@@ -386,6 +409,8 @@ public class Texture
                 for (int j = 0; j < this.channels; j++) this.data.put(i * this.channels + j, (byte) color.getComponent(j));
             }
         }
+        markCPUDirty();
+        return this;
     }
     
     /**
@@ -433,6 +458,55 @@ public class Texture
     }
     
     /**
+     * Denotes that the CPU data set has changed and the data should be sent to the GPU
+     *
+     * @return This instance for call chaining.
+     */
+    public Texture markCPUDirty()
+    {
+        this.cpuDirty = true;
+        return this;
+    }
+    
+    /**
+     * Denotes that the GPU data set has changed and the data should be sent to the GPU
+     *
+     * @return This instance for call chaining.
+     */
+    public Texture markGPUDirty()
+    {
+        this.gpuDirty = true;
+        return this;
+    }
+    
+    /**
+     * Syncs the texture data between the GPU and CPU. If both have been modified, then the GPU is used as the master.
+     * <p>
+     * Make sure to bind the texture first.
+     *
+     * @return This instance for call chaining.
+     */
+    public Texture sync()
+    {
+        if (this.gpuDirty && this.cpuDirty)
+        {
+            this.gpuDirty = this.cpuDirty = false;
+            return download();
+        }
+        else if (this.gpuDirty)
+        {
+            this.gpuDirty = false;
+            return download();
+        }
+        else if (this.cpuDirty)
+        {
+            this.cpuDirty = false;
+            return upload();
+        }
+        return this;
+    }
+    
+    /**
      * Uploads the color data to the GPU.
      * <p>
      * Make sure to bind the texture first.
@@ -441,7 +515,6 @@ public class Texture
      */
     public Texture upload()
     {
-        // TODO - Check if the ByteBuffer has been modified.
         if (this.data != null) glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this.width, this.height, this.format, GL_UNSIGNED_BYTE, this.data);
         return this;
     }
@@ -455,7 +528,6 @@ public class Texture
      */
     public Texture download()
     {
-        // TODO - Check if the GL texture has been modified.
         if (this.data != null) glGetTexImage(GL_TEXTURE_2D, 0, this.format, GL_UNSIGNED_BYTE, this.data);
         return this;
     }
@@ -490,7 +562,7 @@ public class Texture
         {
             this.data.limit((j + y) * this.width * this.channels + (x + width) * this.channels);
             this.data.position((j + y) * this.width * this.channels + x * this.channels);
-    
+            
             other.data.limit(j * other.width * other.channels + width * other.channels);
             other.data.position(j * other.width * other.channels);
             
@@ -560,14 +632,14 @@ public class Texture
             
             for (int i = 0; in.available() > 0; i++) data.put(i, (byte) in.read());
             
-            return new Texture(width, height, channels, data);
+            return new Texture(width, height, channels, data, null);
         }
         catch (IOException e)
         {
             Texture.LOGGER.severe("Texture could not be loaded: " + filePath);
         }
         
-        return new Texture(0, 0, 0, (ByteBuffer) null);
+        return new Texture(0, 0, 0, null, null);
     }
     
     /**
@@ -589,7 +661,7 @@ public class Texture
         
         if (stbi_info(actualPath, width, height, channels))
         {
-            return new Texture(width[0], height[0], channels[0], stbi_load(actualPath, width, height, channels, 0));
+            return new Texture(width[0], height[0], channels[0], stbi_load(actualPath, width, height, channels, 0), null);
         }
         else
         {
@@ -598,7 +670,7 @@ public class Texture
         
         stbi_set_flip_vertically_on_load(false);
         
-        return new Texture(0, 0, 0, (ByteBuffer) null);
+        return new Texture(0, 0, 0, null, null);
     }
     
     /**

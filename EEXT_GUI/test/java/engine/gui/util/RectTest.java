@@ -22,7 +22,7 @@ public class RectTest extends Engine
     @Override
     public void setup()
     {
-        size(100, 100, OPENGL);
+        size(100, 100);
     
         r1.size(20, 30);
         r2.set(30, 30, 40, 40);

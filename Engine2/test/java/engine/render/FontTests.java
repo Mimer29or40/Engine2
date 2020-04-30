@@ -14,8 +14,8 @@ public class FontTests extends Engine
     @Override
     public void setup()
     {
-        // size(800, 800, 1, 1, "software");
-        size(800, 800, 1, 1, "opengl");
+        // size(800, 800, 1, 1);
+        size(800, 800, 1, 1);
         
         // font = new Font("demo/FiraSans.ttf", 24, false);
         // font = new Font("fonts/BetterPixels.ttf", 24, false);

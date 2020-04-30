@@ -15,7 +15,7 @@ public class ShapeTest extends Engine
     @Override
     public void setup()
     {
-        size(400, 400, 2, 2, OPENGL);
+        size(400, 400, 2, 2);
         createGUI();
     }
     

@@ -22,8 +22,7 @@ public class GuiTest extends Engine
     @Override
     public void setup()
     {
-        // size(100, 100, 8, 8, SOFTWARE);
-        size(100, 100, 8, 8, OPENGL);
+        size(100, 100, 8, 8);
         createGUI(100, 100);
         
         element = new UIButton(new Rect(0, 0, 50, 50), null, "Button", "ToolTip", null, "#button");

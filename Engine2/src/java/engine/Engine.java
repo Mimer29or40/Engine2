@@ -66,7 +66,6 @@ public class Engine
     private static Modifiers modifiers;
     private static Window    window;
     
-    private static String   rendererType;
     private static Renderer renderer;
     
     private static int         layerCount;
@@ -98,11 +97,6 @@ public class Engine
     private static boolean paused;
     
     private static String screenshot;
-    
-    public static final String SOFTWARE = "software";
-    public static final String OPENGL   = "opengl";
-    public static final String PIXEL    = "pixel";
-    public static final String DEFAULT  = SOFTWARE;
     
     // ----------------------
     // -- Engine Functions --
@@ -656,9 +650,8 @@ public class Engine
      * @param screenH  The height of the screen in drawable pixels.
      * @param pixelW   The width of the drawable pixels in actual pixels.
      * @param pixelH   The height of the drawable pixels in actual pixels.
-     * @param renderer The optional renderer to use.
      */
-    public static void size(int screenW, int screenH, int pixelW, int pixelH, String renderer)
+    public static void size(int screenW, int screenH, int pixelW, int pixelH)
     {
         Engine.screenSize.set(screenW, screenH);
         Engine.LOGGER.finest("Screen Size %s", Engine.screenSize);
@@ -686,46 +679,16 @@ public class Engine
         Engine.layers       = new Texture[Engine.layerCount];
         Engine.activeLayers = new boolean[Engine.layerCount];
         
-        Engine.renderer        = Renderer.getRenderer(Engine.layers[0] = new Texture(screenW, screenH), Engine.rendererType = renderer);
+        Engine.renderer        = new Renderer(Engine.layers[0] = new Texture(screenW, screenH));
         Engine.activeLayers[0] = true;
         
         Engine.screenShader = new Shader().loadVertexFile("shaders/pixel.vert").loadFragmentFile("shaders/pixel.frag").validate().unbind();
         Engine.screenVAO    = new VertexArray().bind().add(new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, GL_DYNAMIC_DRAW, 2);
         
-        Engine.debugShader  = new Shader().bind().loadVertexFile("shaders/debug.vert").loadFragmentFile("shaders/debug.frag").validate().unbind();
+        Engine.debugShader  = new Shader().loadVertexFile("shaders/debug.vert").loadFragmentFile("shaders/debug.frag").validate().unbind();
         Engine.debugTextVAO = new VertexArray().bind().add(24 * 1024, GL_DYNAMIC_DRAW, GL_FLOAT, 3, GL_UNSIGNED_BYTE, 4).unbind();
         Engine.debugBoxVAO  = new VertexArray().bind().add(8, GL_DYNAMIC_DRAW, GL_FLOAT, 2).unbind();
         Engine.debugView    = new Matrix4f().setOrtho(0F, Engine.window.viewW(), Engine.window.viewH(), 0F, -1F, 1F);
-    }
-    
-    /**
-     * Sets the size of the window and screen pixels and uses the software renderer. If this function is not called then the engine will not enter the render loop.
-     * <p>
-     * <b>THIS MUST ONLY BE CALLED ONCE</b>
-     *
-     * @param screenW The width of the screen in drawable pixels.
-     * @param screenH The height of the screen in drawable pixels.
-     * @param pixelW  The width of the drawable pixels in actual pixels.
-     * @param pixelH  The height of the drawable pixels in actual pixels.
-     */
-    public static void size(int screenW, int screenH, int pixelW, int pixelH)
-    {
-        size(screenW, screenH, pixelW, pixelH, Engine.DEFAULT);
-    }
-    
-    
-    /**
-     * Sets the size of the window and uses the renderer specified. If this function is not called then the engine will not enter the render loop.
-     * <p>
-     * <b>THIS MUST ONLY BE CALLED ONCE</b>
-     *
-     * @param screenW  The width of the screen in drawable pixels.
-     * @param screenH  The height of the screen in drawable pixels.
-     * @param renderer The optional renderer to use.
-     */
-    public static void size(int screenW, int screenH, String renderer)
-    {
-        size(screenW, screenH, 4, 4, renderer);
     }
     
     /**
@@ -738,7 +701,7 @@ public class Engine
      */
     public static void size(int screenW, int screenH)
     {
-        size(screenW, screenH, 4, 4, Engine.DEFAULT);
+        size(screenW, screenH, 4, 4);
     }
     
     // ----------------
@@ -1588,14 +1551,6 @@ public class Engine
     // -----------------------
     // -- Renderer Instance --
     // -----------------------
-    
-    /**
-     * @return The type of the renderer.
-     */
-    public static String rendererType()
-    {
-        return Engine.rendererType;
-    }
     
     /**
      * @return The engine's render instance. This should only be used for {@link Overloads} methods.

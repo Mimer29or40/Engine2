@@ -42,7 +42,7 @@ public class CT004_PurpleRain extends Engine
     @Override
     public void setup()
     {
-        size(400, 300, 2, 2, OPENGL);
+        size(400, 300, 2, 2);
         
         frameRate(60);
         

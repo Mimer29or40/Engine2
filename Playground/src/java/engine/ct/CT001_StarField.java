@@ -74,8 +74,7 @@ public class CT001_StarField extends Engine
     @Override
     public void setup()
     {
-        size(800, 800, 1, 1, OPENGL);
-        // size(800, 800, 1, 1, SOFTWARE);
+        size(800, 800, 1, 1);
         
         frameRate(60);
         // rendererBlend(true);

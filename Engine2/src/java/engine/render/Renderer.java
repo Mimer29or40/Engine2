@@ -47,14 +47,14 @@ public class Renderer
     protected final Blend               blend  = Renderer.DEFAULT_BLEND.setBlend(new Blend());
     protected final Stack<Blend.BTuple> blends = new Stack<>();
     
-    protected final Color        fill  = new Color(Renderer.DEFAULT_FILL);
-    protected final Stack<Color> fills = new Stack<>();
+    protected final Color          fill  = new Color(Renderer.DEFAULT_FILL);
+    protected final Stack<Integer> fills = new Stack<>();
     
-    protected final Color        stroke  = new Color(Renderer.DEFAULT_STROKE);
-    protected final Stack<Color> strokes = new Stack<>();
+    protected final Color          stroke  = new Color(Renderer.DEFAULT_STROKE);
+    protected final Stack<Integer> strokes = new Stack<>();
     
-    protected final Color        tint  = new Color(Renderer.DEFAULT_TINT);
-    protected final Stack<Color> tints = new Stack<>();
+    protected final Color          tint  = new Color(Renderer.DEFAULT_TINT);
+    protected final Stack<Integer> tints = new Stack<>();
     
     protected       double        weight  = Renderer.DEFAULT_WEIGHT;
     protected final Stack<Double> weights = new Stack<>();
@@ -803,9 +803,9 @@ public class Renderer
         
         this.targets.push(this.target);
         this.blends.push(new Blend.BTuple(this.blend));
-        this.fills.push(new Color(this.fill));
-        this.strokes.push(new Color(this.stroke));
-        this.tints.push(new Color(this.tint));
+        this.fills.push(this.fill.toInt());
+        this.strokes.push(this.stroke.toInt());
+        this.tints.push(this.tint.toInt());
         this.weights.push(this.weight);
         this.rectModes.push(this.rectMode);
         this.ellipseModes.push(this.ellipseMode);
@@ -824,9 +824,9 @@ public class Renderer
         
         this.target = this.targets.pop();
         this.blends.pop().setBlend(this.blend);
-        this.fill.set(this.fills.pop());
-        this.stroke.set(this.strokes.pop());
-        this.tint.set(this.tints.pop());
+        this.fill.fromInt(this.fills.pop());
+        this.stroke.fromInt(this.strokes.pop());
+        this.tint.fromInt(this.tints.pop());
         this.weight      = this.weights.pop();
         this.rectMode    = this.rectModes.pop();
         this.ellipseMode = this.ellipseModes.pop();
@@ -1967,7 +1967,7 @@ public class Renderer
         Renderer.LOGGER.finer("Drawing Interpolated Texture:", amount, x1, y1, x2, y2, u1, v1, u2, v2);
         
         makeCurrent();
-    
+        
         glActiveTexture(GL_TEXTURE1);
         texture2.bindTexture();
         

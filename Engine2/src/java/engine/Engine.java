@@ -210,16 +210,24 @@ public class Engine
         try
         {
             Engine.LOGGER.fine("Extension Pre Setup");
-            Engine.extensions.values().forEach(Extension::beforeSetup);
-            
+            for (Extension extension : Engine.extensions.values())
+            {
+                Engine.LOGGER.finer("Extension Pre Setup: ", extension);
+                extension.beforeSetup();
+            }
+    
             Engine.LOGGER.fine("User Initialization");
             Engine.logic.setup();
             
             if (Engine.window != null)
             {
                 Engine.LOGGER.fine("Extension Post Setup");
-                Engine.extensions.values().forEach(Extension::afterSetup);
-                
+                for (Extension extension : Engine.extensions.values())
+                {
+                    Engine.LOGGER.finer("Extension Post Setup: ", extension);
+                    extension.afterSetup();
+                }
+    
                 Engine.LOGGER.finest("Preparing Context for Thread Swap");
                 Engine.window.unmakeCurrent();
                 GL.setCapabilities(null);
@@ -600,22 +608,33 @@ public class Engine
         finally
         {
             Engine.LOGGER.fine("Extension Pre Destruction");
-            Engine.extensions.values().forEach(Extension::beforeDestroy);
-            
+            for (Extension extension : Engine.extensions.values())
+            {
+                Engine.LOGGER.finer("Extension Pre Destruction: ", extension);
+                extension.beforeDestroy();
+            }
+    
             Engine.LOGGER.fine("User Destruction");
             Engine.logic.destroy();
             
             Engine.LOGGER.fine("Extension Post Destruction");
-            Engine.extensions.values().forEach(Extension::afterDestroy);
-            
+            for (Extension extension : Engine.extensions.values())
+            {
+                Engine.LOGGER.finer("Extension Post Destruction: ", extension);
+                extension.afterDestroy();
+            }
+    
             if (Engine.window != null)
             {
+                Engine.LOGGER.finer("Window Destruction");
+                
                 GL.destroy();
                 GL.setCapabilities(null);
                 
                 Engine.window.destroy();
             }
-            
+    
+            Engine.LOGGER.finer("Saving/Closing Config");
             Engine.config.save();
             Engine.config.close();
         }

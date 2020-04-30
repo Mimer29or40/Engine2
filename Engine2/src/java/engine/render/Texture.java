@@ -68,7 +68,7 @@ public class Texture
         
         this.data = data;
         
-        if (initial != null)
+        if (this.data != null && initial != null)
         {
             if (this.channels == 4)
             {

@@ -444,7 +444,7 @@ public class Engine
                                         }
                                         if (Engine.profilerOutput != null)
                                         {
-                                            int y = Engine.window.viewH() - stb_easy_font_height(Engine.profilerOutput);
+                                            int y = Engine.window.viewH() - stb_easy_font_height(Engine.profilerOutput) - stb_easy_font_height(" ");
                                             for (String line : Engine.profilerOutput.split("\n"))
                                             {
                                                 drawDebugText(0, y += stb_easy_font_height(line), line);
@@ -611,28 +611,28 @@ public class Engine
         finally
         {
             Engine.LOGGER.fine("Extension Pre Destruction");
-            for (Extension extension : Engine.extensions.values())
+            for (String name : Engine.extensions.keySet())
             {
-                Engine.LOGGER.finer("Extension Pre Destruction: ", extension);
-                extension.beforeDestroy();
+                Engine.LOGGER.finer("Extension Pre Destruction:", name);
+                Engine.extensions.get(name).beforeDestroy();
             }
             
             Engine.LOGGER.fine("User Destruction");
             Engine.logic.destroy();
             
             Engine.LOGGER.fine("Extension Post Destruction");
-            for (Extension extension : Engine.extensions.values())
+            for (String name : Engine.extensions.keySet())
             {
-                Engine.LOGGER.finer("Extension Post Destruction: ", extension);
-                extension.afterDestroy();
+                Engine.LOGGER.finer("Extension Post Destruction:", name);
+                Engine.extensions.get(name).afterDestroy();
             }
             
             if (Engine.window != null)
             {
                 Engine.LOGGER.finer("Window Destruction");
-                
-                GL.destroy();
-                GL.setCapabilities(null);
+    
+                // GL.setCapabilities(null);
+                // GL.destroy();
                 
                 Engine.window.destroy();
             }

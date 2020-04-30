@@ -15,7 +15,6 @@ import engine.util.PairS;
 import java.util.HashMap;
 
 import static engine.Engine.*;
-import static engine.util.Util.println;
 
 /**
  * A base class for UI elements.
@@ -412,7 +411,7 @@ public abstract class UIElement
     {
         if (!state.equals(this.state))
         {
-            println(state);
+            // println(state);
             this.prevState = this.state;
             this.state     = state;
             
@@ -809,10 +808,10 @@ public abstract class UIElement
             textAlign(TextAlign.CENTER);
             
             fill(GUI.theme().getColor(this.objectIDs, this.elementIDs, "text_shadow"));
-            Engine.text(text(), rect.centerX(), rect.centerY() + 1, rect.width(), rect.height());
-            Engine.text(text(), rect.centerX(), rect.centerY() - 1, rect.width(), rect.height());
-            Engine.text(text(), rect.centerX() + 1, rect.centerY(), rect.width(), rect.height());
-            Engine.text(text(), rect.centerX() - 1, rect.centerY(), rect.width(), rect.height());
+            Engine.text(text(), rect.centerX(), rect.centerY() + 1);
+            Engine.text(text(), rect.centerX(), rect.centerY() - 1);
+            Engine.text(text(), rect.centerX() + 1, rect.centerY());
+            Engine.text(text(), rect.centerX() - 1, rect.centerY());
             
             fill(GUI.theme().getColor(this.objectIDs, this.elementIDs, textColorState));
             Engine.text(text(), rect.centerX(), rect.centerY());

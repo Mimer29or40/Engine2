@@ -923,6 +923,8 @@ public class Renderer
      */
     public void drawPoint(double x, double y)
     {
+        Renderer.LOGGER.finer("Drawing Point:", x, y);
+        
         makeCurrent();
         
         this.pointShader.bind();
@@ -950,8 +952,6 @@ public class Renderer
      */
     public void point(double x, double y)
     {
-        Renderer.LOGGER.finer("Drawing Point", x, y);
-        
         if (this.stroke.a() > 0) drawPoint(x, y);
     }
     
@@ -971,6 +971,8 @@ public class Renderer
      */
     public void drawLine(double x1, double y1, double x2, double y2)
     {
+        Renderer.LOGGER.finer("Drawing Line:", x1, y1, x2, y2);
+        
         makeCurrent();
         
         this.lineShader.bind();
@@ -1000,8 +1002,6 @@ public class Renderer
      */
     public void line(double x1, double y1, double x2, double y2)
     {
-        Renderer.LOGGER.finer("Drawing Line", x1, y1, x2, y2);
-        
         if (this.stroke.a() > 0) drawLine(x1, y1, x2, y2);
     }
     
@@ -1023,6 +1023,8 @@ public class Renderer
      */
     public void drawBezier(double x1, double y1, double x2, double y2, double x3, double y3)
     {
+        Renderer.LOGGER.finer("Drawing Bezier:", x1, y1, x2, y2, x3, y3);
+        
         // TODO
         drawLine(x1, y1, x2, y2);
         drawLine(x2, y2, x3, y3);
@@ -1044,8 +1046,6 @@ public class Renderer
      */
     public void bezier(double x1, double y1, double x2, double y2, double x3, double y3)
     {
-        Renderer.LOGGER.finer("Drawing Bezier", x1, y1, x2, y2, x3, y3);
-        
         if (this.stroke.a() > 0) drawBezier(x1, y1, x2, y2, x3, y3);
     }
     
@@ -1067,6 +1067,8 @@ public class Renderer
      */
     public void drawTriangle(double x1, double y1, double x2, double y2, double x3, double y3)
     {
+        Renderer.LOGGER.finer("Drawing Triangle:", x1, y1, x2, y2, x3, y3);
+        
         makeCurrent();
         
         this.linesShader.bind();
@@ -1100,6 +1102,8 @@ public class Renderer
      */
     public void fillTriangle(double x1, double y1, double x2, double y2, double x3, double y3)
     {
+        Renderer.LOGGER.finer("Filling Triangle:", x1, y1, x2, y2, x3, y3);
+        
         makeCurrent();
         
         this.triangleShader.bind();
@@ -1132,8 +1136,6 @@ public class Renderer
      */
     public void triangle(double x1, double y1, double x2, double y2, double x3, double y3)
     {
-        Renderer.LOGGER.finer("Drawing Triangle", x1, y1, x2, y2, x3, y3);
-        
         if (this.fill.a() > 0) fillTriangle(x1, y1, x2, y2, x3, y3);
         if (this.stroke.a() > 0) drawTriangle(x1, y1, x2, y2, x3, y3);
     }
@@ -1188,8 +1190,6 @@ public class Renderer
      */
     public void square(double a, double b, double c)
     {
-        Renderer.LOGGER.finer("Drawing Square", a, b, c);
-        
         switch (this.rectMode)
         {
             case CORNER:
@@ -1266,8 +1266,6 @@ public class Renderer
      */
     public void rect(double a, double b, double c, double d)
     {
-        Renderer.LOGGER.finer("Drawing Rectangle", a, b, c, d);
-        
         switch (this.rectMode)
         {
             case CORNER:
@@ -1312,6 +1310,8 @@ public class Renderer
      */
     public void drawQuad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
     {
+        Renderer.LOGGER.finer("Drawing Quad:", x1, y1, x2, y2, x3, y3, x4, y4);
+        
         makeCurrent();
         
         this.linesShader.bind();
@@ -1350,6 +1350,8 @@ public class Renderer
      */
     public void fillQuad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
     {
+        Renderer.LOGGER.finer("Filling Quad:", x1, y1, x2, y2, x3, y3, x4, y4);
+        
         makeCurrent();
         
         this.quadShader.bind();
@@ -1385,8 +1387,6 @@ public class Renderer
      */
     public void quad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
     {
-        Renderer.LOGGER.finer("Drawing Quad", x1, y1, x2, y2, x3, y3, x4, y4);
-        
         if (this.fill.a() > 0) fillQuad(x1, y1, x2, y2, x3, y3, x4, y4);
         if (this.stroke.a() > 0) drawQuad(x1, y1, x2, y2, x3, y3, x4, y4);
     }
@@ -1408,6 +1408,8 @@ public class Renderer
      */
     public void drawPolygon(double... points)
     {
+        Renderer.LOGGER.finer("Drawing Polygon:", Arrays.toString(points));
+        
         makeCurrent();
         
         this.linesShader.bind();
@@ -1454,6 +1456,8 @@ public class Renderer
      */
     public void fillPolygon(double... points)
     {
+        Renderer.LOGGER.finer("Filling Polygon:", Arrays.toString(points));
+        
         makeCurrent();
         
         this.polygonShader.bind();
@@ -1485,8 +1489,6 @@ public class Renderer
      */
     public void polygon(double... points)
     {
-        Renderer.LOGGER.finer("Drawing Polygon", Arrays.toString(points));
-        
         int n = points.length;
         
         if ((n & 1) == 1) throw new RuntimeException("Invalid coordinates. Must be an even number");
@@ -1546,8 +1548,6 @@ public class Renderer
      */
     public void circle(double a, double b, double c)
     {
-        Renderer.LOGGER.finer("Drawing Circle", a, b, c);
-        
         switch (this.ellipseMode)
         {
             case CENTER:
@@ -1585,6 +1585,8 @@ public class Renderer
      */
     public void drawEllipse(double x, double y, double rx, double ry)
     {
+        Renderer.LOGGER.finer("Drawing Ellipse:", x, y, rx, ry);
+        
         makeCurrent();
         
         this.ellipseOutlineShader.bind();
@@ -1613,6 +1615,8 @@ public class Renderer
      */
     public void fillEllipse(double x, double y, double rx, double ry)
     {
+        Renderer.LOGGER.finer("Filling Ellipse:", x, y, rx, ry);
+        
         makeCurrent();
         
         this.ellipseShader.bind();
@@ -1646,8 +1650,6 @@ public class Renderer
      */
     public void ellipse(double a, double b, double c, double d)
     {
-        Renderer.LOGGER.finer("Drawing Ellipse", a, b, c, d);
-        
         switch (this.ellipseMode)
         {
             case CENTER:
@@ -1691,6 +1693,8 @@ public class Renderer
      */
     public void drawArc(double x, double y, double rx, double ry, double start, double stop)
     {
+        Renderer.LOGGER.finer("Drawing Arc:", x, y, rx, ry, start, stop);
+        
         makeCurrent();
         
         this.arcOutlineShader.bind();
@@ -1723,6 +1727,8 @@ public class Renderer
      */
     public void fillArc(double x, double y, double rx, double ry, double start, double stop)
     {
+        Renderer.LOGGER.finer("Filling Arc:", x, y, rx, ry, start, stop);
+        
         makeCurrent();
         
         this.arcShader.bind();
@@ -1759,8 +1765,6 @@ public class Renderer
      */
     public void arc(double a, double b, double c, double d, double start, double stop)
     {
-        Renderer.LOGGER.finer("Drawing Arc", a, b, c, d, start, stop);
-        
         double TWO_PI = 2 * Math.PI;
         
         if (start < 0) start = getDecimal(start / TWO_PI) * TWO_PI;
@@ -1823,6 +1827,8 @@ public class Renderer
      */
     public void drawTexture(Texture texture, double x1, double y1, double x2, double y2, double u1, double v1, double u2, double v2)
     {
+        Renderer.LOGGER.finer("Drawing Texture:", x1, y1, x2, y2, u1, v1, u2, v2);
+        
         makeCurrent();
         
         glActiveTexture(GL_TEXTURE0);
@@ -1867,8 +1873,6 @@ public class Renderer
      */
     public void texture(Texture texture, double a, double b, double c, double d, double u1, double v1, double v2, double u2)
     {
-        Renderer.LOGGER.finer("Drawing Texture", a, b, c, d, u1, v1, u2, v2);
-        
         switch (this.rectMode)
         {
             case CORNER:
@@ -1904,8 +1908,6 @@ public class Renderer
      */
     public void texture(Texture texture, double x, double y, double u1, double v1, double v2, double u2)
     {
-        Renderer.LOGGER.finer("Drawing Texture", x, y, u1, v1, u2, v2);
-        
         drawTexture(texture, x, y, x + texture.width(), y + texture.height(), u1, v1, u2, v2);
     }
     
@@ -1938,8 +1940,6 @@ public class Renderer
      */
     public void texture(Texture texture, double x, double y)
     {
-        Renderer.LOGGER.finer("Drawing Texture", x, y);
-        
         drawTexture(texture, x, y, x + texture.width(), y + texture.height(), 0, 0, 1, 1);
     }
     
@@ -1964,13 +1964,15 @@ public class Renderer
      */
     public void drawInterpolatedTexture(Texture texture1, Texture texture2, double amount, double x1, double y1, double x2, double y2, double u1, double v1, double u2, double v2)
     {
-        makeCurrent();
+        Renderer.LOGGER.finer("Drawing Interpolated Texture:", amount, x1, y1, x2, y2, u1, v1, u2, v2);
         
-        glActiveTexture(GL_TEXTURE1);
-        texture2.bindTexture();
+        makeCurrent();
         
         glActiveTexture(GL_TEXTURE0);
         texture1.bindTexture();
+        
+        glActiveTexture(GL_TEXTURE1);
+        texture2.bindTexture();
         
         this.textureShader.bind();
         this.textureShader.setMat4("pv", this.view);
@@ -2013,8 +2015,6 @@ public class Renderer
      */
     public void interpolateTexture(Texture texture1, Texture texture2, double amount, double a, double b, double c, double d, double u1, double v1, double v2, double u2)
     {
-        Renderer.LOGGER.finer("Drawing Texture", a, b, c, d, u1, v1, u2, v2);
-        
         switch (this.rectMode)
         {
             case CORNER:
@@ -2052,8 +2052,6 @@ public class Renderer
      */
     public void interpolateTexture(Texture texture1, Texture texture2, double amount, double x, double y, double u1, double v1, double v2, double u2)
     {
-        Renderer.LOGGER.finer("Drawing Texture", x, y, u1, v1, u2, v2);
-        
         drawInterpolatedTexture(texture1, texture2, amount, x, y, x + texture1.width(), y + texture1.height(), u1, v1, u2, v2);
     }
     
@@ -2089,8 +2087,6 @@ public class Renderer
      */
     public void interpolateTexture(Texture texture1, Texture texture2, double amount, double x, double y)
     {
-        Renderer.LOGGER.finer("Drawing Texture", x, y);
-        
         drawInterpolatedTexture(texture1, texture2, amount, x, y, x + texture1.width(), y + texture1.height(), 0, 0, 1, 1);
     }
     
@@ -2113,8 +2109,11 @@ public class Renderer
      */
     public void drawText(String text, double x, double y)
     {
+        Renderer.LOGGER.finer("Drawing Text:", text, x, y);
+        
         makeCurrent();
         
+        glActiveTexture(GL_TEXTURE0);
         this.font.texture().bindTexture();
         
         this.textShader.bind();
@@ -2182,8 +2181,6 @@ public class Renderer
      */
     public void text(String text, double a, double b, double c, double d)
     {
-        Renderer.LOGGER.finer("Drawing Text", a, b, c, d);
-        
         if (this.fill.a() > 0)
         {
             List<String> lines;
@@ -2307,6 +2304,8 @@ public class Renderer
      */
     public int[] loadPixels()
     {
+        Renderer.LOGGER.finer("Loading Pixels");
+        
         int length = this.target.width() * this.target.height() * this.target.channels();
         if (this.pixels == null || this.pixels.length != length) this.pixels = new int[length];
         this.target.bindTexture().download();
@@ -2321,6 +2320,8 @@ public class Renderer
      */
     public void updatePixels()
     {
+        Renderer.LOGGER.finer("Updating Pixels");
+        
         for (int i = 0, n = this.pixels.length; i < n; i++) this.target.data().put(i, (byte) (this.pixels[i] & 0xFF));
         this.target.bindTexture().upload();
     }

@@ -7,6 +7,8 @@ import engine.event.*;
 import engine.gui.elment.UIWindow;
 import engine.gui.theme.Theme;
 import engine.render.RectMode;
+import engine.util.IPair;
+import engine.util.PairD;
 import org.joml.Vector2i;
 
 import java.util.ArrayList;
@@ -16,6 +18,9 @@ import static engine.Engine.*;
 public class GUI extends Extension
 {
     public static GUI INSTANCE = new GUI();
+    
+    private static final PairD screenToGUI = new PairD(0, 0);
+    private static final PairD guiToScreen = new PairD(0, 0);
     
     private final Vector2i size = new Vector2i();
     
@@ -84,8 +89,10 @@ public class GUI extends Extension
         }
         profiler().endSection();
         
-        double mouseX = mouse().x() * this.size.x() / screenWidth();
-        double mouseY = mouse().y() * this.size.y() / screenHeight();
+        IPair<Double, Double> mouse = screenToGUI(mouse().x(), mouse().y());
+        
+        double mouseX = mouse.getA();
+        double mouseY = mouse.getB();
         
         profiler().startSection("Stack Solving");
         {
@@ -311,8 +318,10 @@ public class GUI extends Extension
     @Override
     public void afterDraw(double elapsedTime)
     {
-        double mouseX = mouse().x() * this.size.x() / screenWidth();
-        double mouseY = mouse().y() * this.size.y() / screenHeight();
+        IPair<Double, Double> mouse = screenToGUI(mouse().x(), mouse().y());
+        
+        double mouseX = mouse.getA();
+        double mouseY = mouse.getB();
         
         profiler().startSection("UIElements Update");
         {
@@ -431,5 +440,19 @@ public class GUI extends Extension
     public static Theme theme()
     {
         return GUI.INSTANCE.theme;
+    }
+    
+    public static IPair<Double, Double> screenToGUI(double screenX, double screenY)
+    {
+        GUI.screenToGUI.a = screenX * GUI.INSTANCE.size.x() / screenWidth();
+        GUI.screenToGUI.b = screenY * GUI.INSTANCE.size.y() / screenHeight();
+        return GUI.screenToGUI;
+    }
+    
+    public static IPair<Double, Double> guiToScreen(double guiX, double guiY)
+    {
+        GUI.guiToScreen.a = guiX * screenWidth() / GUI.INSTANCE.size.x();
+        GUI.guiToScreen.b = guiY * screenHeight() / GUI.INSTANCE.size.y();
+        return GUI.guiToScreen;
     }
 }

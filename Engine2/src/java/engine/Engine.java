@@ -210,10 +210,10 @@ public class Engine
         try
         {
             Engine.LOGGER.fine("Extension Pre Setup");
-            for (Extension extension : Engine.extensions.values())
+            for (String name : Engine.extensions.keySet())
             {
-                Engine.LOGGER.finer("Extension Pre Setup: ", extension);
-                extension.beforeSetup();
+                Engine.LOGGER.finer("Extension:", name);
+                Engine.extensions.get(name).beforeSetup();
             }
             
             Engine.LOGGER.fine("User Initialization");
@@ -222,10 +222,10 @@ public class Engine
             if (Engine.window != null)
             {
                 Engine.LOGGER.fine("Extension Post Setup");
-                for (Extension extension : Engine.extensions.values())
+                for (String name : Engine.extensions.keySet())
                 {
-                    Engine.LOGGER.finer("Extension Post Setup: ", extension);
-                    extension.afterSetup();
+                    Engine.LOGGER.finer("Extension:", name);
+                    Engine.extensions.get(name).afterSetup();
                 }
                 
                 Engine.LOGGER.finest("Preparing Context for Thread Swap");
@@ -613,7 +613,7 @@ public class Engine
             Engine.LOGGER.fine("Extension Pre Destruction");
             for (String name : Engine.extensions.keySet())
             {
-                Engine.LOGGER.finer("Extension Pre Destruction:", name);
+                Engine.LOGGER.finer("Extension:", name);
                 Engine.extensions.get(name).beforeDestroy();
             }
             
@@ -623,7 +623,7 @@ public class Engine
             Engine.LOGGER.fine("Extension Post Destruction");
             for (String name : Engine.extensions.keySet())
             {
-                Engine.LOGGER.finer("Extension Post Destruction:", name);
+                Engine.LOGGER.finer("Extension:", name);
                 Engine.extensions.get(name).afterDestroy();
             }
             

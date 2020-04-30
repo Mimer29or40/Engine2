@@ -1967,12 +1967,12 @@ public class Renderer
         Renderer.LOGGER.finer("Drawing Interpolated Texture:", amount, x1, y1, x2, y2, u1, v1, u2, v2);
         
         makeCurrent();
+    
+        glActiveTexture(GL_TEXTURE1);
+        texture2.bindTexture();
         
         glActiveTexture(GL_TEXTURE0);
         texture1.bindTexture();
-        
-        glActiveTexture(GL_TEXTURE1);
-        texture2.bindTexture();
         
         this.textureShader.bind();
         this.textureShader.setMat4("pv", this.view);

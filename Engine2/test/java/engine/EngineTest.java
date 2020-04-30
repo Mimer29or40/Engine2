@@ -13,7 +13,7 @@ import static engine.util.Util.println;
 public class EngineTest extends Engine
 {
     // Logger  logger = new Logger();
-    int     state = 6;
+    int     state = 1;
     Texture texture1, texture2, texture3;
     
     @Override
@@ -69,6 +69,7 @@ public class EngineTest extends Engine
                 weight(map(mouse().x(), 0, screenWidth(), 1, 50));
                 stroke(Color.BLUE);
                 point(mouse().x(), mouse().y());
+                point(screenWidth() / 2.0, screenHeight() / 2.0);
                 stroke(Color.RED);
                 line(screenWidth() / 2.0, screenHeight() / 2.0, mouse().x(), mouse().y());
                 break;

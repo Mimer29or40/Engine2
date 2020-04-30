@@ -553,26 +553,26 @@ public class Texture
      */
     public Texture subTexture(int x, int y, int width, int height)
     {
-        if (x + width > this.width) throw new RuntimeException("Sub-Region exceeds texture width");
-        if (y + height > this.height) throw new RuntimeException("Sub-Region exceeds texture height");
+        if (x + width > this.width) throw new RuntimeException("Sub-Region exceeds texture bounds");
+        if (y + height > this.height) throw new RuntimeException("Sub-Region exceeds texture bounds");
         
-        Texture other = new Texture(width, height, this.channels);
+        ByteBuffer data = BufferUtils.createByteBuffer(width * height * this.channels);
         
         for (int j = 0; j < height; j++)
         {
             this.data.limit((j + y) * this.width * this.channels + (x + width) * this.channels);
             this.data.position((j + y) * this.width * this.channels + x * this.channels);
             
-            other.data.limit(j * other.width * other.channels + width * other.channels);
-            other.data.position(j * other.width * other.channels);
+            data.limit(j * width * this.channels + width * this.channels);
+            data.position(j * width * this.channels);
             
-            MemoryUtil.memCopy(this.data, other.data);
+            MemoryUtil.memCopy(this.data, data);
         }
         
         this.data.clear();
-        other.data.clear();
-        
-        return other;
+        data.clear();
+    
+        return new Texture(width, height, this.channels, data, null);
     }
     
     /**
@@ -593,7 +593,7 @@ public class Texture
         }
         catch (IOException e)
         {
-            Texture.LOGGER.severe("Texture could not be saved: " + filePath);
+            Texture.LOGGER.severe("Texture could not be saved:", filePath);
         }
     }
     
@@ -610,7 +610,7 @@ public class Texture
         
         if (!stbi_write_png(filePath, this.width, this.height, this.channels, this.data, this.width * this.channels))
         {
-            Texture.LOGGER.severe("Image could not be saved: " + filePath);
+            Texture.LOGGER.severe("Image could not be saved:", filePath);
         }
     }
     
@@ -636,7 +636,7 @@ public class Texture
         }
         catch (IOException e)
         {
-            Texture.LOGGER.severe("Texture could not be loaded: " + filePath);
+            Texture.LOGGER.severe("Texture could not be loaded:", filePath);
         }
         
         return new Texture(0, 0, 0, null, null);
@@ -665,7 +665,7 @@ public class Texture
         }
         else
         {
-            Texture.LOGGER.severe("Failed to load Texture: " + filePath);
+            Texture.LOGGER.severe("Failed to load Texture:", filePath);
         }
         
         stbi_set_flip_vertically_on_load(false);

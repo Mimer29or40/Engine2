@@ -60,6 +60,8 @@ public class Font
         this.bold   = bold;
         this.italic = italic;
         
+        Font.LOGGER.finer("Generating new font: %s", getFontID(this.name, this.size, this.bold, this.italic));
+        
         String[] fontPaths = Font.FONT_PATHS.get(name);
         
         String filePath;
@@ -91,8 +93,6 @@ public class Font
         if (!stbtt_InitFont(this.info, data)) throw new RuntimeException("Font could not be loaded: " + getFontID(name, size, bold, italic));
         
         this.charData = STBTTPackedchar.create(128);
-        
-        Font.LOGGER.finer("Generating new font size for size=%s", this.size);
         
         this.scale = stbtt_ScaleForPixelHeight(this.info, this.size);
         

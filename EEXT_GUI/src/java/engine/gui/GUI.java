@@ -348,8 +348,6 @@ public class GUI extends Extension
                 {
                     rectMode(RectMode.CORNER);
                     texture(element.texture, element.rect.x(), element.rect.y(), element.rect.width(), element.rect.height());
-                    element.texture.bindTexture().download().saveImage(element.getClass().toString());
-                    // element.texture.bindTexture().saveImage(element.getClass().toString());
                 }
             }
             

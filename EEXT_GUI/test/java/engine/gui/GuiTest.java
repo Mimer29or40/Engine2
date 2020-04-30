@@ -27,7 +27,7 @@ public class GuiTest extends Engine
         createGUI(100, 100);
         
         element = new UIButton(new Rect(0, 0, 50, 50), null, "Button", "ToolTip", null, "#button");
-        label = new UILabel("This is a label", new Rect(0, 0, 100, 10), null, null, "#label");
+        // label = new UILabel("This is a label", new Rect(0, 0, 100, 10), null, null, "#label");
     }
     
     /**
@@ -49,6 +49,8 @@ public class GuiTest extends Engine
         if (keyboard().SPACE.down()) element.toggleEnabled();
         // if (keyboard().A.down()) element.setState("active");
         // if (keyboard().S.down()) element.setState("normal");
+        
+        element.position((int) mouse().x(), (int) mouse().y());
     }
     
     /**

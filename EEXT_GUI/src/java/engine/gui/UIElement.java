@@ -1,11 +1,15 @@
 package engine.gui;
 
+import engine.Engine;
+import engine.color.Color;
 import engine.gui.interfaces.*;
 import engine.gui.util.Rect;
 import engine.gui.util.Rectc;
 import engine.input.Keyboard;
 import engine.input.Mouse;
+import engine.render.Font;
 import engine.render.RectMode;
+import engine.render.TextAlign;
 import engine.render.Texture;
 import engine.util.PairS;
 
@@ -119,6 +123,8 @@ public abstract class UIElement
             this.rect.pos(x, y);
             
             if (this.container != null) this.container.recalculateLayers();
+            
+            redraw();
         }
     }
     
@@ -266,9 +272,9 @@ public abstract class UIElement
      * Called whenever the visible state is changed.
      *
      * @param prevState The previous visible state
-     * @param newState  The new visible state
+     * @param visible   The new visible state
      */
-    protected void visibleChanged(boolean prevState, boolean newState)
+    protected void visibleChanged(boolean prevState, boolean visible)
     {
         redraw();
     }
@@ -308,11 +314,19 @@ public abstract class UIElement
      * Called whenever the enabled state is changed.
      *
      * @param prevState The previous enabled state
-     * @param newState  The new enabled state
+     * @param enabled   The new enabled state
      */
-    protected void enabledChanged(boolean prevState, boolean newState)
+    protected void enabledChanged(boolean prevState, boolean enabled)
     {
-        setState(!newState ? "disabled" : canHover() && hovered() ? "hovered" : "normal");
+        setState(!enabled ? "disabled" : canHover() && hovered() ? "hovered" : "normal");
+    }
+    
+    /**
+     * @return The text of the element. Can be null.
+     */
+    public String text()
+    {
+        return null;
     }
     
     // --------------------
@@ -322,11 +336,17 @@ public abstract class UIElement
     protected String[] objectIDs;
     protected String[] elementIDs;
     
-    private int borderWidth = 1;
+    private final HashMap<PairS, Double> stateTransitions = new HashMap<>();
     
+    private int    borderWidth  = 1;
     private double tooltipDelay = 1;
     
-    protected final HashMap<PairS, Double> transitionTimes = new HashMap<>();
+    private Font font;
+    
+    private String textHAlignment        = "center";
+    private String textVAlignment        = "center";
+    private int    textHAlignmentPadding = 1;
+    private int    textVAlignmentPadding = 1;
     
     /**
      * @return The border width defined by the theme.
@@ -342,6 +362,46 @@ public abstract class UIElement
     public double tooltipDelay()
     {
         return this.tooltipDelay;
+    }
+    
+    /**
+     * @return The font supplied by the theme. Can be null
+     */
+    public Font font()
+    {
+        return this.font;
+    }
+    
+    /**
+     * @return Gets the horizontal text alignment.
+     */
+    public String textHAlignment()
+    {
+        return this.textHAlignment;
+    }
+    
+    /**
+     * @return Gets the vertical text alignment.
+     */
+    public String textVAlignment()
+    {
+        return this.textVAlignment;
+    }
+    
+    /**
+     * @return Gets the horizontal text alignment padding.
+     */
+    public int textHAlignmentPadding()
+    {
+        return this.textHAlignmentPadding;
+    }
+    
+    /**
+     * @return Gets the vertical text alignment padding.
+     */
+    public int textVAlignmentPadding()
+    {
+        return this.textVAlignmentPadding;
     }
     
     /**
@@ -361,9 +421,9 @@ public abstract class UIElement
             this.redrawStates = true;
             
             PairS statePair = new PairS(this.prevState, this.state);
-            if (this.prevState != null && this.transitionTimes.containsKey(statePair))
+            if (this.prevState != null && this.stateTransitions.containsKey(statePair))
             {
-                this.transitionDuration   = this.transitionTimes.get(statePair);
+                this.transitionDuration   = this.stateTransitions.get(statePair);
                 this.transitionRemaining  = this.transitionDuration - this.transitionRemaining;
                 this.transitionPercentage = 0;
             }
@@ -390,6 +450,21 @@ public abstract class UIElement
      */
     public boolean rebuildTheme(boolean anyChanged)
     {
+        String stateTransitionString = GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "state_transitions");
+        if (stateTransitionString != null)
+        {
+            this.stateTransitions.clear();
+            for (String transitionTime : stateTransitionString.split("-"))
+            {
+                String[] split  = transitionTime.split(":");
+                String[] states = split[0].split("_");
+                if (split.length == 2 && states.length == 2)
+                {
+                    this.stateTransitions.put(new PairS(states[0], states[1]), Double.parseDouble(split[1]));
+                }
+            }
+        }
+        
         if (checkThemeSizeChange(1)) anyChanged = true;
         
         String toolTipDelayString = GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "tool_tip_delay");
@@ -403,20 +478,14 @@ public abstract class UIElement
             }
         }
         
-        String stateTransitionString = GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "state_transitions");
-        if (stateTransitionString != null)
+        Font font = GUI.theme().getFont(this.objectIDs, this.elementIDs);
+        if (this.font == null || this.font.equals(font))
         {
-            this.transitionTimes.clear();
-            for (String transitionTime : stateTransitionString.split("-"))
-            {
-                String[] split  = transitionTime.split(":");
-                String[] states = split[0].split("_");
-                if (split.length == 2 && states.length == 2)
-                {
-                    this.transitionTimes.put(new PairS(states[0], states[1]), Double.parseDouble(split[1]));
-                }
-            }
+            this.font  = font;
+            anyChanged = true;
         }
+        
+        if (rebuildTextAlignment()) anyChanged = true;
         
         return anyChanged;
     }
@@ -449,6 +518,55 @@ public abstract class UIElement
         }
         
         return anyChange;
+    }
+    
+    protected boolean rebuildTextAlignment()
+    {
+        boolean anyChanged = false;
+        
+        String textHAlignment = GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "text_h_alignment");
+        if (textHAlignment != null)
+        {
+            if (!this.textHAlignment.equals(textHAlignment))
+            {
+                this.textHAlignment = textHAlignment;
+                anyChanged          = true;
+            }
+        }
+        
+        String textVAlignment = GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "text_v_alignment");
+        if (textVAlignment != null)
+        {
+            if (!this.textVAlignment.equals(textVAlignment))
+            {
+                this.textVAlignment = textVAlignment;
+                anyChanged          = true;
+            }
+        }
+        
+        String textHAlignmentPaddingString = GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "text_h_alignment_padding");
+        if (textHAlignmentPaddingString != null)
+        {
+            int textHAlignmentPadding = Integer.parseInt(textHAlignmentPaddingString);
+            if (this.textHAlignmentPadding != textHAlignmentPadding)
+            {
+                this.textHAlignmentPadding = textHAlignmentPadding;
+                anyChanged                 = true;
+            }
+        }
+        
+        String textVAlignmentPaddingString = GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "text_v_alignment_padding");
+        if (textVAlignmentPaddingString != null)
+        {
+            int textVAlignmentPadding = Integer.parseInt(textVAlignmentPaddingString);
+            if (this.textVAlignmentPadding != textVAlignmentPadding)
+            {
+                this.textVAlignmentPadding = textVAlignmentPadding;
+                anyChanged                 = true;
+            }
+        }
+        
+        return anyChanged;
     }
     
     // -------------------
@@ -632,11 +750,74 @@ public abstract class UIElement
         String stateBorder     = state + "_border";
         String stateBackground = state + "_bg";
         
-        fill(GUI.theme().getColor(this.objectIDs, this.elementIDs, stateBorder));
-        fillRect(0, 0, this.rect.width(), this.rect.height());
+        if (borderWidth() > 0)
+        {
+            fill(GUI.theme().getColor(this.objectIDs, this.elementIDs, stateBorder));
+            fillRect(0, 0, rect().width(), rect().height());
+        }
         
         fill(GUI.theme().getColor(this.objectIDs, this.elementIDs, stateBackground));
-        fillRect(borderWidth(), borderWidth(), this.rect.width() - (borderWidth() << 1), this.rect.height() - (borderWidth() << 1));
+        fillRect(borderWidth(), borderWidth(), rect().width() - (borderWidth() << 1), rect().height() - (borderWidth() << 1));
+    }
+    
+    public void drawImageAndText(String state)
+    {
+        String imageState     = state + "_image";
+        String textColorState = state + "_text";
+        
+        Texture image = GUI.theme().getImage(this.objectIDs, this.elementIDs, imageState);
+        if (image != null)
+        {
+            rectMode(RectMode.CENTER);
+            texture(image, rect().centerX(), rect().centerY(), image.width(), image.height());
+        }
+        
+        if (text() != null && font() != null && text().length() > 0)
+        {
+            Rect rect = new Rect(0, 0, (int) font().getStringWidth(text()), (int) font().getStringHeight(text()));
+            
+            switch (this.textHAlignment)
+            {
+                case "center":
+                default:
+                    rect.centerX(rect().width() >> 1);
+                    break;
+                case "left":
+                    rect.x(this.textHAlignmentPadding + this.borderWidth);
+                    break;
+                case "right":
+                    rect.x(rect().width() - this.textHAlignmentPadding - this.borderWidth);
+                    break;
+            }
+            
+            switch (this.textVAlignment)
+            {
+                case "center":
+                default:
+                    rect.centerY(rect().height() >> 1);
+                    break;
+                case "top":
+                    rect.y(this.textVAlignmentPadding + this.borderWidth);
+                    break;
+                case "bottom":
+                    rect.y(rect().height() - this.textVAlignmentPadding - this.borderWidth);
+                    break;
+            }
+            
+            textFont(font());
+            rectMode(RectMode.CENTER);
+            textAlign(TextAlign.CENTER);
+            
+            // stroke(GUI.theme().getColor(this.objectIDs, this.elementIDs, "text_shadow"));
+            // Engine.text(text(), rect.centerX(), rect.centerY() + 1, rect.width(), rect.height());
+            // Engine.text(text(), rect.centerX(), rect.centerY() - 1, rect.width(), rect.height());
+            // Engine.text(text(), rect.centerX() + 1, rect.centerY(), rect.width(), rect.height());
+            // Engine.text(text(), rect.centerX() - 1, rect.centerY(), rect.width(), rect.height());
+            
+            stroke(GUI.theme().getColor(this.objectIDs, this.elementIDs, textColorState));
+            stroke(Color.WHITE);
+            Engine.text(text(), rect.centerX(), rect.centerY());
+        }
     }
     
     // ------------------

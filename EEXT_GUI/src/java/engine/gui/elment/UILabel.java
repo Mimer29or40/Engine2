@@ -15,6 +15,10 @@ import org.joml.Vector2ic;
 
 import static engine.Engine.*;
 
+/**
+ * A label lets us display a single line of text with a single font style. It's a quick to
+ * rebuild and simple alternative to the text box element.
+ */
 public class UILabel extends UIElement
 {
     private static final Logger LOGGER = new Logger();
@@ -27,6 +31,9 @@ public class UILabel extends UIElement
         rebuildTheme();
     }
     
+    /**
+     * Rebuilds the necessary textures and sub elements of the element.
+     */
     @Override
     public void rebuild()
     {
@@ -35,17 +42,25 @@ public class UILabel extends UIElement
         redraw();
     }
     
-    // ----------------
-    // ----- TEXT -----
-    // ----------------
+    // ----------------------
+    // ----- PROPERTIES -----
+    // ----------------------
     
     private String text = "";
     
+    /**
+     * @return The text in the label.
+     */
     public String text()
     {
         return this.text;
     }
     
+    /**
+     * Sets the text in the label.
+     *
+     * @param text The new text.
+     */
     public void text(String text)
     {
         if (text != null && !this.text.equals(text))
@@ -56,9 +71,15 @@ public class UILabel extends UIElement
         }
     }
     
-    protected void textChanged(String prevText, String newText)
+    /**
+     * Called whenever the label text is changed.
+     *
+     * @param prevText The previous text.
+     * @param text     The new text.
+     */
+    protected void textChanged(String prevText, String text)
     {
-        // rebuild();
+        redraw();
     }
     
     // --------------------
@@ -75,41 +96,65 @@ public class UILabel extends UIElement
     private       int      textShadowSize   = 1;
     private final Vector2i textShadowOffset = new Vector2i();
     
+    /**
+     * @return The current font to use in the label.
+     */
     public Font font()
     {
         return this.font;
     }
     
+    /**
+     * @return The color of the text in the label.
+     */
     public Colorc textColor()
     {
         return this.textColor;
     }
     
+    /**
+     * @return The color of the background text.
+     */
     public Colorc bgColor()
     {
         return this.bgColor;
     }
     
+    /**
+     * @return The color of the shadow behind the text.
+     */
     public Colorc textShadowColor()
     {
         return this.textShadowColor;
     }
     
+    /**
+     * @return If the text shadow is drawn.
+     */
     public boolean enableTextShadow()
     {
         return this.enableTextShadow;
     }
     
+    /**
+     * @return The size of the shadow.
+     */
     public int textShadowSize()
     {
         return this.textShadowSize;
     }
     
+    /**
+     * @return The offset of the text shadow.
+     */
     public Vector2ic textShadowOffset()
     {
         return this.textShadowOffset;
     }
     
+    /**
+     * Rebuild all theme information. If anything changed, then redraw the states.
+     */
     @Override
     public void rebuildTheme()
     {
@@ -184,6 +229,15 @@ public class UILabel extends UIElement
     // ----- Drawing -----
     // -------------------
     
+    /**
+     * Draws the element and sub elements. This is called and past along to its children as long as it is alive.
+     * <p>
+     * Can be overridden.
+     *
+     * @param elapsedTime The amount of time in seconds since the last update.
+     * @param mouseX      The x position of the mouse.
+     * @param mouseY      The y position of the mouse.
+     */
     @Override
     protected void drawElement(double elapsedTime, double mouseX, double mouseY)
     {

@@ -150,7 +150,7 @@ public class OpenGLRenderer extends Renderer
         makeCurrent();
         
         glClearColor(color.rf(), color.gf(), color.bf(), color.af());
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
     
     /**

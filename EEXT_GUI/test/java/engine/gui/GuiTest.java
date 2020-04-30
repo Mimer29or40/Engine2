@@ -22,12 +22,12 @@ public class GuiTest extends Engine
     @Override
     public void setup()
     {
-        // size(100, 100, 4, 4, SOFTWARE);
+        // size(100, 100, 8, 8, SOFTWARE);
         size(100, 100, 8, 8, OPENGL);
         createGUI(100, 100);
         
         element = new UIButton(new Rect(0, 0, 50, 50), null, "Button", "ToolTip", null, "#button");
-        // label = new UILabel("This is a label", new Rect(0, 0, 100, 10), null, null, "#label");
+        label = new UILabel("This is a label", new Rect(0, 0, 100, 10), null, null, "#label");
     }
     
     /**

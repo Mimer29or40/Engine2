@@ -7,7 +7,7 @@ import engine.gui.util.Rectc;
 import engine.input.Mouse;
 import engine.render.Texture;
 
-import static engine.Engine.mouse;
+import static engine.Engine.*;
 
 /**
  * A push button, a lot of the appearance of the button, including images to be displayed, is
@@ -307,6 +307,9 @@ public class UIButton extends UIElement
         super.drawState(state);
         
         drawImageAndText(state);
+        
+        fill(255, 200, 100, 100);
+        fillRect(0, 0, 10, 10);
     }
     
     // ------------------

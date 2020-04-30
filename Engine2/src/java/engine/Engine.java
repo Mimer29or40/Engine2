@@ -405,7 +405,7 @@ public class Engine
                                     
                                     Engine.profiler.startSection("Render");
                                     {
-                                        if (window.updateViewport())
+                                        if (Engine.window.updateViewport())
                                         {
                                             Engine.pixelSize.x = Math.max(Engine.window.viewW() / Engine.screenSize.x, 1);
                                             Engine.pixelSize.y = Math.max(Engine.window.viewH() / Engine.screenSize.y, 1);
@@ -680,6 +680,8 @@ public class Engine
         
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendEquation(GL_FUNC_ADD);
         
         Engine.layers       = new Texture[Engine.layerCount];
         Engine.activeLayers = new boolean[Engine.layerCount];

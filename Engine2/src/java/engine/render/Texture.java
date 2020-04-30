@@ -41,7 +41,7 @@ public class Texture
     protected int minFilter = GL_NEAREST;
     protected int magFilter = GL_NEAREST;
     
-    protected final int fbo, rbo;
+    protected final int fbo;
     
     /**
      * Creates a texture from an existing buffer. This is only used internally by {@link #loadImage} and {@link #loadTexture}
@@ -77,16 +77,10 @@ public class Texture
         glBindFramebuffer(GL_FRAMEBUFFER, this.fbo);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this.id, 0);
         
-        this.rbo = glGenRenderbuffers();
-        glBindRenderbuffer(GL_RENDERBUFFER, this.rbo);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, this.rbo);
-        
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) Texture.LOGGER.severe("Could not create FrameBuffer");
         
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glBindRenderbuffer(GL_RENDERBUFFER, 0);
     }
     
     /**
@@ -473,7 +467,6 @@ public class Texture
     {
         glDeleteTextures(this.id);
         glDeleteFramebuffers(this.fbo);
-        glDeleteRenderbuffers(this.rbo);
         BufferUtils.zeroBuffer(this.data);
     }
     

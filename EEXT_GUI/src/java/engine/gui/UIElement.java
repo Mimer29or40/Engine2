@@ -1,7 +1,6 @@
 package engine.gui;
 
 import engine.Engine;
-import engine.color.Color;
 import engine.gui.interfaces.*;
 import engine.gui.util.Rect;
 import engine.gui.util.Rectc;
@@ -151,9 +150,9 @@ public abstract class UIElement
      */
     public void rebuild()
     {
-        this.texture          = new Texture(this.rect.width(), this.rect.height(), 4);
-        this.stateTexture     = new Texture(this.rect.width(), this.rect.height(), 4);
-        this.prevStateTexture = new Texture(this.rect.width(), this.rect.height(), 4);
+        this.texture          = new Texture(this.rect.width(), this.rect.height(), 3);
+        this.stateTexture     = new Texture(this.rect.width(), this.rect.height(), 3);
+        this.prevStateTexture = new Texture(this.rect.width(), this.rect.height(), 3);
         
         redraw();
     }
@@ -749,12 +748,13 @@ public abstract class UIElement
     {
         String stateBorder     = state + "_border";
         String stateBackground = state + "_bg";
-        
-        if (borderWidth() > 0)
-        {
-            fill(GUI.theme().getColor(this.objectIDs, this.elementIDs, stateBorder));
-            fillRect(0, 0, rect().width(), rect().height());
-        }
+    
+        clear(GUI.theme().getColor(this.objectIDs, this.elementIDs, stateBorder));
+        // if (borderWidth() > 0)
+        // {
+        //     fill(GUI.theme().getColor(this.objectIDs, this.elementIDs, stateBorder));
+        //     fillRect(0, 0, rect().width(), rect().height());
+        // }
         
         fill(GUI.theme().getColor(this.objectIDs, this.elementIDs, stateBackground));
         fillRect(borderWidth(), borderWidth(), rect().width() - (borderWidth() << 1), rect().height() - (borderWidth() << 1));
@@ -808,14 +808,13 @@ public abstract class UIElement
             rectMode(RectMode.CENTER);
             textAlign(TextAlign.CENTER);
             
-            // stroke(GUI.theme().getColor(this.objectIDs, this.elementIDs, "text_shadow"));
-            // Engine.text(text(), rect.centerX(), rect.centerY() + 1, rect.width(), rect.height());
-            // Engine.text(text(), rect.centerX(), rect.centerY() - 1, rect.width(), rect.height());
-            // Engine.text(text(), rect.centerX() + 1, rect.centerY(), rect.width(), rect.height());
-            // Engine.text(text(), rect.centerX() - 1, rect.centerY(), rect.width(), rect.height());
+            fill(GUI.theme().getColor(this.objectIDs, this.elementIDs, "text_shadow"));
+            Engine.text(text(), rect.centerX(), rect.centerY() + 1, rect.width(), rect.height());
+            Engine.text(text(), rect.centerX(), rect.centerY() - 1, rect.width(), rect.height());
+            Engine.text(text(), rect.centerX() + 1, rect.centerY(), rect.width(), rect.height());
+            Engine.text(text(), rect.centerX() - 1, rect.centerY(), rect.width(), rect.height());
             
-            stroke(GUI.theme().getColor(this.objectIDs, this.elementIDs, textColorState));
-            stroke(Color.WHITE);
+            fill(GUI.theme().getColor(this.objectIDs, this.elementIDs, textColorState));
             Engine.text(text(), rect.centerX(), rect.centerY());
         }
     }

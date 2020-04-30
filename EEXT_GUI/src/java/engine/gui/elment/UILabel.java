@@ -37,7 +37,7 @@ public class UILabel extends UIElement
     @Override
     public void rebuild()
     {
-        this.texture = new Texture(this.rect.width(), this.rect.height(), 4);
+        this.texture = new Texture(this.rect.width(), this.rect.height(), 3);
         
         redraw();
     }

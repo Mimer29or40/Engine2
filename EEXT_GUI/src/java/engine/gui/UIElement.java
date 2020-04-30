@@ -747,7 +747,7 @@ public abstract class UIElement
     {
         String stateBorder     = state + "_border";
         String stateBackground = state + "_bg";
-    
+        
         clear(GUI.theme().getColor(this.objectIDs, this.elementIDs, stateBorder));
         // if (borderWidth() > 0)
         // {
@@ -765,6 +765,7 @@ public abstract class UIElement
         String textColorState = state + "_text";
         
         Texture image = GUI.theme().getImage(this.objectIDs, this.elementIDs, imageState);
+        if (image == null) image = GUI.theme().getImage(this.objectIDs, this.elementIDs, "normal_image");
         if (image != null)
         {
             rectMode(RectMode.CENTER);

@@ -1,13 +1,11 @@
 package engine.gui.elment;
 
-import engine.gui.GUI;
 import engine.gui.UIElement;
 import engine.gui.interfaces.*;
 import engine.gui.util.Rectc;
 import engine.input.Mouse;
-import engine.render.Texture;
 
-import static engine.Engine.*;
+import static engine.Engine.mouse;
 
 /**
  * A push button, a lot of the appearance of the button, including images to be displayed, is
@@ -30,24 +28,36 @@ public class UIButton extends UIElement
         rebuildTheme();
     }
     
+    /**
+     * Simulates a mouse event at the center of the element to try and press the button.
+     */
     public void press()
     {
-        onMouseButtonDown(mouse().NONE, 0, 0);
+        onMouseButtonDown(mouse().NONE, rect().centerX(), rect().centerY());
     }
     
+    /**
+     * Simulates a mouse event at the center of the element to try and release the button.
+     */
     public void release()
     {
-        onMouseButtonUp(mouse().NONE, 0, 0);
+        onMouseButtonUp(mouse().NONE, rect().centerX(), rect().centerY());
     }
     
+    /**
+     * Simulates a mouse event at the center of the element to try and click the button.
+     */
     public void click()
     {
-        onMouseButtonClicked(mouse().NONE, 0, 0, false);
+        onMouseButtonClicked(mouse().NONE, rect().centerX(), rect().centerY(), false);
     }
     
+    /**
+     * Simulates a mouse event at the center of the element to try and double click the button.
+     */
     public void doubleClick()
     {
-        onMouseButtonClicked(mouse().NONE, 0, 0, true);
+        onMouseButtonClicked(mouse().NONE, rect().centerX(), rect().centerY(), true);
     }
     
     protected boolean selected;
@@ -209,85 +219,6 @@ public class UIButton extends UIElement
     // ----- THEMEING -----
     // --------------------
     
-    private Texture normalImage;
-    private Texture hoveredImage;
-    private Texture selectedImage;
-    private Texture disabledImage;
-    
-    public Texture normalImage()
-    {
-        return this.normalImage;
-    }
-    
-    public Texture hoveredImage()
-    {
-        return this.hoveredImage;
-    }
-    
-    public Texture selectedImage()
-    {
-        return this.selectedImage;
-    }
-    
-    public Texture disabledImage()
-    {
-        return this.disabledImage;
-    }
-    
-    public boolean rebuildImages()
-    {
-        boolean changed = false;
-        
-        Texture normalImage = GUI.theme().getImage(this.objectIDs, this.elementIDs, "normal_image");
-        if (normalImage != null && !normalImage.equals(this.normalImage))
-        {
-            this.normalImage   = normalImage;
-            this.hoveredImage  = normalImage;
-            this.selectedImage = normalImage;
-            this.disabledImage = normalImage;
-            changed            = true;
-        }
-        
-        Texture hoveredImage = GUI.theme().getImage(this.objectIDs, this.elementIDs, "hovered_image");
-        if (hoveredImage != null && !hoveredImage.equals(this.hoveredImage))
-        {
-            this.hoveredImage = hoveredImage;
-            changed           = true;
-        }
-        
-        Texture selectedImage = GUI.theme().getImage(this.objectIDs, this.elementIDs, "selected_image");
-        if (selectedImage != null && !selectedImage.equals(this.selectedImage))
-        {
-            this.selectedImage = selectedImage;
-            changed            = true;
-        }
-        
-        Texture disabledImage = GUI.theme().getImage(this.objectIDs, this.elementIDs, "disabled_image");
-        if (disabledImage != null && !disabledImage.equals(this.disabledImage))
-        {
-            this.disabledImage = disabledImage;
-            changed            = true;
-        }
-        
-        return changed;
-    }
-    
-    /**
-     * Rebuilds all theme information. This method can be overridden by elements.
-     *
-     * @param anyChanged pass-through
-     * @return anyChanged pass-through
-     */
-    @Override
-    public boolean rebuildTheme(boolean anyChanged)
-    {
-        anyChanged = super.rebuildTheme(anyChanged);
-        
-        if (rebuildImages()) anyChanged = true;
-        
-        return anyChanged;
-    }
-    
     // -------------------
     // ----- UPDATES -----
     // -------------------
@@ -307,9 +238,6 @@ public class UIButton extends UIElement
         super.drawState(state);
         
         drawImageAndText(state);
-        
-        fill(255, 200, 100, 100);
-        fillRect(0, 0, 10, 10);
     }
     
     // ------------------

@@ -212,7 +212,7 @@ public class Renderer
     public void target(Texture target)
     {
         this.target = target;
-    
+        
         identity();
         
         Renderer.LOGGER.finest("Setting Render Target:", target);
@@ -906,7 +906,7 @@ public class Renderer
         makeCurrent();
         
         glClearColor(color.rf(), color.gf(), color.bf(), color.af());
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT);
     }
     
     // -------------------
@@ -982,7 +982,7 @@ public class Renderer
         
         this.lineVAO.bind().getBuffer(0).bind().set(new float[] {(float) x1, (float) y1, (float) x2, (float) y2}, GL_DYNAMIC_DRAW).unbind();
         this.lineVAO.draw(GL_LINES).unbind();
-    
+        
         this.target.markGPUDirty();
     }
     
@@ -1082,7 +1082,7 @@ public class Renderer
                 (float) x2, (float) y2, (float) x3, (float) y3, (float) x1, (float) y1, (float) x2, (float) y2
         }, GL_DYNAMIC_DRAW).unbind();
         this.triangleLinesVAO.draw(GL_LINES_ADJACENCY).unbind();
-    
+        
         this.target.markGPUDirty();
     }
     
@@ -1109,7 +1109,7 @@ public class Renderer
         
         this.triangleVAO.bind().getBuffer(0).bind().set(new float[] {(float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3}, GL_DYNAMIC_DRAW).unbind();
         this.triangleVAO.draw(GL_TRIANGLES).unbind();
-    
+        
         this.target.markGPUDirty();
     }
     
@@ -1328,7 +1328,7 @@ public class Renderer
                 (float) x3, (float) y3, (float) x4, (float) y4, (float) x1, (float) y1, (float) x2, (float) y2
         }, GL_DYNAMIC_DRAW).unbind();
         this.quadLinesVAO.draw(GL_LINES_ADJACENCY).unbind();
-    
+        
         this.target.markGPUDirty();
     }
     
@@ -1359,7 +1359,7 @@ public class Renderer
         
         this.quadVAO.bind().getBuffer(0).bind().set(new float[] {(float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4}, GL_DYNAMIC_DRAW).unbind();
         this.quadVAO.draw(GL_QUADS).unbind();
-    
+        
         this.target.markGPUDirty();
     }
     
@@ -1437,7 +1437,7 @@ public class Renderer
         
         this.polygonLinesVAO.bind().getBuffer(0).bind().set(array, GL_DYNAMIC_DRAW).unbind();
         this.polygonLinesVAO.resize().draw(GL_LINES_ADJACENCY).unbind();
-    
+        
         this.target.markGPUDirty();
     }
     
@@ -1466,7 +1466,7 @@ public class Renderer
         this.polygonSSBO.bind().set(array, GL_STATIC_DRAW).unbind();
         
         this.polygonVAO.bind().draw(GL_POINTS).unbind();
-    
+        
         this.target.markGPUDirty();
     }
     
@@ -1597,7 +1597,7 @@ public class Renderer
         
         this.ellipseOutlineVAO.bind().getBuffer(0).bind().set(new float[] {(float) x, (float) y}, GL_DYNAMIC_DRAW).unbind();
         this.ellipseOutlineVAO.draw(GL_POINTS).unbind();
-    
+        
         this.target.markGPUDirty();
     }
     
@@ -1623,7 +1623,7 @@ public class Renderer
         
         this.ellipseVAO.bind().getBuffer(0).bind().set(new float[] {(float) x, (float) y}, GL_DYNAMIC_DRAW).unbind();
         this.ellipseVAO.draw(GL_POINTS).unbind();
-    
+        
         this.target.markGPUDirty();
     }
     
@@ -1705,7 +1705,7 @@ public class Renderer
         
         this.arcOutlineVAO.bind().getBuffer(0).bind().set(new float[] {(float) x, (float) y}, GL_DYNAMIC_DRAW).unbind();
         this.arcOutlineVAO.draw(GL_POINTS).unbind();
-    
+        
         this.target.markGPUDirty();
     }
     
@@ -1735,7 +1735,7 @@ public class Renderer
         
         this.arcVAO.bind().getBuffer(0).bind().set(new float[] {(float) x, (float) y}, GL_DYNAMIC_DRAW).unbind();
         this.arcVAO.draw(GL_POINTS).unbind();
-    
+        
         this.target.markGPUDirty();
     }
     
@@ -1842,7 +1842,7 @@ public class Renderer
                 (float) x2, (float) y1, (float) u2, (float) v1
         }, GL_DYNAMIC_DRAW).unbind();
         this.textureVAO.draw(GL_QUADS).unbind();
-    
+        
         this.target.markGPUDirty();
     }
     
@@ -1986,7 +1986,7 @@ public class Renderer
                 (float) x2, (float) y1, (float) u2, (float) v1
         }, GL_DYNAMIC_DRAW).unbind();
         this.textureVAO.draw(GL_QUADS).unbind();
-    
+        
         this.target.markGPUDirty();
     }
     
@@ -2158,7 +2158,7 @@ public class Renderer
         
         this.textVAO.bind().getBuffer(0).bind().set(data, GL_DYNAMIC_DRAW).unbind();
         this.textVAO.resize().draw(GL_QUADS).unbind();
-    
+        
         this.target.markGPUDirty();
     }
     

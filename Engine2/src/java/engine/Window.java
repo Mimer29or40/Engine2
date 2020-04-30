@@ -37,10 +37,12 @@ public class Window
     private final Vector2i pos     = new Vector2i();
     private final Vector2i newPos  = new Vector2i();
     private final Vector2i fullPos = new Vector2i();
+    private       boolean  posChanged;
     
     private final Vector2i size     = new Vector2i();
     private final Vector2i newSize  = new Vector2i();
     private final Vector2i fullSize = new Vector2i();
+    private       boolean  sizeChanged;
     
     private final Vector2i frame    = new Vector2i();
     private final Vector2i newFrame = new Vector2i();
@@ -84,8 +86,8 @@ public class Window
         
         this.handle = glfwCreateWindow(this.size.x, this.size.y, "", NULL, NULL);
         
-        this.mouse    = mouse;
-        this.keyboard = keyboard;
+        this.mouse     = mouse;
+        this.keyboard  = keyboard;
         this.modifiers = modifiers;
         
         glfwSetWindowSizeLimits(this.handle, screenWidth(), screenHeight(), GLFW_DONT_CARE, GLFW_DONT_CARE);
@@ -508,7 +510,7 @@ public class Window
             this.pos.set(this.newPos);
             Events.post(EventWindowMoved.class, this.pos);
             
-            glfwSetWindowPos(this.handle, this.pos.x, this.pos.y);
+            this.posChanged = true;
             
             double next, max = 0.0;
             for (Monitor monitor : this.monitors)
@@ -527,7 +529,7 @@ public class Window
             Events.post(EventWindowResized.class, this.size);
             this.update = true;
             
-            glfwSetWindowSize(this.handle, this.size.x, this.size.y);
+            this.sizeChanged = true;
         }
         
         if (this.frame.x != this.newFrame.x || this.frame.y != this.newFrame.y)
@@ -611,6 +613,18 @@ public class Window
         {
             this.lockModsState = newLockModsState;
             glfwSetInputMode(this.handle, GLFW_LOCK_KEY_MODS, this.lockModsState ? GLFW_TRUE : GLFW_FALSE);
+        }
+        
+        if (this.posChanged)
+        {
+            glfwSetWindowPos(this.handle, this.pos.x, this.pos.y);
+            this.posChanged = false;
+        }
+        
+        if (this.sizeChanged)
+        {
+            glfwSetWindowSize(this.handle, this.size.x, this.size.y);
+            this.sizeChanged = false;
         }
         
         if (!this.title.equals(this.newTitle))

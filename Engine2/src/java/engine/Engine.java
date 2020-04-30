@@ -215,7 +215,7 @@ public class Engine
                 Engine.LOGGER.finer("Extension Pre Setup: ", extension);
                 extension.beforeSetup();
             }
-    
+            
             Engine.LOGGER.fine("User Initialization");
             Engine.logic.setup();
             
@@ -227,7 +227,7 @@ public class Engine
                     Engine.LOGGER.finer("Extension Post Setup: ", extension);
                     extension.afterSetup();
                 }
-    
+                
                 Engine.LOGGER.finest("Preparing Context for Thread Swap");
                 Engine.window.unmakeCurrent();
                 GL.setCapabilities(null);
@@ -451,34 +451,37 @@ public class Engine
                                             }
                                         }
                                         
-                                        Engine.profiler.startSection("Text");
+                                        if (Engine.debugLines.size() > 0)
                                         {
-                                            Engine.debugShader.bind();
-                                            Engine.debugShader.setMat4("pv", Engine.debugView.setOrtho(0F, Engine.window.viewW(), Engine.window.viewH(), 0F, -1F, 1F));
-                                            
-                                            try (MemoryStack frame = stackPush())
+                                            Engine.profiler.startSection("Text");
                                             {
-                                                ByteBuffer textBuffer = frame.malloc(24 * 1024);
-                                                for (Tuple<Integer, Integer, String> line : Engine.debugLines)
+                                                Engine.debugShader.bind();
+                                                Engine.debugShader.setMat4("pv", Engine.debugView.setOrtho(0F, Engine.window.viewW(), Engine.window.viewH(), 0F, -1F, 1F));
+                                                
+                                                try (MemoryStack frame = stackPush())
                                                 {
-                                                    int quads  = stb_easy_font_print(line.a + 2, line.b + 2, line.c, null, textBuffer);
-                                                    int width  = stb_easy_font_width(line.c);
-                                                    int height = stb_easy_font_height(line.c);
-                                                    
-                                                    Engine.debugShader.setColor("color", Engine.debugLineBackground);
-                                                    Engine.debugBoxVAO.bind().set(0, new float[] {
-                                                            line.a, line.b, line.a + width + 2, line.b, line.a + width + 2, line.b + height, line.a, line.b + height
-                                                    }, GL_DYNAMIC_DRAW).draw(GL_QUADS).unbind();
-                                                    
-                                                    Engine.debugShader.setColor("color", Engine.debugLineText);
-                                                    Engine.debugTextVAO.bind().set(0, textBuffer.limit(quads * 64), GL_DYNAMIC_DRAW).draw(GL_QUADS).unbind();
-                                                    
-                                                    textBuffer.clear();
+                                                    ByteBuffer textBuffer = frame.malloc(24 * 1024);
+                                                    for (Tuple<Integer, Integer, String> line : Engine.debugLines)
+                                                    {
+                                                        int quads  = stb_easy_font_print(line.a + 2, line.b + 2, line.c, null, textBuffer);
+                                                        int width  = stb_easy_font_width(line.c);
+                                                        int height = stb_easy_font_height(line.c);
+                                                        
+                                                        Engine.debugShader.setColor("color", Engine.debugLineBackground);
+                                                        Engine.debugBoxVAO.bind().set(0, new float[] {
+                                                                line.a, line.b, line.a + width + 2, line.b, line.a + width + 2, line.b + height, line.a, line.b + height
+                                                        }, GL_DYNAMIC_DRAW).draw(GL_QUADS).unbind();
+                                                        
+                                                        Engine.debugShader.setColor("color", Engine.debugLineText);
+                                                        Engine.debugTextVAO.bind().set(0, textBuffer.limit(quads * 64), GL_DYNAMIC_DRAW).draw(GL_QUADS).unbind();
+                                                        
+                                                        textBuffer.clear();
+                                                    }
                                                 }
+                                                Engine.debugLines.clear();
                                             }
-                                            Engine.debugLines.clear();
+                                            Engine.profiler.endSection();
                                         }
-                                        Engine.profiler.endSection();
                                     }
                                     Engine.profiler.endSection();
                                     
@@ -613,7 +616,7 @@ public class Engine
                 Engine.LOGGER.finer("Extension Pre Destruction: ", extension);
                 extension.beforeDestroy();
             }
-    
+            
             Engine.LOGGER.fine("User Destruction");
             Engine.logic.destroy();
             
@@ -623,7 +626,7 @@ public class Engine
                 Engine.LOGGER.finer("Extension Post Destruction: ", extension);
                 extension.afterDestroy();
             }
-    
+            
             if (Engine.window != null)
             {
                 Engine.LOGGER.finer("Window Destruction");
@@ -633,7 +636,7 @@ public class Engine
                 
                 Engine.window.destroy();
             }
-    
+            
             Engine.LOGGER.finer("Saving/Closing Config");
             Engine.config.save();
             Engine.config.close();
@@ -665,10 +668,10 @@ public class Engine
      * <p>
      * <b>THIS MUST ONLY BE CALLED ONCE</b>
      *
-     * @param screenW  The width of the screen in drawable pixels.
-     * @param screenH  The height of the screen in drawable pixels.
-     * @param pixelW   The width of the drawable pixels in actual pixels.
-     * @param pixelH   The height of the drawable pixels in actual pixels.
+     * @param screenW The width of the screen in drawable pixels.
+     * @param screenH The height of the screen in drawable pixels.
+     * @param pixelW  The width of the drawable pixels in actual pixels.
+     * @param pixelH  The height of the drawable pixels in actual pixels.
      */
     public static void size(int screenW, int screenH, int pixelW, int pixelH)
     {

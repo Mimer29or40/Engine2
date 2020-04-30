@@ -2257,7 +2257,7 @@ public class Renderer
             double yOffset = vPos == -1 ? 0 : vPos == 0 ? 0.5 * (h - actualHeight) : h - actualHeight;
             for (String line : lines)
             {
-                double lineWidth = this.font.getStringWidth(line);
+                double lineWidth = Math.ceil(this.font.getStringWidth(line));
                 double xOffset   = hPos == -1 ? 0 : hPos == 0 ? 0.5 * (w - lineWidth) : w - lineWidth;
                 
                 drawText(line, x + xOffset, y + yOffset);

@@ -3,12 +3,8 @@ package engine.gui;
 import engine.Engine;
 import engine.gui.elment.UIButton;
 import engine.gui.elment.UILabel;
-import engine.gui.util.Rect;
-import engine.util.IPair;
 
 import java.util.logging.Level;
-
-import static engine.gui.GUI.createGUI;
 
 public class GuiTest extends Engine
 {
@@ -24,10 +20,10 @@ public class GuiTest extends Engine
     public void setup()
     {
         size(100, 100, 8, 8);
-        createGUI(200, 200);
+        // createGUI(200, 200);
         
-        element = new UIButton(new Rect(0, 0, 50, 50), null, "Button", "ToolTip", null, "#button");
-        label = new UILabel("This is a label", new Rect(0, 0, 100, 10), null, null, "#label");
+        // element = new UIButton(new Rect(0, 0, 50, 50), null, "Button", "ToolTip", null, "#button");
+        // label = new UILabel("This is a label", new Rect(0, 0, 100, 10), null, null, "#label");
     }
     
     /**
@@ -50,9 +46,8 @@ public class GuiTest extends Engine
         // if (keyboard().A.down()) element.setState("active");
         // if (keyboard().S.down()) element.setState("normal");
     
-        IPair<Double, Double> gui = GUI.screenToGUI(mouse().x(), mouse().y());
-        
-        element.position((int) ((double) gui.getA()), (int) ((double) gui.getB()));
+        // IPair<Double, Double> gui = GUI.screenToGUI(mouse().x(), mouse().y());
+        // element.position((int) ((double) gui.getA()), (int) ((double) gui.getB()));
     }
     
     /**
@@ -66,6 +61,6 @@ public class GuiTest extends Engine
     
     public static void main(String[] args)
     {
-        start(new GuiTest(), Level.FINER);
+        start(new GuiTest(), Level.FINE);
     }
 }

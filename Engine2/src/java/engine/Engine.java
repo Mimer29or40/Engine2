@@ -631,8 +631,8 @@ public class Engine
             {
                 Engine.LOGGER.finer("Window Destruction");
     
-                // GL.setCapabilities(null);
-                // GL.destroy();
+                GL.setCapabilities(null);
+                GL.destroy();
                 
                 Engine.window.destroy();
             }

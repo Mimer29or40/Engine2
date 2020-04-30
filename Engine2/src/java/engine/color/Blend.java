@@ -145,7 +145,7 @@ public class Blend implements IBlend
         SRC_ALPHA(GL_SRC_ALPHA, (sourceColor, sourceAlpha, destColor, destAlpha) -> sourceAlpha),
         ONE_MINUS_SRC_ALPHA(GL_ONE_MINUS_SRC_ALPHA, (sourceColor, sourceAlpha, destColor, destAlpha) -> 255 - sourceAlpha),
         
-        DST_COLOR(GL_DST_ALPHA, (sourceColor, sourceAlpha, destColor, destAlpha) -> destColor),
+        DST_COLOR(GL_DST_COLOR, (sourceColor, sourceAlpha, destColor, destAlpha) -> destColor),
         ONE_MINUS_DST_COLOR(GL_ONE_MINUS_DST_COLOR, (sourceColor, sourceAlpha, destColor, destAlpha) -> 255 - destColor),
         DST_ALPHA(GL_DST_ALPHA, (sourceColor, sourceAlpha, destColor, destAlpha) -> destAlpha),
         ONE_MINUS_DST_ALPHA(GL_ONE_MINUS_DST_ALPHA, (sourceColor, sourceAlpha, destColor, destAlpha) -> 255 - destAlpha),

@@ -302,6 +302,106 @@ public class Util
     }
     
     /**
+     * Clamps a value between two limits.
+     *
+     * @param x   The value to clamp.
+     * @param min The min range.
+     * @param max The max range.
+     * @return The clamped value.
+     */
+    public static int clamp(int x, int min, int max)
+    {
+        return x <= min ? min : Math.min(x, max);
+    }
+    
+    /**
+     * Clamps a value between zero and a limit.
+     *
+     * @param x   The value to clamp.
+     * @param max The max range.
+     * @return The clamped value.
+     */
+    public static int clamp(int x, int max)
+    {
+        return clamp(x, 0, max);
+    }
+    
+    /**
+     * Clamps a value between two limits.
+     *
+     * @param x   The value to clamp.
+     * @param min The min range.
+     * @param max The max range.
+     * @return The clamped value.
+     */
+    public static long clamp(long x, long min, long max)
+    {
+        return x <= min ? min : Math.min(x, max);
+    }
+    
+    /**
+     * Clamps a value between zero and a limit.
+     *
+     * @param x   The value to clamp.
+     * @param max The max range.
+     * @return The clamped value.
+     */
+    public static long clamp(long x, long max)
+    {
+        return clamp(x, 0, max);
+    }
+    
+    /**
+     * Clamps a value between two limits.
+     *
+     * @param x   The value to clamp.
+     * @param min The min range.
+     * @param max The max range.
+     * @return The clamped value.
+     */
+    public static float clamp(float x, float min, float max)
+    {
+        return x <= min ? min : Math.min(x, max);
+    }
+    
+    /**
+     * Clamps a value between zero and a limit.
+     *
+     * @param x   The value to clamp.
+     * @param max The max range.
+     * @return The clamped value.
+     */
+    public static float clamp(float x, float max)
+    {
+        return clamp(x, 0, max);
+    }
+    
+    /**
+     * Clamps a value between two limits.
+     *
+     * @param x   The value to clamp.
+     * @param min The min range.
+     * @param max The max range.
+     * @return The clamped value.
+     */
+    public static double clamp(double x, double min, double max)
+    {
+        return x <= min ? min : Math.min(x, max);
+    }
+    
+    /**
+     * Clamps a value between zero and a limit.
+     *
+     * @param x   The value to clamp.
+     * @param max The max range.
+     * @return The clamped value.
+     */
+    public static double clamp(double x, double max)
+    {
+        return clamp(x, 0, max);
+    }
+    
+    /**
      * Gets the path to the file. First it tries to load a resources, then if it fails then tries to load from disk.
      *
      * @param resource The string path to the file

@@ -92,7 +92,7 @@ public class Font
         this.info = STBTTFontinfo.create();
         if (!stbtt_InitFont(this.info, data)) throw new RuntimeException("Font could not be loaded: " + getFontID(name, size, bold, italic));
         
-        this.charData = STBTTPackedchar.create(128);
+        this.charData = STBTTPackedchar.create(0xFFFF);
         
         this.scale = stbtt_ScaleForPixelHeight(this.info, this.size);
         
@@ -111,13 +111,13 @@ public class Font
         
         boolean success = false;
         
-        int width   = 32;
-        int samples = 2;
-        while (!success && width < 1000)
+        int textureSize = 32;
+        int samples     = 2;
+        while (!success && textureSize < 1000)
         {
             try (STBTTPackContext pc = STBTTPackContext.malloc())
             {
-                this.texture = new Texture(width * this.size, this.size * samples, 1);
+                this.texture = new Texture(this.size * textureSize, this.size * (textureSize >> 1), 1);
                 stbtt_PackBegin(pc, this.texture.data(), this.texture.width(), this.texture.height(), 0, 2, MemoryUtil.NULL);
                 this.charData.position(32);
                 stbtt_PackSetOversampling(pc, samples, samples);
@@ -125,7 +125,7 @@ public class Font
                 this.charData.clear();
                 this.texture.data().clear();
                 stbtt_PackEnd(pc);
-                width *= 2;
+                textureSize *= 2;
             }
         }
         texture.bindTexture().upload();
@@ -309,7 +309,7 @@ public class Font
             {
                 index     = i * 8;
                 character = text.charAt(i);
-                stbtt_GetPackedQuad(this.charData, this.texture.width(), this.texture.height(), character, x, y, quad, false);
+                stbtt_GetPackedQuad(this.charData, this.texture.width(), this.texture.height(), character, x, y, quad, true);
                 if (character == ' ') continue;
                 vertices[index]     = quad.x0();
                 vertices[index + 1] = quad.y0() + this.ascent;

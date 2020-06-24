@@ -4,6 +4,8 @@ import engine.gui.UIElement;
 import engine.gui.interfaces.*;
 import engine.gui.util.Rectc;
 import engine.input.Mouse;
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
 
 import static engine.Engine.mouse;
 
@@ -16,14 +18,12 @@ import static engine.Engine.mouse;
  */
 public class UIButton extends UIElement
 {
-    protected String tooltipText;
-    
-    public UIButton(Rectc rect, IUIContainerLike container, String text, String toolTipText, UIElement parent, String objectID)
+    public UIButton(String text, Rectc rect, UIElement parent, String tooltipText, UIElement themeParent, String objectID)
     {
-        super(rect, container, parent, objectID, "button");
+        super(rect, parent, themeParent, objectID, "button", new String[] {"normal", "hovered", "disabled", "selected", "active"});
         
         this.text        = text;
-        this.tooltipText = toolTipText;
+        this.tooltipText = tooltipText != null ? tooltipText : "";
         
         rebuildTheme();
     }
@@ -74,14 +74,32 @@ public class UIButton extends UIElement
         setState(canHover() && hovered() ? "hovered" : "normal");
     }
     
+    /**
+     * Check to see if the mouse is over the element.
+     *
+     * @param mouseX The mouse x position
+     * @param mouseY The mouse y position
+     * @return True if the mouse is over the element.
+     */
+    @Override
+    public boolean mouseOver(double mouseX, double mouseY)
+    {
+        if (held()) return inHoldRange(mouseX - absX(), mouseY - absY());
+        return rect().collide((int) mouseX - absX() + rect().x(), (int) mouseY - absY() + rect().y());
+    }
+    
     // ----------------------
     // ----- PROPERTIES -----
     // ----------------------
     
-    private String text = "";
+    private String text;
     
-    public  boolean pushed     = false;
+    protected String tooltipText;
+    
+    private boolean pushed     = false;
     private boolean toggleable = false;
+    
+    private final Vector2i holdRange = new Vector2i();
     
     /**
      * @return The text in the label.
@@ -156,8 +174,7 @@ public class UIButton extends UIElement
      */
     protected void pushedChanged(boolean prevState, boolean pushed)
     {
-        setState(pushed ? "active" : canHover() && hovered() ? "hovered" : "normal");
-        redraw();
+        setState(!enabled() ? "disabled" : pushed ? "active" : canHover() && hovered() ? "hovered" : "normal");
     }
     
     /**
@@ -177,8 +194,9 @@ public class UIButton extends UIElement
     {
         if (this.toggleable != toggleable)
         {
+            boolean prev = this.toggleable;
             this.toggleable = toggleable;
-            pushed(false);
+            toggleChanged(prev, this.toggleable);
         }
     }
     
@@ -202,6 +220,46 @@ public class UIButton extends UIElement
     }
     
     /**
+     * Imagine it as a large rectangle around our button, larger in all directions by whatever
+     * values we specify here.
+     *
+     * @return The range around the button that the mouse can go while still holding the button down.
+     */
+    public Vector2ic holdRange()
+    {
+        return this.holdRange;
+    }
+    
+    /**
+     * Set x and y values, in pixels, around our button to use as the hold range for time when we
+     * want to drag a button about but don't want it to slip out of our grasp too easily.
+     * <p>
+     * Imagine it as a large rectangle around our button, larger in all directions by whatever
+     * values we specify here.
+     *
+     * @param x The x values used to create our larger 'holding' rectangle.
+     * @param y The y values used to create our larger 'holding' rectangle.
+     */
+    public void holdRange(int x, int y)
+    {
+        this.holdRange.set(x, y);
+    }
+    
+    public boolean inHoldRange(double x, double y)
+    {
+        if (rect().collide((int) x, (int) y)) return true;
+        if (holdRange().x() > 0 || holdRange().y() > 0)
+        {
+            int left   = rect().x() - holdRange().x();
+            int right  = left + rect().width() + (holdRange().x() << 1);
+            int top    = rect().y() - holdRange().y();
+            int bottom = top + rect().height() + (holdRange().y() << 1);
+            return left <= x && x <= right && top <= y && y <= bottom;
+        }
+        return false;
+    }
+    
+    /**
      * Called whenever the enabled state is changed.
      *
      * @param prevState The previous enabled state
@@ -211,8 +269,7 @@ public class UIButton extends UIElement
     protected void enabledChanged(boolean prevState, boolean enabled)
     {
         pushed(false);
-        setState(!enabled ? "disabled" : canHover() && hovered() ? "hovered" : "normal");
-        redraw();
+        setState(!enabled() ? "disabled" : pushed() ? "active" : canHover() && hovered() ? "hovered" : "normal");
     }
     
     // --------------------

@@ -1,4 +1,4 @@
-package engine.gui.theme;
+package engine.gui;
 
 import com.google.gson.stream.JsonReader;
 import engine.color.Color;
@@ -111,7 +111,7 @@ public class Theme
                         switch (dataTypeName)
                         {
                             case "prototype":
-                                loadPrototype(dataTypeName, jsonReader.nextString());
+                                loadPrototype(element, jsonReader.nextString());
                                 break;
                             case "font":
                                 loadElementFont(jsonReader, element);

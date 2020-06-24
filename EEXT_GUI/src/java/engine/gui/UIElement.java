@@ -12,9 +12,12 @@ import engine.render.TextAlign;
 import engine.render.Texture;
 import engine.util.PairS;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 import static engine.Engine.*;
+import static engine.util.Util.println;
 
 /**
  * A base class for UI elements.
@@ -24,40 +27,38 @@ public abstract class UIElement
     protected int layer          = 0;
     protected int requestedLayer = 0;
     
-    protected final Rect rect = new Rect();
-    
-    protected final UIContainer container;
-    
-    public UIElement(Rectc rect, IUIContainerLike container, UIElement parent, String objectID, String elementID)
+    public UIElement(Rectc rect, UIElement parent, UIElement themeParent, String objectID, String elementID, String[] states)
     {
         this.rect.set(rect);
         
-        this.container = container != null ? container.getContainer() : null;
+        this.parent = parent != null ? parent : GUI.rootContainer();
         
-        if (this.container != null) { this.container.addElement(this); }
-        else { GUI.INSTANCE.elements.add(this); }
-        
-        UIElement idParent = parent;
-        if (parent == null && this.container != null) idParent = this.container;
-        if (objectID != null && (objectID.contains(".") || objectID.contains(" "))) throw new RuntimeException("Object ID cannot contain fullstops or spaces: " + objectID);
-        if (idParent != null)
+        if (parent() != null)
         {
-            this.objectIDs = new String[idParent.objectIDs.length + 1];
-            System.arraycopy(idParent.objectIDs, 0, this.objectIDs, 0, idParent.objectIDs.length);
-            this.objectIDs[idParent.objectIDs.length] = objectID;
+            parent().elements.add(this);
+            recalculateLayers();
+        }
+        
+        themeParent = themeParent != null ? themeParent : parent();
+        if (objectID != null && (objectID.contains(".") || objectID.contains(" "))) throw new RuntimeException("Object ID cannot contain fullstops or spaces: " + objectID);
+        if (themeParent != null)
+        {
+            this.objectIDs = new String[themeParent.objectIDs.length + 1];
+            System.arraycopy(themeParent.objectIDs, 0, this.objectIDs, 0, themeParent.objectIDs.length);
+            this.objectIDs[themeParent.objectIDs.length] = objectID;
             
-            this.elementIDs = new String[idParent.elementIDs.length + 1];
-            System.arraycopy(idParent.elementIDs, 0, this.elementIDs, 0, idParent.elementIDs.length);
-            this.elementIDs[idParent.elementIDs.length] = elementID;
+            this.elementIDs = new String[themeParent.elementIDs.length + 1];
+            System.arraycopy(themeParent.elementIDs, 0, this.elementIDs, 0, themeParent.elementIDs.length);
+            this.elementIDs[themeParent.elementIDs.length] = elementID;
         }
         else
         {
             this.objectIDs  = new String[] {objectID};
             this.elementIDs = new String[] {elementID};
         }
+        this.states = states;
         
         setState("normal");
-        rebuild();
     }
     
     /**
@@ -66,23 +67,122 @@ public abstract class UIElement
     public void kill()
     {
         this.alive = false;
-        if (this.container != null)
+        if (parent() != null)
         {
-            this.container.removeElement(this);
+            parent().elements.remove(this);
+            recalculateLayers();
         }
-        else
-        {
-            GUI.INSTANCE.elements.remove(this);
-        }
+        while (this.elements.size() > 0) this.elements.remove(0).kill();
     }
+    
+    /**
+     * Rebuilds the necessary textures and sub elements of the element.
+     */
+    public void rebuild()
+    {
+        this.texture          = new Texture(rect().width(), rect().height(), 3);
+        this.stateTexture     = new Texture(rect().width(), rect().height(), 3);
+        this.prevStateTexture = new Texture(rect().width(), rect().height(), 3);
+        
+        redrawStates();
+    }
+    
+    // -------------------
+    // ----- LINEAGE -----
+    // -------------------
+    
+    private final UIElement parent;
+    
+    private final ArrayList<UIElement> elements = new ArrayList<>();
     
     /**
      * @return Gets the containing element. If its null then the element is attached to the main GUI elements.
      */
-    public UIContainer container()
+    public UIElement parent()
     {
-        return this.container;
+        return this.parent;
     }
+    
+    /**
+     * @return The list of elements.
+     */
+    public Iterable<UIElement> elements()
+    {
+        return this.elements;
+    }
+    
+    /**
+     * @return The number of elements.
+     */
+    public int elementCount()
+    {
+        return this.elements.size();
+    }
+    
+    /**
+     * Recalculates the child elements layers to determine overlapping elements.
+     */
+    protected void recalculateLayers()
+    {
+        int n = this.elements.size();
+        for (int i = 0; i < n; i++)
+        {
+            UIElement e1 = this.elements.get(i);
+            e1.layer = e1.requestedLayer;
+            for (int j = 0; j < i; j++)
+            {
+                UIElement e2 = this.elements.get(j);
+                if (e1.layer >= e2.layer && e2.rect().collide(e1.rect())) e2.layer = e1.layer + 1;
+            }
+        }
+    }
+    
+    /**
+     * Gets the top element if its alive, visible and the mouse it over it.
+     *
+     * @param mouseX The mouse x position
+     * @param mouseY The mouse y position
+     * @return The top element or null of the mouse is not over anything.
+     */
+    public UIElement getTopElement(double mouseX, double mouseY)
+    {
+        UIElement top = null;
+        if (alive() && visible())
+        {
+            for (UIElement element : this.elements)
+            {
+                UIElement topChild = element.getTopElement(mouseX, mouseY);
+                if (top == null || (topChild != null && topChild.layer >= top.layer)) top = topChild;
+            }
+            return top != null ? top : mouseOver(mouseX, mouseY) ? this : null;
+        }
+        return null;
+    }
+    
+    /**
+     * Check to see if the mouse is over the element.
+     *
+     * @param mouseX The mouse x position
+     * @param mouseY The mouse y position
+     * @return True if the mouse is over the element.
+     */
+    public boolean mouseOver(double mouseX, double mouseY)
+    {
+        return rect().collide((int) mouseX - absX() + rect().x(), (int) mouseY - absY() + rect().y());
+    }
+    
+    // ----------------------
+    // ----- PROPERTIES -----
+    // ----------------------
+    
+    private final Rect rect = new Rect();
+    
+    private boolean alive   = true;
+    private boolean focused = false;
+    private boolean hovered = false;
+    private boolean held    = false;
+    private boolean visible = true;
+    private boolean enabled = true;
     
     /**
      * @return The containing rect of the element. The x and y positions are relative to the container.
@@ -97,7 +197,7 @@ public abstract class UIElement
      */
     public int absX()
     {
-        return (this.container != null ? this.container.absX() : 0) + this.rect.left();
+        return (parent() != null ? parent().absX() : 0) + this.rect.left();
     }
     
     /**
@@ -105,7 +205,7 @@ public abstract class UIElement
      */
     public int absY()
     {
-        return (this.container != null ? this.container.absY() : 0) + this.rect.top();
+        return (parent() != null ? parent().absY() : 0) + this.rect.top();
     }
     
     /**
@@ -120,7 +220,7 @@ public abstract class UIElement
         {
             this.rect.pos(x, y);
             
-            if (this.container != null) this.container.recalculateLayers();
+            if (parent() != null) parent().recalculateLayers();
             
             redraw();
         }
@@ -138,70 +238,11 @@ public abstract class UIElement
         {
             this.rect.size(width, height);
             
-            if (this.container != null) this.container.recalculateLayers();
+            if (parent() != null) parent().recalculateLayers();
             
             rebuild();
         }
     }
-    
-    /**
-     * Rebuilds the necessary textures and sub elements of the element.
-     */
-    public void rebuild()
-    {
-        this.texture          = new Texture(this.rect.width(), this.rect.height(), 3);
-        this.stateTexture     = new Texture(this.rect.width(), this.rect.height(), 3);
-        this.prevStateTexture = new Texture(this.rect.width(), this.rect.height(), 3);
-        
-        redraw();
-    }
-    
-    /**
-     * Gets the top element if its alive, visible and the mouse it over it.
-     *
-     * @param mouseX The mouse x position
-     * @param mouseY The mouse y position
-     * @return The top element or null of the mouse is not over anything.
-     */
-    public UIElement getTopElement(double mouseX, double mouseY)
-    {
-        UIElement top = null;
-        if (alive() && visible())
-        {
-            if (this instanceof UIContainer)
-            {
-                for (UIElement widget : ((UIContainer) this).elements)
-                {
-                    UIElement topChild = widget.getTopElement(mouseX, mouseY);
-                    if (top == null || (topChild != null && topChild.layer >= top.layer)) top = topChild;
-                }
-            }
-            return top != null ? top : mouseOver(mouseX, mouseY) ? this : null;
-        }
-        return null;
-    }
-    
-    /**
-     * Check to see if the mouse is over the element.
-     *
-     * @param mouseX The mouse x position
-     * @param mouseY The mouse y position
-     * @return True if the mouse is over the element.
-     */
-    public boolean mouseOver(double mouseX, double mouseY)
-    {
-        return this.rect.collide((int) mouseX - absX() + this.rect.x(), (int) mouseY - absY() + this.rect.y());
-    }
-    
-    // ----------------------
-    // ----- PROPERTIES -----
-    // ----------------------
-    
-    private boolean alive   = true;
-    private boolean focused = false;
-    private boolean hovered = false;
-    private boolean visible = true;
-    private boolean enabled = true;
     
     /**
      * @return If the element is alive and updatable.
@@ -233,6 +274,14 @@ public abstract class UIElement
     public boolean canHover()
     {
         return alive();
+    }
+    
+    /**
+     * @return If the element is being held by the mouse.
+     */
+    public boolean held()
+    {
+        return this.held;
     }
     
     /**
@@ -333,11 +382,12 @@ public abstract class UIElement
     
     protected String[] objectIDs;
     protected String[] elementIDs;
+    protected String[] states;
     
     private final HashMap<PairS, Double> stateTransitions = new HashMap<>();
     
-    private int    borderWidth  = 1;
-    private double tooltipDelay = 1;
+    private int    borderWidth;
+    private double tooltipDelay;
     
     private Font font;
     
@@ -345,6 +395,18 @@ public abstract class UIElement
     private String textVAlignment        = "center";
     private int    textHAlignmentPadding = 1;
     private int    textVAlignmentPadding = 1;
+    
+    public boolean containsObjectID(String objectID)
+    {
+        for (String object : this.objectIDs) if (Objects.equals(object, objectID)) return true;
+        return false;
+    }
+    
+    public boolean containsElementID(String elementID)
+    {
+        for (String element : this.elementIDs) if (Objects.equals(element, elementID)) return true;
+        return false;
+    }
     
     /**
      * @return The border width defined by the theme.
@@ -409,14 +471,15 @@ public abstract class UIElement
      */
     protected void setState(String state)
     {
-        if (!state.equals(this.state))
+        boolean contains = false;
+        for (String s : this.states) contains = contains || state.equals(s);
+        if (contains && !state.equals(this.state))
         {
-            // println(state);
+            println(state, this);
             this.prevState = this.state;
             this.state     = state;
             
-            redraw();
-            this.redrawStates = true;
+            redrawStates();
             
             PairS statePair = new PairS(this.prevState, this.state);
             if (this.prevState != null && this.stateTransitions.containsKey(statePair))
@@ -433,11 +496,20 @@ public abstract class UIElement
     }
     
     /**
+     * Rebuilds theme information for this element and all child elements after the theme file changed.
+     */
+    public void rebuildThemeFromFileChange()
+    {
+        rebuildTheme();
+        for (UIElement element : elements()) element.rebuildThemeFromFileChange();
+    }
+    
+    /**
      * Rebuild all theme information. If anything changed, then redraw the states.
      */
     public void rebuildTheme()
     {
-        if (rebuildTheme(false)) redrawStates();
+        if (rebuildTheme(false)) rebuild();
     }
     
     /**
@@ -600,12 +672,9 @@ public abstract class UIElement
             
             this.redraw |= updateElement(elapsedTime, mouseX, mouseY);
             
-            if (this instanceof UIContainer)
+            for (UIElement child : this.elements)
             {
-                for (UIElement child : ((UIContainer) this).elements)
-                {
-                    this.redraw |= child.update(elapsedTime, mouseX, mouseY);
-                }
+                this.redraw |= child.update(elapsedTime, mouseX, mouseY);
             }
             
             return this.redraw;
@@ -681,7 +750,7 @@ public abstract class UIElement
                     drawState(this.prevState);
                 }
                 
-                if (this.stateTexture != null)
+                if (this.state != null && this.stateTexture != null)
                 {
                     target(this.stateTexture);
                     drawState(this.state);
@@ -690,9 +759,17 @@ public abstract class UIElement
                 this.redrawStates = false;
             }
             
-            if (this.redraw)
+            if (this.redraw || this.texture == null)
             {
-                target(this.texture);
+                if (this.texture != null)
+                {
+                    target(this.texture);
+                }
+                else
+                {
+                    translate(rect().x(), rect().y());
+                }
+                
                 if (this.transitionRemaining > 0)
                 {
                     interpolateTexture(this.prevStateTexture, this.stateTexture, this.transitionPercentage, 0, 0);
@@ -703,20 +780,16 @@ public abstract class UIElement
                 }
                 drawElement(elapsedTime, mouseX, mouseY);
                 
-                if (this instanceof UIContainer)
+                for (UIElement child : this.elements)
                 {
-                    for (UIElement child : ((UIContainer) this).elements)
+                    push();
+                    child.draw(elapsedTime, mouseX, mouseY);
+                    pop();
+                    
+                    if (child.visible() && child.texture != null)
                     {
-                        push();
-                        child.draw(elapsedTime, mouseX, mouseY);
-                        pop();
-                        
-                        if (child.visible())
-                        {
-                            target(this.texture);
-                            rectMode(RectMode.CORNER);
-                            texture(child.texture, child.rect.x(), child.rect.y(), child.rect.width(), child.rect.height());
-                        }
+                        rectMode(RectMode.CORNER);
+                        texture(child.texture, child.rect.x(), child.rect.y(), child.rect.width(), child.rect.height());
                     }
                 }
                 this.redraw = false;
@@ -748,12 +821,11 @@ public abstract class UIElement
         String stateBorder     = state + "_border";
         String stateBackground = state + "_bg";
         
-        clear(GUI.theme().getColor(this.objectIDs, this.elementIDs, stateBorder));
-        // if (borderWidth() > 0)
-        // {
-        //     fill(GUI.theme().getColor(this.objectIDs, this.elementIDs, stateBorder));
-        //     fillRect(0, 0, rect().width(), rect().height());
-        // }
+        if (borderWidth() > 0)
+        {
+            fill(GUI.theme().getColor(this.objectIDs, this.elementIDs, stateBorder));
+            fillRect(0, 0, rect().width(), rect().height());
+        }
         
         fill(GUI.theme().getColor(this.objectIDs, this.elementIDs, stateBackground));
         fillRect(borderWidth(), borderWidth(), rect().width() - (borderWidth() << 1), rect().height() - (borderWidth() << 1));
@@ -918,6 +990,7 @@ public abstract class UIElement
     protected void onMouseExit()
     {
         this.hovered = false;
+        this.held    = false;
         if (this.mExited != null) this.mExited.fire();
     }
     
@@ -1008,6 +1081,7 @@ public abstract class UIElement
      */
     protected boolean onMouseButtonUp(Mouse.Button button, double elementX, double elementY)
     {
+        this.held = false;
         return this.mBUp != null && this.mBUp.fire(button, elementX, elementY);
     }
     
@@ -1031,6 +1105,7 @@ public abstract class UIElement
      */
     protected boolean onMouseButtonHeld(Mouse.Button button, double elementX, double elementY)
     {
+        this.held = true;
         return this.mBHeld != null && this.mBHeld.fire(button, elementX, elementY);
     }
     

@@ -4,16 +4,15 @@ import engine.Engine;
 import engine.Extension;
 import engine.color.Color;
 import engine.event.*;
+import engine.gui.elment.UIContainer;
 import engine.gui.elment.UIWindow;
-import engine.gui.theme.Theme;
-import engine.render.RectMode;
+import engine.gui.util.Rect;
 import engine.util.IPair;
 import engine.util.PairD;
 import org.joml.Vector2i;
 
-import java.util.ArrayList;
-
 import static engine.Engine.*;
+import static engine.util.Util.println;
 
 public class GUI extends Extension
 {
@@ -28,12 +27,14 @@ public class GUI extends Extension
     private boolean liveThemeUpdates = true;
     private double  themeUpdateTime  = 0.0;
     
+    private UIContainer rootContainer;
+    
+    private UIElement topElement        = null;
+    private UIElement focusedElement    = null;
+    private UIElement focusedVScrollbar = null;
+    private UIElement focusedHScrollbar = null;
+    
     private boolean redrawScreen = true;
-    
-    final ArrayList<UIElement> elements = new ArrayList<>();
-    
-    private UIElement topElement     = null;
-    private UIElement focusedElement = null;
     
     private double hoverTime = 0.0;
     
@@ -79,10 +80,11 @@ public class GUI extends Extension
                     if (this.theme.shouldReload())
                     {
                         this.redrawScreen = true;
-                        for (UIElement element : this.elements)
-                        {
-                            element.rebuildTheme();
-                        }
+                        this.rootContainer.rebuildThemeFromFileChange();
+                        // for (UIElement element : this.rootContainer.elements())
+                        // {
+                        //     element.rebuildThemeFromFileChange();
+                        // }
                     }
                 }
             }
@@ -100,7 +102,7 @@ public class GUI extends Extension
             this.topElement = null;
             
             boolean blockingWindow = false;
-            for (UIElement element : this.elements)
+            for (UIElement element : this.rootContainer.elements())
             {
                 if (element instanceof UIWindow)
                 {
@@ -116,7 +118,7 @@ public class GUI extends Extension
             
             if (!blockingWindow)
             {
-                for (UIElement element : this.elements)
+                for (UIElement element : this.rootContainer.elements())
                 {
                     UIElement topElement = element.getTopElement(mouseX, mouseY);
                     if (topElement != null) this.topElement = topElement;
@@ -150,8 +152,12 @@ public class GUI extends Extension
                         UIElement element = this.topElement;
                         while (element != null)
                         {
-                            if (element.onMouseButtonDown(event.button(), event.x() - element.absX(), event.y() - element.absY())) break;
-                            element = element.container();
+                            if (element.onMouseButtonDown(event.button(), event.x() - element.absX(), event.y() - element.absY()))
+                            {
+                                println(elapsedTime, element);
+                                break;
+                            }
+                            element = element.parent();
                         }
                         setFocused(element);
                     }
@@ -164,7 +170,7 @@ public class GUI extends Extension
                         while (element != null)
                         {
                             if (element.onMouseButtonUp(event.button(), event.x() - element.absX(), event.y() - element.absY())) break;
-                            element = element.container();
+                            element = element.parent();
                         }
                     }
                     else if (e instanceof EventMouseButtonClicked)
@@ -175,7 +181,7 @@ public class GUI extends Extension
                         while (element != null)
                         {
                             if (element.onMouseButtonClicked(event.button(), event.x() - element.absX(), event.y() - element.absY(), event.doubleClicked())) break;
-                            element = element.container();
+                            element = element.parent();
                         }
                     }
                     else if (e instanceof EventMouseButtonHeld)
@@ -186,7 +192,7 @@ public class GUI extends Extension
                         while (element != null)
                         {
                             if (element.onMouseButtonHeld(event.button(), event.x() - element.absX(), event.y() - element.absY())) break;
-                            element = element.container();
+                            element = element.parent();
                         }
                     }
                     else if (e instanceof EventMouseButtonRepeat)
@@ -197,7 +203,7 @@ public class GUI extends Extension
                         while (element != null)
                         {
                             if (element.onMouseButtonRepeated(event.button(), event.x() - element.absX(), event.y() - element.absY())) break;
-                            element = element.container();
+                            element = element.parent();
                         }
                     }
                     else if (e instanceof EventMouseButtonDragged)
@@ -212,18 +218,28 @@ public class GUI extends Extension
                                 // this.drag = element;
                                 break;
                             }
-                            element = element.container();
+                            element = element.parent();
                         }
                     }
                     else if (e instanceof EventMouseScrolled)
                     {
                         EventMouseScrolled event = (EventMouseScrolled) e;
                         
+                        if (this.topElement != this.focusedVScrollbar) // TODO - This may cause double events so look out for them
+                        {
+                            UIElement element = this.focusedVScrollbar;
+                            while (element != null)
+                            {
+                                if (element.onMouseScrolled(event.x(), event.y())) break;
+                                element = element.parent();
+                            }
+                        }
+                        
                         UIElement element = this.topElement;
                         while (element != null)
                         {
                             if (element.onMouseScrolled(event.x(), event.y())) break;
-                            element = element.container();
+                            element = element.parent();
                         }
                     }
                 }
@@ -244,7 +260,7 @@ public class GUI extends Extension
                             while (element != null)
                             {
                                 if (element.onKeyboardKeyDown(event.key())) break;
-                                element = element.container();
+                                element = element.parent();
                             }
                         }
                         else if (e instanceof EventKeyboardKeyUp)
@@ -255,7 +271,7 @@ public class GUI extends Extension
                             while (element != null)
                             {
                                 if (element.onKeyboardKeyUp(event.key())) break;
-                                element = element.container();
+                                element = element.parent();
                             }
                         }
                         else if (e instanceof EventKeyboardKeyHeld)
@@ -266,7 +282,7 @@ public class GUI extends Extension
                             while (element != null)
                             {
                                 if (element.onKeyboardKeyHeld(event.key())) break;
-                                element = element.container();
+                                element = element.parent();
                             }
                         }
                         else if (e instanceof EventKeyboardKeyRepeat)
@@ -277,7 +293,7 @@ public class GUI extends Extension
                             while (element != null)
                             {
                                 if (element.onKeyboardKeyRepeated(event.key())) break;
-                                element = element.container();
+                                element = element.parent();
                             }
                         }
                         else if (e instanceof EventKeyboardKeyPressed)
@@ -288,7 +304,7 @@ public class GUI extends Extension
                             while (element != null)
                             {
                                 if (element.onKeyboardKeyPressed(event.key(), event.doublePressed())) break;
-                                element = element.container();
+                                element = element.parent();
                             }
                         }
                         else if (e instanceof EventKeyboardKeyTyped)
@@ -299,7 +315,7 @@ public class GUI extends Extension
                             while (element != null)
                             {
                                 if (element.onKeyboardKeyTyped(event.charTyped())) break;
-                                element = element.container();
+                                element = element.parent();
                             }
                         }
                     }
@@ -325,33 +341,23 @@ public class GUI extends Extension
         
         profiler().startSection("UIElements Update");
         {
-            for (UIElement element : this.elements)
-            {
-                this.redrawScreen |= element.update(elapsedTime, mouseX, mouseY);
-            }
+            this.redrawScreen |= this.rootContainer.update(elapsedTime, mouseX, mouseY);
         }
         profiler().endSection();
-        
-        if (this.redrawScreen)
+    
+        profiler().startSection("UIElements Draw");
         {
-            layer(layerCount() - 1);
-            
-            clear(Color.BLANK);
-            
-            for (UIElement element : this.elements)
+            if (this.redrawScreen)
             {
-                push();
-                element.draw(elapsedTime, mouseX, mouseY);
-                pop();
-                
-                if (element.visible())
-                {
-                    rectMode(RectMode.CORNER);
-                    texture(element.texture, element.rect.x(), element.rect.y(), element.rect.width(), element.rect.height());
-                }
+                layer(layerCount() - 1);
+        
+                clear(Color.BLANK);
+        
+                this.rootContainer.draw(elapsedTime, mouseX, mouseY);
+        
+                this.redrawScreen = false;
             }
-            
-            this.redrawScreen = false;
+            profiler().endSection();
         }
     }
     
@@ -384,6 +390,8 @@ public class GUI extends Extension
         if (themePath != null) GUI.INSTANCE.theme.loadTheme(themePath);
         
         GUI.INSTANCE.liveThemeUpdates = liveThemeUpdates;
+        
+        GUI.INSTANCE.rootContainer = new UIContainer(new Rect(0, 0, width, height), null, null, "#root_container");
     }
     
     public static void createGUI(int width, int height, String themePath)
@@ -418,7 +426,27 @@ public class GUI extends Extension
     
     public static void createGUI()
     {
-        createGUI(screenWidth(), screenHeight(), null, false);
+        createGUI(screenWidth() * pixelWidth(), screenHeight() * pixelHeight(), null, false);
+    }
+    
+    public static Theme theme()
+    {
+        return GUI.INSTANCE.theme;
+    }
+    
+    public static UIContainer rootContainer()
+    {
+        return GUI.INSTANCE.rootContainer;
+    }
+    
+    public static UIElement focusedVScrollbar()
+    {
+        return GUI.INSTANCE.focusedVScrollbar;
+    }
+    
+    public static UIElement focusedHScrollbar()
+    {
+        return GUI.INSTANCE.focusedHScrollbar;
     }
     
     public static void setFocused(UIElement element)
@@ -432,12 +460,20 @@ public class GUI extends Extension
         if (GUI.INSTANCE.focusedElement != null)
         {
             GUI.INSTANCE.focusedElement.onFocus();
+            
+            if (GUI.INSTANCE.focusedElement.containsElementID("vertical_scroll_bar")) GUI.INSTANCE.focusedVScrollbar = GUI.INSTANCE.focusedElement;
+            if (GUI.INSTANCE.focusedElement.containsElementID("horizontal_scroll_bar")) GUI.INSTANCE.focusedHScrollbar = GUI.INSTANCE.focusedElement;
         }
     }
     
-    public static Theme theme()
+    public static void clearFocusedVScrollbar(UIElement element)
     {
-        return GUI.INSTANCE.theme;
+        if (element != null && GUI.INSTANCE.focusedVScrollbar == element) GUI.INSTANCE.focusedVScrollbar = null;
+    }
+    
+    public static void clearFocusedHScrollbar(UIElement element)
+    {
+        if (element != null && GUI.INSTANCE.focusedHScrollbar == element) GUI.INSTANCE.focusedHScrollbar = null;
     }
     
     public static IPair<Double, Double> screenToGUI(double screenX, double screenY)

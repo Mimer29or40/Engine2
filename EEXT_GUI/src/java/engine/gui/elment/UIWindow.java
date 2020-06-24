@@ -1,18 +1,15 @@
 package engine.gui.elment;
 
-import engine.gui.UIContainer;
 import engine.gui.UIElement;
-import engine.gui.interfaces.IUIContainerLike;
-import engine.gui.util.Rect;
 import engine.gui.util.Rectc;
 
-public class UIWindow extends UIElement implements IUIContainerLike
+public class UIWindow extends UIElement
 {
     protected String  title;
     protected boolean resizable;
     
-    protected UIContainer rootContainer;
-    protected UIContainer elementContainer;
+    // protected UIElement rootContainer;
+    // protected UIElement elementContainer;
     
     protected int titleHeight = 28;
     
@@ -20,7 +17,7 @@ public class UIWindow extends UIElement implements IUIContainerLike
     
     public UIWindow(Rectc rect, String title, boolean resizable, String objectID, String elementID)
     {
-        super(rect, null, null, objectID, elementID != null ? elementID : "window");
+        super(rect, null, null, objectID, elementID != null ? elementID : "window", new String[] {"normal"});
         
         this.title     = title;
         this.resizable = resizable;
@@ -56,16 +53,16 @@ public class UIWindow extends UIElement implements IUIContainerLike
         
         super.dimensions(width, height);
         
-        if (this.rootContainer != null)
-        {
-            // int newWidth  = this.rect.width() - (2 * this.shadowWidth);
-            // int newHeight = this.rect.height() - (2 * this.shadowWidth);
-            // if (this.rootContainer.rect.width() != newWidth || this.rootContainer.rect.height() != newHeight)
-            // {
-            //     this.rootContainer.dimensions(newWidth, newHeight);
-            //     this.rootContainer.position(this.rect.x() + this.shadowWidth, this.rect.y() + this.shadowWidth);
-            // }
-        }
+        // if (this.rootContainer != null)
+        // {
+        //     int newWidth  = this.rect.width() - (2 * this.shadowWidth);
+        //     int newHeight = this.rect.height() - (2 * this.shadowWidth);
+        //     if (this.rootContainer.rect.width() != newWidth || this.rootContainer.rect.height() != newHeight)
+        //     {
+        //         this.rootContainer.dimensions(newWidth, newHeight);
+        //         this.rootContainer.position(this.rect.x() + this.shadowWidth, this.rect.y() + this.shadowWidth);
+        //     }
+        // }
     }
     
     @Override
@@ -73,23 +70,17 @@ public class UIWindow extends UIElement implements IUIContainerLike
     {
         super.rebuild();
         
-        if (this.rootContainer == null)
-        {
-            this.rootContainer = new UIContainer(this.rect.copy(), null, this, "#window_root_container");
-        }
-        if (this.elementContainer == null)
-        {
-            Rect rect = new Rect(borderWidth(),
-                                 this.titleHeight,
-                                 this.rootContainer.rect().width() - (2 * borderWidth()),
-                                 this.rootContainer.rect().height() - (this.titleHeight + borderWidth()));
-            this.elementContainer = new UIContainer(rect, this.rootContainer, this, "#window_element_container");
-        }
-    }
-    
-    @Override
-    public UIContainer getContainer()
-    {
-        return this.elementContainer;
+        // if (this.rootContainer == null)
+        // {
+        //     this.rootContainer = new UIContainer(rect().copy(), null, this, "#window_root_container");
+        // }
+        // if (this.elementContainer == null)
+        // {
+        //     Rect rect = new Rect(borderWidth(),
+        //                          this.titleHeight,
+        //                          this.rootContainer.rect().width() - (2 * borderWidth()),
+        //                          this.rootContainer.rect().height() - (this.titleHeight + borderWidth()));
+        //     this.elementContainer = new UIContainer(rect, this.rootContainer, this, "#window_element_container");
+        // }
     }
 }

@@ -4,7 +4,6 @@ import engine.Engine;
 import engine.color.Colorc;
 import engine.gui.GUI;
 import engine.gui.UIElement;
-import engine.gui.interfaces.IUIContainerLike;
 import engine.gui.util.Rectc;
 import engine.render.Font;
 import engine.render.TextAlign;
@@ -23,9 +22,9 @@ public class UILabel extends UIElement
 {
     private static final Logger LOGGER = new Logger();
     
-    public UILabel(String text, Rectc rect, IUIContainerLike container, UIElement parent, String objectID)
+    public UILabel(String text, Rectc rect, UIElement parent, UIElement themeParent, String objectID)
     {
-        super(rect, container, parent, objectID, "label");
+        super(rect, parent, themeParent, objectID, "label", new String[] {});
         
         text(text);
         rebuildTheme();
@@ -37,7 +36,7 @@ public class UILabel extends UIElement
     @Override
     public void rebuild()
     {
-        this.texture = new Texture(this.rect.width(), this.rect.height(), 3);
+        this.texture = new Texture(rect().width(), rect().height(), 3);
         
         redraw();
     }

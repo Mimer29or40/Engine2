@@ -20,7 +20,7 @@
             "link_text": "#6897bb",
             "link_hover": "#84bfed",
             "link_selected": "#84bfed",
-            "text_shadow": "#777777",
+            "text_shadow": "#AA666666",
             "border": "#5e6060",
             "filled_bar": "#f4251b",
             "unfilled_bar": "#CCCCCC"
@@ -31,11 +31,7 @@
             "shape": "rectangle",
             "border_width": "1",
             "shadow_width": "2",
-            "shape_corner_radius": "2",
-            "state_transitions": {
-                "normal_hovered": "0.2",
-                "hovered_normal": "0.5"
-            }
+            "shape_corner_radius": "2"
         }
     },
     "#no_frills_button": {

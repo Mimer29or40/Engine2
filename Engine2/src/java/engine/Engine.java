@@ -630,7 +630,7 @@ public class Engine
             if (Engine.window != null)
             {
                 Engine.LOGGER.finer("Window Destruction");
-    
+                
                 GL.setCapabilities(null);
                 GL.destroy();
                 
@@ -1074,6 +1074,14 @@ public class Engine
     public static double nextGaussian()
     {
         return Engine.random.nextGaussian();
+    }
+    
+    /**
+     * See {@link Random#nextGaussian(double, double)}
+     */
+    public static double nextGaussian(double mean, double stdDev)
+    {
+        return Engine.random.nextGaussian(mean, stdDev);
     }
     
     /**

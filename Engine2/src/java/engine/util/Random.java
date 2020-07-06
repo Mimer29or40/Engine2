@@ -107,6 +107,23 @@ public class Random extends java.util.Random
     }
     
     /**
+     * Returns the next pseudorandom, Gaussian ("normally") distributed
+     * {@code double} value with mean {@code mean} and standard
+     * deviation {@code stdDev} from this random number generator's sequence.
+     *
+     * @param mean   The mean value
+     * @param stdDev The standard deviation value
+     * @return The next pseudorandom, Gaussian ("normally") distributed
+     * {@code double} value with mean {@code mean} and
+     * standard deviation {@code stdDev} from this random number
+     * generator's sequence
+     */
+    public double nextGaussian(double mean, double stdDev)
+    {
+        return mean + stdDev * nextGaussian();
+    }
+    
+    /**
      * @param array The array
      * @return A random {@code int} from the array
      */

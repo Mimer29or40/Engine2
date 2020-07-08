@@ -27,12 +27,11 @@ public class Mouse extends Device<Mouse.Button>
     private boolean captured, newCaptured;
     private boolean entered, newEntered;
     
-    private final Vector2d pos       = new Vector2d();
-    private final Vector2d newPos    = new Vector2d();
-    private final Vector2d capPos    = new Vector2d();
-    private final Vector2d rel       = new Vector2d();
-    private final Vector2d scroll    = new Vector2d();
-    private final Vector2d newScroll = new Vector2d();
+    private final Vector2d pos       = new Vector2d(0);
+    private final Vector2d newPos    = new Vector2d(0);
+    private final Vector2d rel       = new Vector2d(0);
+    private final Vector2d scroll    = new Vector2d(0);
+    private final Vector2d newScroll = new Vector2d(0);
     
     private       Button   drag;
     private final Vector2d dragPos = new Vector2d();
@@ -177,12 +176,11 @@ public class Mouse extends Device<Mouse.Button>
         if (this.captured != this.newCaptured)
         {
             this.captured = this.newCaptured;
-            if (this.captured) this.capPos.set(this.pos);
-            if (!this.captured) this.newPos.set(this.pos.set(this.capPos));
+            this.newPos.set(this.pos.set(screenWidth() * 0.5, screenHeight() * 0.5));
             Events.post(EventMouseCaptured.class, this.captured);
         }
         profiler().endSection();
-    
+        
         profiler().startSection("Entered");
         if (this.entered != this.newEntered)
         {
@@ -190,8 +188,9 @@ public class Mouse extends Device<Mouse.Button>
             Events.post(EventMouseEntered.class, this.entered);
         }
         profiler().endSection();
-    
+        
         profiler().startSection("Position");
+        this.rel.set(0);
         if (Double.compare(this.pos.x, this.newPos.x) != 0 || Double.compare(this.pos.y, this.newPos.y) != 0)
         {
             this.newPos.sub(this.pos, this.rel);
@@ -199,7 +198,7 @@ public class Mouse extends Device<Mouse.Button>
             Events.post(EventMouseMoved.class, this.captured ? Vector.ZERO2d : this.pos, this.rel);
         }
         profiler().endSection();
-    
+        
         profiler().startSection("Scroll");
         if (Double.compare(this.scroll.x, this.newScroll.x) != 0 || Double.compare(this.scroll.y, this.newScroll.y) != 0)
         {
@@ -208,7 +207,7 @@ public class Mouse extends Device<Mouse.Button>
             Events.post(EventMouseScrolled.class, this.scroll);
         }
         profiler().endSection();
-    
+        
         profiler().startSection("Device");
         super.handleEvents(time, delta);
         profiler().endSection();
@@ -288,7 +287,8 @@ public class Mouse extends Device<Mouse.Button>
     {
         Mouse.LOGGER.finest("Mouse Moved Callback:", x, y);
         
-        this.newPos.set(Math.max(0, Math.min(x, screenWidth() - 1)), Math.max(0, Math.min(y, screenHeight() - 1)));
+        if (!Double.isFinite(x) || !Double.isFinite(y)) return;
+        this.newPos.set(x, y);
     }
     
     /**

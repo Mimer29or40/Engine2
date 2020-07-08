@@ -131,13 +131,13 @@ public abstract class Device<I extends Device.Input>
                     input.downTime = Long.MAX_VALUE;
                 }
                 input.state = input.newState;
-                input.mods = input.newMods;
+                input.mods  = input.newMods;
             }
             if (input.state == GLFW_REPEAT || input.held && time - input.downTime > Device.holdDelay)
             {
                 input.downTime += Device.repeatDelay;
                 input.repeat = true;
-                input.mods = input.newMods;
+                input.mods   = input.newMods;
             }
             
             postEvents(input, time, delta);
@@ -192,7 +192,7 @@ public abstract class Device<I extends Device.Input>
         {
             return getClass().getSimpleName() + "." + this.name;
         }
-    
+        
         /**
          * @return If the Input was pressed with optional modifiers. This will only be true for one frame.
          */
@@ -200,7 +200,7 @@ public abstract class Device<I extends Device.Input>
         {
             return this.down && checkModifiers(modifiers);
         }
-    
+        
         /**
          * @return If the Input was released with optional modifiers. This will only be true for one frame.
          */
@@ -208,7 +208,7 @@ public abstract class Device<I extends Device.Input>
         {
             return this.up && checkModifiers(modifiers);
         }
-    
+        
         /**
          * @return If the Input is being held down with optional modifiers.
          */
@@ -216,7 +216,7 @@ public abstract class Device<I extends Device.Input>
         {
             return this.held && checkModifiers(modifiers);
         }
-    
+        
         /**
          * @return If the Input is being repeated with optional modifiers. This will be true for one frame at a time.
          */
@@ -225,6 +225,12 @@ public abstract class Device<I extends Device.Input>
             return this.repeat && checkModifiers(modifiers);
         }
         
+        /**
+         * Checks if the supplied modifiers match which modifiers are pressed.
+         *
+         * @param modifiers The array of modifiers.
+         * @return True if the supplied modifiers matches the actual modifiers.
+         */
         private boolean checkModifiers(Modifiers.Modifier[] modifiers)
         {
             if (modifiers.length == 0) return true;

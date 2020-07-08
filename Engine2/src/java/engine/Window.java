@@ -34,26 +34,26 @@ public class Window
     
     private final long handle;
     
-    private final Vector2i pos     = new Vector2i();
-    private final Vector2i newPos  = new Vector2i();
-    private final Vector2i fullPos = new Vector2i();
+    private final Vector2i pos     = new Vector2i(0);
+    private final Vector2i newPos  = new Vector2i(0);
+    private final Vector2i fullPos = new Vector2i(0);
     private       boolean  posChanged;
     
-    private final Vector2i size     = new Vector2i();
-    private final Vector2i newSize  = new Vector2i();
-    private final Vector2i fullSize = new Vector2i();
+    private final Vector2i size     = new Vector2i(0);
+    private final Vector2i newSize  = new Vector2i(0);
+    private final Vector2i fullSize = new Vector2i(0);
     private       boolean  sizeChanged;
     
-    private final Vector2i frame    = new Vector2i();
-    private final Vector2i newFrame = new Vector2i();
+    private final Vector2i frame    = new Vector2i(0);
+    private final Vector2i newFrame = new Vector2i(0);
     
     private boolean focused, newFocused;
     
     private boolean fullscreen, newFullscreen;
     private boolean vsync, newVsync;
     
-    private final Vector2i viewPos  = new Vector2i();
-    private final Vector2i viewSize = new Vector2i();
+    private final Vector2i viewPos  = new Vector2i(0);
+    private final Vector2i viewSize = new Vector2i(0);
     
     private boolean update = true;
     
@@ -605,6 +605,7 @@ public class Window
         
         if (newCapturedState != this.capturedState)
         {
+            glfwSetCursorPos(this.handle, this.size.x * 0.5, this.size.y * 0.5);
             this.capturedState = newCapturedState;
             glfwSetInputMode(this.handle, GLFW_CURSOR, this.capturedState ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
         }

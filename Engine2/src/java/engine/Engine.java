@@ -291,48 +291,41 @@ public class Engine
                                             if (Engine.keyboard.F1.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
                                             {
                                                 Engine.profiler.enabled(false);
-                                                Engine.profilerMode     = 0;
-                                                Engine.notification     = "Profile Mode: Off";
-                                                Engine.notificationTime = t;
+                                                Engine.profilerMode = 0;
+                                                notification("Profile Mode: Off");
                                             }
                                             if (Engine.keyboard.F2.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
                                             {
                                                 Engine.profiler.enabled(true);
-                                                Engine.profilerMode     = 1;
-                                                Engine.notification     = "Profile Mode: Average";
-                                                Engine.notificationTime = t;
+                                                Engine.profilerMode = 1;
+                                                notification("Profile Mode: Average");
                                             }
                                             if (Engine.keyboard.F3.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
                                             {
                                                 Engine.profiler.enabled(true);
-                                                Engine.profilerMode     = 2;
-                                                Engine.notification     = "Profile Mode: Min";
-                                                Engine.notificationTime = t;
+                                                Engine.profilerMode = 2;
+                                                notification("Profile Mode: Min");
                                             }
                                             if (Engine.keyboard.F4.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
                                             {
                                                 Engine.profiler.enabled(true);
-                                                Engine.profilerMode     = 3;
-                                                Engine.notification     = "Profile Mode: Max";
-                                                Engine.notificationTime = t;
+                                                Engine.profilerMode = 3;
+                                                notification("Profile Mode: Max");
                                             }
                                             if (Engine.keyboard.F10.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
                                             {
                                                 Engine.renderer.debug(!Engine.renderer.debug());
-                                                Engine.notification     = Engine.renderer.debug() ? "Renderer Debug Mode: On" : "Renderer Debug Mode: Off";
-                                                Engine.notificationTime = t;
+                                                notification(Engine.renderer.debug() ? "Renderer Debug Mode: On" : "Renderer Debug Mode: Off");
                                             }
                                             if (Engine.keyboard.F11.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
                                             {
-                                                Engine.debug            = !Engine.debug;
-                                                Engine.notification     = Engine.debug ? "Debug Mode: On" : "Debug Mode: Off";
-                                                Engine.notificationTime = t;
+                                                Engine.debug = !Engine.debug;
+                                                notification(Engine.debug ? "Debug Mode: On" : "Debug Mode: Off");
                                             }
                                             if (Engine.keyboard.F12.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
                                             {
-                                                Engine.paused           = !Engine.paused;
-                                                Engine.notification     = Engine.paused ? "Engine Paused" : "Engine Unpaused";
-                                                Engine.notificationTime = t;
+                                                Engine.paused = !Engine.paused;
+                                                notification(Engine.paused ? "Engine Paused" : "Engine Unpaused");
                                             }
                                         }
                                         Engine.profiler.endSection();
@@ -924,6 +917,12 @@ public class Engine
     public static void drawDebugText(int x, int y, String text)
     {
         Engine.debugLines.add(new Tuple<>(x, y, text));
+    }
+    
+    public static void notification(String notification)
+    {
+        Engine.notification     = notification;
+        Engine.notificationTime = nanoseconds();
     }
     
     // ---------------------

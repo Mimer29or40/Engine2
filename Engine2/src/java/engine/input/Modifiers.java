@@ -2,7 +2,7 @@ package engine.input;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-@SuppressWarnings({"unused", "BooleanMethodIsAlwaysInverted"})
+@SuppressWarnings({"unused"})
 public class Modifiers
 {
     public final Modifier NONE      = new Modifier("NONE", GLFW_FALSE);
@@ -12,6 +12,7 @@ public class Modifiers
     public final Modifier SUPER     = new Modifier("SUPER", GLFW_MOD_SUPER);
     public final Modifier CAPS_LOCK = new Modifier("CAPS_LOCK", GLFW_MOD_CAPS_LOCK);
     public final Modifier NUM_LOCK  = new Modifier("NUM_LOCK", GLFW_MOD_NUM_LOCK);
+    public final Modifier ANY       = new Modifier("ANY", 0xFFFFFFFF);
     
     private boolean lockMods = false;
     

@@ -133,7 +133,7 @@ public abstract class Device<I extends Device.Input>
                 input.state = input.newState;
                 input.mods = input.newMods;
             }
-            if (input.newState == GLFW_REPEAT || input.held && time - input.downTime > Device.holdDelay)
+            if (input.state == GLFW_REPEAT || input.held && time - input.downTime > Device.holdDelay)
             {
                 input.downTime += Device.repeatDelay;
                 input.repeat = true;
@@ -198,10 +198,7 @@ public abstract class Device<I extends Device.Input>
          */
         public boolean down(Modifiers.Modifier... modifiers)
         {
-            if (!this.down) return false;
-            int mods = 0;
-            for (Modifiers.Modifier modifier : modifiers) mods |= modifier.value();
-            return (mods == 0 && this.mods == 0) || (this.mods & mods) != 0;
+            return this.down && checkModifiers(modifiers);
         }
     
         /**
@@ -209,10 +206,7 @@ public abstract class Device<I extends Device.Input>
          */
         public boolean up(Modifiers.Modifier... modifiers)
         {
-            if (!this.up) return false;
-            int mods = 0;
-            for (Modifiers.Modifier modifier : modifiers) mods |= modifier.value();
-            return (mods == 0 && this.mods == 0) || (this.mods & mods) != 0;
+            return this.up && checkModifiers(modifiers);
         }
     
         /**
@@ -220,10 +214,7 @@ public abstract class Device<I extends Device.Input>
          */
         public boolean held(Modifiers.Modifier... modifiers)
         {
-            if (!this.held) return false;
-            int mods = 0;
-            for (Modifiers.Modifier modifier : modifiers) mods |= modifier.value();
-            return (mods == 0 && this.mods == 0) || (this.mods & mods) != 0;
+            return this.held && checkModifiers(modifiers);
         }
     
         /**
@@ -231,7 +222,12 @@ public abstract class Device<I extends Device.Input>
          */
         public boolean repeat(Modifiers.Modifier... modifiers)
         {
-            if (!this.repeat) return false;
+            return this.repeat && checkModifiers(modifiers);
+        }
+        
+        private boolean checkModifiers(Modifiers.Modifier[] modifiers)
+        {
+            if (modifiers.length == 0) return true;
             int mods = 0;
             for (Modifiers.Modifier modifier : modifiers) mods |= modifier.value();
             return (mods == 0 && this.mods == 0) || (this.mods & mods) != 0;

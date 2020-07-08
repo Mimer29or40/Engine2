@@ -331,10 +331,10 @@ public class Texture
      * @param v The v coordinate.
      * @return The color at the coordinate.
      */
-    public Colorc sample(float u, float v)
+    public Colorc sample(double u, double v)
     {
-        int sx = Math.max(0, (Math.min((int) (u * (float) this.width), this.width - 1)));
-        int sy = Math.max(0, (Math.min((int) (v * (float) this.height), this.height - 1)));
+        int sx = Math.max(0, (Math.min((int) (u * (double) this.width), this.width - 1)));
+        int sy = Math.max(0, (Math.min((int) (v * (double) this.height), this.height - 1)));
         
         return getPixel(sx, sy);
     }
@@ -346,7 +346,7 @@ public class Texture
      * @param v The v coordinate.
      * @return The color at the coordinate.
      */
-    public Colorc sampleBL(float u, float v)
+    public Colorc sampleBL(double u, double v)
     {
         u = u * this.width - 0.5f;
         v = v * this.height - 0.5f;
@@ -354,10 +354,10 @@ public class Texture
         int x = (int) Math.floor(u);
         int y = (int) Math.floor(v);
         
-        float uRat = u - x;
-        float vRat = v - y;
-        float uOpp = 1 - uRat;
-        float vOpp = 1 - vRat;
+        double uRat = u - x;
+        double vRat = v - y;
+        double uOpp = 1 - uRat;
+        double vOpp = 1 - vRat;
         
         Color p1 = new Color(getPixel(Math.max(x, 0), Math.max(y, 0)));
         Color p2 = new Color(getPixel(Math.min(x + 1, this.width - 1), Math.max(y, 0)));

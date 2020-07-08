@@ -364,9 +364,9 @@ public class Texture
         Color p3 = new Color(getPixel(Math.max(x, 0), Math.min(y + 1, this.height - 1)));
         Color p4 = new Color(getPixel(Math.min(x + 1, this.width - 1), Math.min(y + 1, this.height - 1)));
         
-        return this.tempColor.set((p1.r() * uOpp + p2.r() * uRat) * vOpp + (p3.r() * uOpp + p4.r() * uRat) * vRat,
-                                  (p1.g() * uOpp + p2.g() * uRat) * vOpp + (p3.g() * uOpp + p4.g() * uRat) * vRat,
-                                  (p1.b() * uOpp + p2.b() * uRat) * vOpp + (p3.b() * uOpp + p4.b() * uRat) * vRat);
+        return this.tempColor.set((int) ((p1.r() * uOpp + p2.r() * uRat) * vOpp + (p3.r() * uOpp + p4.r() * uRat) * vRat),
+                                  (int) ((p1.g() * uOpp + p2.g() * uRat) * vOpp + (p3.g() * uOpp + p4.g() * uRat) * vRat),
+                                  (int) ((p1.b() * uOpp + p2.b() * uRat) * vOpp + (p3.b() * uOpp + p4.b() * uRat) * vRat));
         
     }
     

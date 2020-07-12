@@ -359,14 +359,36 @@ public class Texture
         double uOpp = 1 - uRat;
         double vOpp = 1 - vRat;
         
-        Color p1 = new Color(getPixel(Math.max(x, 0), Math.max(y, 0)));
-        Color p2 = new Color(getPixel(Math.min(x + 1, this.width - 1), Math.max(y, 0)));
-        Color p3 = new Color(getPixel(Math.max(x, 0), Math.min(y + 1, this.height - 1)));
-        Color p4 = new Color(getPixel(Math.min(x + 1, this.width - 1), Math.min(y + 1, this.height - 1)));
+        Colorc c;
         
-        return this.tempColor.set((int) ((p1.r() * uOpp + p2.r() * uRat) * vOpp + (p3.r() * uOpp + p4.r() * uRat) * vRat),
-                                  (int) ((p1.g() * uOpp + p2.g() * uRat) * vOpp + (p3.g() * uOpp + p4.g() * uRat) * vRat),
-                                  (int) ((p1.b() * uOpp + p2.b() * uRat) * vOpp + (p3.b() * uOpp + p4.b() * uRat) * vRat));
+        c = getPixel(Math.max(x, 0), Math.max(y, 0));
+        int r1 = c.r();
+        int g1 = c.g();
+        int b1 = c.b();
+        int a1 = c.a();
+        
+        c = getPixel(Math.min(x + 1, this.width - 1), Math.max(y, 0));
+        int r2 = c.r();
+        int g2 = c.g();
+        int b2 = c.b();
+        int a2 = c.a();
+        
+        c = getPixel(Math.max(x, 0), Math.min(y + 1, this.height - 1));
+        int r3 = c.r();
+        int g3 = c.g();
+        int b3 = c.b();
+        int a3 = c.a();
+        
+        c = getPixel(Math.min(x + 1, this.width - 1), Math.min(y + 1, this.height - 1));
+        int r4 = c.r();
+        int g4 = c.g();
+        int b4 = c.b();
+        int a4 = c.a();
+    
+        return this.tempColor.set((int) ((r1 * uOpp + r2 * uRat) * vOpp + (r3 * uOpp + r4 * uRat) * vRat),
+                                  (int) ((g1 * uOpp + g2 * uRat) * vOpp + (g3 * uOpp + g4 * uRat) * vRat),
+                                  (int) ((b1 * uOpp + b2 * uRat) * vOpp + (b3 * uOpp + b4 * uRat) * vRat),
+                                  (int) ((a1 * uOpp + a2 * uRat) * vOpp + (a3 * uOpp + a4 * uRat) * vRat));
         
     }
     

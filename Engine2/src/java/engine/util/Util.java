@@ -82,7 +82,7 @@ public class Util
     {
         if (Util.PATTERN.matcher(format).find())
         {
-            System.out.print(String.format(format, objects));
+            System.out.printf(format, objects);
         }
         else
         {
@@ -126,7 +126,7 @@ public class Util
     {
         if (Util.PATTERN.matcher(format).find())
         {
-            System.out.println(String.format(format, objects));
+            System.out.printf((format) + "%n", objects);
         }
         else
         {
@@ -616,5 +616,61 @@ public class Util
         double sum = 0;
         for (double x : array) sum += x;
         return sum;
+    }
+    
+    /**
+     * Interpolates a value between two endpoints. Results are clamped between endpoints.
+     * @param a The first value.
+     * @param b The second value.
+     * @param x The amount to interpolate. [0-1]
+     * @return The interpolated value.
+     */
+    public static int lerp(int a, int b, double x)
+    {
+        if (x <= 0) return a;
+        if (x >= 1) return b;
+        return a + (int) (x * (b - a));
+    }
+    
+    /**
+     * Interpolates a value between two endpoints. Results are clamped between endpoints.
+     * @param a The first value.
+     * @param b The second value.
+     * @param x The amount to interpolate. [0-1]
+     * @return The interpolated value.
+     */
+    public static long lerp(long a, long b, double x)
+    {
+        if (x <= 0) return a;
+        if (x >= 1) return b;
+        return a + (long) (x * (b - a));
+    }
+    
+    /**
+     * Interpolates a value between two endpoints. Results are clamped between endpoints.
+     * @param a The first value.
+     * @param b The second value.
+     * @param x The amount to interpolate. [0-1]
+     * @return The interpolated value.
+     */
+    public static float lerp(float a, float b, float x)
+    {
+        if (x <= 0) return a;
+        if (x >= 1) return b;
+        return a + x * (b - a);
+    }
+    
+    /**
+     * Interpolates a value between two endpoints. Results are clamped between endpoints.
+     * @param a The first value.
+     * @param b The second value.
+     * @param x The amount to interpolate. [0-1]
+     * @return The interpolated value.
+     */
+    public static double lerp(double a, double b, double x)
+    {
+        if (x <= 0) return a;
+        if (x >= 1) return b;
+        return a + x * (b - a);
     }
 }

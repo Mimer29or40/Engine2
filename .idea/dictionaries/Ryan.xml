@@ -8,6 +8,7 @@
       <w>glfw</w>
       <w>hoverable</w>
       <w>joml</w>
+      <w>lerp</w>
       <w>menger</w>
       <w>opengl</w>
       <w>proj</w>

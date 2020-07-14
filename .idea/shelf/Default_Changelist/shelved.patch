@@ -1,0 +1,116 @@
+Index: Playground/src/java/engine/dungeon/DungeonGen.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- Playground/src/java/engine/dungeon/DungeonGen.java	(date 1594062500613)
++++ Playground/src/java/engine/dungeon/DungeonGen.java	(date 1594062500613)
+@@ -0,0 +1,107 @@
++package engine.dungeon;
++
++import engine.Engine;
++import engine.color.Color;
++import engine.render.RectMode;
++import org.joml.Vector2i;
++
++import java.util.ArrayList;
++
++public class DungeonGen extends Engine
++{
++    static class Room
++    {
++        final Vector2i pos  = new Vector2i();
++        final Vector2i size = new Vector2i();
++        
++        public Room(int x, int y, int w, int h)
++        {
++            this.pos.set(x, y);
++            this.size.set(w, h);
++        }
++        
++        public int area()
++        {
++            return this.size.x() * this.size.y();
++        }
++        
++        public void show()
++        {
++            push();
++            weight(1);
++            stroke(Color.WHITE);
++            fill(Color.BLUE);
++            rectMode(RectMode.CORNER);
++            rect(this.pos.x(), this.pos.y(), this.size.x(), this.size.y());
++            pop();
++        }
++    }
++    
++    void separateRooms()
++    {
++        int roomCount = rooms.size();
++        for (int i = 0; i < roomCount; i++)
++        {
++            Room test = rooms.get(i);
++            double textCenterX = test.pos.x() + test.size.x() * 0.5;
++            double textCenterY = test.pos.y() + test.size.y() * 0.5;
++            for (int j = i + 1; j < roomCount; j++)
++            {
++                Room other = rooms.get(j);
++                double otherCenterX = other.pos.x() + other.size.x() * 0.5;
++                double otherCenterY = other.pos.y() + other.size.y() * 0.5;
++                
++                if (test.pos.x() + test.size.x() >= other.pos.x() &&
++                    other.pos.x() + other.size.x() >= test.pos.x() &&
++                    test.pos.y() + test.size.y() >= other.pos.y() &&
++                    other.pos.y() + other.size.y() >= test.pos.y())
++                {
++                    double xDiff = otherCenterX - textCenterX;
++                    double yDiff = otherCenterY - textCenterY;
++                    
++                    if (Math.abs(xDiff) >= Math.abs(yDiff))
++                    {
++                    
++                    }
++                    else
++                    {
++                    
++                    }
++                }
++            }
++        }
++    }
++    
++    ArrayList<Room> rooms = new ArrayList<>();
++    
++    @Override
++    public void setup()
++    {
++        size(400, 400, 2, 2);
++        
++        for (int i = 0; i < 150; i++)
++        {
++            double radius = 100;
++            double t      = 2.0 * Math.PI * nextDouble();
++            double u      = nextDouble(2);
++            double r      = u > 1 ? 2 - u : u;
++            Room   room   = new Room((int) (radius * r * Math.cos(t)), (int) (radius * r * Math.sin(t)), nextInt(10, 50), nextInt(10, 50));
++            rooms.add(room);
++        }
++    }
++    
++    @Override
++    public void draw(double elapsedTime)
++    {
++        translate(screenWidth() >> 1, screenHeight() >> 1);
++        
++        rooms.forEach(Room::show);
++        
++        if (keyboard().SPACE.down()) separateRooms();
++    }
++    
++    public static void main(String[] args)
++    {
++        start(new DungeonGen());
++    }
++}
+\ No newline at end of file

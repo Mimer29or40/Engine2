@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Engine2-source">
+    <output-path>$PROJECT_DIR$/out/artifacts</output-path>
+    <root id="archive" name="Engine2-source.jar">
+      <element id="module-source" name="Engine2" />
+    </root>
+  </artifact>
+</component>

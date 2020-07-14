@@ -40,8 +40,8 @@ public class Renderer
     
     protected boolean debug = false;
     
-    protected       Texture        defaultTarget;
-    protected       Texture        target;
+    protected final Texture defaultTarget;
+    protected       Texture target;
     protected final Stack<Texture> targets = new Stack<>();
     
     protected final Blend               blend  = Renderer.DEFAULT_BLEND.setBlend(new Blend());
@@ -771,7 +771,7 @@ public class Renderer
         identity();
         this.views.clear();
         
-        makeCurrent();
+        this.target.bindFramebuffer();
         
         if (this.debug) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
@@ -903,7 +903,7 @@ public class Renderer
     {
         Renderer.LOGGER.finest("Clearing Render Target to", color);
         
-        makeCurrent();
+        this.target.bindFramebuffer();
         
         glClearColor(color.rf(), color.gf(), color.bf(), color.af());
         glClear(GL_COLOR_BUFFER_BIT);
@@ -925,14 +925,14 @@ public class Renderer
     {
         Renderer.LOGGER.finer("Drawing Point:", x, y);
         
-        makeCurrent();
+        this.target.bindFramebuffer();
         
         this.pointShader.bind();
         this.pointShader.setMat4("pv", this.view);
         this.pointShader.setColor("color", this.stroke);
         this.pointShader.setColor("tint", this.tint);
         this.pointShader.setVec2("viewport", this.target.width(), this.target.height());
-        this.pointShader.setFloat("thickness", (float) this.weight);
+        this.pointShader.setUniform("thickness", (float) this.weight);
         
         this.pointVAO.bind().getBuffer(0).bind().set(new float[] {(float) x, (float) y}, GL_DYNAMIC_DRAW).unbind();
         this.pointVAO.draw(GL_POINTS).unbind();
@@ -973,14 +973,14 @@ public class Renderer
     {
         Renderer.LOGGER.finer("Drawing Line:", x1, y1, x2, y2);
         
-        makeCurrent();
+        this.target.bindFramebuffer();
         
         this.lineShader.bind();
         this.lineShader.setMat4("pv", this.view);
         this.lineShader.setColor("color", this.stroke);
         this.lineShader.setColor("tint", this.tint);
         this.lineShader.setVec2("viewport", this.target.width(), this.target.height());
-        this.lineShader.setFloat("thickness", (float) this.weight);
+        this.lineShader.setUniform("thickness", (float) this.weight);
         
         this.lineVAO.bind().getBuffer(0).bind().set(new float[] {(float) x1, (float) y1, (float) x2, (float) y2}, GL_DYNAMIC_DRAW).unbind();
         this.lineVAO.draw(GL_LINES).unbind();
@@ -1069,14 +1069,14 @@ public class Renderer
     {
         Renderer.LOGGER.finer("Drawing Triangle:", x1, y1, x2, y2, x3, y3);
         
-        makeCurrent();
+        this.target.bindFramebuffer();
         
         this.linesShader.bind();
         this.linesShader.setMat4("pv", this.view);
         this.linesShader.setColor("color", this.stroke);
         this.linesShader.setColor("tint", this.tint);
         this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
-        this.linesShader.setFloat("thickness", (float) this.weight);
+        this.linesShader.setUniform("thickness", (float) this.weight);
         
         this.triangleLinesVAO.bind().getBuffer(0).bind().set(new float[] {
                 (float) x3, (float) y3, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3,
@@ -1104,7 +1104,7 @@ public class Renderer
     {
         Renderer.LOGGER.finer("Filling Triangle:", x1, y1, x2, y2, x3, y3);
         
-        makeCurrent();
+        this.target.bindFramebuffer();
         
         this.triangleShader.bind();
         this.triangleShader.setMat4("pv", this.view);
@@ -1312,14 +1312,14 @@ public class Renderer
     {
         Renderer.LOGGER.finer("Drawing Quad:", x1, y1, x2, y2, x3, y3, x4, y4);
         
-        makeCurrent();
+        this.target.bindFramebuffer();
         
         this.linesShader.bind();
         this.linesShader.setMat4("pv", this.view);
         this.linesShader.setColor("color", this.stroke);
         this.linesShader.setColor("tint", this.tint);
         this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
-        this.linesShader.setFloat("thickness", (float) this.weight);
+        this.linesShader.setUniform("thickness", (float) this.weight);
         
         this.quadLinesVAO.bind().getBuffer(0).bind().set(new float[] {
                 (float) x4, (float) y4, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3,
@@ -1352,7 +1352,7 @@ public class Renderer
     {
         Renderer.LOGGER.finer("Filling Quad:", x1, y1, x2, y2, x3, y3, x4, y4);
         
-        makeCurrent();
+        this.target.bindFramebuffer();
         
         this.quadShader.bind();
         this.quadShader.setMat4("pv", this.view);
@@ -1410,14 +1410,14 @@ public class Renderer
     {
         Renderer.LOGGER.finer("Drawing Polygon:", Arrays.toString(points));
         
-        makeCurrent();
+        this.target.bindFramebuffer();
         
         this.linesShader.bind();
         this.linesShader.setMat4("pv", this.view);
         this.linesShader.setColor("color", this.stroke);
         this.linesShader.setColor("tint", this.tint);
         this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
-        this.linesShader.setFloat("thickness", (float) this.weight);
+        this.linesShader.setUniform("thickness", (float) this.weight);
         
         float[] array = new float[points.length * 4];
         int     index = 0;
@@ -1458,7 +1458,7 @@ public class Renderer
     {
         Renderer.LOGGER.finer("Filling Polygon:", Arrays.toString(points));
         
-        makeCurrent();
+        this.target.bindFramebuffer();
         
         this.polygonShader.bind();
         this.polygonShader.setMat4("pv", this.view);
@@ -1587,7 +1587,7 @@ public class Renderer
     {
         Renderer.LOGGER.finer("Drawing Ellipse:", x, y, rx, ry);
         
-        makeCurrent();
+        this.target.bindFramebuffer();
         
         this.ellipseOutlineShader.bind();
         this.ellipseOutlineShader.setMat4("pv", this.view);
@@ -1595,7 +1595,7 @@ public class Renderer
         this.ellipseOutlineShader.setColor("tint", this.tint);
         this.ellipseOutlineShader.setVec2("radius", (float) rx, (float) ry);
         this.ellipseOutlineShader.setVec2("viewport", this.target.width(), this.target.height());
-        this.ellipseOutlineShader.setFloat("thickness", (float) this.weight);
+        this.ellipseOutlineShader.setUniform("thickness", (float) this.weight);
         
         this.ellipseOutlineVAO.bind().getBuffer(0).bind().set(new float[] {(float) x, (float) y}, GL_DYNAMIC_DRAW).unbind();
         this.ellipseOutlineVAO.draw(GL_POINTS).unbind();
@@ -1617,7 +1617,7 @@ public class Renderer
     {
         Renderer.LOGGER.finer("Filling Ellipse:", x, y, rx, ry);
         
-        makeCurrent();
+        this.target.bindFramebuffer();
         
         this.ellipseShader.bind();
         this.ellipseShader.setMat4("pv", this.view);
@@ -1694,8 +1694,8 @@ public class Renderer
     public void drawArc(double x, double y, double rx, double ry, double start, double stop)
     {
         Renderer.LOGGER.finer("Drawing Arc:", x, y, rx, ry, start, stop);
-        
-        makeCurrent();
+    
+        this.target.bindFramebuffer();
         
         this.arcOutlineShader.bind();
         this.arcOutlineShader.setMat4("pv", this.view);
@@ -1703,9 +1703,9 @@ public class Renderer
         this.arcOutlineShader.setColor("tint", this.tint);
         this.arcOutlineShader.setVec2("radius", (float) rx, (float) ry);
         this.arcOutlineShader.setVec2("viewport", this.target.width(), this.target.height());
-        this.arcOutlineShader.setFloat("thickness", (float) this.weight);
+        this.arcOutlineShader.setUniform("thickness", (float) this.weight);
         this.arcOutlineShader.setVec2("bounds", (float) start, (float) stop);
-        this.arcOutlineShader.setInt("mode", this.arcMode.ordinal());
+        this.arcOutlineShader.setUniform("mode", this.arcMode.ordinal());
         
         this.arcOutlineVAO.bind().getBuffer(0).bind().set(new float[] {(float) x, (float) y}, GL_DYNAMIC_DRAW).unbind();
         this.arcOutlineVAO.draw(GL_POINTS).unbind();
@@ -1728,8 +1728,8 @@ public class Renderer
     public void fillArc(double x, double y, double rx, double ry, double start, double stop)
     {
         Renderer.LOGGER.finer("Filling Arc:", x, y, rx, ry, start, stop);
-        
-        makeCurrent();
+    
+        this.target.bindFramebuffer();
         
         this.arcShader.bind();
         this.arcShader.setMat4("pv", this.view);
@@ -1737,7 +1737,7 @@ public class Renderer
         this.arcShader.setColor("tint", this.tint);
         this.arcShader.setVec2("radius", (float) rx, (float) ry);
         this.arcShader.setVec2("bounds", (float) start, (float) stop);
-        this.arcShader.setInt("mode", this.arcMode.ordinal());
+        this.arcShader.setUniform("mode", this.arcMode.ordinal());
         
         this.arcVAO.bind().getBuffer(0).bind().set(new float[] {(float) x, (float) y}, GL_DYNAMIC_DRAW).unbind();
         this.arcVAO.draw(GL_POINTS).unbind();
@@ -1828,8 +1828,8 @@ public class Renderer
     public void drawTexture(Texture texture, double x1, double y1, double x2, double y2, double u1, double v1, double u2, double v2)
     {
         Renderer.LOGGER.finer("Drawing Texture:", x1, y1, x2, y2, u1, v1, u2, v2);
-        
-        makeCurrent();
+    
+        this.target.bindFramebuffer();
         
         glActiveTexture(GL_TEXTURE0);
         texture.bindTexture();
@@ -1837,9 +1837,9 @@ public class Renderer
         this.textureShader.bind();
         this.textureShader.setMat4("pv", this.view);
         this.textureShader.setColor("tint", this.tint);
-        this.textureShader.setFloat("interpolate", -1);
-        this.textureShader.setInt("tex1", 0);
-        this.textureShader.setInt("tex2", 0);
+        this.textureShader.setUniform("interpolate", -1f);
+        this.textureShader.setUniform("tex1", 0);
+        this.textureShader.setUniform("tex2", 0);
         
         this.textureVAO.bind().getBuffer(0).bind().set(new float[] {
                 (float) x1, (float) y1, (float) u1, (float) v1,
@@ -1965,8 +1965,8 @@ public class Renderer
     public void drawInterpolatedTexture(Texture texture1, Texture texture2, double amount, double x1, double y1, double x2, double y2, double u1, double v1, double u2, double v2)
     {
         Renderer.LOGGER.finer("Drawing Interpolated Texture:", amount, x1, y1, x2, y2, u1, v1, u2, v2);
-        
-        makeCurrent();
+    
+        this.target.bindFramebuffer();
         
         glActiveTexture(GL_TEXTURE1);
         texture2.bindTexture();
@@ -1977,9 +1977,9 @@ public class Renderer
         this.textureShader.bind();
         this.textureShader.setMat4("pv", this.view);
         this.textureShader.setColor("tint", this.tint);
-        this.textureShader.setFloat("interpolate", (float) amount);
-        this.textureShader.setInt("tex1", 0);
-        this.textureShader.setInt("tex2", 1);
+        this.textureShader.setUniform("interpolate", (float) amount);
+        this.textureShader.setUniform("tex1", 0);
+        this.textureShader.setUniform("tex2", 1);
         
         this.textureVAO.bind().getBuffer(0).bind().set(new float[] {
                 (float) x1, (float) y1, (float) u1, (float) v1,
@@ -2110,8 +2110,8 @@ public class Renderer
     public void drawText(String text, double x, double y)
     {
         Renderer.LOGGER.finer("Drawing Text:", text, x, y);
-        
-        makeCurrent();
+    
+        this.target.bindFramebuffer();
         
         glActiveTexture(GL_TEXTURE0);
         this.font.texture().bindTexture();
@@ -2324,11 +2324,5 @@ public class Renderer
         
         for (int i = 0, n = this.pixels.length; i < n; i++) this.target.data().put(i, (byte) (this.pixels[i] & 0xFF));
         this.target.bindTexture().upload();
-    }
-    
-    private void makeCurrent()
-    {
-        this.target.bindFramebuffer();
-        glViewport(0, 0, this.target.width(), this.target.height());
     }
 }

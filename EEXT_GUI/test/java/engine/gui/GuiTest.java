@@ -8,7 +8,7 @@ import engine.gui.util.Rect;
 
 import java.util.logging.Level;
 
-import static engine.gui.GUI.createGUI;
+import static engine.gui.EEXT_GUI.createGUI;
 
 public class GuiTest extends Engine
 {
@@ -53,7 +53,7 @@ public class GuiTest extends Engine
         // if (keyboard().A.down()) element.setState("active");
         // if (keyboard().S.down()) element.setState("normal");
         
-        // IPair<Double, Double> gui = GUI.screenToGUI(mouse().x(), mouse().y());
+        // IPair<Double, Double> gui = EEXT_GUI.screenToGUI(mouse().x(), mouse().y());
         // element.position((int) ((double) gui.getA()), (int) ((double) gui.getB()));
     }
     

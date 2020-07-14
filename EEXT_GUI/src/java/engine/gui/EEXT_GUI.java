@@ -14,9 +14,9 @@ import org.joml.Vector2i;
 import static engine.Engine.*;
 import static engine.util.Util.println;
 
-public class GUI extends Extension
+public class EEXT_GUI extends Extension
 {
-    public static GUI INSTANCE = new GUI();
+    public static final EEXT_GUI INSTANCE = new EEXT_GUI();
     
     private static final PairD screenToGUI = new PairD(0, 0);
     private static final PairD guiToScreen = new PairD(0, 0);
@@ -38,7 +38,7 @@ public class GUI extends Extension
     
     private double hoverTime = 0.0;
     
-    public GUI()
+    public EEXT_GUI()
     {
         super();
         this.enabled = false;
@@ -381,17 +381,17 @@ public class GUI extends Extension
     
     public static void createGUI(int width, int height, String themePath, boolean liveThemeUpdates)
     {
-        GUI.INSTANCE.enabled = true;
+        EEXT_GUI.INSTANCE.enabled = true;
         
-        GUI.INSTANCE.size.set(width, height);
+        EEXT_GUI.INSTANCE.size.set(width, height);
         createLayer(layerCount() - 1, width, height);
-        
-        GUI.INSTANCE.theme = new Theme();
-        if (themePath != null) GUI.INSTANCE.theme.loadTheme(themePath);
-        
-        GUI.INSTANCE.liveThemeUpdates = liveThemeUpdates;
-        
-        GUI.INSTANCE.rootContainer = new UIContainer(new Rect(0, 0, width, height), null, null, "#root_container");
+    
+        EEXT_GUI.INSTANCE.theme = new Theme();
+        if (themePath != null) EEXT_GUI.INSTANCE.theme.loadTheme(themePath);
+    
+        EEXT_GUI.INSTANCE.liveThemeUpdates = liveThemeUpdates;
+    
+        EEXT_GUI.INSTANCE.rootContainer = new UIContainer(new Rect(0, 0, width, height), null, null, "#root_container");
     }
     
     public static void createGUI(int width, int height, String themePath)
@@ -431,62 +431,62 @@ public class GUI extends Extension
     
     public static Theme theme()
     {
-        return GUI.INSTANCE.theme;
+        return EEXT_GUI.INSTANCE.theme;
     }
     
     public static UIContainer rootContainer()
     {
-        return GUI.INSTANCE.rootContainer;
+        return EEXT_GUI.INSTANCE.rootContainer;
     }
     
     public static UIElement focusedVScrollbar()
     {
-        return GUI.INSTANCE.focusedVScrollbar;
+        return EEXT_GUI.INSTANCE.focusedVScrollbar;
     }
     
     public static UIElement focusedHScrollbar()
     {
-        return GUI.INSTANCE.focusedHScrollbar;
+        return EEXT_GUI.INSTANCE.focusedHScrollbar;
     }
     
     public static void setFocused(UIElement element)
     {
-        if (element == GUI.INSTANCE.focusedElement) return;
+        if (element == EEXT_GUI.INSTANCE.focusedElement) return;
         
-        if (GUI.INSTANCE.focusedElement != null) GUI.INSTANCE.focusedElement.onUnfocus();
+        if (EEXT_GUI.INSTANCE.focusedElement != null) EEXT_GUI.INSTANCE.focusedElement.onUnfocus();
+    
+        EEXT_GUI.INSTANCE.focusedElement = element;
         
-        GUI.INSTANCE.focusedElement = element;
-        
-        if (GUI.INSTANCE.focusedElement != null)
+        if (EEXT_GUI.INSTANCE.focusedElement != null)
         {
-            GUI.INSTANCE.focusedElement.onFocus();
+            EEXT_GUI.INSTANCE.focusedElement.onFocus();
             
-            if (GUI.INSTANCE.focusedElement.containsElementID("vertical_scroll_bar")) GUI.INSTANCE.focusedVScrollbar = GUI.INSTANCE.focusedElement;
-            if (GUI.INSTANCE.focusedElement.containsElementID("horizontal_scroll_bar")) GUI.INSTANCE.focusedHScrollbar = GUI.INSTANCE.focusedElement;
+            if (EEXT_GUI.INSTANCE.focusedElement.containsElementID("vertical_scroll_bar")) EEXT_GUI.INSTANCE.focusedVScrollbar = EEXT_GUI.INSTANCE.focusedElement;
+            if (EEXT_GUI.INSTANCE.focusedElement.containsElementID("horizontal_scroll_bar")) EEXT_GUI.INSTANCE.focusedHScrollbar = EEXT_GUI.INSTANCE.focusedElement;
         }
     }
     
     public static void clearFocusedVScrollbar(UIElement element)
     {
-        if (element != null && GUI.INSTANCE.focusedVScrollbar == element) GUI.INSTANCE.focusedVScrollbar = null;
+        if (element != null && EEXT_GUI.INSTANCE.focusedVScrollbar == element) EEXT_GUI.INSTANCE.focusedVScrollbar = null;
     }
     
     public static void clearFocusedHScrollbar(UIElement element)
     {
-        if (element != null && GUI.INSTANCE.focusedHScrollbar == element) GUI.INSTANCE.focusedHScrollbar = null;
+        if (element != null && EEXT_GUI.INSTANCE.focusedHScrollbar == element) EEXT_GUI.INSTANCE.focusedHScrollbar = null;
     }
     
     public static IPair<Double, Double> screenToGUI(double screenX, double screenY)
     {
-        GUI.screenToGUI.a = screenX * GUI.INSTANCE.size.x() / screenWidth();
-        GUI.screenToGUI.b = screenY * GUI.INSTANCE.size.y() / screenHeight();
-        return GUI.screenToGUI;
+        EEXT_GUI.screenToGUI.a = screenX * EEXT_GUI.INSTANCE.size.x() / screenWidth();
+        EEXT_GUI.screenToGUI.b = screenY * EEXT_GUI.INSTANCE.size.y() / screenHeight();
+        return EEXT_GUI.screenToGUI;
     }
     
     public static IPair<Double, Double> guiToScreen(double guiX, double guiY)
     {
-        GUI.guiToScreen.a = guiX * screenWidth() / GUI.INSTANCE.size.x();
-        GUI.guiToScreen.b = guiY * screenHeight() / GUI.INSTANCE.size.y();
-        return GUI.guiToScreen;
+        EEXT_GUI.guiToScreen.a = guiX * screenWidth() / EEXT_GUI.INSTANCE.size.x();
+        EEXT_GUI.guiToScreen.b = guiY * screenHeight() / EEXT_GUI.INSTANCE.size.y();
+        return EEXT_GUI.guiToScreen;
     }
 }

@@ -31,7 +31,7 @@ public abstract class UIElement
     {
         this.rect.set(rect);
         
-        this.parent = parent != null ? parent : GUI.rootContainer();
+        this.parent = parent != null ? parent : EEXT_GUI.rootContainer();
         
         if (parent() != null)
         {
@@ -96,7 +96,7 @@ public abstract class UIElement
     private final ArrayList<UIElement> elements = new ArrayList<>();
     
     /**
-     * @return Gets the containing element. If its null then the element is attached to the main GUI elements.
+     * @return Gets the containing element. If its null then the element is attached to the main EEXT_GUI elements.
      */
     public UIElement parent()
     {
@@ -253,7 +253,7 @@ public abstract class UIElement
     }
     
     /**
-     * @return If the element has GUI focus.
+     * @return If the element has EEXT_GUI focus.
      */
     public boolean focused()
     {
@@ -520,7 +520,7 @@ public abstract class UIElement
      */
     public boolean rebuildTheme(boolean anyChanged)
     {
-        String stateTransitionString = GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "state_transitions");
+        String stateTransitionString = EEXT_GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "state_transitions");
         if (stateTransitionString != null)
         {
             this.stateTransitions.clear();
@@ -537,7 +537,7 @@ public abstract class UIElement
         
         if (checkThemeSizeChange(1)) anyChanged = true;
         
-        String toolTipDelayString = GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "tool_tip_delay");
+        String toolTipDelayString = EEXT_GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "tool_tip_delay");
         if (toolTipDelayString != null)
         {
             double toolTipDelay = Double.parseDouble(toolTipDelayString);
@@ -548,7 +548,7 @@ public abstract class UIElement
             }
         }
         
-        Font font = GUI.theme().getFont(this.objectIDs, this.elementIDs);
+        Font font = EEXT_GUI.theme().getFont(this.objectIDs, this.elementIDs);
         if (this.font == null || this.font.equals(font))
         {
             this.font  = font;
@@ -570,7 +570,7 @@ public abstract class UIElement
     {
         boolean anyChange = false;
         
-        String borderWidthString = GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "border_width");
+        String borderWidthString = EEXT_GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "border_width");
         
         int borderWidth = defaultBorderWidth;
         if (borderWidthString != null)
@@ -594,7 +594,7 @@ public abstract class UIElement
     {
         boolean anyChanged = false;
         
-        String textHAlignment = GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "text_h_alignment");
+        String textHAlignment = EEXT_GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "text_h_alignment");
         if (textHAlignment != null)
         {
             if (!this.textHAlignment.equals(textHAlignment))
@@ -604,7 +604,7 @@ public abstract class UIElement
             }
         }
         
-        String textVAlignment = GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "text_v_alignment");
+        String textVAlignment = EEXT_GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "text_v_alignment");
         if (textVAlignment != null)
         {
             if (!this.textVAlignment.equals(textVAlignment))
@@ -614,7 +614,7 @@ public abstract class UIElement
             }
         }
         
-        String textHAlignmentPaddingString = GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "text_h_alignment_padding");
+        String textHAlignmentPaddingString = EEXT_GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "text_h_alignment_padding");
         if (textHAlignmentPaddingString != null)
         {
             int textHAlignmentPadding = Integer.parseInt(textHAlignmentPaddingString);
@@ -625,7 +625,7 @@ public abstract class UIElement
             }
         }
         
-        String textVAlignmentPaddingString = GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "text_v_alignment_padding");
+        String textVAlignmentPaddingString = EEXT_GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "text_v_alignment_padding");
         if (textVAlignmentPaddingString != null)
         {
             int textVAlignmentPadding = Integer.parseInt(textVAlignmentPaddingString);
@@ -649,7 +649,7 @@ public abstract class UIElement
      * @param elapsedTime The amount of time in seconds since the last update.
      * @param mouseX      The x position of the mouse.
      * @param mouseY      The y position of the mouse.
-     * @return If the GUI window should be redrawn.
+     * @return If the EEXT_GUI window should be redrawn.
      */
     protected boolean update(double elapsedTime, double mouseX, double mouseY)
     {
@@ -690,7 +690,7 @@ public abstract class UIElement
      * @param elapsedTime The amount of time in seconds since the last update.
      * @param mouseX      The x position of the mouse.
      * @param mouseY      The y position of the mouse.
-     * @return If the GUI window should be redrawn.
+     * @return If the EEXT_GUI window should be redrawn.
      */
     protected boolean updateElement(double elapsedTime, double mouseX, double mouseY)
     {
@@ -713,7 +713,7 @@ public abstract class UIElement
     private boolean redrawStates = true;
     
     /**
-     * Triggers this element to redraw. Also triggers all parent containers and finally the GUI screen to redraw.
+     * Triggers this element to redraw. Also triggers all parent containers and finally the EEXT_GUI screen to redraw.
      */
     public void redraw()
     {
@@ -721,7 +721,7 @@ public abstract class UIElement
     }
     
     /**
-     * Triggers this element to redraw its current state. Also triggers all parent containers and finally the GUI screen to redraw.
+     * Triggers this element to redraw its current state. Also triggers all parent containers and finally the EEXT_GUI screen to redraw.
      */
     public void redrawStates()
     {
@@ -823,11 +823,11 @@ public abstract class UIElement
         
         if (borderWidth() > 0)
         {
-            fill(GUI.theme().getColor(this.objectIDs, this.elementIDs, stateBorder));
+            fill(EEXT_GUI.theme().getColor(this.objectIDs, this.elementIDs, stateBorder));
             fillRect(0, 0, rect().width(), rect().height());
         }
         
-        fill(GUI.theme().getColor(this.objectIDs, this.elementIDs, stateBackground));
+        fill(EEXT_GUI.theme().getColor(this.objectIDs, this.elementIDs, stateBackground));
         fillRect(borderWidth(), borderWidth(), rect().width() - (borderWidth() << 1), rect().height() - (borderWidth() << 1));
     }
     
@@ -836,8 +836,8 @@ public abstract class UIElement
         String imageState     = state + "_image";
         String textColorState = state + "_text";
         
-        Texture image = GUI.theme().getImage(this.objectIDs, this.elementIDs, imageState);
-        if (image == null) image = GUI.theme().getImage(this.objectIDs, this.elementIDs, "normal_image");
+        Texture image = EEXT_GUI.theme().getImage(this.objectIDs, this.elementIDs, imageState);
+        if (image == null) image = EEXT_GUI.theme().getImage(this.objectIDs, this.elementIDs, "normal_image");
         if (image != null)
         {
             rectMode(RectMode.CENTER);
@@ -880,13 +880,13 @@ public abstract class UIElement
             rectMode(RectMode.CENTER);
             textAlign(TextAlign.CENTER);
             
-            fill(GUI.theme().getColor(this.objectIDs, this.elementIDs, "text_shadow"));
+            fill(EEXT_GUI.theme().getColor(this.objectIDs, this.elementIDs, "text_shadow"));
             Engine.text(text(), rect.centerX(), rect.centerY() + 1);
             Engine.text(text(), rect.centerX(), rect.centerY() - 1);
             Engine.text(text(), rect.centerX() + 1, rect.centerY());
             Engine.text(text(), rect.centerX() - 1, rect.centerY());
             
-            fill(GUI.theme().getColor(this.objectIDs, this.elementIDs, textColorState));
+            fill(EEXT_GUI.theme().getColor(this.objectIDs, this.elementIDs, textColorState));
             Engine.text(text(), rect.centerX(), rect.centerY());
         }
     }

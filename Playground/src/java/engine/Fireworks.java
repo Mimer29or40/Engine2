@@ -38,7 +38,7 @@ public class Fireworks extends Engine
     
     static class Firework extends Particle
     {
-        ArrayList<Particle> particles = new ArrayList<>();
+        final ArrayList<Particle> particles = new ArrayList<>();
         
         boolean exploded = false;
         
@@ -105,7 +105,7 @@ public class Fireworks extends Engine
         }
     }
     
-    ArrayList<Firework> fireworks = new ArrayList<>();
+    final ArrayList<Firework> fireworks = new ArrayList<>();
     double timeTillNext = 0.0;
     
     @Override

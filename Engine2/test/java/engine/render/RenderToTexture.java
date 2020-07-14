@@ -125,7 +125,7 @@ public class RenderToTexture extends OpenGLDemo
         this.shader.setVec3("lightModel.ambient", 0.2f, 0.2f, 0.2f);
         this.shader.setVec3("material.emission", 0.0f, 0.0f, 0.0f);
         this.shader.setVec3("material.specular", 1.0f, 1.0f, 1.0f);
-        this.shader.setFloat("material.shininess", 10.0f);
+        this.shader.setUniform("material.shininess", 10.0f);
         
         this.vertexArray = new VertexArray();
         this.vertexArray.add(new float[] {
@@ -253,7 +253,7 @@ public class RenderToTexture extends OpenGLDemo
         glEnable(GL_TEXTURE_2D);
         
         glActiveTexture(GL_TEXTURE0);
-        this.shader.setInt("texUnit", 0);
+        this.shader.setUniform("texUnit", 0);
         
         this.texture = new Texture(16, 16, 3, Color.GREY);
         for (int j = 0; j < 16; j++)

@@ -3,7 +3,7 @@ package engine.gui.shape;
 import engine.Engine;
 import engine.color.Color;
 
-import static engine.gui.GUI.createGUI;
+import static engine.gui.EEXT_GUI.createGUI;
 
 public class ShapeTest extends Engine
 {

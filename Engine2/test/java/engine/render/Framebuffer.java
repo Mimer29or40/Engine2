@@ -138,10 +138,10 @@ public class Framebuffer
         // shader configuration
         // --------------------
         shader.bind();
-        shader.setInt("texture1", 0);
+        shader.setUniform("texture1", 0);
         
         screenShader.bind();
-        screenShader.setInt("screenTexture", 0);
+        screenShader.setUniform("screenTexture", 0);
         
         // framebuffer configuration
         // -------------------------

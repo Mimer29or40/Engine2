@@ -465,6 +465,7 @@ public class Texture
     public Texture bindFramebuffer()
     {
         glBindFramebuffer(GL_FRAMEBUFFER, this.fbo);
+        glViewport(0, 0, this.width, this.height);
         return this;
     }
     

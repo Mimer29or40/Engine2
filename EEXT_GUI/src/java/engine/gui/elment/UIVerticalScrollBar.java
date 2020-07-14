@@ -1,6 +1,7 @@
 package engine.gui.elment;
 
-import engine.gui.GUI;
+import engine.gui.EEXT_GUI;
+import engine.gui.EEXT_GUI;
 import engine.gui.UIElement;
 import engine.gui.interfaces.IFocus;
 import engine.gui.util.Rect;
@@ -44,7 +45,7 @@ public class UIVerticalScrollBar extends UIElement
     
     protected boolean wasLastFocused()
     {
-        UIElement lastFocused = GUI.focusedVScrollbar();
+        UIElement lastFocused = EEXT_GUI.focusedVScrollbar();
         return lastFocused != null && (lastFocused == this || lastFocused == this.slidingButton || lastFocused == this.topButton || lastFocused == this.bottomButton);
     }
     
@@ -54,10 +55,10 @@ public class UIVerticalScrollBar extends UIElement
     @Override
     public void kill()
     {
-        GUI.clearFocusedVScrollbar(this);
-        GUI.clearFocusedVScrollbar(this.slidingButton);
-        GUI.clearFocusedVScrollbar(this.topButton);
-        GUI.clearFocusedVScrollbar(this.bottomButton);
+        EEXT_GUI.clearFocusedVScrollbar(this);
+        EEXT_GUI.clearFocusedVScrollbar(this.slidingButton);
+        EEXT_GUI.clearFocusedVScrollbar(this.topButton);
+        EEXT_GUI.clearFocusedVScrollbar(this.bottomButton);
         
         super.kill();
     }
@@ -270,7 +271,7 @@ public class UIVerticalScrollBar extends UIElement
      * @param elapsedTime The amount of time in seconds since the last update.
      * @param mouseX      The x position of the mouse.
      * @param mouseY      The y position of the mouse.
-     * @return If the GUI window should be redrawn.
+     * @return If the EEXT_GUI window should be redrawn.
      */
     @Override
     protected boolean updateElement(double elapsedTime, double mouseX, double mouseY)
@@ -320,7 +321,7 @@ public class UIVerticalScrollBar extends UIElement
     {
         super.onFocus(focus);
         
-        if (this.slidingButton != null) GUI.setFocused(this.slidingButton);
+        if (this.slidingButton != null) EEXT_GUI.setFocused(this.slidingButton);
     }
     
     /**

@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 import static engine.util.Util.getPath;
 import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.glUniform1ui;
 import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
 
 /**
@@ -180,29 +181,29 @@ public class Shader
     }
     
     /**
-     * Sets an int uniform in the shader.
-     *
-     * @param name  The uniform name.
-     * @param value The value.
-     */
-    public void setInt(final String name, int value)
-    {
-        Shader.LOGGER.finest("Setting int Uniform: %s=%s", name, value);
-        
-        glUniform1i(getUniform(name), value);
-    }
-    
-    /**
      * Sets a bool uniform in the shader.
      *
      * @param name  The uniform name.
      * @param value The value.
      */
-    public void setBool(final String name, boolean value)
+    public void setUniform(final String name, boolean value)
     {
         Shader.LOGGER.finest("Setting bool Uniform: %s=%s", name, value);
         
         glUniform1i(getUniform(name), value ? 1 : 0);
+    }
+    
+    /**
+     * Sets an int uniform in the shader.
+     *
+     * @param name  The uniform name.
+     * @param value The value.
+     */
+    public void setUniform(final String name, long value)
+    {
+        Shader.LOGGER.finest("Setting int Uniform: %s=%s", name, value);
+        
+        glUniform1i(getUniform(name), (int) value);
     }
     
     /**
@@ -211,11 +212,11 @@ public class Shader
      * @param name  The uniform name.
      * @param value The value.
      */
-    public void setFloat(final String name, float value)
+    public void setUniform(final String name, double value)
     {
         Shader.LOGGER.finest("Setting float Uniform: %s=%s", name, value);
         
-        glUniform1f(getUniform(name), value);
+        glUniform1f(getUniform(name), (float) value);
     }
     
     /**
@@ -225,11 +226,50 @@ public class Shader
      * @param x    The x value.
      * @param y    The y value.
      */
-    public void setVec2(final String name, float x, float y)
+    public void setVec2(final String name, boolean x, boolean y)
     {
         Shader.LOGGER.finest("Setting vec2 Uniform: %s=(%s, %s)", name, x, y);
         
-        glUniform2f(getUniform(name), x, y);
+        glUniform2i(getUniform(name), x ? 1 : 0, y ? 1 : 0);
+    }
+    
+    /**
+     * Sets a vec2 uniform in the shader.
+     *
+     * @param name The uniform name.
+     * @param x    The x value.
+     * @param y    The y value.
+     */
+    public void setVec2(final String name, long x, long y)
+    {
+        Shader.LOGGER.finest("Setting vec2 Uniform: %s=(%s, %s)", name, x, y);
+        
+        glUniform2i(getUniform(name), (int) x, (int) y);
+    }
+    
+    /**
+     * Sets a vec2 uniform in the shader.
+     *
+     * @param name The uniform name.
+     * @param x    The x value.
+     * @param y    The y value.
+     */
+    public void setVec2(final String name, double x, double y)
+    {
+        Shader.LOGGER.finest("Setting vec2 Uniform: %s=(%s, %s)", name, x, y);
+        
+        glUniform2f(getUniform(name), (float) x, (float) y);
+    }
+    
+    /**
+     * Sets a vec2 uniform in the shader.
+     *
+     * @param name The uniform name.
+     * @param vec  The value.
+     */
+    public void setVec2(final String name, Vector2ic vec)
+    {
+        setVec2(name, vec.x(), vec.y());
     }
     
     /**
@@ -244,6 +284,17 @@ public class Shader
     }
     
     /**
+     * Sets a vec2 uniform in the shader.
+     *
+     * @param name The uniform name.
+     * @param vec  The value.
+     */
+    public void setVec2(final String name, Vector2dc vec)
+    {
+        setVec2(name, vec.x(), vec.y());
+    }
+    
+    /**
      * Sets a vec3 uniform in the shader.
      *
      * @param name The uniform name.
@@ -251,11 +302,52 @@ public class Shader
      * @param y    The y value.
      * @param z    The z value.
      */
-    public void setVec3(final String name, float x, float y, float z)
+    public void setVec3(final String name, boolean x, boolean y, boolean z)
     {
         Shader.LOGGER.finest("Setting vec3 Uniform: %s=(%s, %s, %s)", name, x, y, z);
         
-        glUniform3f(getUniform(name), x, y, z);
+        glUniform3i(getUniform(name), x ? 1 : 0, y ? 1 : 0, z ? 1 : 0);
+    }
+    
+    /**
+     * Sets a vec3 uniform in the shader.
+     *
+     * @param name The uniform name.
+     * @param x    The x value.
+     * @param y    The y value.
+     * @param z    The z value.
+     */
+    public void setVec3(final String name, long x, long y, long z)
+    {
+        Shader.LOGGER.finest("Setting vec3 Uniform: %s=(%s, %s, %s)", name, x, y, z);
+        
+        glUniform3i(getUniform(name), (int) x, (int) y, (int) z);
+    }
+    
+    /**
+     * Sets a vec3 uniform in the shader.
+     *
+     * @param name The uniform name.
+     * @param x    The x value.
+     * @param y    The y value.
+     * @param z    The z value.
+     */
+    public void setVec3(final String name, double x, double y, double z)
+    {
+        Shader.LOGGER.finest("Setting vec3 Uniform: %s=(%s, %s, %s)", name, x, y, z);
+        
+        glUniform3f(getUniform(name), (float) x, (float) y, (float) z);
+    }
+    
+    /**
+     * Sets a vec3 uniform in the shader.
+     *
+     * @param name The uniform name.
+     * @param vec  The value.
+     */
+    public void setVec3(final String name, Vector3ic vec)
+    {
+        setVec3(name, vec.x(), vec.y(), vec.z());
     }
     
     /**
@@ -270,6 +362,17 @@ public class Shader
     }
     
     /**
+     * Sets a vec3 uniform in the shader.
+     *
+     * @param name The uniform name.
+     * @param vec  The value.
+     */
+    public void setVec3(final String name, Vector3dc vec)
+    {
+        setVec3(name, vec.x(), vec.y(), vec.z());
+    }
+    
+    /**
      * Sets a vec4 uniform in the shader.
      *
      * @param name The uniform name.
@@ -278,11 +381,54 @@ public class Shader
      * @param z    The z value.
      * @param w    The w value.
      */
-    public void setVec4(final String name, float x, float y, float z, float w)
+    public void setVec4(final String name, boolean x, boolean y, boolean z, boolean w)
     {
         Shader.LOGGER.finest("Setting vec3 Uniform: %s=(%s, %s, %s, %s)", name, x, y, z, w);
         
-        glUniform4f(getUniform(name), x, y, z, w);
+        glUniform4i(getUniform(name), x ? 1 : 0, y ? 1 : 0, z ? 1 : 0, w ? 1 : 0);
+    }
+    
+    /**
+     * Sets a vec4 uniform in the shader.
+     *
+     * @param name The uniform name.
+     * @param x    The x value.
+     * @param y    The y value.
+     * @param z    The z value.
+     * @param w    The w value.
+     */
+    public void setVec4(final String name, long x, long y, long z, long w)
+    {
+        Shader.LOGGER.finest("Setting vec3 Uniform: %s=(%s, %s, %s, %s)", name, x, y, z, w);
+        
+        glUniform4i(getUniform(name), (int) x, (int) y, (int) z, (int) w);
+    }
+    
+    /**
+     * Sets a vec4 uniform in the shader.
+     *
+     * @param name The uniform name.
+     * @param x    The x value.
+     * @param y    The y value.
+     * @param z    The z value.
+     * @param w    The w value.
+     */
+    public void setVec4(final String name, double x, double y, double z, double w)
+    {
+        Shader.LOGGER.finest("Setting vec3 Uniform: %s=(%s, %s, %s, %s)", name, x, y, z, w);
+        
+        glUniform4f(getUniform(name), (float) x, (float) y, (float) z, (float) w);
+    }
+    
+    /**
+     * Sets a vec4 uniform in the shader.
+     *
+     * @param name The uniform name.
+     * @param vec  The value.
+     */
+    public void setVec4(final String name, Vector4ic vec)
+    {
+        setVec4(name, vec.x(), vec.y(), vec.z(), vec.w());
     }
     
     /**
@@ -292,6 +438,17 @@ public class Shader
      * @param vec  The value.
      */
     public void setVec4(final String name, Vector4fc vec)
+    {
+        setVec4(name, vec.x(), vec.y(), vec.z(), vec.w());
+    }
+    
+    /**
+     * Sets a vec4 uniform in the shader.
+     *
+     * @param name The uniform name.
+     * @param vec  The value.
+     */
+    public void setVec4(final String name, Vector4dc vec)
     {
         setVec4(name, vec.x(), vec.y(), vec.z(), vec.w());
     }
@@ -384,7 +541,7 @@ public class Shader
     public void setMat3(final String name, Matrix3fc mat)
     {
         Shader.LOGGER.finest("Setting mat3 Uniform: %s=%s", name, mat);
-    
+        
         try (MemoryStack stack = MemoryStack.stackPush())
         {
             glUniformMatrix3fv(getUniform(name), false, mat.get(stack.mallocFloat(9)));
@@ -400,7 +557,7 @@ public class Shader
     public void setMat4(final String name, Matrix4fc mat)
     {
         Shader.LOGGER.finest("Setting mat4 Uniform: %s=%s", name, mat);
-    
+        
         try (MemoryStack stack = MemoryStack.stackPush())
         {
             glUniformMatrix4fv(getUniform(name), false, mat.get(stack.mallocFloat(16)));

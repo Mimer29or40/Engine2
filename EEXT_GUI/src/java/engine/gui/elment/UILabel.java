@@ -2,7 +2,8 @@ package engine.gui.elment;
 
 import engine.Engine;
 import engine.color.Colorc;
-import engine.gui.GUI;
+import engine.gui.EEXT_GUI;
+import engine.gui.EEXT_GUI;
 import engine.gui.UIElement;
 import engine.gui.util.Rectc;
 import engine.render.Font;
@@ -159,35 +160,35 @@ public class UILabel extends UIElement
     {
         boolean anyChanged = false;
         
-        Font font = GUI.theme().getFont(this.objectIDs, this.elementIDs);
+        Font font = EEXT_GUI.theme().getFont(this.objectIDs, this.elementIDs);
         if (this.font == null || !this.font.equals(font))
         {
             this.font  = font;
             anyChanged = true;
         }
         
-        Colorc textColor = GUI.theme().getColor(this.objectIDs, this.elementIDs, "normal_text");
+        Colorc textColor = EEXT_GUI.theme().getColor(this.objectIDs, this.elementIDs, "normal_text");
         if (this.textColor == null || !this.textColor.equals(textColor))
         {
             this.textColor = textColor;
             anyChanged     = true;
         }
         
-        Colorc bgColor = GUI.theme().getColor(this.objectIDs, this.elementIDs, "dark_bg");
+        Colorc bgColor = EEXT_GUI.theme().getColor(this.objectIDs, this.elementIDs, "dark_bg");
         if (this.bgColor == null || !this.bgColor.equals(bgColor))
         {
             this.bgColor = bgColor;
             anyChanged   = true;
         }
         
-        Colorc textShadowColor = GUI.theme().getColor(this.objectIDs, this.elementIDs, "text_shadow");
+        Colorc textShadowColor = EEXT_GUI.theme().getColor(this.objectIDs, this.elementIDs, "text_shadow");
         if (this.textShadowColor == null || !this.textShadowColor.equals(textShadowColor))
         {
             this.textShadowColor = textShadowColor;
             anyChanged           = true;
         }
         
-        String enableTextShadowString = GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "text_shadow");
+        String enableTextShadowString = EEXT_GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "text_shadow");
         if (enableTextShadowString != null)
         {
             boolean enableTextShadow = Integer.parseInt(enableTextShadowString) == 1;
@@ -198,7 +199,7 @@ public class UILabel extends UIElement
             }
         }
         
-        String textShadowSizeString = GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "text_shadow_size");
+        String textShadowSizeString = EEXT_GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "text_shadow_size");
         if (textShadowSizeString != null)
         {
             int textShadowSize = Integer.parseInt(textShadowSizeString);
@@ -209,7 +210,7 @@ public class UILabel extends UIElement
             }
         }
         
-        String textShadowOffsetString = GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "text_shadow_offset");
+        String textShadowOffsetString = EEXT_GUI.theme().getMiscData(this.objectIDs, this.elementIDs, "text_shadow_offset");
         if (textShadowOffsetString != null)
         {
             String[] offsets = textShadowOffsetString.split(",");

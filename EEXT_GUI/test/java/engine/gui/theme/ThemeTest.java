@@ -2,7 +2,7 @@ package engine.gui.theme;
 
 import engine.Engine;
 
-import static engine.gui.GUI.createGUI;
+import static engine.gui.EEXT_GUI.createGUI;
 
 public class ThemeTest extends Engine
 {

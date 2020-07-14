@@ -181,17 +181,23 @@ public class Mouse extends Device<Mouse.Button>
         }
         profiler().endSection();
         
+        boolean justEntered = false;
         profiler().startSection("Entered");
         if (this.entered != this.newEntered)
         {
             this.entered = this.newEntered;
+            if (this.entered)
+            {
+                justEntered = true;
+                this.pos.set(this.newPos);
+            }
             Events.post(EventMouseEntered.class, this.entered);
         }
         profiler().endSection();
         
         profiler().startSection("Position");
         this.rel.set(0);
-        if (Double.compare(this.pos.x, this.newPos.x) != 0 || Double.compare(this.pos.y, this.newPos.y) != 0)
+        if (Double.compare(this.pos.x, this.newPos.x) != 0 || Double.compare(this.pos.y, this.newPos.y) != 0 || justEntered)
         {
             this.newPos.sub(this.pos, this.rel);
             this.pos.set(this.newPos);

@@ -1,23 +1,35 @@
 package engine.shader;
 
+import engine.util.Logger;
+
+import java.io.IOException;
 import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import static engine.util.Util.getPath;
 import static engine.util.Util.println;
 
 public class FileWatcher extends Thread
 {
-    private final AtomicBoolean stop    = new AtomicBoolean(false);
-    private final AtomicBoolean changed = new AtomicBoolean(true);
+    private static final Logger LOGGER = new Logger();
     
-    private final Path filePath;
+    private WatchService watchService;
     
-    public FileWatcher(String file)
+    private final AtomicBoolean stop = new AtomicBoolean(false);
+    
+    private final ArrayList<Path> dirs  = new ArrayList<>();
+    private final ArrayList<Path> files = new ArrayList<>();
+    
+    private final ConcurrentLinkedQueue<String> changedFiles = new ConcurrentLinkedQueue<>();
+    
+    public FileWatcher()
     {
         super(null, null, "ShaderFileWatcher", 0);
-        
-        this.filePath = getPath(file);
         
         setDaemon(true);
         start();
@@ -28,22 +40,41 @@ public class FileWatcher extends Thread
         this.stop.set(true);
     }
     
-    public boolean fileChanged()
+    public Collection<String> changedFiles()
     {
-        boolean changed = this.changed.get();
-        this.changed.set(false);
-        return changed;
+        Collection<String> changedFiles = this.changedFiles.stream().collect(Collectors.toUnmodifiableList());
+        this.changedFiles.clear();
+        return changedFiles;
+    }
+    
+    public void addFile(String file)
+    {
+        Path filePath = getPath(file);
+        Path parentDir = filePath.toAbsolutePath().getParent();
+        if (this.dirs.contains(parentDir)) return;
+        try
+        {
+            parentDir.register(this.watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+            this.files.add(filePath);
+            this.dirs.add(parentDir);
+            this.changedFiles.add(file);
+        }
+        catch (IOException e)
+        {
+            FileWatcher.LOGGER.severe("Could not watch file: ", file);
+        }
     }
     
     @Override
     public void run()
     {
-        try (final WatchService watchService = FileSystems.getDefault().newWatchService())
+        try
         {
-            this.filePath.toAbsolutePath().getParent().register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+            this.watchService = FileSystems.getDefault().newWatchService();
+            
             while (!this.stop.get())
             {
-                final WatchKey wk = watchService.take();
+                final WatchKey wk = this.watchService.take();
                 for (WatchEvent<?> event : wk.pollEvents())
                 {
                     WatchEvent.Kind<?> kind = event.kind();
@@ -55,9 +86,12 @@ public class FileWatcher extends Thread
                     else if (kind == StandardWatchEventKinds.ENTRY_MODIFY)
                     {
                         final Path changed = (Path) event.context();
-                        if (changed.endsWith(this.filePath.getFileName().toString()))
+                        for (Path watchedFile : this.files)
                         {
-                            this.changed.set(true);
+                            if (changed.endsWith(watchedFile.getFileName().toString()))
+                            {
+                                this.changedFiles.add(watchedFile.toString());
+                            }
                         }
                     }
                 }
@@ -67,7 +101,18 @@ public class FileWatcher extends Thread
         }
         catch (Throwable e)
         {
-            println(e);
+            FileWatcher.LOGGER.severe(e);
+        }
+        finally
+        {
+            try
+            {
+                if (this.watchService != null) this.watchService.close();
+            }
+            catch (Throwable e)
+            {
+                FileWatcher.LOGGER.severe(e);
+            }
         }
     }
 }

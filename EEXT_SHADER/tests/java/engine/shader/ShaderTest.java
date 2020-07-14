@@ -2,7 +2,7 @@ package engine.shader;
 
 import engine.Engine;
 
-import static engine.shader.EEXT_Shader.setShaderFile;
+import static engine.shader.EEXT_Shader.addShader;
 
 public class ShaderTest extends Engine
 {
@@ -15,7 +15,7 @@ public class ShaderTest extends Engine
     public void setup()
     {
         size(400, 400, 2, 2);
-        setShaderFile("shader.frag");
+        addShader("shader.frag");
     }
     
     /**

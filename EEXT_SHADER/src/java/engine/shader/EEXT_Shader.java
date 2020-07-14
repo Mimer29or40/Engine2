@@ -19,7 +19,7 @@ public class EEXT_Shader extends Extension
     private Texture     texture;
     private VertexArray vao;
     
-    private String      shaderFile    = "";
+    private String      shaderFile = "";
     private FileWatcher fileWatcher;
     private Shader      shader;
     private String      shaderError;

@@ -12,6 +12,5 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="Engine2" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Joml" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="lwjgl-opengl" level="application" />
   </component>
 </module>

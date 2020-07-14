@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.Stack;
 
 import static engine.util.Util.getDecimal;
-import static org.lwjgl.opengl.GL43.*;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL43.glPolygonMode;
 
 /**
  * Abstract Renderer to draw things to a texture.

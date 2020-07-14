@@ -930,10 +930,11 @@ public class Renderer
         this.pointShader.setColor("color", this.stroke);
         this.pointShader.setColor("tint", this.tint);
         this.pointShader.setVec2("viewport", this.target.width(), this.target.height());
-        this.pointShader.setUniform("thickness", (float) this.weight);
+        this.pointShader.setUniform("thickness", this.weight);
         
-        this.pointVAO.bind().getBuffer(0).bind().set(new float[] {(float) x, (float) y}, GL.DYNAMIC_DRAW).unbind();
-        this.pointVAO.draw(GL.POINTS).unbind();
+        this.pointVAO.bind().set(0, new float[] {
+                (float) x, (float) y
+        }, GL.DYNAMIC_DRAW).draw(GL.POINTS).unbind();
         
         this.target.markGPUDirty();
     }
@@ -978,10 +979,12 @@ public class Renderer
         this.lineShader.setColor("color", this.stroke);
         this.lineShader.setColor("tint", this.tint);
         this.lineShader.setVec2("viewport", this.target.width(), this.target.height());
-        this.lineShader.setUniform("thickness", (float) this.weight);
+        this.lineShader.setUniform("thickness", this.weight);
         
-        this.lineVAO.bind().getBuffer(0).bind().set(new float[] {(float) x1, (float) y1, (float) x2, (float) y2}, GL.DYNAMIC_DRAW).unbind();
-        this.lineVAO.draw(GL.LINES).unbind();
+        this.lineVAO.bind().set(0, new float[] {
+                (float) x1, (float) y1,
+                (float) x2, (float) y2
+        }, GL.DYNAMIC_DRAW).draw(GL.LINES).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1074,14 +1077,13 @@ public class Renderer
         this.linesShader.setColor("color", this.stroke);
         this.linesShader.setColor("tint", this.tint);
         this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
-        this.linesShader.setUniform("thickness", (float) this.weight);
+        this.linesShader.setUniform("thickness", this.weight);
         
-        this.triangleLinesVAO.bind().getBuffer(0).bind().set(new float[] {
+        this.triangleLinesVAO.bind().set(0, new float[] {
                 (float) x3, (float) y3, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3,
                 (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x1, (float) y1,
                 (float) x2, (float) y2, (float) x3, (float) y3, (float) x1, (float) y1, (float) x2, (float) y2
-        }, GL.DYNAMIC_DRAW).unbind();
-        this.triangleLinesVAO.draw(GL.LINES_ADJACENCY).unbind();
+        }, GL.DYNAMIC_DRAW).draw(GL.LINES_ADJACENCY).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1109,8 +1111,11 @@ public class Renderer
         this.triangleShader.setColor("color", this.fill);
         this.triangleShader.setColor("tint", this.tint);
         
-        this.triangleVAO.bind().getBuffer(0).bind().set(new float[] {(float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3}, GL.DYNAMIC_DRAW).unbind();
-        this.triangleVAO.draw(GL.TRIANGLES).unbind();
+        this.triangleVAO.bind().set(0, new float[] {
+                (float) x1, (float) y1,
+                (float) x2, (float) y2,
+                (float) x3, (float) y3
+        }, GL.DYNAMIC_DRAW).draw(GL.TRIANGLES).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1317,15 +1322,14 @@ public class Renderer
         this.linesShader.setColor("color", this.stroke);
         this.linesShader.setColor("tint", this.tint);
         this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
-        this.linesShader.setUniform("thickness", (float) this.weight);
+        this.linesShader.setUniform("thickness", this.weight);
         
-        this.quadLinesVAO.bind().getBuffer(0).bind().set(new float[] {
+        this.quadLinesVAO.bind().set(0, new float[] {
                 (float) x4, (float) y4, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3,
                 (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4,
                 (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4, (float) x1, (float) y1,
                 (float) x3, (float) y3, (float) x4, (float) y4, (float) x1, (float) y1, (float) x2, (float) y2
-        }, GL.DYNAMIC_DRAW).unbind();
-        this.quadLinesVAO.draw(GL.LINES_ADJACENCY).unbind();
+        }, GL.DYNAMIC_DRAW).draw(GL.LINES_ADJACENCY).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1357,8 +1361,12 @@ public class Renderer
         this.quadShader.setColor("color", this.fill);
         this.quadShader.setColor("tint", this.tint);
         
-        this.quadVAO.bind().getBuffer(0).bind().set(new float[] {(float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4}, GL.DYNAMIC_DRAW).unbind();
-        this.quadVAO.draw(GL.QUADS).unbind();
+        this.quadVAO.bind().set(0, new float[] {
+                (float) x1, (float) y1,
+                (float) x2, (float) y2,
+                (float) x3, (float) y3,
+                (float) x4, (float) y4
+        }, GL.DYNAMIC_DRAW).draw(GL.QUADS).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1435,8 +1443,7 @@ public class Renderer
             array[index++] = (float) points[(2 * four) + 1];
         }
         
-        this.polygonLinesVAO.bind().getBuffer(0).bind().set(array, GL.DYNAMIC_DRAW).unbind();
-        this.polygonLinesVAO.resize().draw(GL.LINES_ADJACENCY).unbind();
+        this.polygonLinesVAO.bind().set(0, array, GL.DYNAMIC_DRAW).resize().draw(GL.LINES_ADJACENCY).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1466,7 +1473,6 @@ public class Renderer
         float[] array = new float[points.length];
         for (int i = 0, n = points.length; i < n; i++) array[i] = (float) points[i];
         this.polygonSSBO.bind().set(array, GL.STATIC_DRAW).unbind();
-        
         this.polygonVAO.bind().draw(GL.POINTS).unbind();
         
         this.target.markGPUDirty();
@@ -1595,8 +1601,9 @@ public class Renderer
         this.ellipseOutlineShader.setVec2("viewport", this.target.width(), this.target.height());
         this.ellipseOutlineShader.setUniform("thickness", (float) this.weight);
         
-        this.ellipseOutlineVAO.bind().getBuffer(0).bind().set(new float[] {(float) x, (float) y}, GL.DYNAMIC_DRAW).unbind();
-        this.ellipseOutlineVAO.draw(GL.POINTS).unbind();
+        this.ellipseOutlineVAO.bind().set(0, new float[] {
+                (float) x, (float) y
+        }, GL.DYNAMIC_DRAW).draw(GL.POINTS).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1623,8 +1630,9 @@ public class Renderer
         this.ellipseShader.setColor("tint", this.tint);
         this.ellipseShader.setVec2("radius", (float) rx, (float) ry);
         
-        this.ellipseVAO.bind().getBuffer(0).bind().set(new float[] {(float) x, (float) y}, GL.DYNAMIC_DRAW).unbind();
-        this.ellipseVAO.draw(GL.POINTS).unbind();
+        this.ellipseVAO.bind().set(0, new float[] {
+                (float) x, (float) y
+        }, GL.DYNAMIC_DRAW).draw(GL.POINTS).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1699,14 +1707,15 @@ public class Renderer
         this.arcOutlineShader.setMat4("pv", this.view);
         this.arcOutlineShader.setColor("color", this.stroke);
         this.arcOutlineShader.setColor("tint", this.tint);
-        this.arcOutlineShader.setVec2("radius", (float) rx, (float) ry);
+        this.arcOutlineShader.setVec2("radius", rx, ry);
         this.arcOutlineShader.setVec2("viewport", this.target.width(), this.target.height());
-        this.arcOutlineShader.setUniform("thickness", (float) this.weight);
-        this.arcOutlineShader.setVec2("bounds", (float) start, (float) stop);
+        this.arcOutlineShader.setUniform("thickness", this.weight);
+        this.arcOutlineShader.setVec2("bounds", start, stop);
         this.arcOutlineShader.setUniform("mode", this.arcMode.ordinal());
         
-        this.arcOutlineVAO.bind().getBuffer(0).bind().set(new float[] {(float) x, (float) y}, GL.DYNAMIC_DRAW).unbind();
-        this.arcOutlineVAO.draw(GL.POINTS).unbind();
+        this.arcOutlineVAO.bind().set(0, new float[] {
+                (float) x, (float) y
+        }, GL.DYNAMIC_DRAW).draw(GL.POINTS).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1737,8 +1746,9 @@ public class Renderer
         this.arcShader.setVec2("bounds", (float) start, (float) stop);
         this.arcShader.setUniform("mode", this.arcMode.ordinal());
         
-        this.arcVAO.bind().getBuffer(0).bind().set(new float[] {(float) x, (float) y}, GL.DYNAMIC_DRAW).unbind();
-        this.arcVAO.draw(GL.POINTS).unbind();
+        this.arcVAO.bind().set(0, new float[] {
+                (float) x, (float) y
+        }, GL.DYNAMIC_DRAW).draw(GL.POINTS).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1838,13 +1848,12 @@ public class Renderer
         this.textureShader.setUniform("tex1", 0);
         this.textureShader.setUniform("tex2", 0);
         
-        this.textureVAO.bind().getBuffer(0).bind().set(new float[] {
+        this.textureVAO.bind().set(0, new float[] {
                 (float) x1, (float) y1, (float) u1, (float) v1,
                 (float) x1, (float) y2, (float) u1, (float) v2,
                 (float) x2, (float) y2, (float) u2, (float) v2,
                 (float) x2, (float) y1, (float) u2, (float) v1
-        }, GL.DYNAMIC_DRAW).unbind();
-        this.textureVAO.draw(GL.QUADS).unbind();
+        }, GL.DYNAMIC_DRAW).draw(GL.QUADS).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1976,13 +1985,12 @@ public class Renderer
         this.textureShader.setUniform("tex1", 0);
         this.textureShader.setUniform("tex2", 1);
         
-        this.textureVAO.bind().getBuffer(0).bind().set(new float[] {
+        this.textureVAO.bind().set(0, new float[] {
                 (float) x1, (float) y1, (float) u1, (float) v1,
                 (float) x1, (float) y2, (float) u1, (float) v2,
                 (float) x2, (float) y2, (float) u2, (float) v2,
                 (float) x2, (float) y1, (float) u2, (float) v1
-        }, GL.DYNAMIC_DRAW).unbind();
-        this.textureVAO.draw(GL.QUADS).unbind();
+        }, GL.DYNAMIC_DRAW).draw(GL.QUADS).unbind();
         
         this.target.markGPUDirty();
     }
@@ -2149,8 +2157,7 @@ public class Renderer
             data[index++] = (float) v1;
         }
         
-        this.textVAO.bind().getBuffer(0).bind().set(data, GL.DYNAMIC_DRAW).unbind();
-        this.textVAO.resize().draw(GL.QUADS).unbind();
+        this.textVAO.bind().set(0, data, GL.DYNAMIC_DRAW).resize().draw(GL.QUADS).unbind();
         
         this.target.markGPUDirty();
     }

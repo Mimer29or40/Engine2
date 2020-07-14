@@ -7,7 +7,7 @@ layout(triangle_strip, max_vertices = 256) out;// 36 * 7
 
 uniform mat4 pv;
 uniform vec2 radius;
-uniform vec2 viewport;
+uniform ivec2 viewport;
 uniform float thickness;
 
 in vec2 position[1];

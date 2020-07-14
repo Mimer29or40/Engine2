@@ -4,7 +4,7 @@ layout(lines) in;
 layout(triangle_strip, max_vertices = 4) out;
 
 uniform float thickness;
-uniform vec2 viewport;
+uniform ivec2 viewport;
 
 vec3 toScreenSpace(vec4 v)
 {

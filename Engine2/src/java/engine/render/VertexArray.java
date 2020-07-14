@@ -199,19 +199,19 @@ public class VertexArray
      * @param mode The primitive type.
      * @return This instance for call chaining.
      */
-    public VertexArray draw(int mode)
+    public VertexArray draw(GL mode)
     {
         if (this.indexBuffer != null)
         {
             VertexArray.LOGGER.finest("Drawing indices for VertexArray: %s", this.id);
             
-            if (this.indexBuffer.size() > 0) glDrawElements(mode, this.indexBuffer.size(), GL_UNSIGNED_INT, 0);
+            if (this.indexBuffer.size() > 0) glDrawElements(mode.ref(), this.indexBuffer.size(), GL.UNSIGNED_INT.ref(), 0);
         }
         else
         {
             VertexArray.LOGGER.finest("Drawing vertices for VertexArray: %s", this.id);
             
-            if (this.vertexCount > 0) glDrawArrays(mode, 0, this.vertexCount);
+            if (this.vertexCount > 0) glDrawArrays(mode.ref(), 0, this.vertexCount);
         }
         return this;
     }
@@ -242,9 +242,9 @@ public class VertexArray
      * @param usage How the data should be used.
      * @return This instance for call chaining.
      */
-    public VertexArray addEBO(int[] data, int usage)
+    public VertexArray addEBO(int[] data, GL usage)
     {
-        return addEBO(new GLBuffer(GL_ELEMENT_ARRAY_BUFFER).bind().set(data, usage));
+        return addEBO(new GLBuffer(GL.ELEMENT_ARRAY_BUFFER).bind().set(data, usage));
     }
     
     /**
@@ -256,9 +256,9 @@ public class VertexArray
      * @param usage How the data should be used.
      * @return This instance for call chaining.
      */
-    public VertexArray addEBO(IntBuffer data, int usage)
+    public VertexArray addEBO(IntBuffer data, GL usage)
     {
-        return addEBO(new GLBuffer(GL_ELEMENT_ARRAY_BUFFER).bind().set(data, usage));
+        return addEBO(new GLBuffer(GL.ELEMENT_ARRAY_BUFFER).bind().set(data, usage));
     }
     
     /**
@@ -270,9 +270,9 @@ public class VertexArray
      * @param usage How the data should be used.
      * @return This instance for call chaining.
      */
-    public VertexArray setEBO(int[] data, int usage)
+    public VertexArray setEBO(int[] data, GL usage)
     {
-        if (this.indexBuffer == null) this.indexBuffer = new GLBuffer(GL_ELEMENT_ARRAY_BUFFER);
+        if (this.indexBuffer == null) this.indexBuffer = new GLBuffer(GL.ELEMENT_ARRAY_BUFFER);
         this.indexBuffer.bind().set(data, usage);
         return this;
     }
@@ -286,9 +286,9 @@ public class VertexArray
      * @param usage How the data should be used.
      * @return This instance for call chaining.
      */
-    public VertexArray setEBO(IntBuffer data, int usage)
+    public VertexArray setEBO(IntBuffer data, GL usage)
     {
-        if (this.indexBuffer == null) this.indexBuffer = new GLBuffer(GL_ELEMENT_ARRAY_BUFFER);
+        if (this.indexBuffer == null) this.indexBuffer = new GLBuffer(GL.ELEMENT_ARRAY_BUFFER);
         this.indexBuffer.bind().set(data, usage);
         return this;
     }
@@ -330,7 +330,7 @@ public class VertexArray
      * @param formats The type and size pairs for how the buffer is organized.
      * @return This instance for call chaining.
      */
-    public VertexArray add(GLBuffer buffer, int... formats)
+    public VertexArray add(GLBuffer buffer, Object... formats)
     {
         int n = formats.length;
         if (n == 0) throw new RuntimeException("Invalid vertex format: Must have at least one type/size pair");
@@ -344,10 +344,10 @@ public class VertexArray
         for (int i = 0, index; i < n; i++)
         {
             index = i << 1;
-            if (invalidType(formats[index])) throw new RuntimeException("Invalid vertex format: Not recognized OpenGL type: " + formats[index]);
-            types[i] = formats[index];
-            bytes[i] = getBytes(formats[index]);
-            sizes[i] = formats[index + 1];
+            if (!(formats[index] instanceof GL)) throw new RuntimeException("Invalid vertex format: Not recognized OpenGL type: " + formats[index]);
+            types[i] = ((GL) formats[index]).ref();
+            bytes[i] = getBytes(types[i]);
+            sizes[i] = (int) formats[index + 1];
             stride += bytes[i] * sizes[i];
         }
         
@@ -386,9 +386,9 @@ public class VertexArray
      * @param formats The type and size pairs for how the buffer is organized.
      * @return This instance for call chaining.
      */
-    public VertexArray add(int size, int usage, int... formats)
+    public VertexArray add(int size, GL usage, Object... formats)
     {
-        return add(new GLBuffer(GL_ARRAY_BUFFER).bind().set(size, usage).unbind(), formats);
+        return add(new GLBuffer(GL.ARRAY_BUFFER).bind().set(size, usage).unbind(), formats);
     }
     
     /**
@@ -401,9 +401,9 @@ public class VertexArray
      * @param sizes The attributes lengths
      * @return This instance for call chaining.
      */
-    public VertexArray add(short[] data, int usage, int... sizes)
+    public VertexArray add(short[] data, GL usage, int... sizes)
     {
-        return add(new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL_SHORT));
+        return add(new GLBuffer(GL.ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL.SHORT));
     }
     
     /**
@@ -416,9 +416,9 @@ public class VertexArray
      * @param sizes The attributes lengths
      * @return This instance for call chaining.
      */
-    public VertexArray add(int[] data, int usage, int... sizes)
+    public VertexArray add(int[] data, GL usage, int... sizes)
     {
-        return add(new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL_INT));
+        return add(new GLBuffer(GL.ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL.INT));
     }
     
     /**
@@ -431,9 +431,9 @@ public class VertexArray
      * @param sizes The attributes lengths
      * @return This instance for call chaining.
      */
-    public VertexArray add(float[] data, int usage, int... sizes)
+    public VertexArray add(float[] data, GL usage, int... sizes)
     {
-        return add(new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL_FLOAT));
+        return add(new GLBuffer(GL.ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL.FLOAT));
     }
     
     /**
@@ -446,9 +446,9 @@ public class VertexArray
      * @param sizes The attributes lengths
      * @return This instance for call chaining.
      */
-    public VertexArray add(double[] data, int usage, int... sizes)
+    public VertexArray add(double[] data, GL usage, int... sizes)
     {
-        return add(new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL_DOUBLE));
+        return add(new GLBuffer(GL.ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL.DOUBLE));
     }
     
     /**
@@ -461,9 +461,9 @@ public class VertexArray
      * @param formats The type and size pairs for how the buffer is organized.
      * @return This instance for call chaining.
      */
-    public VertexArray add(ByteBuffer data, int usage, int... formats)
+    public VertexArray add(ByteBuffer data, GL usage, Object... formats)
     {
-        return add(new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), formats);
+        return add(new GLBuffer(GL.ARRAY_BUFFER).bind().set(data, usage), formats);
     }
     
     /**
@@ -476,9 +476,9 @@ public class VertexArray
      * @param sizes The attributes lengths
      * @return This instance for call chaining.
      */
-    public VertexArray add(ShortBuffer data, int usage, int... sizes)
+    public VertexArray add(ShortBuffer data, GL usage, int... sizes)
     {
-        return add(new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL_UNSIGNED_SHORT));
+        return add(new GLBuffer(GL.ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL.UNSIGNED_SHORT));
     }
     
     /**
@@ -491,9 +491,9 @@ public class VertexArray
      * @param sizes The attributes lengths
      * @return This instance for call chaining.
      */
-    public VertexArray add(IntBuffer data, int usage, int... sizes)
+    public VertexArray add(IntBuffer data, GL usage, int... sizes)
     {
-        return add(new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL_UNSIGNED_INT));
+        return add(new GLBuffer(GL.ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL.UNSIGNED_INT));
     }
     
     /**
@@ -506,9 +506,9 @@ public class VertexArray
      * @param sizes The attributes lengths
      * @return This instance for call chaining.
      */
-    public VertexArray add(FloatBuffer data, int usage, int... sizes)
+    public VertexArray add(FloatBuffer data, GL usage, int... sizes)
     {
-        return add(new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL_FLOAT));
+        return add(new GLBuffer(GL.ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL.FLOAT));
     }
     
     /**
@@ -521,9 +521,9 @@ public class VertexArray
      * @param sizes The attributes lengths
      * @return This instance for call chaining.
      */
-    public VertexArray add(DoubleBuffer data, int usage, int... sizes)
+    public VertexArray add(DoubleBuffer data, GL usage, int... sizes)
     {
-        return add(new GLBuffer(GL_ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL_DOUBLE));
+        return add(new GLBuffer(GL.ARRAY_BUFFER).bind().set(data, usage), getFormatArray(sizes, GL.DOUBLE));
     }
     
     /**
@@ -536,23 +536,7 @@ public class VertexArray
      * @param usage  How the data will be used.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, short[] data, int usage)
-    {
-        this.vertexBuffers.get(buffer).bind().set(data, usage).unbind();
-        return this;
-    }
-    
-    /**
-     * Changes the contents of the buffer at index.
-     * <p>
-     * Make sure to bind the vertex array first.
-     *
-     * @param buffer The buffer index.
-     * @param data   The data.
-     * @param usage  How the data will be used.
-     * @return This instance for call chaining.
-     */
-    public VertexArray set(int buffer, int[] data, int usage)
+    public VertexArray set(int buffer, short[] data, GL usage)
     {
         this.vertexBuffers.get(buffer).bind().set(data, usage).unbind();
         return this;
@@ -568,7 +552,7 @@ public class VertexArray
      * @param usage  How the data will be used.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, long[] data, int usage)
+    public VertexArray set(int buffer, int[] data, GL usage)
     {
         this.vertexBuffers.get(buffer).bind().set(data, usage).unbind();
         return this;
@@ -584,7 +568,7 @@ public class VertexArray
      * @param usage  How the data will be used.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, float[] data, int usage)
+    public VertexArray set(int buffer, long[] data, GL usage)
     {
         this.vertexBuffers.get(buffer).bind().set(data, usage).unbind();
         return this;
@@ -600,7 +584,7 @@ public class VertexArray
      * @param usage  How the data will be used.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, double[] data, int usage)
+    public VertexArray set(int buffer, float[] data, GL usage)
     {
         this.vertexBuffers.get(buffer).bind().set(data, usage).unbind();
         return this;
@@ -616,7 +600,7 @@ public class VertexArray
      * @param usage  How the data will be used.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, ByteBuffer data, int usage)
+    public VertexArray set(int buffer, double[] data, GL usage)
     {
         this.vertexBuffers.get(buffer).bind().set(data, usage).unbind();
         return this;
@@ -632,7 +616,7 @@ public class VertexArray
      * @param usage  How the data will be used.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, ShortBuffer data, int usage)
+    public VertexArray set(int buffer, ByteBuffer data, GL usage)
     {
         this.vertexBuffers.get(buffer).bind().set(data, usage).unbind();
         return this;
@@ -648,7 +632,7 @@ public class VertexArray
      * @param usage  How the data will be used.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, IntBuffer data, int usage)
+    public VertexArray set(int buffer, ShortBuffer data, GL usage)
     {
         this.vertexBuffers.get(buffer).bind().set(data, usage).unbind();
         return this;
@@ -664,7 +648,7 @@ public class VertexArray
      * @param usage  How the data will be used.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, LongBuffer data, int usage)
+    public VertexArray set(int buffer, IntBuffer data, GL usage)
     {
         this.vertexBuffers.get(buffer).bind().set(data, usage).unbind();
         return this;
@@ -680,7 +664,7 @@ public class VertexArray
      * @param usage  How the data will be used.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, FloatBuffer data, int usage)
+    public VertexArray set(int buffer, LongBuffer data, GL usage)
     {
         this.vertexBuffers.get(buffer).bind().set(data, usage).unbind();
         return this;
@@ -696,7 +680,23 @@ public class VertexArray
      * @param usage  How the data will be used.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, DoubleBuffer data, int usage)
+    public VertexArray set(int buffer, FloatBuffer data, GL usage)
+    {
+        this.vertexBuffers.get(buffer).bind().set(data, usage).unbind();
+        return this;
+    }
+    
+    /**
+     * Changes the contents of the buffer at index.
+     * <p>
+     * Make sure to bind the vertex array first.
+     *
+     * @param buffer The buffer index.
+     * @param data   The data.
+     * @param usage  How the data will be used.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(int buffer, DoubleBuffer data, GL usage)
     {
         this.vertexBuffers.get(buffer).bind().set(data, usage).unbind();
         return this;
@@ -867,10 +867,10 @@ public class VertexArray
         return this;
     }
     
-    private int[] getFormatArray(int[] sizes, int type)
+    private Object[] getFormatArray(int[] sizes, GL type)
     {
-        int   n      = sizes.length;
-        int[] format = new int[n << 1];
+        int      n      = sizes.length;
+        Object[] format = new Object[n << 1];
         for (int i = 0, index = 0; i < n; i++)
         {
             format[index++] = type;
@@ -897,24 +897,6 @@ public class VertexArray
                 return Float.BYTES;
             case GL_DOUBLE:
                 return Double.BYTES;
-        }
-    }
-    
-    private boolean invalidType(int type)
-    {
-        switch (type)
-        {
-            case GL_UNSIGNED_BYTE:
-            case GL_BYTE:
-            case GL_UNSIGNED_SHORT:
-            case GL_SHORT:
-            case GL_UNSIGNED_INT:
-            case GL_INT:
-            case GL_FLOAT:
-            case GL_DOUBLE:
-                return false;
-            default:
-                return true;
         }
     }
 }

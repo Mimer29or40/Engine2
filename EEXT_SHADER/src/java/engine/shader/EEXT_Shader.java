@@ -4,14 +4,13 @@ import engine.Engine;
 import engine.Extension;
 import engine.input.Keyboard;
 import engine.input.Mouse;
+import engine.render.GL;
 import engine.render.Shader;
 import engine.render.TextAlign;
 import engine.render.Texture;
 import engine.render.VertexArray;
 
 import static engine.Engine.*;
-import static org.lwjgl.opengl.GL40.GL_DYNAMIC_DRAW;
-import static org.lwjgl.opengl.GL40.GL_QUADS;
 
 public class EEXT_Shader extends Extension
 {
@@ -111,7 +110,7 @@ public class EEXT_Shader extends Extension
             this.texture.bindFramebuffer();
     
             this.shader.bind();
-            this.vao.bind().draw(GL_QUADS).unbind();
+            this.vao.bind().draw(GL.QUADS).unbind();
     
             this.texture.markGPUDirty();
     
@@ -149,7 +148,7 @@ public class EEXT_Shader extends Extension
         EEXT_Shader.INSTANCE.enabled = true;
         
         EEXT_Shader.INSTANCE.texture = new Texture(screenWidth(), screenHeight());
-        EEXT_Shader.INSTANCE.vao     = new VertexArray().bind().add(new float[] {-1f, -1f, 1f, -1f, 1f, 1f, -1f, 1f}, GL_DYNAMIC_DRAW, 2);
+        EEXT_Shader.INSTANCE.vao     = new VertexArray().bind().add(new float[] {-1f, -1f, 1f, -1f, 1f, 1f, -1f, 1f}, GL.DYNAMIC_DRAW, 2);
         
         EEXT_Shader.INSTANCE.shaderFile = shaderFile;
         EEXT_Shader.INSTANCE.fileWatcher = new FileWatcher(shaderFile);

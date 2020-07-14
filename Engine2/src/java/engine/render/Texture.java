@@ -436,14 +436,26 @@ public class Texture
     }
     
     /**
-     * Binds the texture for OpenGL rendering.
+     * Binds the texture for OpenGL rendering to a texture index.
+     *
+     * @param textureNumber The texture index.
+     * @return This instance for call chaining.
+     */
+    public Texture bindTexture(int textureNumber)
+    {
+        glActiveTexture(GL_TEXTURE0 + textureNumber);
+        glBindTexture(GL_TEXTURE_2D, this.id);
+        return this;
+    }
+    
+    /**
+     * Binds the texture for OpenGL rendering to the 0 texture.
      *
      * @return This instance for call chaining.
      */
     public Texture bindTexture()
     {
-        glBindTexture(GL_TEXTURE_2D, this.id);
-        return this;
+        return bindTexture(0);
     }
     
     /**

@@ -17,7 +17,6 @@ import engine.util.Random;
 import engine.util.Tuple;
 import org.joml.*;
 import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import org.reflections.Reflections;
@@ -230,7 +229,7 @@ public class Engine
                 
                 Engine.LOGGER.finest("Preparing Context for Thread Swap");
                 Engine.window.unmakeCurrent();
-                GL.setCapabilities(null);
+                org.lwjgl.opengl.GL.setCapabilities(null);
                 
                 final CountDownLatch latch = new CountDownLatch(1);
                 
@@ -238,7 +237,7 @@ public class Engine
                     try
                     {
                         Engine.window.makeCurrent();
-                        GL.createCapabilities();
+                        org.lwjgl.opengl.GL.createCapabilities();
                         
                         long t, dt;
                         long lastFrame   = nanoseconds();
@@ -413,7 +412,7 @@ public class Engine
                                             if (Engine.activeLayers[i])
                                             {
                                                 Engine.layers[i].bindTexture().unbindFramebuffer();
-                                                Engine.screenVAO.draw(GL_QUADS);
+                                                Engine.screenVAO.draw(GL.QUADS);
                                             }
                                         }
                                         Engine.screenVAO.unbind();
@@ -463,10 +462,10 @@ public class Engine
                                                         Engine.debugShader.setColor("color", Engine.debugLineBackground);
                                                         Engine.debugBoxVAO.bind().set(0, new float[] {
                                                                 line.a, line.b, line.a + width + 2, line.b, line.a + width + 2, line.b + height, line.a, line.b + height
-                                                        }, GL_DYNAMIC_DRAW).draw(GL_QUADS).unbind();
+                                                        }, GL.DYNAMIC_DRAW).draw(GL.QUADS).unbind();
                                                         
                                                         Engine.debugShader.setColor("color", Engine.debugLineText);
-                                                        Engine.debugTextVAO.bind().set(0, textBuffer.limit(quads * 64), GL_DYNAMIC_DRAW).draw(GL_QUADS).unbind();
+                                                        Engine.debugTextVAO.bind().set(0, textBuffer.limit(quads * 64), GL.DYNAMIC_DRAW).draw(GL.QUADS).unbind();
                                                         
                                                         textBuffer.clear();
                                                     }
@@ -577,8 +576,8 @@ public class Engine
                     finally
                     {
                         Engine.window.unmakeCurrent();
-                        GL.destroy();
-                        GL.setCapabilities(null);
+                        org.lwjgl.opengl.GL.destroy();
+                        org.lwjgl.opengl.GL.setCapabilities(null);
                         
                         Engine.running = false;
                         
@@ -623,9 +622,9 @@ public class Engine
             if (Engine.window != null)
             {
                 Engine.LOGGER.finer("Window Destruction");
-                
-                GL.setCapabilities(null);
-                GL.destroy();
+    
+                org.lwjgl.opengl.GL.setCapabilities(null);
+                org.lwjgl.opengl.GL.destroy();
                 
                 Engine.window.destroy();
             }
@@ -684,7 +683,7 @@ public class Engine
         Engine.window = new Window(Engine.mouse = new Mouse(), Engine.keyboard = new Keyboard(), Engine.modifiers = new Modifiers());
         
         Engine.window.makeCurrent();
-        GL.createCapabilities();
+        org.lwjgl.opengl.GL.createCapabilities();
         
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_BLEND);
@@ -698,11 +697,11 @@ public class Engine
         Engine.activeLayers[0] = true;
         
         Engine.screenShader = new Shader().loadVertexFile("shaders/pixel.vert").loadFragmentFile("shaders/pixel.frag").validate().unbind();
-        Engine.screenVAO    = new VertexArray().bind().add(new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, GL_DYNAMIC_DRAW, 2);
+        Engine.screenVAO    = new VertexArray().bind().add(new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, GL.DYNAMIC_DRAW, 2);
         
         Engine.debugShader  = new Shader().loadVertexFile("shaders/debug.vert").loadFragmentFile("shaders/debug.frag").validate().unbind();
-        Engine.debugTextVAO = new VertexArray().bind().add(24 * 1024, GL_DYNAMIC_DRAW, GL_FLOAT, 3, GL_UNSIGNED_BYTE, 4).unbind();
-        Engine.debugBoxVAO  = new VertexArray().bind().add(8, GL_DYNAMIC_DRAW, GL_FLOAT, 2).unbind();
+        Engine.debugTextVAO = new VertexArray().bind().add(24 * 1024, GL.DYNAMIC_DRAW, GL.FLOAT, 3, GL.UNSIGNED_BYTE, 4).unbind();
+        Engine.debugBoxVAO  = new VertexArray().bind().add(8, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
         Engine.debugView    = new Matrix4f().setOrtho(0F, Engine.window.viewW(), Engine.window.viewH(), 0F, -1F, 1F);
     }
     

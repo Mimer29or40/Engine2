@@ -1,7 +1,6 @@
 package engine.render;
 
 import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL43.*;
@@ -54,7 +53,7 @@ public class Framebuffer
         
         // glad: load all OpenGL function pointers
         // ---------------------------------------
-        GL.createCapabilities();
+        org.lwjgl.opengl.GL.createCapabilities();
         
         // configure global opengl state
         // -----------------------------
@@ -105,7 +104,7 @@ public class Framebuffer
                 0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
                 -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
                 -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
-        }, GL_STATIC_DRAW, 3, 2).unbind();
+        }, GL.STATIC_DRAW, 3, 2).unbind();
         
         // plane VAO
         VertexArray planeArray = new VertexArray().bind();
@@ -116,7 +115,7 @@ public class Framebuffer
                 5.0f, -0.5f, 5.0f, 2.0f, 0.0f,
                 -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
                 5.0f, -0.5f, -5.0f, 2.0f, 2.0f
-        }, GL_STATIC_DRAW, 3, 2);
+        }, GL.STATIC_DRAW, 3, 2);
         planeArray.unbind();
         
         // screen quad VAO
@@ -126,8 +125,8 @@ public class Framebuffer
                 -1.0f, -1.0f, 0.0f, 0.0f,
                 1.0f, -1.0f, 1.0f, 0.0f,
                 1.0f, 1.0f, 1.0f, 1.0f
-        }, GL_STATIC_DRAW, 2, 2);
-        quadArray.addEBO(new int[] {0, 1, 2, 0, 2, 3}, GL_STATIC_DRAW);
+        }, GL.STATIC_DRAW, 2, 2);
+        quadArray.addEBO(new int[] {0, 1, 2, 0, 2, 3}, GL.STATIC_DRAW);
         quadArray.unbind();
         
         // load textures
@@ -199,21 +198,20 @@ public class Framebuffer
             shader.setMat4("projection", projection);
             // cubes
             cubeArray.bind();
-            glActiveTexture(GL_TEXTURE0);
             cubeTexture.bindTexture();
             model.translate(-1.0f, 0.0f, -1.0f);
             shader.setMat4("model", model);
-            cubeArray.draw(GL_TRIANGLES);
+            cubeArray.draw(GL.TRIANGLES);
             model.identity();
             model.translate(2.0f, 0.0f, 0.0f);
             shader.setMat4("model", model);
-            cubeArray.draw(GL_TRIANGLES);
+            cubeArray.draw(GL.TRIANGLES);
             cubeArray.unbind();
             
             // floor
             floorTexture.bindTexture();
             shader.setMat4("model", model.identity());
-            planeArray.bind().draw(GL_TRIANGLES).unbind();
+            planeArray.bind().draw(GL.TRIANGLES).unbind();
             
             // now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -221,11 +219,11 @@ public class Framebuffer
             glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
             // clear all relevant buffers
             glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessery actually, since we won't be able to see behind the quad anyways)
-            glClear(GL_COLOR_BUFFER_BIT);
+            glClear(GL.COLOR_BUFFER_BIT.ref());
             
             screenShader.bind();
             texture.bindTexture();    // use the color attachment texture as the texture of the quad plane
-            quadArray.bind().draw(GL_TRIANGLES).unbind();
+            quadArray.bind().draw(GL.TRIANGLES).unbind();
             
             
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

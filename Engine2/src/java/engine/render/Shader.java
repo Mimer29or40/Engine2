@@ -12,7 +12,6 @@ import java.util.HashMap;
 
 import static engine.util.Util.getPath;
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.glUniform1ui;
 import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
 
 /**
@@ -454,6 +453,54 @@ public class Shader
     }
     
     /**
+     * Sets a mat2 uniform in the shader.
+     *
+     * @param name The uniform name.
+     * @param mat  The matrix value.
+     */
+    public void setMat2(final String name, Matrix2fc mat)
+    {
+        Shader.LOGGER.finest("Setting mat2 Uniform: %s=%s", name, mat);
+        
+        try (MemoryStack stack = MemoryStack.stackPush())
+        {
+            glUniformMatrix2fv(getUniform(name), false, mat.get(stack.mallocFloat(4)));
+        }
+    }
+    
+    /**
+     * Sets a mat3 uniform in the shader.
+     *
+     * @param name The uniform name.
+     * @param mat  The matrix value.
+     */
+    public void setMat3(final String name, Matrix3fc mat)
+    {
+        Shader.LOGGER.finest("Setting mat3 Uniform: %s=%s", name, mat);
+        
+        try (MemoryStack stack = MemoryStack.stackPush())
+        {
+            glUniformMatrix3fv(getUniform(name), false, mat.get(stack.mallocFloat(9)));
+        }
+    }
+    
+    /**
+     * Sets a mat4 uniform in the shader.
+     *
+     * @param name The uniform name.
+     * @param mat  The matrix value.
+     */
+    public void setMat4(final String name, Matrix4fc mat)
+    {
+        Shader.LOGGER.finest("Setting mat4 Uniform: %s=%s", name, mat);
+        
+        try (MemoryStack stack = MemoryStack.stackPush())
+        {
+            glUniformMatrix4fv(getUniform(name), false, mat.get(stack.mallocFloat(16)));
+        }
+    }
+    
+    /**
      * Sets a vec4 uniform that represents a color in the shader.
      *
      * @param name  The uniform name.
@@ -516,52 +563,12 @@ public class Shader
         setColor(name, this.color.set(grey, grey, grey, 255));
     }
     
-    /**
-     * Sets a mat2 uniform in the shader.
-     *
-     * @param name The uniform name.
-     * @param mat  The matrix value.
-     */
-    public void setMat2(final String name, Matrix2fc mat)
+    public void setTexture(final String name, int textureNum, Texture texture)
     {
-        Shader.LOGGER.finest("Setting mat2 Uniform: %s=%s", name, mat);
-        
-        try (MemoryStack stack = MemoryStack.stackPush())
-        {
-            glUniformMatrix2fv(getUniform(name), false, mat.get(stack.mallocFloat(4)));
-        }
-    }
+        Shader.LOGGER.finest("Setting Texture Uniform: %s=%s(%s)", name, textureNum, texture);
     
-    /**
-     * Sets a mat3 uniform in the shader.
-     *
-     * @param name The uniform name.
-     * @param mat  The matrix value.
-     */
-    public void setMat3(final String name, Matrix3fc mat)
-    {
-        Shader.LOGGER.finest("Setting mat3 Uniform: %s=%s", name, mat);
-        
-        try (MemoryStack stack = MemoryStack.stackPush())
-        {
-            glUniformMatrix3fv(getUniform(name), false, mat.get(stack.mallocFloat(9)));
-        }
-    }
-    
-    /**
-     * Sets a mat4 uniform in the shader.
-     *
-     * @param name The uniform name.
-     * @param mat  The matrix value.
-     */
-    public void setMat4(final String name, Matrix4fc mat)
-    {
-        Shader.LOGGER.finest("Setting mat4 Uniform: %s=%s", name, mat);
-        
-        try (MemoryStack stack = MemoryStack.stackPush())
-        {
-            glUniformMatrix4fv(getUniform(name), false, mat.get(stack.mallocFloat(16)));
-        }
+        texture.bindTexture(textureNum);
+        glUniform1i(getUniform(name), textureNum);
     }
     
     private int getUniform(String uniform)

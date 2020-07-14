@@ -1839,14 +1839,12 @@ public class Renderer
         
         this.target.bindFramebuffer();
         
-        texture.bindTexture();
-        
         this.textureShader.bind();
         this.textureShader.setMat4("pv", this.view);
         this.textureShader.setColor("tint", this.tint);
         this.textureShader.setUniform("interpolate", -1f);
-        this.textureShader.setUniform("tex1", 0);
-        this.textureShader.setUniform("tex2", 0);
+        this.textureShader.setTexture("tex1", 0, texture);
+        this.textureShader.setTexture("tex2", 0, texture);
         
         this.textureVAO.bind().set(0, new float[] {
                 (float) x1, (float) y1, (float) u1, (float) v1,
@@ -1974,16 +1972,12 @@ public class Renderer
         
         this.target.bindFramebuffer();
         
-        texture2.bindTexture(1);
-        
-        texture1.bindTexture(0);
-        
         this.textureShader.bind();
         this.textureShader.setMat4("pv", this.view);
         this.textureShader.setColor("tint", this.tint);
         this.textureShader.setUniform("interpolate", (float) amount);
-        this.textureShader.setUniform("tex1", 0);
-        this.textureShader.setUniform("tex2", 1);
+        this.textureShader.setTexture("tex1", 0, texture1);
+        this.textureShader.setTexture("tex2", 1, texture2);
         
         this.textureVAO.bind().set(0, new float[] {
                 (float) x1, (float) y1, (float) u1, (float) v1,
@@ -2116,12 +2110,11 @@ public class Renderer
         
         this.target.bindFramebuffer();
         
-        this.font.texture().bindTexture();
-        
         this.textShader.bind();
         this.textShader.setMat4("pv", this.view);
         this.textShader.setColor("color", this.fill);
         this.textShader.setColor("tint", this.tint);
+        this.textShader.setTexture("tex", 0, this.font.texture());
         
         float[] data = new float[text.length() * 16];
         

@@ -722,32 +722,6 @@ public class Renderer
         this.view.scale((float) x, (float) y, 1);
     }
     
-    /**
-     * Transforms the provided points from screen space to render space.
-     *
-     * @param x   The x coordinate to transform.
-     * @param y   The y coordinate to transform.
-     * @param out The vector to store the results to.
-     * @return A read-only vector that holds the transformed coordinates.
-     */
-    public Vector2dc toRenderSpace(double x, double y, Vector2d out)
-    {
-        this.view.transform((float) x, (float) y, 0F, 1F, this.tranformVector4);
-        return this.tranformVector2.set(this.tranformVector4.x, this.tranformVector4.y);
-    }
-    
-    /**
-     * Transforms the provided points from screen space to render space.
-     *
-     * @param x The x coordinate to transform.
-     * @param y The y coordinate to transform.
-     * @return A read-only vector that holds the transformed coordinates.
-     */
-    public Vector2dc toRenderSpace(double x, double y)
-    {
-        return toRenderSpace(x, y, this.tranformVector2);
-    }
-    
     // --------------------
     // -- Render Methods --
     // --------------------

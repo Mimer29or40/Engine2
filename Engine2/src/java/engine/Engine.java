@@ -2046,6 +2046,28 @@ public class Engine
     }
     
     /**
+     * See {@link Renderer#toRenderSpace(double, double, Vector2d)}
+     */
+    public static Vector2dc toRenderSpace(double x, double y, Vector2d out)
+    {
+        Engine.profiler.startSection("toRenderSpace");
+        Vector2dc result = Engine.renderer.toRenderSpace(x, y, out);
+        Engine.profiler.endSection();
+        return result;
+    }
+    
+    /**
+     * See {@link Renderer#toRenderSpace(double, double)}
+     */
+    public static Vector2dc toRenderSpace(double x, double y)
+    {
+        Engine.profiler.startSection("toRenderSpace");
+        Vector2dc result = Engine.renderer.toRenderSpace(x, y);
+        Engine.profiler.endSection();
+        return result;
+    }
+    
+    /**
      * See {@link Renderer#start()}
      */
     public static void start()

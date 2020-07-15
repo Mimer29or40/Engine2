@@ -5,6 +5,9 @@ import engine.color.Color;
 import engine.color.Colorc;
 import engine.util.Logger;
 import org.joml.Matrix4f;
+import org.joml.Vector2d;
+import org.joml.Vector2dc;
+import org.joml.Vector4f;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,6 +77,9 @@ public class Renderer
     
     protected final Matrix4f        view  = new Matrix4f();
     protected final Stack<Matrix4f> views = new Stack<>();
+    
+    protected final Vector4f tranformVector4 = new Vector4f();
+    protected final Vector2d tranformVector2 = new Vector2d();
     
     protected int[] pixels;
     
@@ -714,6 +720,32 @@ public class Renderer
         Renderer.LOGGER.finest("Scaling View:", x, y);
         
         this.view.scale((float) x, (float) y, 1);
+    }
+    
+    /**
+     * Transforms the provided points from screen space to render space.
+     *
+     * @param x   The x coordinate to transform.
+     * @param y   The y coordinate to transform.
+     * @param out The vector to store the results to.
+     * @return A read-only vector that holds the transformed coordinates.
+     */
+    public Vector2dc toRenderSpace(double x, double y, Vector2d out)
+    {
+        this.view.transform((float) x, (float) y, 0F, 1F, this.tranformVector4);
+        return this.tranformVector2.set(this.tranformVector4.x, this.tranformVector4.y);
+    }
+    
+    /**
+     * Transforms the provided points from screen space to render space.
+     *
+     * @param x The x coordinate to transform.
+     * @param y The y coordinate to transform.
+     * @return A read-only vector that holds the transformed coordinates.
+     */
+    public Vector2dc toRenderSpace(double x, double y)
+    {
+        return toRenderSpace(x, y, this.tranformVector2);
     }
     
     // --------------------

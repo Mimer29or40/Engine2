@@ -231,7 +231,7 @@ public abstract class Device<I extends Device.Input>
          * @param modifiers The array of modifiers.
          * @return True if the supplied modifiers matches the actual modifiers.
          */
-        private boolean checkModifiers(Modifiers.Modifier[] modifiers)
+        protected boolean checkModifiers(Modifiers.Modifier[] modifiers)
         {
             if (modifiers.length == 0) return true;
             int mods = 0;

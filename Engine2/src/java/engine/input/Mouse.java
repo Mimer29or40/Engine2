@@ -259,12 +259,15 @@ public class Mouse extends Device<Mouse.Button>
             }
             if (this.drag == input) this.drag = null;
         }
+        input.dragged = false;
         if (input.held)
         {
             Events.post(EventMouseButtonHeld.class, input, this.pos);
             
             if (this.drag == input && (this.rel.x != 0 || this.rel.y != 0))
             {
+                input.dragged = true;
+                
                 Events.post(EventMouseButtonDragged.class, input, this.dragPos, this.pos, this.rel);
             }
         }
@@ -315,12 +318,22 @@ public class Mouse extends Device<Mouse.Button>
      */
     public class Button extends Device.Input
     {
+        protected boolean dragged;
+        
         private final Vector2d click  = new Vector2d();
         private final Vector2d dClick = new Vector2d();
         
         private Button(String name, int reference)
         {
             super(Mouse.this, name, reference);
+        }
+    
+        /**
+         * @return If the Button is being dragged with optional modifiers.
+         */
+        public boolean dragged(Modifiers.Modifier... modifiers)
+        {
+            return this.dragged && checkModifiers(modifiers);
         }
     }
 }

@@ -6,7 +6,6 @@ import engine.color.Colorc;
 import engine.util.Logger;
 import org.joml.Matrix4f;
 import org.joml.Vector2d;
-import org.joml.Vector2dc;
 import org.joml.Vector4f;
 
 import java.util.ArrayList;
@@ -2306,10 +2305,7 @@ public class Renderer
     {
         Renderer.LOGGER.finer("Loading Pixels");
         
-        int length = this.target.width() * this.target.height() * this.target.channels();
-        if (this.pixels == null || this.pixels.length != length) this.pixels = new int[length];
-        this.target.bindTexture().download();
-        for (int i = 0, n = this.pixels.length; i < n; i++) this.pixels[i] = this.target.data().get(i) & 0xFF;
+        this.pixels = this.target.bindTexture().sync().toArray();
         return this.pixels;
     }
     
@@ -2322,7 +2318,6 @@ public class Renderer
     {
         Renderer.LOGGER.finer("Updating Pixels");
         
-        for (int i = 0, n = this.pixels.length; i < n; i++) this.target.data().put(i, (byte) (this.pixels[i] & 0xFF));
-        this.target.bindTexture().upload();
+        this.target.fromArray(this.pixels).bindTexture().sync();
     }
 }

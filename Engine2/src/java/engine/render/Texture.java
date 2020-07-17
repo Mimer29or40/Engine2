@@ -36,6 +36,8 @@ public class Texture
     
     protected final ByteBuffer data;
     
+    protected int[] array;
+    
     protected int wrapS     = GL_CLAMP_TO_EDGE;
     protected int wrapT     = GL_CLAMP_TO_EDGE;
     protected int minFilter = GL_NEAREST;
@@ -268,6 +270,44 @@ public class Texture
     }
     
     /**
+     * Converts the local copy of the data to a one dimensional integer array. Values will be in the range [0-255].
+     *
+     * @return The integer array.
+     */
+    public int[] toArray()
+    {
+        int size = this.width * this.height * this.channels;
+        if (this.array == null || this.array.length != size) this.array = new int[size];
+        
+        for (int i = 0; i < size; i++) this.array[i] = this.data.get(i) & 0xFF;
+        return this.array;
+    }
+    
+    /**
+     * Writes to the texture from a one dimensional array.
+     *
+     * @param array The array.
+     * @return This for call chaining.
+     */
+    public Texture fromArray(int[] array)
+    {
+        int size = this.width * this.height * this.channels;
+        if (array.length != size) throw new RuntimeException("Array size mismatch: " + array.length + " != " + size);
+    
+        int next;
+        for (int i = 0; i < size; i++)
+        {
+            next = array[i] & 0xFF;
+            if ((this.data.get(i) & 0xFF) != next)
+            {
+                this.data.put(i, (byte) (next));
+                markCPUDirty();
+            }
+        }
+        return this;
+    }
+    
+    /**
      * Gets the color data of a pixel. If the coordinate is out of bound, then a blank color is returned.
      * <p>
      * If the color does not have 4 channels, then the color data will be blank for any channel not included.
@@ -384,7 +424,7 @@ public class Texture
         int g4 = c.g();
         int b4 = c.b();
         int a4 = c.a();
-    
+        
         return this.tempColor.set((int) ((r1 * uOpp + r2 * uRat) * vOpp + (r3 * uOpp + r4 * uRat) * vRat),
                                   (int) ((g1 * uOpp + g2 * uRat) * vOpp + (g3 * uOpp + g4 * uRat) * vRat),
                                   (int) ((b1 * uOpp + b2 * uRat) * vOpp + (b3 * uOpp + b4 * uRat) * vRat),
@@ -606,7 +646,7 @@ public class Texture
         
         this.data.clear();
         data.clear();
-    
+        
         return new Texture(width, height, this.channels, data, null);
     }
     

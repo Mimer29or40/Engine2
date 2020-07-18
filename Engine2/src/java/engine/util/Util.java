@@ -620,6 +620,7 @@ public class Util
     
     /**
      * Interpolates a value between two endpoints. Results are clamped between endpoints.
+     *
      * @param a The first value.
      * @param b The second value.
      * @param x The amount to interpolate. [0-1]
@@ -634,6 +635,7 @@ public class Util
     
     /**
      * Interpolates a value between two endpoints. Results are clamped between endpoints.
+     *
      * @param a The first value.
      * @param b The second value.
      * @param x The amount to interpolate. [0-1]
@@ -648,6 +650,7 @@ public class Util
     
     /**
      * Interpolates a value between two endpoints. Results are clamped between endpoints.
+     *
      * @param a The first value.
      * @param b The second value.
      * @param x The amount to interpolate. [0-1]
@@ -662,6 +665,7 @@ public class Util
     
     /**
      * Interpolates a value between two endpoints. Results are clamped between endpoints.
+     *
      * @param a The first value.
      * @param b The second value.
      * @param x The amount to interpolate. [0-1]
@@ -672,5 +676,109 @@ public class Util
         if (x <= 0) return a;
         if (x >= 1) return b;
         return a + x * (b - a);
+    }
+    
+    /**
+     * Interpolates between two values smoothly.
+     *
+     * @param a The first edge.
+     * @param b The second edge.
+     * @param x The amount to interpolate. [0-1]
+     * @return The interpolated value.
+     */
+    public static int smoothstep(int a, int b, double x)
+    {
+        return a + (int) (x * x * (3 - 2 * x)) * (b - a);
+    }
+    
+    /**
+     * Interpolates between two values smoothly.
+     *
+     * @param a The first edge.
+     * @param b The second edge.
+     * @param x The amount to interpolate. [0-1]
+     * @return The interpolated value.
+     */
+    public static long smoothstep(long a, long b, double x)
+    {
+        return a + (long) (x * x * (3 - 2 * x)) * (b - a);
+    }
+    
+    /**
+     * Interpolates between two values smoothly.
+     *
+     * @param a The first edge.
+     * @param b The second edge.
+     * @param x The amount to interpolate. [0-1]
+     * @return The interpolated value.
+     */
+    public static float smoothstep(float a, float b, float x)
+    {
+        return a + (x * x * (3 - 2 * x)) * (b - a);
+    }
+    
+    /**
+     * Interpolates between two values smoothly.
+     *
+     * @param a The first edge.
+     * @param b The second edge.
+     * @param x The amount to interpolate. [0-1]
+     * @return The interpolated value.
+     */
+    public static double smoothstep(double a, double b, double x)
+    {
+        return a + (x * x * (3 - 2 * x)) * (b - a);
+    }
+    
+    /**
+     * Interpolates between two values more smoothly.
+     *
+     * @param a The first edge.
+     * @param b The second edge.
+     * @param x The amount to interpolate. [0-1]
+     * @return The interpolated value.
+     */
+    public static int smootherstep(int a, int b, double x)
+    {
+        return a + (int) (x * x * x * (x * (x * 6 - 15) + 10)) * (b - a);
+    }
+    
+    /**
+     * Interpolates between two values more smoothly.
+     *
+     * @param a The first edge.
+     * @param b The second edge.
+     * @param x The amount to interpolate. [0-1]
+     * @return The interpolated value.
+     */
+    public static long smootherstep(long a, long b, double x)
+    {
+        return a + (long) (x * x * x * (x * (x * 6 - 15) + 10)) * (b - a);
+    }
+    
+    /**
+     * Interpolates between two values more smoothly.
+     *
+     * @param a The first edge.
+     * @param b The second edge.
+     * @param x The amount to interpolate. [0-1]
+     * @return The interpolated value.
+     */
+    public static float smootherstep(float a, float b, float x)
+    {
+        return a + (x * x * x * (x * (x * 6 - 15) + 10)) * (b - a);
+    }
+    
+    /**
+     * Interpolates between two values more smoothly.
+     *
+     * @param a The first edge.
+     * @param b The second edge.
+     * @param x The amount to interpolate. [0-1]
+     * @return The interpolated value.
+     */
+    public static double smootherstep(double a, double b, double x)
+    {
+        return a + (x * x * x * (x * (x * 6 - 15) + 10)) * (b - a);
     }
 }

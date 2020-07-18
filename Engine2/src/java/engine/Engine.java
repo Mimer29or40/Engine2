@@ -1059,6 +1059,102 @@ public class Engine
     }
     
     /**
+     * See {@link Random#nextInts(int[])}
+     */
+    public static int[] nextInts(int[] ints)
+    {
+        return Engine.random.nextInts(ints);
+    }
+    
+    /**
+     * See {@link Random#nextInts(int[], int)}
+     */
+    public static int[] nextInts(int[] ints, int bound)
+    {
+        return Engine.random.nextInts(ints, bound);
+    }
+    
+    /**
+     * See {@link Random#nextInts(int[], int, int)}
+     */
+    public static int[] nextInts(int[] ints, int origin, int bound)
+    {
+        return Engine.random.nextInts(ints, origin, bound);
+    }
+    
+    /**
+     * See {@link Random#nextLongs(long[])}
+     */
+    public static long[] nextLongs(long[] longs)
+    {
+        return Engine.random.nextLongs(longs);
+    }
+    
+    /**
+     * See {@link Random#nextLongs(long[], long)}
+     */
+    public static long[] nextLongs(long[] longs, long bound)
+    {
+        return Engine.random.nextLongs(longs, bound);
+    }
+    
+    /**
+     * See {@link Random#nextLongs(long[], long, long)}
+     */
+    public static long[] nextLongs(long[] longs, long origin, long bound)
+    {
+        return Engine.random.nextLongs(longs, origin, bound);
+    }
+    
+    /**
+     * See {@link Random#nextFloats(float[])}
+     */
+    public static float[] nextFloats(float[] floats)
+    {
+        return Engine.random.nextFloats(floats);
+    }
+    
+    /**
+     * See {@link Random#nextFloats(float[], float)}
+     */
+    public static float[] nextFloats(float[] floats, float bound)
+    {
+        return Engine.random.nextFloats(floats, bound);
+    }
+    
+    /**
+     * See {@link Random#nextFloats(float[], float, float)}
+     */
+    public static float[] nextFloats(float[] floats, float origin, float bound)
+    {
+        return Engine.random.nextFloats(floats, origin, bound);
+    }
+    
+    /**
+     * See {@link Random#nextDoubles(double[])}
+     */
+    public static double[] nextDoubles(double[] doubles)
+    {
+        return Engine.random.nextDoubles(doubles);
+    }
+    
+    /**
+     * See {@link Random#nextDoubles(double[], double)}
+     */
+    public static double[] nextDoubles(double[] doubles, double bound)
+    {
+        return Engine.random.nextDoubles(doubles, bound);
+    }
+    
+    /**
+     * See {@link Random#nextDoubles(double[], double, double)}
+     */
+    public static double[] nextDoubles(double[] doubles, double origin, double bound)
+    {
+        return Engine.random.nextDoubles(doubles, origin, bound);
+    }
+    
+    /**
      * See {@link Random#nextDoubleDir()}
      */
     public static double nextDoubleDir()

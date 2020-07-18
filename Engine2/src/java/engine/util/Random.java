@@ -107,6 +107,162 @@ public class Random extends java.util.Random
     }
     
     /**
+     * @return An array with random uniformly distributed {@code int}.
+     */
+    public int[] nextInts(int[] ints)
+    {
+        for (int i = 0, n = ints.length; i < n; i++)
+        {
+            ints[i] = nextInt();
+        }
+        return ints;
+    }
+    
+    /**
+     * @return An array with random uniformly distributed {@code int} [{@code 0} - {@code bound}].
+     */
+    public int[] nextInts(int[] ints, int bound)
+    {
+        if (bound <= 0) throw new IllegalArgumentException("bound must be positive");
+        for (int i = 0, n = ints.length; i < n; i++)
+        {
+            ints[i] = nextInt(bound);
+        }
+        return ints;
+    }
+    
+    /**
+     * @return An array with random uniformly distributed {@code int} [{@code origin} - {@code bound}].
+     */
+    public int[] nextInts(int[] ints, int origin, int bound)
+    {
+        if (origin >= bound) throw new IllegalArgumentException("origin must be less than bound");
+        bound -= origin;
+        for (int i = 0, n = ints.length; i < n; i++)
+        {
+            ints[i] = origin + nextInt(bound);
+        }
+        return ints;
+    }
+    
+    /**
+     * @return An array with random uniformly distributed {@code long}.
+     */
+    public long[] nextLongs(long[] longs)
+    {
+        for (int i = 0, n = longs.length; i < n; i++)
+        {
+            longs[i] = nextLong();
+        }
+        return longs;
+    }
+    
+    /**
+     * @return An array with random uniformly distributed {@code long} [{@code 0} - {@code bound}].
+     */
+    public long[] nextLongs(long[] longs, long bound)
+    {
+        if (bound <= 0) throw new IllegalArgumentException("bound must be positive");
+        for (int i = 0, n = longs.length; i < n; i++)
+        {
+            longs[i] = nextLong(bound);
+        }
+        return longs;
+    }
+    
+    /**
+     * @return An array with random uniformly distributed {@code long} [{@code origin} - {@code bound}].
+     */
+    public long[] nextLongs(long[] longs, long origin, long bound)
+    {
+        if (origin >= bound) throw new IllegalArgumentException("origin must be less than bound");
+        bound -= origin;
+        for (int i = 0, n = longs.length; i < n; i++)
+        {
+            longs[i] = origin + nextLong(bound);
+        }
+        return longs;
+    }
+    
+    /**
+     * @return An array with random uniformly distributed {@code float} [{@code 0F} - {@code 1F}].
+     */
+    public float[] nextFloats(float[] floats)
+    {
+        for (int i = 0, n = floats.length; i < n; i++)
+        {
+            floats[i] = nextFloat();
+        }
+        return floats;
+    }
+    
+    /**
+     * @return An array with random uniformly distributed {@code float} [{@code 0F} - {@code bound}].
+     */
+    public float[] nextFloats(float[] floats, float bound)
+    {
+        if (bound <= 0) throw new IllegalArgumentException("bound must be positive");
+        for (int i = 0, n = floats.length; i < n; i++)
+        {
+            floats[i] = nextFloat(bound);
+        }
+        return floats;
+    }
+    
+    /**
+     * @return An array with random uniformly distributed {@code float} [{@code origin} - {@code bound}].
+     */
+    public float[] nextFloats(float[] floats, float origin, float bound)
+    {
+        if (origin >= bound) throw new IllegalArgumentException("origin must be less than bound");
+        bound -= origin;
+        for (int i = 0, n = floats.length; i < n; i++)
+        {
+            floats[i] = origin + nextFloat(bound);
+        }
+        return floats;
+    }
+    
+    /**
+     * @return An array with random uniformly distributed {@code double} [{@code 0.0} - {@code 1.0}].
+     */
+    public double[] nextDoubles(double[] doubles)
+    {
+        for (int i = 0, n = doubles.length; i < n; i++)
+        {
+            doubles[i] = nextDouble();
+        }
+        return doubles;
+    }
+    
+    /**
+     * @return An array with random uniformly distributed {@code double} [{@code 0.0} - {@code bound}].
+     */
+    public double[] nextDoubles(double[] doubles, double bound)
+    {
+        if (bound <= 0) throw new IllegalArgumentException("bound must be positive");
+        for (int i = 0, n = doubles.length; i < n; i++)
+        {
+            doubles[i] = nextDouble(bound);
+        }
+        return doubles;
+    }
+    
+    /**
+     * @return An array with random uniformly distributed {@code double} [{@code origin} - {@code bound}].
+     */
+    public double[] nextDoubles(double[] doubles, double origin, double bound)
+    {
+        if (origin >= bound) throw new IllegalArgumentException("origin must be less than bound");
+        bound -= origin;
+        for (int i = 0, n = doubles.length; i < n; i++)
+        {
+            doubles[i] = origin + nextDouble(bound);
+        }
+        return doubles;
+    }
+    
+    /**
      * Returns the next pseudorandom, Gaussian ("normally") distributed
      * {@code double} value with mean {@code mean} and standard
      * deviation {@code stdDev} from this random number generator's sequence.

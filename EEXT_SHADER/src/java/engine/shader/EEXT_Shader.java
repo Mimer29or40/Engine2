@@ -4,11 +4,7 @@ import engine.Engine;
 import engine.Extension;
 import engine.input.Keyboard;
 import engine.input.Mouse;
-import engine.render.GL;
-import engine.render.Shader;
-import engine.render.TextAlign;
-import engine.render.Texture;
-import engine.render.VertexArray;
+import engine.render.*;
 
 import java.util.HashMap;
 
@@ -66,7 +62,7 @@ public class EEXT_Shader extends Extension
         {
             try
             {
-                this.shaders.replace(changedFile, new Shader().loadVertexFile("shaders/pixel.vert").loadFragmentFile(changedFile).validate().unbind());
+                this.shaders.replace(changedFile, new Shader().bind().loadVertexFile("shaders/pixel.vert").loadFragmentFile(changedFile).validate().unbind());
                 this.errorMessage = null;
             }
             catch (RuntimeException exception)

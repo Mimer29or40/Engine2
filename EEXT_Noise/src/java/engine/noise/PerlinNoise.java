@@ -63,7 +63,7 @@ public class PerlinNoise extends Noise
             z   = cords[2];
             w   = cords[3];
             len = Math.sqrt(x * x + y * y + z * z + w * w);
-            
+    
             this.grad4[i][0] = x / len;
             this.grad4[i][1] = y / len;
             this.grad4[i][2] = z / len;
@@ -72,190 +72,192 @@ public class PerlinNoise extends Noise
     }
     
     @Override
-    protected double calculate_impl(int dimension, int frequency, double amplitude, double[] coord)
+    protected double calculate1D(int frequency, double amplitude, double[] coord)
     {
-        int xi0, yi0, zi0, wi0;
-        int xi1, yi1, zi1, wi1;
+        double x = coord[0];
         
-        double x, y, z, w;
-        double dx0, dy0, dz0, dw0;
-        double dx1, dy1, dz1, dw1;
-        double x0, y0, z0, w0;
-        double x1, y1, z1, w1;
+        int xi0 = fastFloor(x) & Noise.tableSizeMask;
         
-        double[] g0, g1;
-        switch (dimension)
-        {
-            case 1:
-                x = coord[0];
-                
-                dx0 = x - Math.floor(x);
-                
-                dx1 = dx0 - 1.0;
-                
-                xi0 = (int) Math.floor(x) & Noise.tableSizeMask;
-                
-                xi1 = (xi0 + 1) & Noise.tableSizeMask;
-                
-                g0 = this.grad1[this.p[xi0]];
-                g1 = this.grad1[this.p[xi1]];
-                x0 = g0[0] * dx0;
-                x1 = g1[0] * dx1;
-                
-                return smoothstep(x0, x1, dx0);
-            case 2:
-                x = coord[0];
-                y = coord[1];
-                
-                dx0 = x - Math.floor(x);
-                dy0 = y - Math.floor(y);
-                
-                dx1 = dx0 - 1.0;
-                dy1 = dy0 - 1.0;
-                
-                xi0 = (int) Math.floor(x) & Noise.tableSizeMask;
-                yi0 = (int) Math.floor(y) & Noise.tableSizeMask;
-                
-                xi1 = (xi0 + 1) & Noise.tableSizeMask;
-                yi1 = (yi0 + 1) & Noise.tableSizeMask;
-                
-                g0 = this.grad2[this.p[this.p[xi0] + yi0]];
-                g1 = this.grad2[this.p[this.p[xi1] + yi0]];
-                x0 = g0[0] * dx0 + g0[1] * dy0;
-                x1 = g1[0] * dx1 + g1[1] * dy0;
-                y0 = smoothstep(x0, x1, dx0);
-                
-                g0 = this.grad2[this.p[this.p[xi0] + yi1]];
-                g1 = this.grad2[this.p[this.p[xi1] + yi1]];
-                x0 = g0[0] * dx0 + g0[1] * dy1;
-                x1 = g1[0] * dx1 + g1[1] * dy1;
-                y1 = smoothstep(x0, x1, dx0);
-                
-                return smoothstep(y0, y1, dy0);
-            case 3:
-                x = coord[0];
-                y = coord[1];
-                z = coord[2];
-                
-                xi0 = (int) Math.floor(x) & Noise.tableSizeMask;
-                yi0 = (int) Math.floor(y) & Noise.tableSizeMask;
-                zi0 = (int) Math.floor(z) & Noise.tableSizeMask;
-                
-                xi1 = (xi0 + 1) & Noise.tableSizeMask;
-                yi1 = (yi0 + 1) & Noise.tableSizeMask;
-                zi1 = (zi0 + 1) & Noise.tableSizeMask;
-                
-                dx0 = x - xi0;
-                dy0 = y - yi0;
-                dz0 = z - zi0;
-                
-                dx1 = dx0 - 1.0;
-                dy1 = dy0 - 1.0;
-                dz1 = dz0 - 1.0;
-                
-                g0 = this.grad3[this.p[this.p[this.p[xi0] + yi0] + zi0]];
-                g1 = this.grad3[this.p[this.p[this.p[xi1] + yi0] + zi0]];
-                x0 = g0[0] * dx0 + g0[1] * dy0 + g0[2] * dz0;
-                x1 = g1[0] * dx1 + g1[1] * dy0 + g1[2] * dz0;
-                y0 = smoothstep(x0, x1, dx0);
-                g0 = this.grad3[this.p[this.p[this.p[xi0] + yi1] + zi0]];
-                g1 = this.grad3[this.p[this.p[this.p[xi1] + yi1] + zi0]];
-                x0 = g0[0] * dx0 + g0[1] * dy1 + g0[2] * dz0;
-                x1 = g1[0] * dx1 + g1[1] * dy1 + g1[2] * dz0;
-                y1 = smoothstep(x0, x1, dx0);
-                z0 = smoothstep(y0, y1, dy0);
-                
-                g0 = this.grad3[this.p[this.p[this.p[xi0] + yi0] + zi1]];
-                g1 = this.grad3[this.p[this.p[this.p[xi1] + yi0] + zi1]];
-                x0 = g0[0] * dx0 + g0[1] * dy0 + g0[2] * dz1;
-                x1 = g1[0] * dx1 + g1[1] * dy0 + g1[2] * dz1;
-                y0 = smoothstep(x0, x1, dx0);
-                g0 = this.grad3[this.p[this.p[this.p[xi0] + yi1] + zi1]];
-                g1 = this.grad3[this.p[this.p[this.p[xi1] + yi1] + zi1]];
-                x0 = g0[0] * dx0 + g0[1] * dy1 + g0[2] * dz1;
-                x1 = g1[0] * dx1 + g1[1] * dy1 + g1[2] * dz1;
-                y1 = smoothstep(x0, x1, dx0);
-                z1 = smoothstep(y0, y1, dy0);
-                
-                return smoothstep(z0, z1, dz0);
-            case 4:
-                x = coord[0];
-                y = coord[1];
-                z = coord[2];
-                w = coord[3];
-                
-                xi0 = (int) Math.floor(x) & Noise.tableSizeMask;
-                yi0 = (int) Math.floor(y) & Noise.tableSizeMask;
-                zi0 = (int) Math.floor(z) & Noise.tableSizeMask;
-                wi0 = (int) Math.floor(w) & Noise.tableSizeMask;
-                
-                xi1 = (xi0 + 1) & Noise.tableSizeMask;
-                yi1 = (yi0 + 1) & Noise.tableSizeMask;
-                zi1 = (zi0 + 1) & Noise.tableSizeMask;
-                wi1 = (wi0 + 1) & Noise.tableSizeMask;
-                
-                dx0 = x - xi0;
-                dy0 = y - yi0;
-                dz0 = z - zi0;
-                dw0 = w - wi0;
-                
-                dx1 = dx0 - 1.0;
-                dy1 = dy0 - 1.0;
-                dz1 = dz0 - 1.0;
-                dw1 = dw0 - 1.0;
-                
-                g0 = this.grad3[this.p[this.p[this.p[this.p[xi0] + yi0] + zi0] + wi0]];
-                g1 = this.grad3[this.p[this.p[this.p[this.p[xi1] + yi0] + zi0] + wi0]];
-                x0 = g0[0] * dx0 + g0[1] * dy0 + g0[2] * dz0 + g0[3] * dw0;
-                x1 = g1[0] * dx1 + g1[1] * dy0 + g1[2] * dz0 + g1[3] * dw0;
-                y0 = smoothstep(x0, x1, dx0);
-                g0 = this.grad3[this.p[this.p[this.p[this.p[xi0] + yi1] + zi0] + wi0]];
-                g1 = this.grad3[this.p[this.p[this.p[this.p[xi1] + yi1] + zi0] + wi0]];
-                x0 = g0[0] * dx0 + g0[1] * dy1 + g0[2] * dz0 + g0[3] * dw0;
-                x1 = g1[0] * dx1 + g1[1] * dy1 + g1[2] * dz0 + g1[3] * dw0;
-                y1 = smoothstep(x0, x1, dx0);
-                z0 = smoothstep(y0, y1, dy0);
-                g0 = this.grad3[this.p[this.p[this.p[this.p[xi0] + yi0] + zi1] + wi0]];
-                g1 = this.grad3[this.p[this.p[this.p[this.p[xi1] + yi0] + zi1] + wi0]];
-                x0 = g0[0] * dx0 + g0[1] * dy0 + g0[2] * dz1 + g0[3] * dw0;
-                x1 = g1[0] * dx1 + g1[1] * dy0 + g1[2] * dz1 + g1[3] * dw0;
-                y0 = smoothstep(x0, x1, dx0);
-                g0 = this.grad3[this.p[this.p[this.p[this.p[xi0] + yi1] + zi1] + wi0]];
-                g1 = this.grad3[this.p[this.p[this.p[this.p[xi1] + yi1] + zi1] + wi0]];
-                x0 = g0[0] * dx0 + g0[1] * dy1 + g0[2] * dz1 + g0[3] * dw0;
-                x1 = g1[0] * dx1 + g1[1] * dy1 + g1[2] * dz1 + g1[3] * dw0;
-                y1 = smoothstep(x0, x1, dx0);
-                z1 = smoothstep(y0, y1, dy0);
-                w0 = smoothstep(z0, z1, dz0);
-                
-                
-                g0 = this.grad3[this.p[this.p[this.p[this.p[xi0] + yi0] + zi0] + wi1]];
-                g1 = this.grad3[this.p[this.p[this.p[this.p[xi1] + yi0] + zi0] + wi1]];
-                x0 = g0[0] * dx0 + g0[1] * dy0 + g0[2] * dz0 + g0[3] * dw1;
-                x1 = g1[0] * dx1 + g1[1] * dy0 + g1[2] * dz0 + g1[3] * dw1;
-                y0 = smoothstep(x0, x1, dx0);
-                g0 = this.grad3[this.p[this.p[this.p[this.p[xi0] + yi1] + zi0] + wi1]];
-                g1 = this.grad3[this.p[this.p[this.p[this.p[xi1] + yi1] + zi0] + wi1]];
-                x0 = g0[0] * dx0 + g0[1] * dy1 + g0[2] * dz0 + g0[3] * dw1;
-                x1 = g1[0] * dx1 + g1[1] * dy1 + g1[2] * dz0 + g1[3] * dw1;
-                y1 = smoothstep(x0, x1, dx0);
-                z0 = smoothstep(y0, y1, dy0);
-                g0 = this.grad3[this.p[this.p[this.p[this.p[xi0] + yi0] + zi1] + wi1]];
-                g1 = this.grad3[this.p[this.p[this.p[this.p[xi1] + yi0] + zi1] + wi1]];
-                x0 = g0[0] * dx0 + g0[1] * dy0 + g0[2] * dz1 + g0[3] * dw1;
-                x1 = g1[0] * dx1 + g1[1] * dy0 + g1[2] * dz1 + g1[3] * dw1;
-                y0 = smoothstep(x0, x1, dx0);
-                g0 = this.grad3[this.p[this.p[this.p[this.p[xi0] + yi1] + zi1] + wi1]];
-                g1 = this.grad3[this.p[this.p[this.p[this.p[xi1] + yi1] + zi1] + wi1]];
-                x0 = g0[0] * dx0 + g0[1] * dy1 + g0[2] * dz1 + g0[3] * dw1;
-                x1 = g1[0] * dx1 + g1[1] * dy1 + g1[2] * dz1 + g1[3] * dw1;
-                y1 = smoothstep(x0, x1, dx0);
-                z1 = smoothstep(y0, y1, dy0);
-                w1 = smoothstep(z0, z1, dz0);
-                
-                return smoothstep(w0, w1, dw0);
-            default:
-                throw new RuntimeException("Not Implemented for Dimension: " + dimension);
-        }
+        int xi1 = (xi0 + 1) & Noise.tableSizeMask;
+        
+        double dx0 = x - xi0;
+        
+        double dx1 = dx0 - 1.0;
+        
+        double[] g0 = this.grad1[this.perm[xi0]];
+        double[] g1 = this.grad1[this.perm[xi1]];
+        
+        double x0 = g0[0] * dx0;
+        double x1 = g1[0] * dx1;
+        
+        return smoothstep(x0, x1, dx0);
+    }
+    
+    @Override
+    protected double calculate2D(int frequency, double amplitude, double[] coord)
+    {
+        double x = coord[0];
+        double y = coord[1];
+        
+        int xi0 = fastFloor(x) & Noise.tableSizeMask;
+        int yi0 = fastFloor(y) & Noise.tableSizeMask;
+        
+        int xi1 = (xi0 + 1) & Noise.tableSizeMask;
+        int yi1 = (yi0 + 1) & Noise.tableSizeMask;
+        
+        double dx0 = x - xi0;
+        double dy0 = y - yi0;
+        
+        double dx1 = dx0 - 1.0;
+        double dy1 = dy0 - 1.0;
+        
+        double[] g0 = this.grad2[this.perm[this.perm[xi0] + yi0]];
+        double[] g1 = this.grad2[this.perm[this.perm[xi1] + yi0]];
+        double[] g2 = this.grad2[this.perm[this.perm[xi0] + yi1]];
+        double[] g3 = this.grad2[this.perm[this.perm[xi1] + yi1]];
+        
+        double x0 = g0[0] * dx0 + g0[1] * dy0;
+        double x1 = g1[0] * dx1 + g1[1] * dy0;
+        double x2 = g2[0] * dx0 + g2[1] * dy1;
+        double x3 = g3[0] * dx1 + g3[1] * dy1;
+        
+        double y0 = smoothstep(x0, x1, dx0);
+        double y1 = smoothstep(x2, x3, dx0);
+        
+        return smoothstep(y0, y1, dy0);
+    }
+    
+    @Override
+    protected double calculate3D(int frequency, double amplitude, double[] coord)
+    {
+        double x = coord[0];
+        double y = coord[1];
+        double z = coord[2];
+        
+        int xi0 = fastFloor(x) & Noise.tableSizeMask;
+        int yi0 = fastFloor(y) & Noise.tableSizeMask;
+        int zi0 = fastFloor(z) & Noise.tableSizeMask;
+        
+        int xi1 = (xi0 + 1) & Noise.tableSizeMask;
+        int yi1 = (yi0 + 1) & Noise.tableSizeMask;
+        int zi1 = (zi0 + 1) & Noise.tableSizeMask;
+        
+        double dx0 = x - xi0;
+        double dy0 = y - yi0;
+        double dz0 = z - zi0;
+        
+        double dx1 = dx0 - 1.0;
+        double dy1 = dy0 - 1.0;
+        double dz1 = dz0 - 1.0;
+        
+        double[] g0 = this.grad3[this.perm[this.perm[this.perm[xi0] + yi0] + zi0]];
+        double[] g1 = this.grad3[this.perm[this.perm[this.perm[xi1] + yi0] + zi0]];
+        double[] g2 = this.grad3[this.perm[this.perm[this.perm[xi0] + yi1] + zi0]];
+        double[] g3 = this.grad3[this.perm[this.perm[this.perm[xi1] + yi1] + zi0]];
+        double[] g4 = this.grad3[this.perm[this.perm[this.perm[xi0] + yi0] + zi1]];
+        double[] g5 = this.grad3[this.perm[this.perm[this.perm[xi1] + yi0] + zi1]];
+        double[] g6 = this.grad3[this.perm[this.perm[this.perm[xi0] + yi1] + zi1]];
+        double[] g7 = this.grad3[this.perm[this.perm[this.perm[xi1] + yi1] + zi1]];
+        
+        double x0 = g0[0] * dx0 + g0[1] * dy0 + g0[2] * dz0;
+        double x1 = g1[0] * dx1 + g1[1] * dy0 + g1[2] * dz0;
+        double x2 = g2[0] * dx0 + g2[1] * dy1 + g2[2] * dz0;
+        double x3 = g3[0] * dx1 + g3[1] * dy1 + g3[2] * dz0;
+        double x4 = g4[0] * dx0 + g4[1] * dy0 + g4[2] * dz1;
+        double x5 = g5[0] * dx1 + g5[1] * dy0 + g5[2] * dz1;
+        double x6 = g6[0] * dx0 + g6[1] * dy1 + g6[2] * dz1;
+        double x7 = g7[0] * dx1 + g7[1] * dy1 + g7[2] * dz1;
+        
+        double y0 = smoothstep(x0, x1, dx0);
+        double y1 = smoothstep(x2, x3, dx0);
+        double y2 = smoothstep(x4, x5, dx0);
+        double y3 = smoothstep(x6, x7, dx0);
+        
+        double z0 = smoothstep(y0, y1, dy0);
+        double z1 = smoothstep(y2, y3, dy0);
+        
+        return smoothstep(z0, z1, dz0);
+    }
+    
+    @Override
+    protected double calculate4D(int frequency, double amplitude, double[] coord)
+    {
+        double x = coord[0];
+        double y = coord[1];
+        double z = coord[2];
+        double w = coord[3];
+        
+        int xi0 = fastFloor(x) & Noise.tableSizeMask;
+        int yi0 = fastFloor(y) & Noise.tableSizeMask;
+        int zi0 = fastFloor(z) & Noise.tableSizeMask;
+        int wi0 = fastFloor(w) & Noise.tableSizeMask;
+        
+        int xi1 = (xi0 + 1) & Noise.tableSizeMask;
+        int yi1 = (yi0 + 1) & Noise.tableSizeMask;
+        int zi1 = (zi0 + 1) & Noise.tableSizeMask;
+        int wi1 = (wi0 + 1) & Noise.tableSizeMask;
+        
+        double dx0 = x - xi0;
+        double dy0 = y - yi0;
+        double dz0 = z - zi0;
+        double dw0 = w - wi0;
+        
+        double dx1 = dx0 - 1.0;
+        double dy1 = dy0 - 1.0;
+        double dz1 = dz0 - 1.0;
+        double dw1 = dw0 - 1.0;
+        
+        double[] g0  = this.grad4[this.perm[this.perm[this.perm[this.perm[xi0] + yi0] + zi0] + wi0]];
+        double[] g1  = this.grad4[this.perm[this.perm[this.perm[this.perm[xi1] + yi0] + zi0] + wi0]];
+        double[] g2  = this.grad4[this.perm[this.perm[this.perm[this.perm[xi0] + yi1] + zi0] + wi0]];
+        double[] g3  = this.grad4[this.perm[this.perm[this.perm[this.perm[xi1] + yi1] + zi0] + wi0]];
+        double[] g4  = this.grad4[this.perm[this.perm[this.perm[this.perm[xi0] + yi0] + zi1] + wi0]];
+        double[] g5  = this.grad4[this.perm[this.perm[this.perm[this.perm[xi1] + yi0] + zi1] + wi0]];
+        double[] g6  = this.grad4[this.perm[this.perm[this.perm[this.perm[xi0] + yi1] + zi1] + wi0]];
+        double[] g7  = this.grad4[this.perm[this.perm[this.perm[this.perm[xi1] + yi1] + zi1] + wi0]];
+        double[] g8  = this.grad4[this.perm[this.perm[this.perm[this.perm[xi0] + yi0] + zi0] + wi1]];
+        double[] g9  = this.grad4[this.perm[this.perm[this.perm[this.perm[xi1] + yi0] + zi0] + wi1]];
+        double[] g10 = this.grad4[this.perm[this.perm[this.perm[this.perm[xi0] + yi1] + zi0] + wi1]];
+        double[] g11 = this.grad4[this.perm[this.perm[this.perm[this.perm[xi1] + yi1] + zi0] + wi1]];
+        double[] g12 = this.grad4[this.perm[this.perm[this.perm[this.perm[xi0] + yi0] + zi1] + wi1]];
+        double[] g13 = this.grad4[this.perm[this.perm[this.perm[this.perm[xi1] + yi0] + zi1] + wi1]];
+        double[] g14 = this.grad4[this.perm[this.perm[this.perm[this.perm[xi0] + yi1] + zi1] + wi1]];
+        double[] g15 = this.grad4[this.perm[this.perm[this.perm[this.perm[xi1] + yi1] + zi1] + wi1]];
+        
+        double x0  = g0[0] * dx0 + g0[1] * dy0 + g0[2] * dz0 + g0[3] * dw0;
+        double x1  = g1[0] * dx1 + g1[1] * dy0 + g1[2] * dz0 + g1[3] * dw0;
+        double x2  = g2[0] * dx0 + g2[1] * dy1 + g2[2] * dz0 + g2[3] * dw0;
+        double x3  = g3[0] * dx1 + g3[1] * dy1 + g3[2] * dz0 + g3[3] * dw0;
+        double x4  = g4[0] * dx0 + g4[1] * dy0 + g4[2] * dz1 + g4[3] * dw0;
+        double x5  = g5[0] * dx1 + g5[1] * dy0 + g5[2] * dz1 + g5[3] * dw0;
+        double x6  = g6[0] * dx0 + g6[1] * dy1 + g6[2] * dz1 + g6[3] * dw0;
+        double x7  = g7[0] * dx1 + g7[1] * dy1 + g7[2] * dz1 + g7[3] * dw0;
+        double x8  = g8[0] * dx0 + g8[1] * dy0 + g8[2] * dz0 + g8[3] * dw1;
+        double x9  = g9[0] * dx1 + g9[1] * dy0 + g9[2] * dz0 + g9[3] * dw1;
+        double x10 = g10[0] * dx0 + g10[1] * dy1 + g10[2] * dz0 + g10[3] * dw1;
+        double x11 = g11[0] * dx1 + g11[1] * dy1 + g11[2] * dz0 + g11[3] * dw1;
+        double x12 = g12[0] * dx0 + g12[1] * dy0 + g12[2] * dz1 + g12[3] * dw1;
+        double x13 = g13[0] * dx1 + g13[1] * dy0 + g13[2] * dz1 + g13[3] * dw1;
+        double x14 = g14[0] * dx0 + g14[1] * dy1 + g14[2] * dz1 + g14[3] * dw1;
+        double x15 = g15[0] * dx1 + g15[1] * dy1 + g15[2] * dz1 + g15[3] * dw1;
+        
+        double y0 = smoothstep(x0, x1, dx0);
+        double y1 = smoothstep(x2, x3, dx0);
+        double y2 = smoothstep(x4, x5, dx0);
+        double y3 = smoothstep(x6, x7, dx0);
+        double y4 = smoothstep(x8, x9, dx0);
+        double y5 = smoothstep(x10, x11, dx0);
+        double y6 = smoothstep(x12, x13, dx0);
+        double y7 = smoothstep(x14, x15, dx0);
+        
+        double z0 = smoothstep(y0, y1, dy0);
+        double z1 = smoothstep(y2, y3, dy0);
+        double z2 = smoothstep(y4, y5, dy0);
+        double z3 = smoothstep(y6, y7, dy0);
+        
+        double w0 = smoothstep(z0, z1, dz0);
+        double w1 = smoothstep(z2, z3, dz0);
+        
+        return smoothstep(w0, w1, dw0);
     }
 }

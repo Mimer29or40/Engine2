@@ -23,9 +23,10 @@ public class NoiseTests extends Engine
         //         return 0.0;
         //     }
         // };
-        // noise = new ValueNoise(1337);
+        noise = new ValueNoise(1337);
         // noise.octaves(4);
         noise = new PerlinNoise(1337);
+        noise = new OpenSimplexNoise(1337);
     
         // frameRate(2);
     }

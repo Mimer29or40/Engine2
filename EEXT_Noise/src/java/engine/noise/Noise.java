@@ -4,12 +4,13 @@ import engine.util.Random;
 
 import static engine.util.Util.clamp;
 
+@SuppressWarnings("unused")
 public abstract class Noise
 {
-    protected static final int tableSize     = 512;
+    protected static final int tableSize     = 1 << 8;
     protected static final int tableSizeMask = Noise.tableSize - 1;
     
-    protected final int[] p = new int[Noise.tableSize << 1];
+    protected short[] perm;
     
     protected int    octaves     = 1;
     protected double persistence = 0.5;
@@ -46,17 +47,19 @@ public abstract class Noise
     
     protected void setup(Random random)
     {
-        for (int i = 0; i < Noise.tableSize; i++) this.p[i] = i;
+        this.perm = new short[Noise.tableSize << 1];
+        
+        for (short i = 0; i < Noise.tableSize; i++) this.perm[i] = i;
         
         for (int i = 0; i < Noise.tableSize; i++)
         {
             int index = random.nextInt() & Noise.tableSizeMask;
             
-            int swap = this.p[i];
-            this.p[i]     = this.p[index];
-            this.p[index] = swap;
+            short swap = this.perm[i];
+            this.perm[i]     = this.perm[index];
+            this.perm[index] = swap;
             
-            this.p[i + Noise.tableSize] = this.p[i];
+            this.perm[i + Noise.tableSize] = this.perm[i];
         }
     }
     
@@ -70,7 +73,7 @@ public abstract class Noise
         
         for (int i = 0; i < this.octaves; i++)
         {
-            value += calculate_impl(dimension, frequency, amplitude, coord) * amplitude;
+            value += calculate(dimension, frequency, amplitude, coord) * amplitude;
             for (int j = 0; j < dimension; j++) coord[j] = coord[j] * 2 + coord[j];
             maxValue += amplitude;
             frequency <<= 1;
@@ -80,15 +83,58 @@ public abstract class Noise
         return clamp(value / maxValue, -1.0, 1.0);
     }
     
+    protected double calculate(int dimension, int frequency, double amplitude, double[] coord)
+    {
+        switch (dimension)
+        {
+            case 1:
+                return calculate1D(frequency, amplitude, coord);
+            case 2:
+                return calculate2D(frequency, amplitude, coord);
+            case 3:
+                return calculate3D(frequency, amplitude, coord);
+            case 4:
+                return calculate4D(frequency, amplitude, coord);
+            default:
+                return calculateND(dimension, frequency, amplitude, coord);
+        }
+    }
+    
+    protected double calculate1D(int frequency, double amplitude, double[] coord)
+    {
+        throw new RuntimeException("Not Implemented");
+    }
+    
+    protected double calculate2D(int frequency, double amplitude, double[] coord)
+    {
+        throw new RuntimeException("Not Implemented");
+    }
+    
+    protected double calculate3D(int frequency, double amplitude, double[] coord)
+    {
+        throw new RuntimeException("Not Implemented");
+    }
+    
+    protected double calculate4D(int frequency, double amplitude, double[] coord)
+    {
+        throw new RuntimeException("Not Implemented");
+    }
+    
+    protected double calculateND(int dimension, int frequency, double amplitude, double[] coord)
+    {
+        throw new RuntimeException("Not Implemented");
+    }
+    
     protected int hash(int... coord)
     {
         int result = 0;
-        for (int v : coord)
-        {
-            result = this.p[result + v];
-        }
+        for (int v : coord) result = this.perm[result + v];
         return result;
     }
     
-    protected abstract double calculate_impl(int dimension, int frequency, double amplitude, double[] coord);
+    protected static int fastFloor(double x)
+    {
+        int xi = (int) x;
+        return x < xi ? xi - 1 : xi;
+    }
 }

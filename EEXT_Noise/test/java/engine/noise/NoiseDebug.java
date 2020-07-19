@@ -60,27 +60,27 @@ public class NoiseDebug extends Engine
         int yi0 = (int) Math.floor(y);
         int xi1 = xi0 + 1;
         int yi1 = yi0 + 1;
-        
+    
         double xi0Screen = map(xi0, xMin, xMax, 0, screenWidth());
         double yi0Screen = map(yi0, yMin, yMax, 0, screenHeight());
         double xi1Screen = map(xi1, xMin, xMax, 0, screenWidth());
         double yi1Screen = map(yi1, yMin, yMax, 0, screenHeight());
-        
+    
         double[] g0, g1, g2, g3;
-        
-        g0 = ((PerlinNoise) noise).grad2[noise.p[noise.p[xi0 & Noise.tableSizeMask] + yi0 & Noise.tableSizeMask]];
-        g1 = ((PerlinNoise) noise).grad2[noise.p[noise.p[xi1 & Noise.tableSizeMask] + yi0 & Noise.tableSizeMask]];
-        g2 = ((PerlinNoise) noise).grad2[noise.p[noise.p[xi0 & Noise.tableSizeMask] + yi1 & Noise.tableSizeMask]];
-        g3 = ((PerlinNoise) noise).grad2[noise.p[noise.p[xi1 & Noise.tableSizeMask] + yi1 & Noise.tableSizeMask]];
-        
+    
+        g0 = ((PerlinNoise) noise).grad2[noise.perm[noise.perm[xi0 & Noise.tableSizeMask] + yi0 & Noise.tableSizeMask]];
+        g1 = ((PerlinNoise) noise).grad2[noise.perm[noise.perm[xi1 & Noise.tableSizeMask] + yi0 & Noise.tableSizeMask]];
+        g2 = ((PerlinNoise) noise).grad2[noise.perm[noise.perm[xi0 & Noise.tableSizeMask] + yi1 & Noise.tableSizeMask]];
+        g3 = ((PerlinNoise) noise).grad2[noise.perm[noise.perm[xi1 & Noise.tableSizeMask] + yi1 & Noise.tableSizeMask]];
+    
         if (mouse().LEFT.held())
         {
             double dx0 = x - Math.floor(x);
             double dy0 = y - Math.floor(y);
-            
+        
             double dx1 = dx0 - 1.0;
             double dy1 = dy0 - 1.0;
-            
+        
             double x0 = g0[0] * dx0 + g0[1] * dy0;
             double x1 = g1[0] * dx1 + g1[1] * dy0;
             double y0 = smoothstep(x0, x1, dx0);

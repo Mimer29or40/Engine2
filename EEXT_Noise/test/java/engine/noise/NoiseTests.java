@@ -9,13 +9,13 @@ public class NoiseTests extends Engine
 {
     Noise noise;
     
-    boolean mode;
+    boolean mode = true;
     
     @Override
     public void setup()
     {
         size(200, 200, 4, 4);
-        
+    
         // noise = new Noise() {
         //     @Override
         //     public double calculate_impl(double... coord)
@@ -23,8 +23,11 @@ public class NoiseTests extends Engine
         //         return 0.0;
         //     }
         // };
-        noise = new ValueNoise(1337);
-        noise.octaves(4);
+        // noise = new ValueNoise(1337);
+        // noise.octaves(4);
+        noise = new PerlinNoise(1337);
+    
+        // frameRate(2);
     }
     
     @Override
@@ -35,19 +38,34 @@ public class NoiseTests extends Engine
         if (mode)
         {
             double vScale = screenHeight() >> 1;
-            double hScale = map(mouse().x(), 0, screenWidth(), 0.01, 0.5);
-            
+            double hScale = map(mouse().x(), screenWidth(), 0, 0.01, 0.4);
+            // hScale = 0.4;
+    
             clear();
-            translate(0, vScale);
-            stroke(Color.WHITE);
             weight(2);
-            
+    
+            // for (int i = 0, n = (int) Math.floor(screenWidth() * hScale); i < n; i++)
+            // {
+            //     double x = i / hScale;
+            //     stroke(Color.DARK_GREY);
+            //     line(x, 0, x, screenHeight());
+            //     stroke(Color.WHITE);
+            //     text("" + i, x, 0);
+            // }
+    
+            stroke(Color.WHITE);
+            translate(0, vScale);
             double value;
+            // double[] arr = new double[screenWidth()];
             for (int i = 0, n = screenWidth(); i < n; i++)
             {
-                value = this.noise.calculate(i * hScale + seconds() * 0.5) * vScale;
-                point(i, value);
+                value = this.noise.calculate(i * hScale, seconds() * 0.5);
+                // value = this.noise.calculate(i * hScale + seconds() * 0.5);
+                // value = this.noise.calculate(i * hScale, 0.5);
+                // arr[i] = value;
+                point(i, value * vScale);
             }
+            // println(Arrays.toString(arr));
         }
         else
         {
@@ -70,32 +88,33 @@ public class NoiseTests extends Engine
                 {
                     int index = (j * n + i) << 2;
     
-                    value             = (this.noise.calculate(i * hScale, j * vScale) + 1) * 0.5;
-                    pixels[index]     = (int) (value * 255);
-                    pixels[index + 1] = (int) (value * 255);
-                    pixels[index + 2] = (int) (value * 255);
+                    value = this.noise.calculate(i * hScale, j * vScale, t) * 0.5 + 0.5;
+    
+                    pixels[index]     = (int) (value * 255) * 4;
+                    pixels[index + 1] = (int) (value * 255) * 4;
+                    pixels[index + 2] = (int) (value * 255) * 4;
                     pixels[index + 3] = 255;
                 }
             }
-            
+    
             updatePixels();
         }
     }
     
-    protected static int hash(int[] p, int... coord)
-    {
-        int result = 0;
-        for (int v : coord)
-        {
-            result = p[result + v];
-        }
-        return result;
-    }
+    // protected static int hash(int[] p, int... coord)
+    // {
+    //     int result = 0;
+    //     for (int v : coord)
+    //     {
+    //         result = p[result + v];
+    //     }
+    //     return result;
+    // }
     
     public static void main(String[] args)
     {
         start(new NoiseTests());
-    
+        
         // Random random = new Random(1337);
         //
         // int tableSize     = 512;

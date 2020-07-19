@@ -122,6 +122,7 @@ public abstract class Device<I extends Device.Input>
                 {
                     input.down     = true;
                     input.held     = true;
+                    input.repeat   = true;
                     input.downTime = time;
                 }
                 else if (input.newState == GLFW_RELEASE)

@@ -111,10 +111,7 @@ public class Random extends java.util.Random
      */
     public int[] nextInts(int[] ints)
     {
-        for (int i = 0, n = ints.length; i < n; i++)
-        {
-            ints[i] = nextInt();
-        }
+        for (int i = 0, n = ints.length; i < n; i++) ints[i] = nextInt();
         return ints;
     }
     
@@ -123,11 +120,7 @@ public class Random extends java.util.Random
      */
     public int[] nextInts(int[] ints, int bound)
     {
-        if (bound <= 0) throw new IllegalArgumentException("bound must be positive");
-        for (int i = 0, n = ints.length; i < n; i++)
-        {
-            ints[i] = nextInt(bound);
-        }
+        for (int i = 0, n = ints.length; i < n; i++) ints[i] = nextInt(bound);
         return ints;
     }
     
@@ -136,12 +129,7 @@ public class Random extends java.util.Random
      */
     public int[] nextInts(int[] ints, int origin, int bound)
     {
-        if (origin >= bound) throw new IllegalArgumentException("origin must be less than bound");
-        bound -= origin;
-        for (int i = 0, n = ints.length; i < n; i++)
-        {
-            ints[i] = origin + nextInt(bound);
-        }
+        for (int i = 0, n = ints.length; i < n; i++) ints[i] = nextInt(origin, bound);
         return ints;
     }
     
@@ -150,10 +138,7 @@ public class Random extends java.util.Random
      */
     public long[] nextLongs(long[] longs)
     {
-        for (int i = 0, n = longs.length; i < n; i++)
-        {
-            longs[i] = nextLong();
-        }
+        for (int i = 0, n = longs.length; i < n; i++) longs[i] = nextLong();
         return longs;
     }
     
@@ -162,11 +147,7 @@ public class Random extends java.util.Random
      */
     public long[] nextLongs(long[] longs, long bound)
     {
-        if (bound <= 0) throw new IllegalArgumentException("bound must be positive");
-        for (int i = 0, n = longs.length; i < n; i++)
-        {
-            longs[i] = nextLong(bound);
-        }
+        for (int i = 0, n = longs.length; i < n; i++) longs[i] = nextLong(bound);
         return longs;
     }
     
@@ -175,12 +156,7 @@ public class Random extends java.util.Random
      */
     public long[] nextLongs(long[] longs, long origin, long bound)
     {
-        if (origin >= bound) throw new IllegalArgumentException("origin must be less than bound");
-        bound -= origin;
-        for (int i = 0, n = longs.length; i < n; i++)
-        {
-            longs[i] = origin + nextLong(bound);
-        }
+        for (int i = 0, n = longs.length; i < n; i++) longs[i] = nextLong(origin, bound);
         return longs;
     }
     
@@ -189,10 +165,7 @@ public class Random extends java.util.Random
      */
     public float[] nextFloats(float[] floats)
     {
-        for (int i = 0, n = floats.length; i < n; i++)
-        {
-            floats[i] = nextFloat();
-        }
+        for (int i = 0, n = floats.length; i < n; i++) floats[i] = nextFloat();
         return floats;
     }
     
@@ -201,11 +174,7 @@ public class Random extends java.util.Random
      */
     public float[] nextFloats(float[] floats, float bound)
     {
-        if (bound <= 0) throw new IllegalArgumentException("bound must be positive");
-        for (int i = 0, n = floats.length; i < n; i++)
-        {
-            floats[i] = nextFloat(bound);
-        }
+        for (int i = 0, n = floats.length; i < n; i++) floats[i] = nextFloat(bound);
         return floats;
     }
     
@@ -214,12 +183,7 @@ public class Random extends java.util.Random
      */
     public float[] nextFloats(float[] floats, float origin, float bound)
     {
-        if (origin >= bound) throw new IllegalArgumentException("origin must be less than bound");
-        bound -= origin;
-        for (int i = 0, n = floats.length; i < n; i++)
-        {
-            floats[i] = origin + nextFloat(bound);
-        }
+        for (int i = 0, n = floats.length; i < n; i++) floats[i] = nextFloat(origin, bound);
         return floats;
     }
     
@@ -228,10 +192,7 @@ public class Random extends java.util.Random
      */
     public double[] nextDoubles(double[] doubles)
     {
-        for (int i = 0, n = doubles.length; i < n; i++)
-        {
-            doubles[i] = nextDouble();
-        }
+        for (int i = 0, n = doubles.length; i < n; i++) doubles[i] = nextDouble();
         return doubles;
     }
     
@@ -240,11 +201,7 @@ public class Random extends java.util.Random
      */
     public double[] nextDoubles(double[] doubles, double bound)
     {
-        if (bound <= 0) throw new IllegalArgumentException("bound must be positive");
-        for (int i = 0, n = doubles.length; i < n; i++)
-        {
-            doubles[i] = nextDouble(bound);
-        }
+        for (int i = 0, n = doubles.length; i < n; i++) doubles[i] = nextDouble(bound);
         return doubles;
     }
     
@@ -253,12 +210,7 @@ public class Random extends java.util.Random
      */
     public double[] nextDoubles(double[] doubles, double origin, double bound)
     {
-        if (origin >= bound) throw new IllegalArgumentException("origin must be less than bound");
-        bound -= origin;
-        for (int i = 0, n = doubles.length; i < n; i++)
-        {
-            doubles[i] = origin + nextDouble(bound);
-        }
+        for (int i = 0, n = doubles.length; i < n; i++) doubles[i] = nextDouble(origin, bound);
         return doubles;
     }
     

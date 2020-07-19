@@ -26,7 +26,8 @@ public class NoiseTests extends Engine
         noise = new ValueNoise(1337);
         // noise.octaves(4);
         noise = new PerlinNoise(1337);
-        noise = new OpenSimplexNoise(1337);
+        noise = new SimplexNoise(1337);
+        // noise = new OpenSimplexNoise(1337);
     
         // frameRate(2);
     }

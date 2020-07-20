@@ -88,34 +88,34 @@ public abstract class Noise
         switch (dimension)
         {
             case 1:
-                return calculate1D(frequency, amplitude, coord);
+                return calculate1D(frequency, amplitude, coord[0]);
             case 2:
-                return calculate2D(frequency, amplitude, coord);
+                return calculate2D(frequency, amplitude, coord[0], coord[1]);
             case 3:
-                return calculate3D(frequency, amplitude, coord);
+                return calculate3D(frequency, amplitude, coord[0], coord[1], coord[2]);
             case 4:
-                return calculate4D(frequency, amplitude, coord);
+                return calculate4D(frequency, amplitude, coord[0], coord[1], coord[2], coord[3]);
             default:
                 return calculateND(dimension, frequency, amplitude, coord);
         }
     }
     
-    protected double calculate1D(int frequency, double amplitude, double[] coord)
+    protected double calculate1D(int frequency, double amplitude, double x)
     {
         throw new RuntimeException("Not Implemented");
     }
     
-    protected double calculate2D(int frequency, double amplitude, double[] coord)
+    protected double calculate2D(int frequency, double amplitude, double x, double y)
     {
         throw new RuntimeException("Not Implemented");
     }
     
-    protected double calculate3D(int frequency, double amplitude, double[] coord)
+    protected double calculate3D(int frequency, double amplitude, double x, double y, double z)
     {
         throw new RuntimeException("Not Implemented");
     }
     
-    protected double calculate4D(int frequency, double amplitude, double[] coord)
+    protected double calculate4D(int frequency, double amplitude, double x, double y, double z, double w)
     {
         throw new RuntimeException("Not Implemented");
     }

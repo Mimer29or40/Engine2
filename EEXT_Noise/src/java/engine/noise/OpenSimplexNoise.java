@@ -54,17 +54,14 @@ public class OpenSimplexNoise extends Noise
     }
     
     @Override
-    protected double calculate1D(int frequency, double amplitude, double[] coord)
+    protected double calculate1D(int frequency, double amplitude, double x)
     {
-        return calculate2D(frequency, amplitude, new double[] {coord[0], 0.0});
+        return calculate2D(frequency, amplitude, x, 0.0);
     }
     
     @Override
-    protected double calculate2D(int frequency, double amplitude, double[] coord)
+    protected double calculate2D(int frequency, double amplitude, double x, double y)
     {
-        double x = coord[0];
-        double y = coord[1];
-        
         //Place input coordinates onto grid.
         double stretchOffset = (x + y) * OpenSimplexNoise.STRETCH_CONSTANT_2D;
         double xs            = x + stretchOffset;
@@ -197,12 +194,8 @@ public class OpenSimplexNoise extends Noise
     }
     
     @Override
-    protected double calculate3D(int frequency, double amplitude, double[] coord)
+    protected double calculate3D(int frequency, double amplitude, double x, double y, double z)
     {
-        double x = coord[0];
-        double y = coord[1];
-        double z = coord[2];
-        
         //Place input coordinates on simplectic honeycomb.
         double stretchOffset = (x + y + z) * OpenSimplexNoise.STRETCH_CONSTANT_3D;
         double xs            = x + stretchOffset;
@@ -877,13 +870,8 @@ public class OpenSimplexNoise extends Noise
     }
     
     @Override
-    protected double calculate4D(int frequency, double amplitude, double[] coord)
+    protected double calculate4D(int frequency, double amplitude, double x, double y, double z, double w)
     {
-        double x = coord[0];
-        double y = coord[1];
-        double z = coord[2];
-        double w = coord[3];
-        
         //Place input coordinates on simplectic honeycomb.
         double stretchOffset = (x + y + z + w) * OpenSimplexNoise.STRETCH_CONSTANT_4D;
         double xs            = x + stretchOffset;

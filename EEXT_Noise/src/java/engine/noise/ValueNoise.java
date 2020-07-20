@@ -30,17 +30,15 @@ public class ValueNoise extends Noise
     }
     
     @Override
-    protected double calculate1D(int frequency, double amplitude, double[] coord)
+    protected double calculate1D(int frequency, double amplitude, double x)
     {
-        double x = coord[0];
-        
         int xi = fastFloor(x);
-        
+    
         double xf = x - xi;
-        
+    
         int rx0 = xi & Noise.tableSizeMask;
         int rx1 = (rx0 + 1) & Noise.tableSizeMask;
-        
+    
         double x0 = this.r[this.perm[rx0]];
         double x1 = this.r[this.perm[rx1]];
         
@@ -48,11 +46,8 @@ public class ValueNoise extends Noise
     }
     
     @Override
-    protected double calculate2D(int frequency, double amplitude, double[] coord)
+    protected double calculate2D(int frequency, double amplitude, double x, double y)
     {
-        double x = coord[0];
-        double y = coord[1];
-        
         int xi = fastFloor(x);
         int yi = fastFloor(y);
         
@@ -76,12 +71,8 @@ public class ValueNoise extends Noise
     }
     
     @Override
-    protected double calculate3D(int frequency, double amplitude, double[] coord)
+    protected double calculate3D(int frequency, double amplitude, double x, double y, double z)
     {
-        double x = coord[0];
-        double y = coord[1];
-        double z = coord[2];
-        
         int xi = fastFloor(x);
         int yi = fastFloor(y);
         int zi = fastFloor(z);
@@ -118,13 +109,8 @@ public class ValueNoise extends Noise
     }
     
     @Override
-    protected double calculate4D(int frequency, double amplitude, double[] coord)
+    protected double calculate4D(int frequency, double amplitude, double x, double y, double z, double w)
     {
-        double x = coord[0];
-        double y = coord[1];
-        double z = coord[2];
-        double w = coord[3];
-        
         int xi = fastFloor(x);
         int yi = fastFloor(y);
         int zi = fastFloor(z);

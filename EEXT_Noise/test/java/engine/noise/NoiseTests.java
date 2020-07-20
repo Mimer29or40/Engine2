@@ -23,11 +23,21 @@ public class NoiseTests extends Engine
         //         return 0.0;
         //     }
         // };
-        noise = new ValueNoise(1337);
+        // noise = new ValueNoise(1337);
         // noise.octaves(4);
-        noise = new PerlinNoise(1337);
-        noise = new SimplexNoise(1337);
-        // noise = new OpenSimplexNoise(1337);
+        // noise = new PerlinNoise(1337);
+        // noise = new SimplexNoise(1337);
+        noise = new OpenSimplexNoise(1337);
+        // noise = new WorleyNoise(1337)
+        // {
+        //     @Override
+        //     protected double distanceFunction(List<Double> distances)
+        //     {
+        //         if (distances.size() == 0) return 0;
+        //         if (distances.size() == 1) return (1.0 - distances.get(0)) * (1.0 - distances.get(0));
+        //         return distances.get(1) - distances.get(0);
+        //     }
+        // };
     
         // frameRate(2);
     }
@@ -57,6 +67,7 @@ public class NoiseTests extends Engine
     
             stroke(Color.WHITE);
             translate(0, vScale);
+            scale(1, -1);
             double value;
             // double[] arr = new double[screenWidth()];
             for (int i = 0, n = screenWidth(); i < n; i++)
@@ -75,6 +86,7 @@ public class NoiseTests extends Engine
             
             double hScale = map(mouse().x(), screenWidth(), 0, 0.01, 0.4);
             double vScale = map(mouse().y(), screenHeight(), 0, 0.01, 0.4);
+            hScale = vScale = 0.05;
             
             int n = screenWidth();
             int m = screenHeight();
@@ -92,14 +104,23 @@ public class NoiseTests extends Engine
     
                     value = this.noise.calculate(i * hScale, j * vScale, t) * 0.5 + 0.5;
     
-                    pixels[index]     = (int) (value * 255) * 4;
-                    pixels[index + 1] = (int) (value * 255) * 4;
-                    pixels[index + 2] = (int) (value * 255) * 4;
+                    pixels[index]     = (int) (value * 255);
+                    pixels[index + 1] = (int) (value * 255);
+                    pixels[index + 2] = (int) (value * 255);
                     pixels[index + 3] = 255;
                 }
             }
     
             updatePixels();
+    
+            scale(1.0 / hScale, 1.0 / vScale);
+            stroke(255, 0, 0, 10);
+            weight(1);
+            for (int i = 0; i < 10; i++)
+            {
+                line(i, 0, i, 10);
+                line(0, i, 10, i);
+            }
         }
     }
     

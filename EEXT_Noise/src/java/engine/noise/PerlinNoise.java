@@ -72,18 +72,16 @@ public class PerlinNoise extends Noise
     }
     
     @Override
-    protected double calculate1D(int frequency, double amplitude, double[] coord)
+    protected double calculate1D(int frequency, double amplitude, double x)
     {
-        double x = coord[0];
-        
         int xi0 = fastFloor(x) & Noise.tableSizeMask;
-        
+    
         int xi1 = (xi0 + 1) & Noise.tableSizeMask;
-        
+    
         double dx0 = x - xi0;
-        
+    
         double dx1 = dx0 - 1.0;
-        
+    
         double[] g0 = this.grad1[this.perm[xi0]];
         double[] g1 = this.grad1[this.perm[xi1]];
         
@@ -94,11 +92,8 @@ public class PerlinNoise extends Noise
     }
     
     @Override
-    protected double calculate2D(int frequency, double amplitude, double[] coord)
+    protected double calculate2D(int frequency, double amplitude, double x, double y)
     {
-        double x = coord[0];
-        double y = coord[1];
-        
         int xi0 = fastFloor(x) & Noise.tableSizeMask;
         int yi0 = fastFloor(y) & Noise.tableSizeMask;
         
@@ -128,12 +123,8 @@ public class PerlinNoise extends Noise
     }
     
     @Override
-    protected double calculate3D(int frequency, double amplitude, double[] coord)
+    protected double calculate3D(int frequency, double amplitude, double x, double y, double z)
     {
-        double x = coord[0];
-        double y = coord[1];
-        double z = coord[2];
-        
         int xi0 = fastFloor(x) & Noise.tableSizeMask;
         int yi0 = fastFloor(y) & Noise.tableSizeMask;
         int zi0 = fastFloor(z) & Noise.tableSizeMask;
@@ -180,13 +171,8 @@ public class PerlinNoise extends Noise
     }
     
     @Override
-    protected double calculate4D(int frequency, double amplitude, double[] coord)
+    protected double calculate4D(int frequency, double amplitude, double x, double y, double z, double w)
     {
-        double x = coord[0];
-        double y = coord[1];
-        double z = coord[2];
-        double w = coord[3];
-        
         int xi0 = fastFloor(x) & Noise.tableSizeMask;
         int yi0 = fastFloor(y) & Noise.tableSizeMask;
         int zi0 = fastFloor(z) & Noise.tableSizeMask;

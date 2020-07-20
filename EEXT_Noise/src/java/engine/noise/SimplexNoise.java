@@ -41,17 +41,14 @@ public class SimplexNoise extends Noise
     }
     
     @Override
-    protected double calculate1D(int frequency, double amplitude, double[] coord)
+    protected double calculate1D(int frequency, double amplitude, double x)
     {
-        return calculate2D(frequency, amplitude, new double[] {coord[0], 0.0});
+        return calculate2D(frequency, amplitude, x, 0.0);
     }
     
     @Override
-    protected double calculate2D(int frequency, double amplitude, double[] coord)
+    protected double calculate2D(int frequency, double amplitude, double x, double y)
     {
-        double x = coord[0];
-        double y = coord[1];
-        
         double n0, n1, n2; // Noise contributions from the three corners
         // Skew the input space to determine which simplex cell we're in
         double s  = (x + y) * SimplexNoise.F2; // Hairy factor for 2D
@@ -125,12 +122,8 @@ public class SimplexNoise extends Noise
     }
     
     @Override
-    protected double calculate3D(int frequency, double amplitude, double[] coord)
+    protected double calculate3D(int frequency, double amplitude, double x, double y, double z)
     {
-        double x = coord[0];
-        double y = coord[1];
-        double z = coord[2];
-        
         double n0, n1, n2, n3; // Noise contributions from the four corners
         // Skew the input space to determine which simplex cell we're in
         double s  = (x + y + z) * SimplexNoise.F3; // Very nice and simple skew factor for 3D
@@ -276,13 +269,8 @@ public class SimplexNoise extends Noise
     }
     
     @Override
-    protected double calculate4D(int frequency, double amplitude, double[] coord)
+    protected double calculate4D(int frequency, double amplitude, double x, double y, double z, double w)
     {
-        double x = coord[0];
-        double y = coord[1];
-        double z = coord[2];
-        double w = coord[3];
-        
         double n0, n1, n2, n3, n4; // Noise contributions from the five corners
         // Skew the (x,y,z,w) space to determine which cell of 24 simplices we're in
         double s  = (x + y + z + w) * SimplexNoise.F4; // Factor for 4D skewing

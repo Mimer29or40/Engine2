@@ -2,6 +2,7 @@ package engine.noise;
 
 import engine.util.Random;
 
+import static engine.util.Util.fastFloor;
 import static engine.util.Util.smoothstep;
 
 @SuppressWarnings("unused")
@@ -30,15 +31,15 @@ public class ValueNoise extends Noise
     }
     
     @Override
-    protected double calculate1D(int frequency, double amplitude, double x)
+    protected double noise1D(int frequency, double amplitude, double x)
     {
         int xi = fastFloor(x);
-    
+        
         double xf = x - xi;
-    
+        
         int rx0 = xi & Noise.tableSizeMask;
         int rx1 = (rx0 + 1) & Noise.tableSizeMask;
-    
+        
         double x0 = this.r[this.perm[rx0]];
         double x1 = this.r[this.perm[rx1]];
         
@@ -46,7 +47,7 @@ public class ValueNoise extends Noise
     }
     
     @Override
-    protected double calculate2D(int frequency, double amplitude, double x, double y)
+    protected double noise2D(int frequency, double amplitude, double x, double y)
     {
         int xi = fastFloor(x);
         int yi = fastFloor(y);
@@ -71,7 +72,7 @@ public class ValueNoise extends Noise
     }
     
     @Override
-    protected double calculate3D(int frequency, double amplitude, double x, double y, double z)
+    protected double noise3D(int frequency, double amplitude, double x, double y, double z)
     {
         int xi = fastFloor(x);
         int yi = fastFloor(y);
@@ -109,7 +110,7 @@ public class ValueNoise extends Noise
     }
     
     @Override
-    protected double calculate4D(int frequency, double amplitude, double x, double y, double z, double w)
+    protected double noise4D(int frequency, double amplitude, double x, double y, double z, double w)
     {
         int xi = fastFloor(x);
         int yi = fastFloor(y);
@@ -168,8 +169,10 @@ public class ValueNoise extends Noise
     }
     
     @Override
-    protected double calculateND(int dimension, int frequency, double amplitude, double[] coord)
+    protected double noiseND(int frequency, double amplitude, double[] coord)
     {
+        int dimension = coord.length;
+        
         int[]    vi = new int[dimension];
         double[] vf = new double[dimension];
         

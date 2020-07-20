@@ -39,7 +39,7 @@ public class NoiseDebug extends Engine
             {
                 double x = map(i, 0, w, xMin, xMax);
                 
-                noiseTexture.setPixel(i, j, color.set(noise.calculate(x, y) * 0.5 + 0.5));
+                noiseTexture.setPixel(i, j, color.set(noise.noise(x, y) * 0.5 + 0.5));
             }
         }
         noiseTexture.bindTexture().upload();

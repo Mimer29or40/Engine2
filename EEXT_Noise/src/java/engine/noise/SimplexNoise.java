@@ -2,6 +2,8 @@ package engine.noise;
 
 import engine.util.Random;
 
+import static engine.util.Util.fastFloor;
+
 @SuppressWarnings("unused")
 public class SimplexNoise extends Noise
 {
@@ -41,13 +43,13 @@ public class SimplexNoise extends Noise
     }
     
     @Override
-    protected double calculate1D(int frequency, double amplitude, double x)
+    protected double noise1D(int frequency, double amplitude, double x)
     {
-        return calculate2D(frequency, amplitude, x, 0.0);
+        return noise2D(frequency, amplitude, x, 0.0);
     }
     
     @Override
-    protected double calculate2D(int frequency, double amplitude, double x, double y)
+    protected double noise2D(int frequency, double amplitude, double x, double y)
     {
         double n0, n1, n2; // Noise contributions from the three corners
         // Skew the input space to determine which simplex cell we're in
@@ -122,7 +124,7 @@ public class SimplexNoise extends Noise
     }
     
     @Override
-    protected double calculate3D(int frequency, double amplitude, double x, double y, double z)
+    protected double noise3D(int frequency, double amplitude, double x, double y, double z)
     {
         double n0, n1, n2, n3; // Noise contributions from the four corners
         // Skew the input space to determine which simplex cell we're in
@@ -269,7 +271,7 @@ public class SimplexNoise extends Noise
     }
     
     @Override
-    protected double calculate4D(int frequency, double amplitude, double x, double y, double z, double w)
+    protected double noise4D(int frequency, double amplitude, double x, double y, double z, double w)
     {
         double n0, n1, n2, n3, n4; // Noise contributions from the five corners
         // Skew the (x,y,z,w) space to determine which cell of 24 simplices we're in

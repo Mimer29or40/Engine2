@@ -63,17 +63,17 @@ public abstract class Noise
         }
     }
     
-    public double calculate(double... coord)
+    public double noise(double... coord)
     {
         int    dimension = coord.length;
         double value     = 0.0;
         double maxValue  = 0.0;
         int    frequency = 1;
         double amplitude = 1.0;
-        
+    
         for (int i = 0; i < this.octaves; i++)
         {
-            value += calculate(dimension, frequency, amplitude, coord) * amplitude;
+            value += noise(dimension, frequency, amplitude, coord) * amplitude;
             for (int j = 0; j < dimension; j++) coord[j] = coord[j] * 2 + coord[j];
             maxValue += amplitude;
             frequency <<= 1;
@@ -83,44 +83,44 @@ public abstract class Noise
         return clamp(value / maxValue, -1.0, 1.0);
     }
     
-    protected double calculate(int dimension, int frequency, double amplitude, double[] coord)
+    protected double noise(int dimension, int frequency, double amplitude, double[] coord)
     {
         switch (dimension)
         {
             case 1:
-                return calculate1D(frequency, amplitude, coord[0]);
+                return noise1D(frequency, amplitude, coord[0]);
             case 2:
-                return calculate2D(frequency, amplitude, coord[0], coord[1]);
+                return noise2D(frequency, amplitude, coord[0], coord[1]);
             case 3:
-                return calculate3D(frequency, amplitude, coord[0], coord[1], coord[2]);
+                return noise3D(frequency, amplitude, coord[0], coord[1], coord[2]);
             case 4:
-                return calculate4D(frequency, amplitude, coord[0], coord[1], coord[2], coord[3]);
+                return noise4D(frequency, amplitude, coord[0], coord[1], coord[2], coord[3]);
             default:
-                return calculateND(dimension, frequency, amplitude, coord);
+                return noiseND(frequency, amplitude, coord);
         }
     }
     
-    protected double calculate1D(int frequency, double amplitude, double x)
+    protected double noise1D(int frequency, double amplitude, double x)
     {
         throw new RuntimeException("Not Implemented");
     }
     
-    protected double calculate2D(int frequency, double amplitude, double x, double y)
+    protected double noise2D(int frequency, double amplitude, double x, double y)
     {
         throw new RuntimeException("Not Implemented");
     }
     
-    protected double calculate3D(int frequency, double amplitude, double x, double y, double z)
+    protected double noise3D(int frequency, double amplitude, double x, double y, double z)
     {
         throw new RuntimeException("Not Implemented");
     }
     
-    protected double calculate4D(int frequency, double amplitude, double x, double y, double z, double w)
+    protected double noise4D(int frequency, double amplitude, double x, double y, double z, double w)
     {
         throw new RuntimeException("Not Implemented");
     }
     
-    protected double calculateND(int dimension, int frequency, double amplitude, double[] coord)
+    protected double noiseND(int frequency, double amplitude, double[] coord)
     {
         throw new RuntimeException("Not Implemented");
     }
@@ -130,11 +130,5 @@ public abstract class Noise
         int result = 0;
         for (int v : coord) result = this.perm[result + v];
         return result;
-    }
-    
-    protected static int fastFloor(double x)
-    {
-        int xi = (int) x;
-        return x < xi ? xi - 1 : xi;
     }
 }

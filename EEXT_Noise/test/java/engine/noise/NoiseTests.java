@@ -72,7 +72,7 @@ public class NoiseTests extends Engine
             // double[] arr = new double[screenWidth()];
             for (int i = 0, n = screenWidth(); i < n; i++)
             {
-                value = this.noise.calculate(i * hScale, seconds() * 0.5);
+                value = this.noise.noise(i * hScale, seconds() * 0.5);
                 // value = this.noise.calculate(i * hScale + seconds() * 0.5);
                 // value = this.noise.calculate(i * hScale, 0.5);
                 // arr[i] = value;
@@ -102,7 +102,7 @@ public class NoiseTests extends Engine
                 {
                     int index = (j * n + i) << 2;
     
-                    value = this.noise.calculate(i * hScale, j * vScale, t) * 0.5 + 0.5;
+                    value = this.noise.noise(i * hScale, j * vScale, t) * 0.5 + 0.5;
     
                     pixels[index]     = (int) (value * 255);
                     pixels[index + 1] = (int) (value * 255);

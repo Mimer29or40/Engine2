@@ -2,6 +2,7 @@ package engine.noise;
 
 import engine.util.Random;
 
+import static engine.util.Util.fastFloor;
 import static engine.util.Util.smoothstep;
 
 @SuppressWarnings("unused")
@@ -72,16 +73,16 @@ public class PerlinNoise extends Noise
     }
     
     @Override
-    protected double calculate1D(int frequency, double amplitude, double x)
+    protected double noise1D(int frequency, double amplitude, double x)
     {
         int xi0 = fastFloor(x) & Noise.tableSizeMask;
-    
+        
         int xi1 = (xi0 + 1) & Noise.tableSizeMask;
-    
+        
         double dx0 = x - xi0;
-    
+        
         double dx1 = dx0 - 1.0;
-    
+        
         double[] g0 = this.grad1[this.perm[xi0]];
         double[] g1 = this.grad1[this.perm[xi1]];
         
@@ -92,7 +93,7 @@ public class PerlinNoise extends Noise
     }
     
     @Override
-    protected double calculate2D(int frequency, double amplitude, double x, double y)
+    protected double noise2D(int frequency, double amplitude, double x, double y)
     {
         int xi0 = fastFloor(x) & Noise.tableSizeMask;
         int yi0 = fastFloor(y) & Noise.tableSizeMask;
@@ -123,7 +124,7 @@ public class PerlinNoise extends Noise
     }
     
     @Override
-    protected double calculate3D(int frequency, double amplitude, double x, double y, double z)
+    protected double noise3D(int frequency, double amplitude, double x, double y, double z)
     {
         int xi0 = fastFloor(x) & Noise.tableSizeMask;
         int yi0 = fastFloor(y) & Noise.tableSizeMask;
@@ -171,7 +172,7 @@ public class PerlinNoise extends Noise
     }
     
     @Override
-    protected double calculate4D(int frequency, double amplitude, double x, double y, double z, double w)
+    protected double noise4D(int frequency, double amplitude, double x, double y, double z, double w)
     {
         int xi0 = fastFloor(x) & Noise.tableSizeMask;
         int yi0 = fastFloor(y) & Noise.tableSizeMask;

@@ -781,4 +781,27 @@ public class Util
     {
         return a + (x * x * x * (x * (x * 6 - 15) + 10)) * (b - a);
     }
+    
+    /**
+     * Calculated the floor of a double. Much faster than {@code Math.floor}
+     *
+     * @param x The value
+     * @return The floored value.
+     */
+    public static int fastFloor(double x)
+    {
+        int xi = (int) x;
+        return x < xi ? xi - 1 : xi;
+    }
+    
+    /**
+     * Calculated the ceiling of a double. Much faster than {@code Math.ceil}
+     *
+     * @param x The value
+     * @return The ceiling value.
+     */
+    public static int fastCeil(double x)
+    {
+        return fastFloor(x) + 1;
+    }
 }

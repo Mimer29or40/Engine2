@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static engine.util.Util.fastFloor;
+
 @SuppressWarnings("unused")
 public class WorleyNoise extends Noise
 {
@@ -118,7 +120,7 @@ public class WorleyNoise extends Noise
     }
     
     @Override
-    protected double calculate1D(int frequency, double amplitude, double x)
+    protected double noise1D(int frequency, double amplitude, double x)
     {
         int xi = fastFloor(x) - 1;
         
@@ -133,7 +135,7 @@ public class WorleyNoise extends Noise
     }
     
     @Override
-    protected double calculate2D(int frequency, double amplitude, double x, double y)
+    protected double noise2D(int frequency, double amplitude, double x, double y)
     {
         int xi = fastFloor(x) - 1;
         int yi = fastFloor(y) - 1;
@@ -152,7 +154,7 @@ public class WorleyNoise extends Noise
     }
     
     @Override
-    protected double calculate3D(int frequency, double amplitude, double x, double y, double z)
+    protected double noise3D(int frequency, double amplitude, double x, double y, double z)
     {
         int xi = fastFloor(x) - 1;
         int yi = fastFloor(y) - 1;
@@ -175,7 +177,7 @@ public class WorleyNoise extends Noise
     }
     
     @Override
-    protected double calculate4D(int frequency, double amplitude, double x, double y, double z, double w)
+    protected double noise4D(int frequency, double amplitude, double x, double y, double z, double w)
     {
         int xi = fastFloor(x) - 1;
         int yi = fastFloor(y) - 1;

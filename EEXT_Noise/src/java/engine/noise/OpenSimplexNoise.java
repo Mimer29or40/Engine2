@@ -2,6 +2,8 @@ package engine.noise;
 
 import engine.util.Random;
 
+import static engine.util.Util.fastFloor;
+
 @SuppressWarnings({"UnnecessaryLocalVariable", "unused", "UnusedAssignment", "ConstantConditions"})
 public class OpenSimplexNoise extends Noise
 {
@@ -54,13 +56,13 @@ public class OpenSimplexNoise extends Noise
     }
     
     @Override
-    protected double calculate1D(int frequency, double amplitude, double x)
+    protected double noise1D(int frequency, double amplitude, double x)
     {
-        return calculate2D(frequency, amplitude, x, 0.0);
+        return noise2D(frequency, amplitude, x, 0.0);
     }
     
     @Override
-    protected double calculate2D(int frequency, double amplitude, double x, double y)
+    protected double noise2D(int frequency, double amplitude, double x, double y)
     {
         //Place input coordinates onto grid.
         double stretchOffset = (x + y) * OpenSimplexNoise.STRETCH_CONSTANT_2D;
@@ -194,7 +196,7 @@ public class OpenSimplexNoise extends Noise
     }
     
     @Override
-    protected double calculate3D(int frequency, double amplitude, double x, double y, double z)
+    protected double noise3D(int frequency, double amplitude, double x, double y, double z)
     {
         //Place input coordinates on simplectic honeycomb.
         double stretchOffset = (x + y + z) * OpenSimplexNoise.STRETCH_CONSTANT_3D;
@@ -870,7 +872,7 @@ public class OpenSimplexNoise extends Noise
     }
     
     @Override
-    protected double calculate4D(int frequency, double amplitude, double x, double y, double z, double w)
+    protected double noise4D(int frequency, double amplitude, double x, double y, double z, double w)
     {
         //Place input coordinates on simplectic honeycomb.
         double stretchOffset = (x + y + z + w) * OpenSimplexNoise.STRETCH_CONSTANT_4D;

@@ -1,4 +1,4 @@
-package engine.noise;
+package engine.util;
 
 import java.util.Arrays;
 import java.util.function.Function;
@@ -26,17 +26,15 @@ public class WorleyNoise extends Noise
      *
      * @param property The name of the property.
      * @param object   The new value of the property.
-     * @return This instance for call chaining.
      */
     @SuppressWarnings("unchecked")
     @Override
-    public Noise setProperty(String property, Object object)
+    public void setProperty(String property, Object object)
     {
         if (property.equals("distanceFunction"))
         {
             if (object instanceof Function) this.distanceFunction = (Function<double[], Double>) object;
         }
-        return this;
     }
     
     /**

@@ -13,7 +13,6 @@
     <orderEntry type="module" module-name="Engine2" scope="PROVIDED" />
     <orderEntry type="module" module-name="EEXT_GUI" scope="PROVIDED" />
     <orderEntry type="module" module-name="EEXT_Shader" scope="PROVIDED" />
-    <orderEntry type="module" module-name="EEXT_Noise" />
     <orderEntry type="library" scope="PROVIDED" name="Joml" level="application" />
   </component>
 </module>

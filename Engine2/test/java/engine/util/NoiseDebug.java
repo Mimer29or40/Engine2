@@ -3,6 +3,9 @@ package engine.noise;
 import engine.Engine;
 import engine.color.Color;
 import engine.render.Texture;
+import engine.util.Noise;
+import engine.util.PerlinNoise;
+import engine.util.ValueNoise;
 
 import static engine.util.Util.map;
 
@@ -22,16 +25,16 @@ public class NoiseDebug extends Engine
     public void setup()
     {
         size(800, 800, 1, 1);
-    
+        
         noise = new ValueNoise();
         noise = new PerlinNoise();
-        noise.seed(1337);
-    
+        noise.setSeed(1337);
+        
         int w = screenWidth();
         int h = screenHeight();
-    
+        
         noiseTexture = new Texture(w, h);
-    
+        
         Color color = new Color(0, 255);
         for (int j = 0; j < h; j++)
         {
@@ -61,19 +64,19 @@ public class NoiseDebug extends Engine
         int yi0 = (int) Math.floor(y);
         int xi1 = xi0 + 1;
         int yi1 = yi0 + 1;
-    
+        
         double xi0Screen = map(xi0, xMin, xMax, 0, screenWidth());
         double yi0Screen = map(yi0, yMin, yMax, 0, screenHeight());
         double xi1Screen = map(xi1, xMin, xMax, 0, screenWidth());
         double yi1Screen = map(yi1, yMin, yMax, 0, screenHeight());
-    
+        
         double[] g0, g1, g2, g3;
-    
+        
         // g0 = ((PerlinNoise) noise).grad2[noise.perm[noise.perm[xi0 & Noise.TABLE_SIZE_MASK] + yi0 & Noise.TABLE_SIZE_MASK]];
         // g1 = ((PerlinNoise) noise).grad2[noise.perm[noise.perm[xi1 & Noise.TABLE_SIZE_MASK] + yi0 & Noise.TABLE_SIZE_MASK]];
         // g2 = ((PerlinNoise) noise).grad2[noise.perm[noise.perm[xi0 & Noise.TABLE_SIZE_MASK] + yi1 & Noise.TABLE_SIZE_MASK]];
         // g3 = ((PerlinNoise) noise).grad2[noise.perm[noise.perm[xi1 & Noise.TABLE_SIZE_MASK] + yi1 & Noise.TABLE_SIZE_MASK]];
-    
+        
         // if (mouse().LEFT.held())
         // {
         //     double dx0 = x - Math.floor(x);
@@ -90,26 +93,26 @@ public class NoiseDebug extends Engine
         //     double y1 = smoothstep(x2, x3, dx0);
         //     notification(String.format("Noise Value: %s", round(smoothstep(y0, y1, dy0), 6)));
         // }
-    
+        
         stroke(Color.BLUE);
         weight(2);
-    
+        
         line(xScreen, yScreen, xi0Screen, yi0Screen);
         line(xScreen, yScreen, xi1Screen, yi0Screen);
         line(xScreen, yScreen, xi0Screen, yi1Screen);
         line(xScreen, yScreen, xi1Screen, yi1Screen);
-    
+        
         stroke(Color.GREEN);
         weight(2);
-    
+        
         // line(xi0Screen, yi0Screen, xi0Screen + g0[0] * 30, yi0Screen + g0[1] * 30);
         // line(xi1Screen, yi0Screen, xi1Screen + g1[0] * 30, yi0Screen + g1[1] * 30);
         // line(xi0Screen, yi1Screen, xi0Screen + g2[0] * 30, yi1Screen + g2[1] * 30);
         // line(xi1Screen, yi1Screen, xi1Screen + g3[0] * 30, yi1Screen + g3[1] * 30);
-    
+        
         stroke(Color.RED);
         weight(5);
-    
+        
         point(xi0Screen, yi0Screen);
         point(xi1Screen, yi0Screen);
         point(xi0Screen, yi1Screen);

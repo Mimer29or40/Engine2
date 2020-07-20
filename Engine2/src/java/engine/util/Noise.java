@@ -1,12 +1,16 @@
-package engine.noise;
-
-import engine.util.Random;
+package engine.util;
 
 import static engine.util.Util.clamp;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public abstract class Noise
 {
+    public static final String VALUE        = "value";
+    public static final String PERLIN       = "perlin";
+    public static final String SIMPLEX      = "simplex";
+    public static final String OPEN_SIMPLEX = "open-simplex";
+    public static final String WORLEY       = "worley";
+    
     protected static final int TABLE_SIZE      = 1 << 8;
     protected static final int TABLE_SIZE_MASK = Noise.TABLE_SIZE - 1;
     
@@ -23,13 +27,11 @@ public abstract class Noise
      * Sets the seed of the random instance. Will cause the re-rolling of the permutation tables.
      *
      * @param seed The new seed.
-     * @return This instance for call chaining.
      */
-    public Noise seed(long seed)
+    public void setSeed(long seed)
     {
         this.random.setSeed(seed);
         this.initialized = false;
-        return this;
     }
     
     /**
@@ -48,12 +50,10 @@ public abstract class Noise
      * {@code Noise.persistence} the amplitude of the previous one.
      *
      * @param octaves The amount of octaves.
-     * @return This instance for call chaining.
      */
-    public Noise octaves(int octaves)
+    public void octaves(int octaves)
     {
         this.octaves = Math.max(1, octaves);
-        return this;
     }
     
     /**
@@ -69,12 +69,11 @@ public abstract class Noise
     /**
      * Sets the amount to scale succeeding octave amplitudes.
      *
-     * @return The persistence.
+     * @param persistence The persistence.
      */
-    public Noise persistence(double persistence)
+    public void persistence(double persistence)
     {
         this.persistence = persistence;
-        return this;
     }
     
     /**
@@ -83,11 +82,10 @@ public abstract class Noise
      *
      * @param property The name of the property.
      * @param object   The new value of the property.
-     * @return This instance for call chaining.
      */
-    public Noise setProperty(String property, Object object)
+    public void setProperty(String property, Object object)
     {
-        return this;
+    
     }
     
     /**

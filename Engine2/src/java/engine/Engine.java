@@ -11,10 +11,9 @@ import engine.input.Keyboard;
 import engine.input.Modifiers;
 import engine.input.Mouse;
 import engine.render.*;
-import engine.util.Logger;
-import engine.util.Profiler;
 import engine.util.Random;
-import engine.util.Tuple;
+import engine.util.SimplexNoise;
+import engine.util.*;
 import org.joml.*;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.system.MemoryStack;
@@ -59,6 +58,13 @@ public class Engine
     private static final Vector2i pixelSize  = new Vector2i();
     
     private static Random random;
+    
+    private static Noise valueNoise;
+    private static Noise perlinNoise;
+    private static Noise simplexNoise;
+    private static Noise openSimplexNoise;
+    private static Noise worleyNoise;
+    private static Noise noise;
     
     private static Mouse     mouse;
     private static Keyboard  keyboard;
@@ -203,9 +209,17 @@ public class Engine
             }
             catch (ReflectiveOperationException ignored) { }
         }
-        
+    
         Engine.random = new Random();
-        
+    
+        Engine.valueNoise       = new ValueNoise();
+        Engine.perlinNoise      = new PerlinNoise();
+        Engine.simplexNoise     = new SimplexNoise();
+        Engine.openSimplexNoise = new OpenSimplexNoise();
+        Engine.worleyNoise      = new WorleyNoise();
+    
+        Engine.noise = Engine.perlinNoise;
+    
         try
         {
             Engine.LOGGER.fine("Extension Pre Setup");
@@ -929,7 +943,7 @@ public class Engine
     // ---------------------
     
     /**
-     * Gets the engine's random instance. This is used to give the entire engine a common state if desired.
+     * Gets the engine's random instance.
      *
      * @return The common random instance.
      */
@@ -939,9 +953,9 @@ public class Engine
     }
     
     /**
-     * See {@link Random#}
+     * See {@link Random#setSeed(long)}
      */
-    public static void setSeed(long seed)
+    public static void randomSeed(long seed)
     {
         Engine.random.setSeed(seed);
     }
@@ -1569,6 +1583,95 @@ public class Engine
     public static Color nextColor()
     {
         return Engine.random.nextColor();
+    }
+    
+    // ----------------------
+    // -- Noise Methods --
+    // ----------------------
+    
+    /**
+     * Gets the engine's noise instance.
+     *
+     * @return The common noise instance.
+     */
+    public static Noise noise()
+    {
+        return Engine.noise;
+    }
+    
+    public static void noise(String noise)
+    {
+        switch (noise)
+        {
+            case Noise.VALUE:
+                Engine.noise = Engine.valueNoise;
+            case Noise.PERLIN:
+                Engine.noise = Engine.perlinNoise;
+            case Noise.SIMPLEX:
+                Engine.noise = Engine.simplexNoise;
+            case Noise.OPEN_SIMPLEX:
+                Engine.noise = Engine.openSimplexNoise;
+            case Noise.WORLEY:
+                Engine.noise = Engine.worleyNoise;
+            default:
+                Engine.noise = Engine.perlinNoise;
+        }
+    }
+    
+    /**
+     * See {@link Noise#setSeed(long)}
+     */
+    public static void noiseSeed(long seed)
+    {
+        Engine.noise.setSeed(seed);
+    }
+    
+    /**
+     * See {@link Noise#octaves()}
+     */
+    public static int octaves()
+    {
+        return Engine.noise.octaves();
+    }
+    
+    /**
+     * See {@link Noise#octaves(int)}
+     */
+    public static void octaves(int octaves)
+    {
+        Engine.noise.octaves(octaves);
+    }
+    
+    /**
+     * See {@link Noise#persistence()}
+     */
+    public static double persistence()
+    {
+        return Engine.noise.persistence();
+    }
+    
+    /**
+     * See {@link Noise#persistence(double)}
+     */
+    public static void persistence(double persistence)
+    {
+        Engine.noise.persistence(persistence);
+    }
+    
+    /**
+     * See {@link Noise#setProperty(String, Object)}
+     */
+    public static void setProperty(String property, Object object)
+    {
+        Engine.noise.setProperty(property, object);
+    }
+    
+    /**
+     * See {@link Noise#noise(double...)}
+     */
+    public static double noise(double... coord)
+    {
+        return Engine.noise.noise(coord);
     }
     
     // ----------------------

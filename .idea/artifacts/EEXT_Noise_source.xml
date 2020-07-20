@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="EEXT_Noise-source">
-    <output-path>$PROJECT_DIR$/out/artifacts</output-path>
-    <root id="archive" name="EEXT_Noise.jar">
-      <element id="module-source" name="EEXT_Noise" />
-    </root>
-  </artifact>
-</component>

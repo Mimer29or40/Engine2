@@ -2,6 +2,8 @@ package engine.noise;
 
 import engine.Engine;
 import engine.color.Color;
+import engine.util.Noise;
+import engine.util.PerlinNoise;
 
 import java.util.function.Function;
 
@@ -17,7 +19,7 @@ public class NoiseTests extends Engine
     public void setup()
     {
         size(200, 200, 4, 4);
-    
+        
         // noise = new Noise() {
         //     @Override
         //     public double calculate_impl(double... coord)
@@ -30,7 +32,7 @@ public class NoiseTests extends Engine
         noise = new PerlinNoise();
         // noise = new SimplexNoise();
         // noise = new OpenSimplexNoise();
-        noise = new WorleyNoise();
+        // noise = new WorleyNoise();
         // {
         //     @Override
         //     protected double distanceFunction(List<Double> distances)
@@ -40,12 +42,12 @@ public class NoiseTests extends Engine
         //         return distances.get(1) - distances.get(0);
         //     }
         // };
-        noise.seed(1337);
-        // noise.octaves(6);
+        noise.setSeed(1337);
+        noise.octaves(6);
         // noise.persistence(0.75);
         // noise.setProperty("distanceFunction", (Function<double[], Double>) arr -> 1.0 - (arr[0] * arr[1])/* * 2*/);
         noise.setProperty("distanceFunction", (Function<double[], Double>) arr -> arr[0] * arr[1]);
-    
+        
         // frameRate(2);
     }
     
@@ -59,10 +61,10 @@ public class NoiseTests extends Engine
             double vScale = screenHeight() >> 1;
             double hScale = map(mouse().x(), screenWidth(), 0, 0.01, 0.4);
             // hScale = 0.4;
-    
+            
             clear();
             weight(2);
-    
+            
             // for (int i = 0, n = (int) Math.floor(screenWidth() * hScale); i < n; i++)
             // {
             //     double x = i / hScale;
@@ -71,7 +73,7 @@ public class NoiseTests extends Engine
             //     stroke(Color.WHITE);
             //     text("" + i, x, 0);
             // }
-    
+            
             stroke(Color.WHITE);
             translate(0, vScale);
             scale(1, -1);
@@ -108,18 +110,18 @@ public class NoiseTests extends Engine
                 for (int i = 0; i < n; i++)
                 {
                     int index = (j * n + i) << 2;
-    
+                    
                     value = this.noise.noise(i * hScale, j * vScale, t) * 0.5 + 0.5;
-    
+                    
                     pixels[index]     = (int) (value * 255);
                     pixels[index + 1] = (int) (value * 255);
                     pixels[index + 2] = (int) (value * 255);
                     pixels[index + 3] = 255;
                 }
             }
-    
+            
             updatePixels();
-    
+            
             scale(1.0 / hScale, 1.0 / vScale);
             stroke(255, 0, 0, 10);
             weight(1);

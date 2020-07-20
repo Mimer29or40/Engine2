@@ -1,7 +1,5 @@
 package engine.noise;
 
-import engine.util.Random;
-
 import static engine.util.Util.fastFloor;
 import static engine.util.Util.smoothstep;
 
@@ -13,31 +11,24 @@ public class PerlinNoise extends Noise
     protected double[][] grad3;
     protected double[][] grad4;
     
-    public PerlinNoise()
-    {
-        super();
-    }
-    
-    public PerlinNoise(long seed)
-    {
-        super(seed);
-    }
-    
+    /**
+     * This function creates and generates the permutation tables.
+     */
     @Override
-    protected void setup(Random random)
+    protected void init()
     {
-        super.setup(random);
+        super.init();
         
-        this.grad1 = new double[Noise.tableSize][1];
-        this.grad2 = new double[Noise.tableSize][2];
-        this.grad3 = new double[Noise.tableSize][3];
-        this.grad4 = new double[Noise.tableSize][4];
+        if (this.grad1 == null) this.grad1 = new double[Noise.TABLE_SIZE][1];
+        if (this.grad2 == null) this.grad2 = new double[Noise.TABLE_SIZE][2];
+        if (this.grad3 == null) this.grad3 = new double[Noise.TABLE_SIZE][3];
+        if (this.grad4 == null) this.grad4 = new double[Noise.TABLE_SIZE][4];
         
         double[] cords = new double[4];
         double   x, y, z, w, len;
-        for (int i = 0; i < Noise.tableSize; i++)
+        for (int i = 0; i < Noise.TABLE_SIZE; i++)
         {
-            random.nextDoubles(cords, -1.0, 1.0);
+            this.random.nextDoubles(cords, -1.0, 1.0);
             
             x = cords[0];
             
@@ -64,7 +55,7 @@ public class PerlinNoise extends Noise
             z   = cords[2];
             w   = cords[3];
             len = Math.sqrt(x * x + y * y + z * z + w * w);
-    
+            
             this.grad4[i][0] = x / len;
             this.grad4[i][1] = y / len;
             this.grad4[i][2] = z / len;
@@ -72,19 +63,32 @@ public class PerlinNoise extends Noise
         }
     }
     
+    /**
+     * Calculates the 1D noise value
+     *
+     * @param octave    The current octave
+     * @param frequency The frequency of the octave level.
+     * @param amplitude The amplitude of the octave level.
+     * @param x         The scaled x coordinate.
+     * @return The noise value.
+     */
     @Override
-    protected double noise1D(int frequency, double amplitude, double x)
+    public double noise1D(int octave, int frequency, double amplitude, double x)
     {
-        int xi0 = fastFloor(x) & Noise.tableSizeMask;
+        int xi0 = fastFloor(x);
         
-        int xi1 = (xi0 + 1) & Noise.tableSizeMask;
+        int xi1 = (xi0 + 1);
+        
+        int gx0 = xi0 & Noise.TABLE_SIZE_MASK;
+        
+        int gx1 = xi1 & Noise.TABLE_SIZE_MASK;
         
         double dx0 = x - xi0;
         
         double dx1 = dx0 - 1.0;
         
-        double[] g0 = this.grad1[this.perm[xi0]];
-        double[] g1 = this.grad1[this.perm[xi1]];
+        double[] g0 = this.grad1[this.perm[gx0]];
+        double[] g1 = this.grad1[this.perm[gx1]];
         
         double x0 = g0[0] * dx0;
         double x1 = g1[0] * dx1;
@@ -92,14 +96,30 @@ public class PerlinNoise extends Noise
         return smoothstep(x0, x1, dx0);
     }
     
+    /**
+     * Calculates the 2D noise value
+     *
+     * @param octave    The current octave
+     * @param frequency The frequency of the octave level.
+     * @param amplitude The amplitude of the octave level.
+     * @param x         The scaled x coordinate.
+     * @param y         The scaled y coordinate.
+     * @return The noise value.
+     */
     @Override
-    protected double noise2D(int frequency, double amplitude, double x, double y)
+    public double noise2D(int octave, int frequency, double amplitude, double x, double y)
     {
-        int xi0 = fastFloor(x) & Noise.tableSizeMask;
-        int yi0 = fastFloor(y) & Noise.tableSizeMask;
+        int xi0 = fastFloor(x);
+        int yi0 = fastFloor(y);
         
-        int xi1 = (xi0 + 1) & Noise.tableSizeMask;
-        int yi1 = (yi0 + 1) & Noise.tableSizeMask;
+        int xi1 = xi0 + 1;
+        int yi1 = yi0 + 1;
+        
+        int gx0 = xi0 & Noise.TABLE_SIZE_MASK;
+        int gy0 = yi0 & Noise.TABLE_SIZE_MASK;
+        
+        int gx1 = xi1 & Noise.TABLE_SIZE_MASK;
+        int gy1 = yi1 & Noise.TABLE_SIZE_MASK;
         
         double dx0 = x - xi0;
         double dy0 = y - yi0;
@@ -107,10 +127,10 @@ public class PerlinNoise extends Noise
         double dx1 = dx0 - 1.0;
         double dy1 = dy0 - 1.0;
         
-        double[] g0 = this.grad2[this.perm[this.perm[xi0] + yi0]];
-        double[] g1 = this.grad2[this.perm[this.perm[xi1] + yi0]];
-        double[] g2 = this.grad2[this.perm[this.perm[xi0] + yi1]];
-        double[] g3 = this.grad2[this.perm[this.perm[xi1] + yi1]];
+        double[] g0 = this.grad2[this.perm[this.perm[gx0] + gy0]];
+        double[] g1 = this.grad2[this.perm[this.perm[gx1] + gy0]];
+        double[] g2 = this.grad2[this.perm[this.perm[gx0] + gy1]];
+        double[] g3 = this.grad2[this.perm[this.perm[gx1] + gy1]];
         
         double x0 = g0[0] * dx0 + g0[1] * dy0;
         double x1 = g1[0] * dx1 + g1[1] * dy0;
@@ -123,16 +143,35 @@ public class PerlinNoise extends Noise
         return smoothstep(y0, y1, dy0);
     }
     
+    /**
+     * Calculates the 3D noise value
+     *
+     * @param octave    The current octave
+     * @param frequency The frequency of the octave level.
+     * @param amplitude The amplitude of the octave level.
+     * @param x         The scaled x coordinate.
+     * @param y         The scaled y coordinate.
+     * @param z         The scaled z coordinate.
+     * @return The noise value.
+     */
     @Override
-    protected double noise3D(int frequency, double amplitude, double x, double y, double z)
+    public double noise3D(int octave, int frequency, double amplitude, double x, double y, double z)
     {
-        int xi0 = fastFloor(x) & Noise.tableSizeMask;
-        int yi0 = fastFloor(y) & Noise.tableSizeMask;
-        int zi0 = fastFloor(z) & Noise.tableSizeMask;
+        int xi0 = fastFloor(x);
+        int yi0 = fastFloor(y);
+        int zi0 = fastFloor(z);
         
-        int xi1 = (xi0 + 1) & Noise.tableSizeMask;
-        int yi1 = (yi0 + 1) & Noise.tableSizeMask;
-        int zi1 = (zi0 + 1) & Noise.tableSizeMask;
+        int xi1 = (xi0 + 1);
+        int yi1 = (yi0 + 1);
+        int zi1 = (zi0 + 1);
+        
+        int gx0 = xi0 & Noise.TABLE_SIZE_MASK;
+        int gy0 = yi0 & Noise.TABLE_SIZE_MASK;
+        int gz0 = zi0 & Noise.TABLE_SIZE_MASK;
+        
+        int gx1 = xi1 & Noise.TABLE_SIZE_MASK;
+        int gy1 = yi1 & Noise.TABLE_SIZE_MASK;
+        int gz1 = zi1 & Noise.TABLE_SIZE_MASK;
         
         double dx0 = x - xi0;
         double dy0 = y - yi0;
@@ -142,14 +181,14 @@ public class PerlinNoise extends Noise
         double dy1 = dy0 - 1.0;
         double dz1 = dz0 - 1.0;
         
-        double[] g0 = this.grad3[this.perm[this.perm[this.perm[xi0] + yi0] + zi0]];
-        double[] g1 = this.grad3[this.perm[this.perm[this.perm[xi1] + yi0] + zi0]];
-        double[] g2 = this.grad3[this.perm[this.perm[this.perm[xi0] + yi1] + zi0]];
-        double[] g3 = this.grad3[this.perm[this.perm[this.perm[xi1] + yi1] + zi0]];
-        double[] g4 = this.grad3[this.perm[this.perm[this.perm[xi0] + yi0] + zi1]];
-        double[] g5 = this.grad3[this.perm[this.perm[this.perm[xi1] + yi0] + zi1]];
-        double[] g6 = this.grad3[this.perm[this.perm[this.perm[xi0] + yi1] + zi1]];
-        double[] g7 = this.grad3[this.perm[this.perm[this.perm[xi1] + yi1] + zi1]];
+        double[] g0 = this.grad3[this.perm[this.perm[this.perm[gx0] + gy0] + gz0]];
+        double[] g1 = this.grad3[this.perm[this.perm[this.perm[gx1] + gy0] + gz0]];
+        double[] g2 = this.grad3[this.perm[this.perm[this.perm[gx0] + gy1] + gz0]];
+        double[] g3 = this.grad3[this.perm[this.perm[this.perm[gx1] + gy1] + gz0]];
+        double[] g4 = this.grad3[this.perm[this.perm[this.perm[gx0] + gy0] + gz1]];
+        double[] g5 = this.grad3[this.perm[this.perm[this.perm[gx1] + gy0] + gz1]];
+        double[] g6 = this.grad3[this.perm[this.perm[this.perm[gx0] + gy1] + gz1]];
+        double[] g7 = this.grad3[this.perm[this.perm[this.perm[gx1] + gy1] + gz1]];
         
         double x0 = g0[0] * dx0 + g0[1] * dy0 + g0[2] * dz0;
         double x1 = g1[0] * dx1 + g1[1] * dy0 + g1[2] * dz0;
@@ -171,18 +210,40 @@ public class PerlinNoise extends Noise
         return smoothstep(z0, z1, dz0);
     }
     
+    /**
+     * Calculates the 4D noise value
+     *
+     * @param octave    The current octave
+     * @param frequency The frequency of the octave level.
+     * @param amplitude The amplitude of the octave level.
+     * @param x         The scaled x coordinate.
+     * @param y         The scaled y coordinate.
+     * @param z         The scaled z coordinate.
+     * @param w         The scaled w coordinate.
+     * @return The noise value.
+     */
     @Override
-    protected double noise4D(int frequency, double amplitude, double x, double y, double z, double w)
+    public double noise4D(int octave, int frequency, double amplitude, double x, double y, double z, double w)
     {
-        int xi0 = fastFloor(x) & Noise.tableSizeMask;
-        int yi0 = fastFloor(y) & Noise.tableSizeMask;
-        int zi0 = fastFloor(z) & Noise.tableSizeMask;
-        int wi0 = fastFloor(w) & Noise.tableSizeMask;
+        int xi0 = fastFloor(x);
+        int yi0 = fastFloor(y);
+        int zi0 = fastFloor(z);
+        int wi0 = fastFloor(w);
         
-        int xi1 = (xi0 + 1) & Noise.tableSizeMask;
-        int yi1 = (yi0 + 1) & Noise.tableSizeMask;
-        int zi1 = (zi0 + 1) & Noise.tableSizeMask;
-        int wi1 = (wi0 + 1) & Noise.tableSizeMask;
+        int xi1 = (xi0 + 1);
+        int yi1 = (yi0 + 1);
+        int zi1 = (zi0 + 1);
+        int wi1 = (wi0 + 1);
+        
+        int gx0 = xi0 & Noise.TABLE_SIZE_MASK;
+        int gy0 = yi0 & Noise.TABLE_SIZE_MASK;
+        int gz0 = zi0 & Noise.TABLE_SIZE_MASK;
+        int gw0 = wi0 & Noise.TABLE_SIZE_MASK;
+        
+        int gx1 = xi1 & Noise.TABLE_SIZE_MASK;
+        int gy1 = yi1 & Noise.TABLE_SIZE_MASK;
+        int gz1 = zi1 & Noise.TABLE_SIZE_MASK;
+        int gw1 = wi1 & Noise.TABLE_SIZE_MASK;
         
         double dx0 = x - xi0;
         double dy0 = y - yi0;
@@ -194,22 +255,22 @@ public class PerlinNoise extends Noise
         double dz1 = dz0 - 1.0;
         double dw1 = dw0 - 1.0;
         
-        double[] g0  = this.grad4[this.perm[this.perm[this.perm[this.perm[xi0] + yi0] + zi0] + wi0]];
-        double[] g1  = this.grad4[this.perm[this.perm[this.perm[this.perm[xi1] + yi0] + zi0] + wi0]];
-        double[] g2  = this.grad4[this.perm[this.perm[this.perm[this.perm[xi0] + yi1] + zi0] + wi0]];
-        double[] g3  = this.grad4[this.perm[this.perm[this.perm[this.perm[xi1] + yi1] + zi0] + wi0]];
-        double[] g4  = this.grad4[this.perm[this.perm[this.perm[this.perm[xi0] + yi0] + zi1] + wi0]];
-        double[] g5  = this.grad4[this.perm[this.perm[this.perm[this.perm[xi1] + yi0] + zi1] + wi0]];
-        double[] g6  = this.grad4[this.perm[this.perm[this.perm[this.perm[xi0] + yi1] + zi1] + wi0]];
-        double[] g7  = this.grad4[this.perm[this.perm[this.perm[this.perm[xi1] + yi1] + zi1] + wi0]];
-        double[] g8  = this.grad4[this.perm[this.perm[this.perm[this.perm[xi0] + yi0] + zi0] + wi1]];
-        double[] g9  = this.grad4[this.perm[this.perm[this.perm[this.perm[xi1] + yi0] + zi0] + wi1]];
-        double[] g10 = this.grad4[this.perm[this.perm[this.perm[this.perm[xi0] + yi1] + zi0] + wi1]];
-        double[] g11 = this.grad4[this.perm[this.perm[this.perm[this.perm[xi1] + yi1] + zi0] + wi1]];
-        double[] g12 = this.grad4[this.perm[this.perm[this.perm[this.perm[xi0] + yi0] + zi1] + wi1]];
-        double[] g13 = this.grad4[this.perm[this.perm[this.perm[this.perm[xi1] + yi0] + zi1] + wi1]];
-        double[] g14 = this.grad4[this.perm[this.perm[this.perm[this.perm[xi0] + yi1] + zi1] + wi1]];
-        double[] g15 = this.grad4[this.perm[this.perm[this.perm[this.perm[xi1] + yi1] + zi1] + wi1]];
+        double[] g0  = this.grad4[this.perm[this.perm[this.perm[this.perm[gx0] + gy0] + gz0] + gw0]];
+        double[] g1  = this.grad4[this.perm[this.perm[this.perm[this.perm[gx1] + gy0] + gz0] + gw0]];
+        double[] g2  = this.grad4[this.perm[this.perm[this.perm[this.perm[gx0] + gy1] + gz0] + gw0]];
+        double[] g3  = this.grad4[this.perm[this.perm[this.perm[this.perm[gx1] + gy1] + gz0] + gw0]];
+        double[] g4  = this.grad4[this.perm[this.perm[this.perm[this.perm[gx0] + gy0] + gz1] + gw0]];
+        double[] g5  = this.grad4[this.perm[this.perm[this.perm[this.perm[gx1] + gy0] + gz1] + gw0]];
+        double[] g6  = this.grad4[this.perm[this.perm[this.perm[this.perm[gx0] + gy1] + gz1] + gw0]];
+        double[] g7  = this.grad4[this.perm[this.perm[this.perm[this.perm[gx1] + gy1] + gz1] + gw0]];
+        double[] g8  = this.grad4[this.perm[this.perm[this.perm[this.perm[gx0] + gy0] + gz0] + gw1]];
+        double[] g9  = this.grad4[this.perm[this.perm[this.perm[this.perm[gx1] + gy0] + gz0] + gw1]];
+        double[] g10 = this.grad4[this.perm[this.perm[this.perm[this.perm[gx0] + gy1] + gz0] + gw1]];
+        double[] g11 = this.grad4[this.perm[this.perm[this.perm[this.perm[gx1] + gy1] + gz0] + gw1]];
+        double[] g12 = this.grad4[this.perm[this.perm[this.perm[this.perm[gx0] + gy0] + gz1] + gw1]];
+        double[] g13 = this.grad4[this.perm[this.perm[this.perm[this.perm[gx1] + gy0] + gz1] + gw1]];
+        double[] g14 = this.grad4[this.perm[this.perm[this.perm[this.perm[gx0] + gy1] + gz1] + gw1]];
+        double[] g15 = this.grad4[this.perm[this.perm[this.perm[this.perm[gx1] + gy1] + gz1] + gw1]];
         
         double x0  = g0[0] * dx0 + g0[1] * dy0 + g0[2] * dz0 + g0[3] * dw0;
         double x1  = g1[0] * dx1 + g1[1] * dy0 + g1[2] * dz0 + g1[3] * dw0;

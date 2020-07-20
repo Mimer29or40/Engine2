@@ -3,6 +3,8 @@ package engine.noise;
 import engine.Engine;
 import engine.color.Color;
 
+import java.util.function.Function;
+
 import static engine.util.Util.map;
 
 public class NoiseTests extends Engine
@@ -25,10 +27,10 @@ public class NoiseTests extends Engine
         // };
         // noise = new ValueNoise(1337);
         // noise.octaves(4);
-        // noise = new PerlinNoise(1337);
-        // noise = new SimplexNoise(1337);
-        noise = new OpenSimplexNoise(1337);
-        // noise = new WorleyNoise(1337)
+        noise = new PerlinNoise();
+        // noise = new SimplexNoise();
+        // noise = new OpenSimplexNoise();
+        // noise = new WorleyNoise();
         // {
         //     @Override
         //     protected double distanceFunction(List<Double> distances)
@@ -38,6 +40,10 @@ public class NoiseTests extends Engine
         //         return distances.get(1) - distances.get(0);
         //     }
         // };
+        noise.seed(1337);
+        noise.octaves(4);
+        // noise.setProperty("distanceFunction", (Function<double[], Double>) arr -> 1.0 - (arr[0] * arr[1])/* * 2*/);
+        noise.setProperty("distanceFunction", (Function<double[], Double>) arr -> arr[0] * 2 - 1);
     
         // frameRate(2);
     }
@@ -86,7 +92,7 @@ public class NoiseTests extends Engine
             
             double hScale = map(mouse().x(), screenWidth(), 0, 0.01, 0.4);
             double vScale = map(mouse().y(), screenHeight(), 0, 0.01, 0.4);
-            hScale = vScale = 0.05;
+            // hScale = vScale = 0.05;
             
             int n = screenWidth();
             int m = screenHeight();

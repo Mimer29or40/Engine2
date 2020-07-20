@@ -1,40 +1,23 @@
 package engine.noise;
 
-import engine.util.Random;
-
 import static engine.util.Util.fastFloor;
 
 @SuppressWarnings("unused")
 public class SimplexNoise extends Noise
 {
-    // Skewing and unskewing factors for 2, 3, and 4 dimensions
-    private static final double F2 = 0.5 * (Math.sqrt(3.0) - 1.0);
-    private static final double G2 = (3.0 - Math.sqrt(3.0)) / 6.0;
-    private static final double F3 = 1.0 / 3.0;
-    private static final double G3 = 1.0 / 6.0;
-    private static final double F4 = (Math.sqrt(5.0) - 1.0) / 4.0;
-    private static final double G4 = (5.0 - Math.sqrt(5.0)) / 20.0;
-    
     protected short[] permMod12;
     
-    public SimplexNoise()
-    {
-        super();
-    }
-    
-    public SimplexNoise(long seed)
-    {
-        super(seed);
-    }
-    
+    /**
+     * This function creates and generates the permutation tables.
+     */
     @Override
-    protected void setup(Random random)
+    protected void init()
     {
-        super.setup(random);
+        super.init();
         
         int n = this.perm.length;
         
-        this.permMod12 = new short[n];
+        if (this.permMod12 == null) this.permMod12 = new short[n];
         
         for (int i = 0; i < n; i++)
         {
@@ -42,14 +25,33 @@ public class SimplexNoise extends Noise
         }
     }
     
+    /**
+     * Calculates the 1D noise value
+     *
+     * @param octave    The current octave
+     * @param frequency The frequency of the octave level.
+     * @param amplitude The amplitude of the octave level.
+     * @param x         The scaled x coordinate.
+     * @return The noise value.
+     */
     @Override
-    protected double noise1D(int frequency, double amplitude, double x)
+    public double noise1D(int octave, int frequency, double amplitude, double x)
     {
-        return noise2D(frequency, amplitude, x, 0.0);
+        return noise2D(octave, frequency, amplitude, x, 0.0);
     }
     
+    /**
+     * Calculates the 2D noise value
+     *
+     * @param octave    The current octave
+     * @param frequency The frequency of the octave level.
+     * @param amplitude The amplitude of the octave level.
+     * @param x         The scaled x coordinate.
+     * @param y         The scaled y coordinate.
+     * @return The noise value.
+     */
     @Override
-    protected double noise2D(int frequency, double amplitude, double x, double y)
+    public double noise2D(int octave, int frequency, double amplitude, double x, double y)
     {
         double n0, n1, n2; // Noise contributions from the three corners
         // Skew the input space to determine which simplex cell we're in
@@ -82,8 +84,8 @@ public class SimplexNoise extends Noise
         double x2 = x0 - 1.0 + 2.0 * SimplexNoise.G2; // Offsets for last corner in (x,y) unskewed coords
         double y2 = y0 - 1.0 + 2.0 * SimplexNoise.G2;
         // Work out the hashed gradient indices of the three simplex corners
-        int ii  = i & Noise.tableSizeMask;
-        int jj  = j & Noise.tableSizeMask;
+        int ii  = i & Noise.TABLE_SIZE_MASK;
+        int jj  = j & Noise.TABLE_SIZE_MASK;
         int gi0 = this.permMod12[ii + this.perm[jj]];
         int gi1 = this.permMod12[ii + i1 + this.perm[jj + j1]];
         int gi2 = this.permMod12[ii + 1 + this.perm[jj + 1]];
@@ -123,8 +125,19 @@ public class SimplexNoise extends Noise
         return 70.0 * (n0 + n1 + n2);
     }
     
+    /**
+     * Calculates the 3D noise value
+     *
+     * @param octave    The current octave
+     * @param frequency The frequency of the octave level.
+     * @param amplitude The amplitude of the octave level.
+     * @param x         The scaled x coordinate.
+     * @param y         The scaled y coordinate.
+     * @param z         The scaled z coordinate.
+     * @return The noise value.
+     */
     @Override
-    protected double noise3D(int frequency, double amplitude, double x, double y, double z)
+    public double noise3D(int octave, int frequency, double amplitude, double x, double y, double z)
     {
         double n0, n1, n2, n3; // Noise contributions from the four corners
         // Skew the input space to determine which simplex cell we're in
@@ -217,9 +230,9 @@ public class SimplexNoise extends Noise
         double y3 = y0 - 1.0 + 3.0 * SimplexNoise.G3;
         double z3 = z0 - 1.0 + 3.0 * SimplexNoise.G3;
         // Work out the hashed gradient indices of the four simplex corners
-        int ii  = i & Noise.tableSizeMask;
-        int jj  = j & Noise.tableSizeMask;
-        int kk  = k & Noise.tableSizeMask;
+        int ii  = i & Noise.TABLE_SIZE_MASK;
+        int jj  = j & Noise.TABLE_SIZE_MASK;
+        int kk  = k & Noise.TABLE_SIZE_MASK;
         int gi0 = this.permMod12[ii + this.perm[jj + this.perm[kk]]];
         int gi1 = this.permMod12[ii + i1 + this.perm[jj + j1 + this.perm[kk + k1]]];
         int gi2 = this.permMod12[ii + i2 + this.perm[jj + j2 + this.perm[kk + k2]]];
@@ -270,8 +283,20 @@ public class SimplexNoise extends Noise
         return 32.0 * (n0 + n1 + n2 + n3);
     }
     
+    /**
+     * Calculates the 4D noise value
+     *
+     * @param octave    The current octave
+     * @param frequency The frequency of the octave level.
+     * @param amplitude The amplitude of the octave level.
+     * @param x         The scaled x coordinate.
+     * @param y         The scaled y coordinate.
+     * @param z         The scaled z coordinate.
+     * @param w         The scaled w coordinate.
+     * @return The noise value.
+     */
     @Override
-    protected double noise4D(int frequency, double amplitude, double x, double y, double z, double w)
+    public double noise4D(int octave, int frequency, double amplitude, double x, double y, double z, double w)
     {
         double n0, n1, n2, n3, n4; // Noise contributions from the five corners
         // Skew the (x,y,z,w) space to determine which cell of 24 simplices we're in
@@ -384,10 +409,10 @@ public class SimplexNoise extends Noise
         double z4 = z0 - 1.0 + 4.0 * SimplexNoise.G4;
         double w4 = w0 - 1.0 + 4.0 * SimplexNoise.G4;
         // Work out the hashed gradient indices of the five simplex corners
-        int ii  = i & Noise.tableSizeMask;
-        int jj  = j & Noise.tableSizeMask;
-        int kk  = k & Noise.tableSizeMask;
-        int ll  = l & Noise.tableSizeMask;
+        int ii  = i & Noise.TABLE_SIZE_MASK;
+        int jj  = j & Noise.TABLE_SIZE_MASK;
+        int kk  = k & Noise.TABLE_SIZE_MASK;
+        int ll  = l & Noise.TABLE_SIZE_MASK;
         int gi0 = this.perm[ii + this.perm[jj + this.perm[kk + this.perm[ll]]]] % 32;
         int gi1 = this.perm[ii + i1 + this.perm[jj + j1 + this.perm[kk + k1 + this.perm[ll + l1]]]] % 32;
         int gi2 = this.perm[ii + i2 + this.perm[jj + j2 + this.perm[kk + k2 + this.perm[ll + l2]]]] % 32;
@@ -447,6 +472,14 @@ public class SimplexNoise extends Noise
         // Sum up and scale the result to cover the range [-1,1]
         return 27.0 * (n0 + n1 + n2 + n3 + n4);
     }
+    
+    // Skewing and unskewing factors for 2, 3, and 4 dimensions
+    private static final double F2 = 0.5 * (Math.sqrt(3.0) - 1.0);
+    private static final double G2 = (3.0 - Math.sqrt(3.0)) / 6.0;
+    private static final double F3 = 1.0 / 3.0;
+    private static final double G3 = 1.0 / 6.0;
+    private static final double F4 = (Math.sqrt(5.0) - 1.0) / 4.0;
+    private static final double G4 = (5.0 - Math.sqrt(5.0)) / 20.0;
     
     private static final double[][] GRAD3 = {
             {1, 1, 0}, {-1, 1, 0}, {1, -1, 0}, {-1, -1, 0},

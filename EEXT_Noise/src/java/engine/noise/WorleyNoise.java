@@ -1,211 +1,252 @@
 package engine.noise;
 
-import engine.util.Random;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.function.Function;
 
 import static engine.util.Util.fastFloor;
 
 @SuppressWarnings("unused")
 public class WorleyNoise extends Noise
 {
-    private static final double STD_DEV_1D = 0.1;
-    private static final double STD_DEV_2D = 0.5;
-    private static final double STD_DEV_3D = 0.5;
-    private static final double STD_DEV_4D = 0.5;
+    protected double[][] points1;
+    protected double[][] points2;
+    protected double[][] points3;
+    protected double[][] points4;
     
-    private static final int MAX_POINTS_1D = 3;
-    private static final int MAX_POINTS_2D = 5;
-    private static final int MAX_POINTS_3D = 5;
-    private static final int MAX_POINTS_4D = 5;
+    protected Function<double[], Double> distanceFunction = arr -> arr[0];
     
-    protected final HashMap<Short, ArrayList<double[]>> points1D = new HashMap<>();
-    protected final HashMap<Short, ArrayList<double[]>> points2D = new HashMap<>();
-    protected final HashMap<Short, ArrayList<double[]>> points3D = new HashMap<>();
-    protected final HashMap<Short, ArrayList<double[]>> points4D = new HashMap<>();
-    
-    protected Random random;
-    
-    public WorleyNoise()
-    {
-        super();
-    }
-    
-    public WorleyNoise(long seed)
-    {
-        super(seed);
-    }
-    
+    /**
+     * Sets a property of the Noise Implementation. This should be handles directly by each implementation to set a property without casting the object.
+     * If the string does not correspond to a value then it will do nothing.
+     *
+     * @param property The name of the property.
+     * @param object   The new value of the property.
+     * @return This instance for call chaining.
+     */
+    @SuppressWarnings("unchecked")
     @Override
-    protected void setup(Random random)
+    public Noise setProperty(String property, Object object)
     {
-        super.setup(random);
-        
-        this.random = random;
-    }
-    
-    private ArrayList<double[]> getPoints(int x)
-    {
-        short hash = this.perm[x];
-        if (!this.points1D.containsKey(hash))
+        if (property.equals("distanceFunction"))
         {
-            int count = Math.min((int) Math.abs(this.random.nextGaussian(0, WorleyNoise.STD_DEV_1D)) + 1, WorleyNoise.MAX_POINTS_1D);
-            
-            ArrayList<double[]> newPoints = new ArrayList<>();
-            for (int i = 0; i < count; i++) newPoints.add(this.random.nextDoubles(new double[1]));
-            this.points1D.put(hash, newPoints);
+            if (object instanceof Function) this.distanceFunction = (Function<double[], Double>) object;
         }
-        
-        ArrayList<double[]> points = new ArrayList<>();
-        for (double[] point : this.points1D.get(hash)) points.add(new double[] {x + point[0]});
-        
-        return points;
+        return this;
     }
     
-    private ArrayList<double[]> getPoints(int x, int y)
-    {
-        short hash = this.perm[this.perm[x] + y];
-        if (!this.points2D.containsKey(hash))
-        {
-            int count = Math.min((int) Math.abs(this.random.nextGaussian(0, WorleyNoise.STD_DEV_2D)) + 1, WorleyNoise.MAX_POINTS_2D);
-            
-            ArrayList<double[]> newPoints = new ArrayList<>();
-            for (int i = 0; i < count; i++) newPoints.add(this.random.nextDoubles(new double[2]));
-            this.points2D.put(hash, newPoints);
-        }
-        
-        ArrayList<double[]> points = new ArrayList<>();
-        for (double[] point : this.points2D.get(hash)) points.add(new double[] {x + point[0], y + point[1]});
-        
-        return points;
-    }
-    
-    private ArrayList<double[]> getPoints(int x, int y, int z)
-    {
-        short hash = this.perm[this.perm[this.perm[x] + y] + z];
-        if (!this.points3D.containsKey(hash))
-        {
-            int count = Math.min((int) Math.abs(this.random.nextGaussian(0, WorleyNoise.STD_DEV_3D)) + 1, WorleyNoise.MAX_POINTS_3D);
-            
-            ArrayList<double[]> newPoints = new ArrayList<>();
-            for (int i = 0; i < count; i++) newPoints.add(this.random.nextDoubles(new double[3]));
-            this.points3D.put(hash, newPoints);
-        }
-        
-        ArrayList<double[]> points = new ArrayList<>();
-        for (double[] point : this.points3D.get(hash)) points.add(new double[] {x + point[0], y + point[1], z + point[2]});
-        
-        return points;
-    }
-    
-    private ArrayList<double[]> getPoints(int x, int y, int z, int w)
-    {
-        short hash = this.perm[this.perm[this.perm[this.perm[x] + y] + z] + w];
-        if (!this.points4D.containsKey(hash))
-        {
-            int count = Math.min((int) Math.abs(this.random.nextGaussian(0, WorleyNoise.STD_DEV_4D)) + 1, WorleyNoise.MAX_POINTS_4D);
-            
-            ArrayList<double[]> newPoints = new ArrayList<>();
-            for (int i = 0; i < count; i++) newPoints.add(this.random.nextDoubles(new double[4]));
-            this.points4D.put(hash, newPoints);
-        }
-        
-        ArrayList<double[]> points = new ArrayList<>();
-        for (double[] point : this.points4D.get(hash)) points.add(new double[] {x + point[0], y + point[1], z + point[2], w + point[3]});
-        
-        return points;
-    }
-    
+    /**
+     * This function creates and generates the permutation tables.
+     */
     @Override
-    protected double noise1D(int frequency, double amplitude, double x)
+    protected void init()
     {
-        int xi = fastFloor(x) - 1;
+        super.init();
         
-        ArrayList<double[]> points = new ArrayList<>();
-        for (int i = 0; i < 3; i++)
+        if (this.points1 == null) this.points1 = new double[Noise.TABLE_SIZE][1];
+        if (this.points2 == null) this.points2 = new double[Noise.TABLE_SIZE][2];
+        if (this.points3 == null) this.points3 = new double[Noise.TABLE_SIZE][3];
+        if (this.points4 == null) this.points4 = new double[Noise.TABLE_SIZE][4];
+        
+        double[] cords = new double[4];
+        for (int i = 0; i < Noise.TABLE_SIZE; i++)
         {
-            points.addAll(getPoints((xi + i) & Noise.tableSizeMask));
+            this.random.nextDoubles(cords, 1.0);
+            
+            this.points1[i][0] = cords[0];
+            
+            this.points2[i][0] = cords[0];
+            this.points2[i][1] = cords[1];
+            
+            this.points3[i][0] = cords[0];
+            this.points3[i][1] = cords[1];
+            this.points3[i][2] = cords[2];
+            
+            this.points4[i][0] = cords[0];
+            this.points4[i][1] = cords[1];
+            this.points4[i][2] = cords[2];
+            this.points4[i][3] = cords[3];
         }
-        List<Double> distances = points.stream().mapToDouble(o -> x - o[0]).sorted().boxed().collect(Collectors.toList());
-        
-        return distanceFunction(distances);
     }
     
+    /**
+     * Calculates the 1D noise value
+     *
+     * @param octave    The current octave
+     * @param frequency The frequency of the octave level.
+     * @param amplitude The amplitude of the octave level.
+     * @param x         The scaled x coordinate.
+     * @return The noise value.
+     */
     @Override
-    protected double noise2D(int frequency, double amplitude, double x, double y)
+    public double noise1D(int octave, int frequency, double amplitude, double x)
     {
-        int xi = fastFloor(x) - 1;
-        int yi = fastFloor(y) - 1;
+        int xi = fastFloor(x);
         
-        ArrayList<double[]> points = new ArrayList<>();
-        for (int j = 0; j < 3; j++)
+        double[] distances = new double[3];
+        
+        int    gx;
+        double px;
+        
+        int index = 0;
+        for (int i = -1; i <= 1; i++)
         {
-            for (int i = 0; i < 3; i++)
+            gx = (xi + i) & Noise.TABLE_SIZE_MASK;
+            
+            double[] point = this.points1[this.perm[gx]];
+            
+            px = x - (xi + i + point[0]);
+            
+            distances[index++] = px;
+        }
+        Arrays.sort(distances);
+        
+        return this.distanceFunction.apply(distances);
+    }
+    
+    /**
+     * Calculates the 2D noise value
+     *
+     * @param octave    The current octave
+     * @param frequency The frequency of the octave level.
+     * @param amplitude The amplitude of the octave level.
+     * @param x         The scaled x coordinate.
+     * @param y         The scaled y coordinate.
+     * @return The noise value.
+     */
+    @Override
+    public double noise2D(int octave, int frequency, double amplitude, double x, double y)
+    {
+        int xi = fastFloor(x);
+        int yi = fastFloor(y);
+        
+        double[] distances = new double[3 * 3];
+        
+        int    gx, gy;
+        double px, py;
+        
+        int index = 0;
+        for (int j = -1; j <= 1; j++)
+        {
+            for (int i = -1; i <= 1; i++)
             {
-                points.addAll(getPoints((xi + i) & Noise.tableSizeMask, (yi + j) & Noise.tableSizeMask));
+                gx = (xi + i) & Noise.TABLE_SIZE_MASK;
+                gy = (yi + j) & Noise.TABLE_SIZE_MASK;
+                
+                double[] point = this.points2[this.perm[this.perm[gx] + gy]];
+                
+                px = x - (xi + i + point[0]);
+                py = y - (yi + j + point[1]);
+                
+                distances[index++] = Math.sqrt(px * px + py * py);
             }
         }
-        List<Double> distances = points.stream().mapToDouble(o -> Math.sqrt((x - o[0]) * (x - o[0]) + (y - o[1]) * (y - o[1]))).sorted().boxed().collect(Collectors.toList());
+        Arrays.sort(distances);
         
-        return distanceFunction(distances);
+        return this.distanceFunction.apply(distances);
     }
     
+    /**
+     * Calculates the 3D noise value
+     *
+     * @param octave    The current octave
+     * @param frequency The frequency of the octave level.
+     * @param amplitude The amplitude of the octave level.
+     * @param x         The scaled x coordinate.
+     * @param y         The scaled y coordinate.
+     * @param z         The scaled z coordinate.
+     * @return The noise value.
+     */
     @Override
-    protected double noise3D(int frequency, double amplitude, double x, double y, double z)
+    public double noise3D(int octave, int frequency, double amplitude, double x, double y, double z)
     {
-        int xi = fastFloor(x) - 1;
-        int yi = fastFloor(y) - 1;
-        int zi = fastFloor(z) - 1;
+        int xi = fastFloor(x);
+        int yi = fastFloor(y);
+        int zi = fastFloor(z);
         
-        ArrayList<double[]> points = new ArrayList<>();
-        for (int k = 0; k < 3; k++)
+        double[] distances = new double[3 * 3 * 3];
+        
+        int    gx, gy, gz;
+        double px, py, pz;
+        
+        int index = 0;
+        for (int k = -1; k <= 1; k++)
         {
-            for (int j = 0; j < 3; j++)
+            for (int j = -1; j <= 1; j++)
             {
-                for (int i = 0; i < 3; i++)
+                for (int i = -1; i <= 1; i++)
                 {
-                    points.addAll(getPoints((xi + i) & Noise.tableSizeMask, (yi + j) & Noise.tableSizeMask, (zi + k) & Noise.tableSizeMask));
+                    gx = (xi + i) & Noise.TABLE_SIZE_MASK;
+                    gy = (yi + j) & Noise.TABLE_SIZE_MASK;
+                    gz = (zi + k) & Noise.TABLE_SIZE_MASK;
+                    
+                    double[] point = this.points3[this.perm[this.perm[this.perm[gx] + gy] + gz]];
+                    
+                    px = x - (xi + i + point[0]);
+                    py = y - (yi + j + point[1]);
+                    pz = z - (zi + k + point[2]);
+                    
+                    distances[index++] = Math.sqrt(px * px + py * py + pz * pz);
                 }
             }
         }
-        List<Double> distances = points.stream().mapToDouble(o -> Math.sqrt((x - o[0]) * (x - o[0]) + (y - o[1]) * (y - o[1]) + (z - o[2]) * (z - o[2]))).sorted().boxed().collect(Collectors.toList());
+        Arrays.sort(distances);
         
-        return distanceFunction(distances);
+        return this.distanceFunction.apply(distances);
     }
     
+    /**
+     * Calculates the 4D noise value
+     *
+     * @param octave    The current octave
+     * @param frequency The frequency of the octave level.
+     * @param amplitude The amplitude of the octave level.
+     * @param x         The scaled x coordinate.
+     * @param y         The scaled y coordinate.
+     * @param z         The scaled z coordinate.
+     * @param w         The scaled w coordinate.
+     * @return The noise value.
+     */
     @Override
-    protected double noise4D(int frequency, double amplitude, double x, double y, double z, double w)
+    public double noise4D(int octave, int frequency, double amplitude, double x, double y, double z, double w)
     {
-        int xi = fastFloor(x) - 1;
-        int yi = fastFloor(y) - 1;
-        int zi = fastFloor(z) - 1;
-        int wi = fastFloor(w) - 1;
+        int xi = fastFloor(x);
+        int yi = fastFloor(y);
+        int zi = fastFloor(z);
+        int wi = fastFloor(w);
         
-        ArrayList<double[]> points = new ArrayList<>();
-        for (int l = 0; l < 3; l++)
+        double[] distances = new double[3 * 3 * 3 * 3];
+        
+        int    gx, gy, gz, gw;
+        double px, py, pz, pw;
+        
+        int index = 0;
+        for (int l = -1; l <= 1; l++)
         {
-            for (int k = 0; k < 3; k++)
+            for (int k = -1; k <= 1; k++)
             {
-                for (int j = 0; j < 3; j++)
+                for (int j = -1; j <= 1; j++)
                 {
-                    for (int i = 0; i < 3; i++)
+                    for (int i = -1; i <= 1; i++)
                     {
-                        points.addAll(getPoints((xi + i) & Noise.tableSizeMask, (yi + j) & Noise.tableSizeMask, (zi + k) & Noise.tableSizeMask, (wi + l) & Noise.tableSizeMask));
+                        gx = (xi + i) & Noise.TABLE_SIZE_MASK;
+                        gy = (yi + j) & Noise.TABLE_SIZE_MASK;
+                        gz = (zi + k) & Noise.TABLE_SIZE_MASK;
+                        gw = (wi + l) & Noise.TABLE_SIZE_MASK;
+                        
+                        double[] point = this.points4[this.perm[this.perm[this.perm[this.perm[gx] + gy] + gz] + gw]];
+                        
+                        px = x - (xi + i + point[0]);
+                        py = y - (yi + j + point[1]);
+                        pz = z - (zi + k + point[2]);
+                        pw = w - (wi + l + point[3]);
+                        
+                        distances[index++] = Math.sqrt(px * px + py * py + pz * pz + pw * pw);
                     }
                 }
             }
         }
-        List<Double> distances = points.stream().mapToDouble(o -> Math.sqrt((x - o[0]) * (x - o[0]) + (y - o[1]) * (y - o[1]) + (z - o[2]) * (z - o[2]) + (w - o[3]) * (w - o[3])))
-                                       .sorted().boxed().collect(Collectors.toList());
+        Arrays.sort(distances);
         
-        return distanceFunction(distances);
-    }
-    
-    protected double distanceFunction(List<Double> distances)
-    {
-        return distances.get(0);
+        return this.distanceFunction.apply(distances);
     }
 }

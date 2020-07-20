@@ -4,7 +4,7 @@ import engine.Engine;
 import engine.color.Color;
 import engine.render.Texture;
 
-import static engine.util.Util.*;
+import static engine.util.Util.map;
 
 public class NoiseDebug extends Engine
 {
@@ -22,15 +22,16 @@ public class NoiseDebug extends Engine
     public void setup()
     {
         size(800, 800, 1, 1);
-        
-        noise = new ValueNoise(1337);
-        noise = new PerlinNoise(1337);
-        
+    
+        noise = new ValueNoise();
+        noise = new PerlinNoise();
+        noise.seed(1337);
+    
         int w = screenWidth();
         int h = screenHeight();
-        
+    
         noiseTexture = new Texture(w, h);
-        
+    
         Color color = new Color(0, 255);
         for (int j = 0; j < h; j++)
         {
@@ -68,47 +69,47 @@ public class NoiseDebug extends Engine
     
         double[] g0, g1, g2, g3;
     
-        g0 = ((PerlinNoise) noise).grad2[noise.perm[noise.perm[xi0 & Noise.tableSizeMask] + yi0 & Noise.tableSizeMask]];
-        g1 = ((PerlinNoise) noise).grad2[noise.perm[noise.perm[xi1 & Noise.tableSizeMask] + yi0 & Noise.tableSizeMask]];
-        g2 = ((PerlinNoise) noise).grad2[noise.perm[noise.perm[xi0 & Noise.tableSizeMask] + yi1 & Noise.tableSizeMask]];
-        g3 = ((PerlinNoise) noise).grad2[noise.perm[noise.perm[xi1 & Noise.tableSizeMask] + yi1 & Noise.tableSizeMask]];
+        // g0 = ((PerlinNoise) noise).grad2[noise.perm[noise.perm[xi0 & Noise.TABLE_SIZE_MASK] + yi0 & Noise.TABLE_SIZE_MASK]];
+        // g1 = ((PerlinNoise) noise).grad2[noise.perm[noise.perm[xi1 & Noise.TABLE_SIZE_MASK] + yi0 & Noise.TABLE_SIZE_MASK]];
+        // g2 = ((PerlinNoise) noise).grad2[noise.perm[noise.perm[xi0 & Noise.TABLE_SIZE_MASK] + yi1 & Noise.TABLE_SIZE_MASK]];
+        // g3 = ((PerlinNoise) noise).grad2[noise.perm[noise.perm[xi1 & Noise.TABLE_SIZE_MASK] + yi1 & Noise.TABLE_SIZE_MASK]];
     
-        if (mouse().LEFT.held())
-        {
-            double dx0 = x - Math.floor(x);
-            double dy0 = y - Math.floor(y);
-        
-            double dx1 = dx0 - 1.0;
-            double dy1 = dy0 - 1.0;
-        
-            double x0 = g0[0] * dx0 + g0[1] * dy0;
-            double x1 = g1[0] * dx1 + g1[1] * dy0;
-            double y0 = smoothstep(x0, x1, dx0);
-            double x2 = g2[0] * dx0 + g2[1] * dy1;
-            double x3 = g3[0] * dx1 + g3[1] * dy1;
-            double y1 = smoothstep(x2, x3, dx0);
-            notification(String.format("Noise Value: %s", round(smoothstep(y0, y1, dy0), 6)));
-        }
-        
+        // if (mouse().LEFT.held())
+        // {
+        //     double dx0 = x - Math.floor(x);
+        //     double dy0 = y - Math.floor(y);
+        //
+        //     double dx1 = dx0 - 1.0;
+        //     double dy1 = dy0 - 1.0;
+        //
+        //     double x0 = g0[0] * dx0 + g0[1] * dy0;
+        //     double x1 = g1[0] * dx1 + g1[1] * dy0;
+        //     double y0 = smoothstep(x0, x1, dx0);
+        //     double x2 = g2[0] * dx0 + g2[1] * dy1;
+        //     double x3 = g3[0] * dx1 + g3[1] * dy1;
+        //     double y1 = smoothstep(x2, x3, dx0);
+        //     notification(String.format("Noise Value: %s", round(smoothstep(y0, y1, dy0), 6)));
+        // }
+    
         stroke(Color.BLUE);
         weight(2);
-        
+    
         line(xScreen, yScreen, xi0Screen, yi0Screen);
         line(xScreen, yScreen, xi1Screen, yi0Screen);
         line(xScreen, yScreen, xi0Screen, yi1Screen);
         line(xScreen, yScreen, xi1Screen, yi1Screen);
-        
+    
         stroke(Color.GREEN);
         weight(2);
-        
-        line(xi0Screen, yi0Screen, xi0Screen + g0[0] * 30, yi0Screen + g0[1] * 30);
-        line(xi1Screen, yi0Screen, xi1Screen + g1[0] * 30, yi0Screen + g1[1] * 30);
-        line(xi0Screen, yi1Screen, xi0Screen + g2[0] * 30, yi1Screen + g2[1] * 30);
-        line(xi1Screen, yi1Screen, xi1Screen + g3[0] * 30, yi1Screen + g3[1] * 30);
-        
+    
+        // line(xi0Screen, yi0Screen, xi0Screen + g0[0] * 30, yi0Screen + g0[1] * 30);
+        // line(xi1Screen, yi0Screen, xi1Screen + g1[0] * 30, yi0Screen + g1[1] * 30);
+        // line(xi0Screen, yi1Screen, xi0Screen + g2[0] * 30, yi1Screen + g2[1] * 30);
+        // line(xi1Screen, yi1Screen, xi1Screen + g3[0] * 30, yi1Screen + g3[1] * 30);
+    
         stroke(Color.RED);
         weight(5);
-        
+    
         point(xi0Screen, yi0Screen);
         point(xi1Screen, yi0Screen);
         point(xi0Screen, yi1Screen);

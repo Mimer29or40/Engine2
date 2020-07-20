@@ -1,7 +1,5 @@
 package engine.noise;
 
-import engine.util.Random;
-
 import static engine.util.Util.fastFloor;
 import static engine.util.Util.smoothstep;
 
@@ -10,35 +8,37 @@ public class ValueNoise extends Noise
 {
     protected double[] r;
     
-    public ValueNoise()
-    {
-        super();
-    }
-    
-    public ValueNoise(long seed)
-    {
-        super(seed);
-    }
-    
+    /**
+     * This function creates and generates the permutation tables.
+     */
     @Override
-    protected void setup(Random random)
+    protected void init()
     {
-        super.setup(random);
-    
-        this.r = new double[Noise.tableSize];
-    
-        random.nextDoubles(this.r, -1.0, 1.0);
+        super.init();
+        
+        if (this.r == null) this.r = new double[Noise.TABLE_SIZE];
+        
+        this.random.nextDoubles(this.r, -1.0, 1.0);
     }
     
+    /**
+     * Calculates the 1D noise value
+     *
+     * @param octave    The current octave
+     * @param frequency The frequency of the octave level.
+     * @param amplitude The amplitude of the octave level.
+     * @param x         The scaled x coordinate.
+     * @return The noise value.
+     */
     @Override
-    protected double noise1D(int frequency, double amplitude, double x)
+    public double noise1D(int octave, int frequency, double amplitude, double x)
     {
         int xi = fastFloor(x);
         
         double xf = x - xi;
         
-        int rx0 = xi & Noise.tableSizeMask;
-        int rx1 = (rx0 + 1) & Noise.tableSizeMask;
+        int rx0 = xi & Noise.TABLE_SIZE_MASK;
+        int rx1 = (rx0 + 1) & Noise.TABLE_SIZE_MASK;
         
         double x0 = this.r[this.perm[rx0]];
         double x1 = this.r[this.perm[rx1]];
@@ -46,8 +46,18 @@ public class ValueNoise extends Noise
         return smoothstep(x0, x1, xf);
     }
     
+    /**
+     * Calculates the 2D noise value
+     *
+     * @param octave    The current octave
+     * @param frequency The frequency of the octave level.
+     * @param amplitude The amplitude of the octave level.
+     * @param x         The scaled x coordinate.
+     * @param y         The scaled y coordinate.
+     * @return The noise value.
+     */
     @Override
-    protected double noise2D(int frequency, double amplitude, double x, double y)
+    public double noise2D(int octave, int frequency, double amplitude, double x, double y)
     {
         int xi = fastFloor(x);
         int yi = fastFloor(y);
@@ -55,10 +65,10 @@ public class ValueNoise extends Noise
         double xf = x - xi;
         double yf = y - yi;
         
-        int rx0 = xi & Noise.tableSizeMask;
-        int rx1 = (rx0 + 1) & Noise.tableSizeMask;
-        int ry0 = yi & Noise.tableSizeMask;
-        int ry1 = (ry0 + 1) & Noise.tableSizeMask;
+        int rx0 = xi & Noise.TABLE_SIZE_MASK;
+        int rx1 = (rx0 + 1) & Noise.TABLE_SIZE_MASK;
+        int ry0 = yi & Noise.TABLE_SIZE_MASK;
+        int ry1 = (ry0 + 1) & Noise.TABLE_SIZE_MASK;
         
         double x0 = this.r[this.perm[this.perm[rx0] + ry0]];
         double x1 = this.r[this.perm[this.perm[rx1] + ry0]];
@@ -71,8 +81,19 @@ public class ValueNoise extends Noise
         return smoothstep(y0, y1, yf);
     }
     
+    /**
+     * Calculates the 3D noise value
+     *
+     * @param octave    The current octave
+     * @param frequency The frequency of the octave level.
+     * @param amplitude The amplitude of the octave level.
+     * @param x         The scaled x coordinate.
+     * @param y         The scaled y coordinate.
+     * @param z         The scaled z coordinate.
+     * @return The noise value.
+     */
     @Override
-    protected double noise3D(int frequency, double amplitude, double x, double y, double z)
+    public double noise3D(int octave, int frequency, double amplitude, double x, double y, double z)
     {
         int xi = fastFloor(x);
         int yi = fastFloor(y);
@@ -82,12 +103,12 @@ public class ValueNoise extends Noise
         double yf = y - yi;
         double zf = z - zi;
         
-        int rx0 = xi & Noise.tableSizeMask;
-        int rx1 = (rx0 + 1) & Noise.tableSizeMask;
-        int ry0 = yi & Noise.tableSizeMask;
-        int ry1 = (ry0 + 1) & Noise.tableSizeMask;
-        int rz0 = zi & Noise.tableSizeMask;
-        int rz1 = (rz0 + 1) & Noise.tableSizeMask;
+        int rx0 = xi & Noise.TABLE_SIZE_MASK;
+        int rx1 = (rx0 + 1) & Noise.TABLE_SIZE_MASK;
+        int ry0 = yi & Noise.TABLE_SIZE_MASK;
+        int ry1 = (ry0 + 1) & Noise.TABLE_SIZE_MASK;
+        int rz0 = zi & Noise.TABLE_SIZE_MASK;
+        int rz1 = (rz0 + 1) & Noise.TABLE_SIZE_MASK;
         
         double x0 = this.r[this.perm[this.perm[this.perm[rx0] + ry0] + rz0]];
         double x1 = this.r[this.perm[this.perm[this.perm[rx1] + ry0] + rz0]];
@@ -109,8 +130,20 @@ public class ValueNoise extends Noise
         return smoothstep(z0, z1, zf);
     }
     
+    /**
+     * Calculates the 4D noise value
+     *
+     * @param octave    The current octave
+     * @param frequency The frequency of the octave level.
+     * @param amplitude The amplitude of the octave level.
+     * @param x         The scaled x coordinate.
+     * @param y         The scaled y coordinate.
+     * @param z         The scaled z coordinate.
+     * @param w         The scaled w coordinate.
+     * @return The noise value.
+     */
     @Override
-    protected double noise4D(int frequency, double amplitude, double x, double y, double z, double w)
+    public double noise4D(int octave, int frequency, double amplitude, double x, double y, double z, double w)
     {
         int xi = fastFloor(x);
         int yi = fastFloor(y);
@@ -122,14 +155,14 @@ public class ValueNoise extends Noise
         double zf = z - zi;
         double wf = w - wi;
         
-        int rx0 = xi & Noise.tableSizeMask;
-        int rx1 = (rx0 + 1) & Noise.tableSizeMask;
-        int ry0 = yi & Noise.tableSizeMask;
-        int ry1 = (ry0 + 1) & Noise.tableSizeMask;
-        int rz0 = zi & Noise.tableSizeMask;
-        int rz1 = (rz0 + 1) & Noise.tableSizeMask;
-        int rw0 = wi & Noise.tableSizeMask;
-        int rw1 = (rw0 + 1) & Noise.tableSizeMask;
+        int rx0 = xi & Noise.TABLE_SIZE_MASK;
+        int rx1 = (rx0 + 1) & Noise.TABLE_SIZE_MASK;
+        int ry0 = yi & Noise.TABLE_SIZE_MASK;
+        int ry1 = (ry0 + 1) & Noise.TABLE_SIZE_MASK;
+        int rz0 = zi & Noise.TABLE_SIZE_MASK;
+        int rz1 = (rz0 + 1) & Noise.TABLE_SIZE_MASK;
+        int rw0 = wi & Noise.TABLE_SIZE_MASK;
+        int rw1 = (rw0 + 1) & Noise.TABLE_SIZE_MASK;
         
         double x0  = this.r[this.perm[this.perm[this.perm[this.perm[rx0] + ry0] + rz0] + rw0]];
         double x1  = this.r[this.perm[this.perm[this.perm[this.perm[rx1] + ry0] + rz0] + rw0]];
@@ -168,8 +201,17 @@ public class ValueNoise extends Noise
         return smoothstep(w0, w1, wf);
     }
     
+    /**
+     * Calculates the N-Dimensional noise value
+     *
+     * @param octave    The current octave
+     * @param frequency The frequency of the octave level.
+     * @param amplitude The amplitude of the octave level.
+     * @param coord     The scaled coordinate.
+     * @return The noise value.
+     */
     @Override
-    protected double noiseND(int frequency, double amplitude, double[] coord)
+    public double noiseND(int octave, int frequency, double amplitude, double[] coord)
     {
         int dimension = coord.length;
         
@@ -186,7 +228,7 @@ public class ValueNoise extends Noise
         int[]    nodeCoord = new int[dimension];
         for (int node = 0, n = nodes.length; node < n; node++)
         {
-            for (int axis = 0; axis < dimension; axis++) nodeCoord[axis] = ((vi[axis]) + ((node >> axis) & 1)) & Noise.tableSizeMask;
+            for (int axis = 0; axis < dimension; axis++) nodeCoord[axis] = ((vi[axis]) + ((node >> axis) & 1)) & Noise.TABLE_SIZE_MASK;
             nodes[node] = this.r[hash(nodeCoord)];
         }
         
@@ -199,7 +241,6 @@ public class ValueNoise extends Noise
                 nodes[i] = smoothstep(nodes[j], nodes[j + 1], vf[axis]);
             }
         }
-        
         return nodes[0];
     }
 }

@@ -1,68 +1,69 @@
 package engine.noise;
 
-import engine.util.Random;
-
 import static engine.util.Util.fastFloor;
 
 @SuppressWarnings({"UnnecessaryLocalVariable", "unused", "UnusedAssignment", "ConstantConditions"})
 public class OpenSimplexNoise extends Noise
 {
-    private static final double STRETCH_CONSTANT_2D = -0.211324865405187; //(1/Math.sqrt(2+1)-1)/2;
-    private static final double SQUISH_CONSTANT_2D  = 0.366025403784439;  //(Math.sqrt(2+1)-1)/2;
-    private static final double STRETCH_CONSTANT_3D = -1.0 / 6;           //(1/Math.sqrt(3+1)-1)/3;
-    private static final double SQUISH_CONSTANT_3D  = 1.0 / 3;            //(Math.sqrt(3+1)-1)/3;
-    private static final double STRETCH_CONSTANT_4D = -0.138196601125011; //(1/Math.sqrt(4+1)-1)/4;
-    private static final double SQUISH_CONSTANT_4D  = 0.309016994374947;  //(Math.sqrt(4+1)-1)/4;
+    protected short[] permGrad3D;
     
-    private static final double NORM_CONSTANT_2D = 47;
-    private static final double NORM_CONSTANT_3D = 103;
-    private static final double NORM_CONSTANT_4D = 30;
-    
-    protected short[] permGradIndex3D;
-    
-    public OpenSimplexNoise()
-    {
-        super();
-    }
-    
-    public OpenSimplexNoise(long seed)
-    {
-        super(seed);
-    }
-    
+    /**
+     * This function creates and generates the permutation tables.
+     */
     @Override
-    protected void setup(Random random)
+    protected void init()
     {
-        this.perm            = new short[Noise.tableSize];
-        this.permGradIndex3D = new short[Noise.tableSize];
+        if (this.perm == null) this.perm = new short[Noise.TABLE_SIZE];
+        if (this.permGrad3D == null) this.permGrad3D = new short[Noise.TABLE_SIZE];
         
-        short[] source = new short[Noise.tableSize];
-        for (short i = 0; i < Noise.tableSize; i++) source[i] = i;
+        short[] source = new short[Noise.TABLE_SIZE];
+        for (short i = 0; i < Noise.TABLE_SIZE; i++) source[i] = i;
         
-        long seed = random.nextLong();
+        long seed = this.random.nextLong();
         seed = seed * 6364136223846793005L + 1442695040888963407L;
         seed = seed * 6364136223846793005L + 1442695040888963407L;
         seed = seed * 6364136223846793005L + 1442695040888963407L;
         
-        for (int i = Noise.tableSizeMask; i >= 0; i--)
+        for (int i = Noise.TABLE_SIZE_MASK; i >= 0; i--)
         {
             seed = seed * 6364136223846793005L + 1442695040888963407L;
             int r = (int) ((seed + 31) % (i + 1));
             if (r < 0) r += (i + 1);
-            this.perm[i]            = source[r];
-            this.permGradIndex3D[i] = (short) ((this.perm[i] % (OpenSimplexNoise.gradients3D.length / 3)) * 3);
-            source[r]               = source[i];
+            this.perm[i]       = source[r];
+            this.permGrad3D[i] = (short) ((this.perm[i] % (OpenSimplexNoise.gradients3D.length / 3)) * 3);
+            source[r]          = source[i];
         }
+        
+        this.initialized = true;
     }
     
+    /**
+     * Calculates the 1D noise value
+     *
+     * @param octave    The current octave
+     * @param frequency The frequency of the octave level.
+     * @param amplitude The amplitude of the octave level.
+     * @param x         The scaled x coordinate.
+     * @return The noise value.
+     */
     @Override
-    protected double noise1D(int frequency, double amplitude, double x)
+    public double noise1D(int octave, int frequency, double amplitude, double x)
     {
-        return noise2D(frequency, amplitude, x, 0.0);
+        return noise2D(octave, frequency, amplitude, x, 0.0);
     }
     
+    /**
+     * Calculates the 2D noise value
+     *
+     * @param octave    The current octave
+     * @param frequency The frequency of the octave level.
+     * @param amplitude The amplitude of the octave level.
+     * @param x         The scaled x coordinate.
+     * @param y         The scaled y coordinate.
+     * @return The noise value.
+     */
     @Override
-    protected double noise2D(int frequency, double amplitude, double x, double y)
+    public double noise2D(int octave, int frequency, double amplitude, double x, double y)
     {
         //Place input coordinates onto grid.
         double stretchOffset = (x + y) * OpenSimplexNoise.STRETCH_CONSTANT_2D;
@@ -195,8 +196,19 @@ public class OpenSimplexNoise extends Noise
         return value / OpenSimplexNoise.NORM_CONSTANT_2D;
     }
     
+    /**
+     * Calculates the 3D noise value
+     *
+     * @param octave    The current octave
+     * @param frequency The frequency of the octave level.
+     * @param amplitude The amplitude of the octave level.
+     * @param x         The scaled x coordinate.
+     * @param y         The scaled y coordinate.
+     * @param z         The scaled z coordinate.
+     * @return The noise value.
+     */
     @Override
-    protected double noise3D(int frequency, double amplitude, double x, double y, double z)
+    public double noise3D(int octave, int frequency, double amplitude, double x, double y, double z)
     {
         //Place input coordinates on simplectic honeycomb.
         double stretchOffset = (x + y + z) * OpenSimplexNoise.STRETCH_CONSTANT_3D;
@@ -871,8 +883,20 @@ public class OpenSimplexNoise extends Noise
         return value / OpenSimplexNoise.NORM_CONSTANT_3D;
     }
     
+    /**
+     * Calculates the 4D noise value
+     *
+     * @param octave    The current octave
+     * @param frequency The frequency of the octave level.
+     * @param amplitude The amplitude of the octave level.
+     * @param x         The scaled x coordinate.
+     * @param y         The scaled y coordinate.
+     * @param z         The scaled z coordinate.
+     * @param w         The scaled w coordinate.
+     * @return The noise value.
+     */
     @Override
-    protected double noise4D(int frequency, double amplitude, double x, double y, double z, double w)
+    public double noise4D(int octave, int frequency, double amplitude, double x, double y, double z, double w)
     {
         //Place input coordinates on simplectic honeycomb.
         double stretchOffset = (x + y + z + w) * OpenSimplexNoise.STRETCH_CONSTANT_4D;
@@ -2505,14 +2529,17 @@ public class OpenSimplexNoise extends Noise
     
     private double extrapolate(int xsb, int ysb, double dx, double dy)
     {
-        int index = this.perm[(this.perm[xsb & Noise.tableSizeMask] + ysb) & Noise.tableSizeMask] & 0x0E;
+        int index = this.perm[xsb & Noise.TABLE_SIZE_MASK];
+        index = this.perm[(index + ysb) & Noise.TABLE_SIZE_MASK] & 0x0E;
         return OpenSimplexNoise.gradients2D[index] * dx +
                OpenSimplexNoise.gradients2D[index + 1] * dy;
     }
     
     private double extrapolate(int xsb, int ysb, int zsb, double dx, double dy, double dz)
     {
-        int index = this.permGradIndex3D[(this.perm[(this.perm[xsb & Noise.tableSizeMask] + ysb) & Noise.tableSizeMask] + zsb) & Noise.tableSizeMask];
+        int index = this.perm[xsb & Noise.TABLE_SIZE_MASK];
+        index = this.perm[(index + ysb) & Noise.TABLE_SIZE_MASK];
+        index = this.perm[(index + zsb) & Noise.TABLE_SIZE_MASK];
         return OpenSimplexNoise.gradients3D[index] * dx +
                OpenSimplexNoise.gradients3D[index + 1] * dy +
                OpenSimplexNoise.gradients3D[index + 2] * dz;
@@ -2520,12 +2547,26 @@ public class OpenSimplexNoise extends Noise
     
     private double extrapolate(int xsb, int ysb, int zsb, int wsb, double dx, double dy, double dz, double dw)
     {
-        int index = this.perm[(this.perm[(this.perm[(this.perm[xsb & Noise.tableSizeMask] + ysb) & Noise.tableSizeMask] + zsb) & Noise.tableSizeMask] + wsb) & Noise.tableSizeMask] & 0xFC;
+        int index = this.perm[xsb & Noise.TABLE_SIZE_MASK];
+        index = this.perm[(index + ysb) & Noise.TABLE_SIZE_MASK];
+        index = this.perm[(index + zsb) & Noise.TABLE_SIZE_MASK];
+        index = this.perm[(index + wsb) & Noise.TABLE_SIZE_MASK] & 0xFC;
         return OpenSimplexNoise.gradients4D[index] * dx +
                OpenSimplexNoise.gradients4D[index + 1] * dy +
                OpenSimplexNoise.gradients4D[index + 2] * dz +
                OpenSimplexNoise.gradients4D[index + 3] * dw;
     }
+    
+    private static final double STRETCH_CONSTANT_2D = -0.211324865405187; //(1/Math.sqrt(2+1)-1)/2;
+    private static final double SQUISH_CONSTANT_2D  = 0.366025403784439;  //(Math.sqrt(2+1)-1)/2;
+    private static final double STRETCH_CONSTANT_3D = -1.0 / 6;           //(1/Math.sqrt(3+1)-1)/3;
+    private static final double SQUISH_CONSTANT_3D  = 1.0 / 3;            //(Math.sqrt(3+1)-1)/3;
+    private static final double STRETCH_CONSTANT_4D = -0.138196601125011; //(1/Math.sqrt(4+1)-1)/4;
+    private static final double SQUISH_CONSTANT_4D  = 0.309016994374947;  //(Math.sqrt(4+1)-1)/4;
+    
+    private static final double NORM_CONSTANT_2D = 47;
+    private static final double NORM_CONSTANT_3D = 103;
+    private static final double NORM_CONSTANT_4D = 30;
     
     //Gradients for 2D. They approximate the directions to the
     //vertices of an octagon from the center.
@@ -2533,8 +2574,8 @@ public class OpenSimplexNoise extends Noise
             5, 2, 2, 5,
             -5, 2, -2, 5,
             5, -2, 2, -5,
-            -5, -2, -2, -5,
-            };
+            -5, -2, -2, -5
+    };
     
     //Gradients for 3D. They approximate the directions to the
     //vertices of a rhombicuboctahedron from the center, skewed so
@@ -2548,8 +2589,8 @@ public class OpenSimplexNoise extends Noise
             -11, 4, -4, -4, 11, -4, -4, 4, -11,
             11, 4, -4, 4, 11, -4, 4, 4, -11,
             -11, -4, -4, -4, -11, -4, -4, -4, -11,
-            11, -4, -4, 4, -11, -4, 4, -4, -11,
-            };
+            11, -4, -4, 4, -11, -4, 4, -4, -11
+    };
     
     //Gradients for 4D. They approximate the directions to the
     //vertices of a disprismatotesseractihexadecachoron from the center,
@@ -2571,6 +2612,6 @@ public class OpenSimplexNoise extends Noise
             3, 1, -1, -1, 1, 3, -1, -1, 1, 1, -3, -1, 1, 1, -1, -3,
             -3, 1, -1, -1, -1, 3, -1, -1, -1, 1, -3, -1, -1, 1, -1, -3,
             3, -1, -1, -1, 1, -3, -1, -1, 1, -1, -3, -1, 1, -1, -1, -3,
-            -3, -1, -1, -1, -1, -3, -1, -1, -1, -1, -3, -1, -1, -1, -1, -3,
-            };
+            -3, -1, -1, -1, -1, -3, -1, -1, -1, -1, -3, -1, -1, -1, -1, -3
+    };
 }

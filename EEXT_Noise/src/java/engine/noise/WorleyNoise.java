@@ -8,6 +8,11 @@ import static engine.util.Util.fastFloor;
 @SuppressWarnings("unused")
 public class WorleyNoise extends Noise
 {
+    private static final double MAX_1D = 2;
+    private static final double MAX_2D = 2 * Math.sqrt(2);
+    private static final double MAX_3D = 2 * Math.sqrt(4);
+    private static final double MAX_4D = 4;
+    
     protected double[][] points1;
     protected double[][] points2;
     protected double[][] points3;
@@ -99,8 +104,8 @@ public class WorleyNoise extends Noise
             distances[index++] = px;
         }
         Arrays.sort(distances);
-        
-        return this.distanceFunction.apply(distances);
+    
+        return this.distanceFunction.apply(distances) / WorleyNoise.MAX_1D * 2.0 - 1.0;
     }
     
     /**
@@ -141,8 +146,8 @@ public class WorleyNoise extends Noise
             }
         }
         Arrays.sort(distances);
-        
-        return this.distanceFunction.apply(distances);
+    
+        return this.distanceFunction.apply(distances) / WorleyNoise.MAX_2D * 2.0 - 1.0;
     }
     
     /**
@@ -190,8 +195,8 @@ public class WorleyNoise extends Noise
             }
         }
         Arrays.sort(distances);
-        
-        return this.distanceFunction.apply(distances);
+    
+        return this.distanceFunction.apply(distances) / WorleyNoise.MAX_3D * 2.0 - 1.0;
     }
     
     /**
@@ -246,7 +251,7 @@ public class WorleyNoise extends Noise
             }
         }
         Arrays.sort(distances);
-        
-        return this.distanceFunction.apply(distances);
+    
+        return this.distanceFunction.apply(distances) / WorleyNoise.MAX_4D * 2.0 - 1.0;
     }
 }

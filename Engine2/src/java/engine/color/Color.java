@@ -4,6 +4,8 @@ import engine.util.Logger;
 
 import java.util.Objects;
 
+import static engine.util.Util.clamp;
+
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class Color implements Colorc
 {
@@ -756,10 +758,10 @@ public class Color implements Colorc
     
     private static int toColorInt(Number x)
     {
-        return (x instanceof Float ? (int) ((float) x * 255) :
-                x instanceof Double ? (int) ((double) x * 255) :
-                x instanceof Short ? (short) x :
-                x instanceof Byte ? (byte) x :
-                (int) x) & 0xFF;
+        return clamp(x instanceof Float ? (int) ((float) x * 255) :
+                     x instanceof Double ? (int) ((double) x * 255) :
+                     x instanceof Short ? (short) x :
+                     x instanceof Byte ? (byte) x :
+                     (int) x, 0, 255);
     }
 }

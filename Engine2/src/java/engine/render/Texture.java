@@ -328,7 +328,7 @@ public class Texture
             else
             {
                 this.tempColor.set(0, 0);
-                for (int i = 0; i < this.channels; i++) this.tempColor.setComponent(i, this.data.get(index + i));
+                for (int i = 0; i < this.channels; i++) this.tempColor.setComponent(i, this.data.get(index + i) & 0xFF);
             }
             return this.tempColor;
         }

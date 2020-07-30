@@ -1,6 +1,6 @@
 package engine;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "EmptyMethod"})
 public abstract class Extension
 {
     protected boolean enabled = true;

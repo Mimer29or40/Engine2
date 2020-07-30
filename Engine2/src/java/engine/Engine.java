@@ -549,18 +549,10 @@ public class Engine
                                 // TODO - Add navigable profiler tree
                                 switch (Engine.profilerMode)
                                 {
-                                    case 0:
-                                        Engine.profilerOutput = null;
-                                        break;
-                                    case 1:
-                                        Engine.profilerOutput = Engine.profiler.getAvgData(null);
-                                        break;
-                                    case 2:
-                                        Engine.profilerOutput = Engine.profiler.getMinData(null);
-                                        break;
-                                    case 3:
-                                        Engine.profilerOutput = Engine.profiler.getMaxData(null);
-                                        break;
+                                    case 0 -> Engine.profilerOutput = null;
+                                    case 1 -> Engine.profilerOutput = Engine.profiler.getAvgData(null);
+                                    case 2 -> Engine.profilerOutput = Engine.profiler.getMinData(null);
+                                    case 3 -> Engine.profilerOutput = Engine.profiler.getMaxData(null);
                                 }
                                 Engine.profiler.clear();
                             }
@@ -2803,12 +2795,12 @@ public class Engine
     
     protected Engine()
     {
-        String clazz = getClass().getSimpleName();
+        String className = getClass().getSimpleName();
         
         StringBuilder name = new StringBuilder();
-        for (int i = 0; i < clazz.length(); i++)
+        for (int i = 0; i < className.length(); i++)
         {
-            char ch = clazz.charAt(i);
+            char ch = className.charAt(i);
             if (i > 0 && Character.isUpperCase(ch)) name.append(' ');
             if (ch == '_')
             {

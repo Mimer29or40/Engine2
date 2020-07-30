@@ -65,6 +65,7 @@ public class UIWindow extends UIElement
         // }
     }
     
+    @SuppressWarnings("EmptyMethod")
     @Override
     public void rebuild()
     {

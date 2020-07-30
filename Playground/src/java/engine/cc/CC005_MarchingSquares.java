@@ -9,7 +9,7 @@ public class CC005_MarchingSquares extends Engine
 {
     double[][] field;
     
-    int rez = 20;
+    final int rez = 20;
     int cols, rows;
     
     @Override

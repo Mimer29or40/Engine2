@@ -112,7 +112,16 @@ public class EEXT_Shader extends Extension
     {
         if (shader() != null)
         {
+<<<<<<<HEAD
             drawShader(this.texture, shader());
+=======
+            this.texture.bindFramebuffer();
+    
+            this.shader.bind();
+            this.vao.bind().draw(GL.QUADS).unbind();
+    
+            this.texture.markGPUDirty();
+>>>>>>>origin / master
     
             texture(this.texture, 0, 0);
         }
@@ -147,11 +156,16 @@ public class EEXT_Shader extends Extension
     {
         EEXT_Shader.INSTANCE.enabled = true;
         
+<<<<<<<HEAD
         if (EEXT_Shader.INSTANCE.defaultShader == null) EEXT_Shader.INSTANCE.defaultShader = shaderFile;
-        
+    
         EEXT_Shader.INSTANCE.shaders.put(shaderFile, null);
         EEXT_Shader.INSTANCE.fileWatcher.addFile(shaderFile);
-        
+=======
+        EEXT_Shader.INSTANCE.texture = new Texture(screenWidth(), screenHeight());
+        EEXT_Shader.INSTANCE.vao     = new VertexArray().bind().add(new float[] {-1f, -1f, 1f, -1f, 1f, 1f, -1f, 1f}, GL.DYNAMIC_DRAW, 2);
+>>>>>>>origin / master
+    
         return shaderFile;
     }
     

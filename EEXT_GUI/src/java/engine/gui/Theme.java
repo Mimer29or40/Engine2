@@ -17,6 +17,7 @@ import java.util.*;
 import static engine.util.Util.getPath;
 import static engine.util.Util.join;
 
+@SuppressWarnings("SameReturnValue")
 public class Theme
 {
     private static final Logger LOGGER = new Logger();
@@ -110,13 +111,9 @@ public class Theme
                         
                         switch (dataTypeName)
                         {
-                            case "prototype":
-                                loadPrototype(element, jsonReader.nextString());
-                                break;
-                            case "font":
-                                loadElementFont(jsonReader, element);
-                                break;
-                            default:
+                            case "prototype" -> loadPrototype(element, jsonReader.nextString());
+                            case "font" -> loadElementFont(jsonReader, element);
+                            default -> {
                                 jsonReader.beginObject();
                                 while (jsonReader.hasNext())
                                 {
@@ -124,20 +121,13 @@ public class Theme
                                     
                                     switch (dataTypeName)
                                     {
-                                        case "colors":
-                                        case "colours":
-                                            loadElementColor(jsonReader, element, state);
-                                            break;
-                                        case "images":
-                                            loadElementImage(jsonReader, element, state);
-                                            break;
-                                        case "misc":
-                                            loadElementMisc(jsonReader, element, state);
-                                            break;
+                                        case "colors", "colours" -> loadElementColor(jsonReader, element, state);
+                                        case "images" -> loadElementImage(jsonReader, element, state);
+                                        case "misc" -> loadElementMisc(jsonReader, element, state);
                                     }
                                 }
                                 jsonReader.endObject();
-                                break;
+                            }
                         }
                     }
                     jsonReader.endObject();
@@ -268,30 +258,14 @@ public class Theme
             String data = jsonReader.nextString();
             switch (name)
             {
-                case "name":
-                    fData.name = data;
-                    break;
-                case "size":
-                    fData.size = Integer.parseInt(data);
-                    break;
-                case "bold":
-                    fData.bold = Integer.parseInt(data) == 1;
-                    break;
-                case "italic":
-                    fData.italic = Integer.parseInt(data) == 1;
-                    break;
-                case "regular_path":
-                    fData.regularPath = data;
-                    break;
-                case "bold_path":
-                    fData.boldPath = data;
-                    break;
-                case "italic_path":
-                    fData.italicPath = data;
-                    break;
-                case "bold_italic_path":
-                    fData.boldItalicPath = data;
-                    break;
+                case "name" -> fData.name = data;
+                case "size" -> fData.size = Integer.parseInt(data);
+                case "bold" -> fData.bold = Integer.parseInt(data) == 1;
+                case "italic" -> fData.italic = Integer.parseInt(data) == 1;
+                case "regular_path" -> fData.regularPath = data;
+                case "bold_path" -> fData.boldPath = data;
+                case "italic_path" -> fData.italicPath = data;
+                case "bold_italic_path" -> fData.boldItalicPath = data;
             }
         }
         jsonReader.endObject();
@@ -322,12 +296,8 @@ public class Theme
             
             switch (name)
             {
-                case "path":
-                    path = data;
-                    break;
-                case "sub_surface_rect":
-                    rectString = data;
-                    break;
+                case "path" -> path = data;
+                case "sub_surface_rect" -> rectString = data;
             }
         }
         jsonReader.endObject();
@@ -366,7 +336,7 @@ public class Theme
         if (miscKey.equals("state_transitions"))
         {
             Theme.LOGGER.finer("Loading misc data (%s) for element (%s)", miscKey, element);
-    
+            
             StringBuilder transitionString = new StringBuilder();
             
             jsonReader.beginObject();
@@ -376,7 +346,7 @@ public class Theme
                 if (jsonReader.hasNext()) transitionString.append("-");
             }
             jsonReader.endObject();
-    
+            
             this.elementMiscData.get(element).put(miscKey, transitionString.toString());
         }
         else

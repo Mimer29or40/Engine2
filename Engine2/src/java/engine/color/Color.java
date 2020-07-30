@@ -239,31 +239,25 @@ public class Color implements Colorc
     public Color fromHSB(int h, int s, int b)
     {
         if (s == 0) return set(b, b, b);
-        
+    
         h = h * 255 / 359;
-        
+    
         int region    = h / 43;
         int remainder = (h - (region * 43)) * 6;
-        
+    
         int p = (b * (255 - s)) >> 8;
         int q = (b * (255 - ((s * remainder) >> 8))) >> 8;
         int t = (b * (255 - ((s * (255 - remainder)) >> 8))) >> 8;
-        
-        switch (region)
-        {
-            case 0:
-                return set(b, t, p);
-            case 1:
-                return set(q, b, p);
-            case 2:
-                return set(p, b, t);
-            case 3:
-                return set(p, q, b);
-            case 4:
-                return set(t, p, b);
-            default:
-                return set(b, p, q);
-        }
+    
+        return switch (region)
+                {
+                    case 0 -> set(b, t, p);
+                    case 1 -> set(q, b, p);
+                    case 2 -> set(p, b, t);
+                    case 3 -> set(p, q, b);
+                    case 4 -> set(t, p, b);
+                    default -> set(b, p, q);
+                };
     }
     
     /**
@@ -276,36 +270,26 @@ public class Color implements Colorc
     @Override
     public int getComponent(int component) throws IllegalArgumentException
     {
-        switch (component)
-        {
-            case 0:
-                return this.r;
-            case 1:
-                return this.g;
-            case 2:
-                return this.b;
-            case 3:
-                return this.a;
-            default:
-                throw new IllegalArgumentException();
-        }
+        return switch (component)
+                {
+                    case 0 -> this.r;
+                    case 1 -> this.g;
+                    case 2 -> this.b;
+                    case 3 -> this.a;
+                    default -> throw new IllegalArgumentException();
+                };
     }
     
     public Color setComponent(int component, Number value) throws IllegalArgumentException
     {
-        switch (component)
-        {
-            case 0:
-                return r(value);
-            case 1:
-                return g(value);
-            case 2:
-                return b(value);
-            case 3:
-                return a(value);
-            default:
-                throw new IllegalArgumentException();
-        }
+        return switch (component)
+                {
+                    case 0 -> r(value);
+                    case 1 -> g(value);
+                    case 2 -> b(value);
+                    case 3 -> a(value);
+                    default -> throw new IllegalArgumentException();
+                };
     }
     
     @Override
@@ -388,22 +372,19 @@ public class Color implements Colorc
     {
         int max = maxComponent();
         int min = minComponent();
-        
+    
         if (max == 0 || max - min == 0) return 0;
-        
-        int h = 0;
-        switch (maxComponentIndex())
-        {
-            case 0: // Red is Max
-                h = 43 * (g() - b()) / (max - min);
-                break;
-            case 1: // Green is Max
-                h = 85 + 43 * (b() - r()) / (max - min);
-                break;
-            case 2: // Blue is Max
-                h = 171 + 43 * (r() - g()) / (max - min);
-                break;
-        }
+    
+        int h = switch (maxComponentIndex())
+                {
+                    // Red is Max
+                    case 0 -> 43 * (g() - b()) / (max - min);
+                    // Green is Max
+                    case 1 -> 85 + 43 * (b() - r()) / (max - min);
+                    // Blue is Max
+                    case 2 -> 171 + 43 * (r() - g()) / (max - min);
+                    default -> 0;
+                };
         return h * 359 / 255;
     }
     

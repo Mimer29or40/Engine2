@@ -847,33 +847,19 @@ public abstract class UIElement
         if (text() != null && font() != null && text().length() > 0)
         {
             Rect rect = new Rect(0, 0, (int) font().getStringWidth(text()), (int) font().getStringHeight(text()));
-            
+    
             switch (this.textHAlignment)
             {
-                case "center":
-                default:
-                    rect.centerX(rect().width() >> 1);
-                    break;
-                case "left":
-                    rect.x(this.textHAlignmentPadding + this.borderWidth);
-                    break;
-                case "right":
-                    rect.x(rect().width() - this.textHAlignmentPadding - this.borderWidth);
-                    break;
+                case "left" -> rect.x(this.textHAlignmentPadding + this.borderWidth);
+                case "right" -> rect.x(rect().width() - this.textHAlignmentPadding - this.borderWidth);
+                default -> rect.centerX(rect().width() >> 1);
             }
-            
+    
             switch (this.textVAlignment)
             {
-                case "center":
-                default:
-                    rect.centerY(rect().height() >> 1);
-                    break;
-                case "top":
-                    rect.y(this.textVAlignmentPadding + this.borderWidth);
-                    break;
-                case "bottom":
-                    rect.y(rect().height() - this.textVAlignmentPadding - this.borderWidth);
-                    break;
+                default -> rect.centerY(rect().height() >> 1);
+                case "top" -> rect.y(this.textVAlignmentPadding + this.borderWidth);
+                case "bottom" -> rect.y(rect().height() - this.textVAlignmentPadding - this.borderWidth);
             }
             
             textFont(font());

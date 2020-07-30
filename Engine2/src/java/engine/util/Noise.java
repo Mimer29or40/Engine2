@@ -155,19 +155,14 @@ public abstract class Noise
      */
     private double noise(int octave, int frequency, double amplitude, double[] coord)
     {
-        switch (coord.length)
-        {
-            case 1:
-                return noise1D(octave, frequency, amplitude, coord[0]);
-            case 2:
-                return noise2D(octave, frequency, amplitude, coord[0], coord[1]);
-            case 3:
-                return noise3D(octave, frequency, amplitude, coord[0], coord[1], coord[2]);
-            case 4:
-                return noise4D(octave, frequency, amplitude, coord[0], coord[1], coord[2], coord[3]);
-            default:
-                return noiseND(octave, frequency, amplitude, coord);
-        }
+        return switch (coord.length)
+                {
+                    case 1 -> noise1D(octave, frequency, amplitude, coord[0]);
+                    case 2 -> noise2D(octave, frequency, amplitude, coord[0], coord[1]);
+                    case 3 -> noise3D(octave, frequency, amplitude, coord[0], coord[1], coord[2]);
+                    case 4 -> noise4D(octave, frequency, amplitude, coord[0], coord[1], coord[2], coord[3]);
+                    default -> noiseND(octave, frequency, amplitude, coord);
+                };
     }
     
     /**

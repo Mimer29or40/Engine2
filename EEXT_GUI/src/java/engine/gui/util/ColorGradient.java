@@ -5,7 +5,7 @@ import engine.color.Colorc;
 
 public class ColorGradient
 {
-    public int angle = 0;
+    public final int angle;
     
     public final Color color1 = new Color();
     public final Color color2 = new Color();

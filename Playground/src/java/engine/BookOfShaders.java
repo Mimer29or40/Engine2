@@ -17,6 +17,7 @@ public class BookOfShaders extends Engine
         this.texture = new Texture(screenWidth(), screenHeight());
     }
     
+    @SuppressWarnings("EmptyMethod")
     @Override
     public void draw(double elapsedTime)
     {

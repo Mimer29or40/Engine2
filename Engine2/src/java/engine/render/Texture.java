@@ -761,16 +761,12 @@ public class Texture
     
     private static int getFormat(int channels)
     {
-        switch (channels)
-        {
-            case 1:
-                return GL_RED;
-            case 2:
-                return GL_RG;
-            case 3:
-                return GL_RGB;
-            default:
-                return GL_RGBA;
-        }
+        return switch (channels)
+                {
+                    case 1 -> GL_RED;
+                    case 2 -> GL_RG;
+                    case 3 -> GL_RGB;
+                    default -> GL_RGBA;
+                };
     }
 }

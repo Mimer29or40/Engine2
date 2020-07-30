@@ -5,8 +5,6 @@ import engine.color.Color;
 import engine.color.Colorc;
 import engine.util.Logger;
 import org.joml.Matrix4f;
-import org.joml.Vector2d;
-import org.joml.Vector4f;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,12 +75,12 @@ public class Renderer
     protected final Matrix4f        view  = new Matrix4f();
     protected final Stack<Matrix4f> views = new Stack<>();
     
-    protected final Vector4f tranformVector4 = new Vector4f();
-    protected final Vector2d tranformVector2 = new Vector2d();
-    
     protected int[] pixels;
     
     protected boolean drawing = false;
+    
+    protected final GLBuffer viewBuffer;
+    private         boolean  updateViewBuffer;
     
     protected final Shader      pointShader;
     protected final VertexArray pointVAO;
@@ -126,42 +124,45 @@ public class Renderer
     public Renderer(Texture target)
     {
         this.defaultTarget = this.target = target;
-        
+    
+        this.viewBuffer       = new GLBuffer(GL.UNIFORM_BUFFER).bind().base(0).set(new float[16], GL.STATIC_DRAW).unbind();
+        this.updateViewBuffer = true;
+    
         this.pointShader = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/point.geom").loadFragmentFile("shaders/shared.frag").validate();
-        this.pointVAO    = new VertexArray().bind().add(2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
-        
+        this.pointVAO    = new VertexArray().bind().add(2, GL.STREAM_DRAW, GL.FLOAT, 2).unbind();
+    
         this.lineShader = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/line.geom").loadFragmentFile("shaders/shared.frag").validate();
-        this.lineVAO    = new VertexArray().bind().add(4, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
-        
+        this.lineVAO    = new VertexArray().bind().add(4, GL.STREAM_DRAW, GL.FLOAT, 2).unbind();
+    
         this.linesShader = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/lines.geom").loadFragmentFile("shaders/shared.frag").validate();
-        
-        this.triangleLinesVAO = new VertexArray().bind().add(24, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+    
+        this.triangleLinesVAO = new VertexArray().bind().add(24, GL.STREAM_DRAW, GL.FLOAT, 2).unbind();
         this.triangleShader   = new Shader().loadVertexFile("shaders/shared.vert").loadFragmentFile("shaders/shared.frag").validate();
-        this.triangleVAO      = new VertexArray().bind().add(6, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
-        
-        this.quadLinesVAO = new VertexArray().bind().add(32, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+        this.triangleVAO      = new VertexArray().bind().add(6, GL.STREAM_DRAW, GL.FLOAT, 2).unbind();
+    
+        this.quadLinesVAO = new VertexArray().bind().add(32, GL.STREAM_DRAW, GL.FLOAT, 2).unbind();
         this.quadShader   = new Shader().loadVertexFile("shaders/shared.vert").loadFragmentFile("shaders/shared.frag").validate();
-        this.quadVAO      = new VertexArray().bind().add(8, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
-        
+        this.quadVAO      = new VertexArray().bind().add(8, GL.STREAM_DRAW, GL.FLOAT, 2).unbind();
+    
         this.polygonLinesVAO = new VertexArray().bind().add(new GLBuffer(GL.ARRAY_BUFFER), GL.FLOAT, 2).unbind();
         this.polygonShader   = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/poly.geom").loadFragmentFile("shaders/shared.frag").validate();
-        this.polygonVAO      = new VertexArray().bind().add(2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+        this.polygonVAO      = new VertexArray().bind().add(2, GL.STREAM_DRAW, GL.FLOAT, 2).unbind();
         this.polygonSSBO     = new GLBuffer(GL.SHADER_STORAGE_BUFFER).bind().base(1).unbind();
-        
+    
         this.ellipseOutlineShader = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/ellipseOutline.geom").loadFragmentFile("shaders/shared.frag").validate();
-        this.ellipseOutlineVAO    = new VertexArray().bind().add(2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
-        
+        this.ellipseOutlineVAO    = new VertexArray().bind().add(2, GL.STREAM_DRAW, GL.FLOAT, 2).unbind();
+    
         this.ellipseShader = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/ellipse.geom").loadFragmentFile("shaders/shared.frag").validate();
-        this.ellipseVAO    = new VertexArray().bind().add(2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
-        
+        this.ellipseVAO    = new VertexArray().bind().add(2, GL.STREAM_DRAW, GL.FLOAT, 2).unbind();
+    
         this.arcOutlineShader = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/arcOutline.geom").loadFragmentFile("shaders/shared.frag").validate();
-        this.arcOutlineVAO    = new VertexArray().bind().add(2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
-        
+        this.arcOutlineVAO    = new VertexArray().bind().add(2, GL.STREAM_DRAW, GL.FLOAT, 2).unbind();
+    
         this.arcShader = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/arc.geom").loadFragmentFile("shaders/shared.frag").validate();
-        this.arcVAO    = new VertexArray().bind().add(2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
-        
+        this.arcVAO    = new VertexArray().bind().add(2, GL.STREAM_DRAW, GL.FLOAT, 2).unbind();
+    
         this.textureShader = new Shader().loadVertexFile("shaders/texture.vert").loadFragmentFile("shaders/texture.frag").validate();
-        this.textureVAO    = new VertexArray().bind().add(16, GL.DYNAMIC_DRAW, GL.FLOAT, 2, GL.FLOAT, 2).unbind();
+        this.textureVAO    = new VertexArray().bind().add(16, GL.STREAM_DRAW, GL.FLOAT, 2, GL.FLOAT, 2).unbind();
         
         this.textShader = new Shader().loadVertexFile("shaders/texture.vert").loadFragmentFile("shaders/text.frag").validate();
         this.textVAO    = new VertexArray().bind().add(new GLBuffer(GL.ARRAY_BUFFER), GL.FLOAT, 2, GL.FLOAT, 2).unbind();
@@ -679,8 +680,10 @@ public class Renderer
     public void identity()
     {
         Renderer.LOGGER.finest("Resetting View");
-        
+    
         this.view.setOrtho(0F, this.target.width(), 0F, this.target.height(), -1F, 1F);
+    
+        // TODO - Maybe use a uniform buffer object for the view matrix to prevent uploading to shader every draw call. Maybe detect changes in the transform methods then upload in the draw call if it's changed as a further optimization
     }
     
     /**
@@ -936,10 +939,10 @@ public class Renderer
         this.pointShader.setColor("tint", this.tint);
         this.pointShader.setVec2("viewport", this.target.width(), this.target.height());
         this.pointShader.setUniform("thickness", this.weight);
-        
+    
         this.pointVAO.bind().set(0, new float[] {
                 (float) x, (float) y
-        }, GL.DYNAMIC_DRAW).draw(GL.POINTS).unbind();
+        }).draw(GL.POINTS).unbind();
         
         this.target.markGPUDirty();
     }
@@ -985,11 +988,11 @@ public class Renderer
         this.lineShader.setColor("tint", this.tint);
         this.lineShader.setVec2("viewport", this.target.width(), this.target.height());
         this.lineShader.setUniform("thickness", this.weight);
-        
+    
         this.lineVAO.bind().set(0, new float[] {
                 (float) x1, (float) y1,
                 (float) x2, (float) y2
-        }, GL.DYNAMIC_DRAW).draw(GL.LINES).unbind();
+        }).draw(GL.LINES).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1083,12 +1086,12 @@ public class Renderer
         this.linesShader.setColor("tint", this.tint);
         this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
         this.linesShader.setUniform("thickness", this.weight);
-        
+    
         this.triangleLinesVAO.bind().set(0, new float[] {
                 (float) x3, (float) y3, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3,
                 (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x1, (float) y1,
                 (float) x2, (float) y2, (float) x3, (float) y3, (float) x1, (float) y1, (float) x2, (float) y2
-        }, GL.DYNAMIC_DRAW).draw(GL.LINES_ADJACENCY).unbind();
+        }).draw(GL.LINES_ADJACENCY).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1115,12 +1118,12 @@ public class Renderer
         this.triangleShader.setMat4("pv", this.view);
         this.triangleShader.setColor("color", this.fill);
         this.triangleShader.setColor("tint", this.tint);
-        
+    
         this.triangleVAO.bind().set(0, new float[] {
                 (float) x1, (float) y1,
                 (float) x2, (float) y2,
                 (float) x3, (float) y3
-        }, GL.DYNAMIC_DRAW).draw(GL.TRIANGLES).unbind();
+        }, GL.STREAM_DRAW).draw(GL.TRIANGLES).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1200,24 +1203,23 @@ public class Renderer
     {
         switch (this.rectMode)
         {
-            case CORNER:
-            default:
+            case CORNER -> {
                 if (this.fill.a() > 0) fillSquare(a, b, c);
                 if (this.stroke.a() > 0) drawSquare(a, b, c);
-                break;
-            case CORNERS:
+            }
+            case CORNERS -> {
                 double w = c - a;
                 if (this.fill.a() > 0) fillSquare(a, b, w);
                 if (this.stroke.a() > 0) drawSquare(a, b, w);
-                break;
-            case CENTER:
+            }
+            case CENTER -> {
                 if (this.fill.a() > 0) fillSquare(a - c * 0.5, b - c * 0.5, c);
                 if (this.stroke.a() > 0) drawSquare(a - c * 0.5, b - c * 0.5, c);
-                break;
-            case RADIUS:
+            }
+            case RADIUS -> {
                 if (this.fill.a() > 0) fillSquare(a - c, b - c, c * 2.0);
                 if (this.stroke.a() > 0) drawSquare(a - c, b - c, c * 2.0);
-                break;
+            }
         }
     }
     
@@ -1276,23 +1278,22 @@ public class Renderer
     {
         switch (this.rectMode)
         {
-            case CORNER:
-            default:
+            case CORNER -> {
                 if (this.fill.a() > 0) fillRect(a, b, c, d);
                 if (this.stroke.a() > 0) drawRect(a, b, c, d);
-                break;
-            case CORNERS:
+            }
+            case CORNERS -> {
                 if (this.fill.a() > 0) fillRect(a, b, c - a + 1, d - b + 1);
                 if (this.stroke.a() > 0) drawRect(a, b, c - a + 1, d - b + 1);
-                break;
-            case CENTER:
+            }
+            case CENTER -> {
                 if (this.fill.a() > 0) fillRect(a - c * 0.5, b - d * 0.5, c, d);
                 if (this.stroke.a() > 0) drawRect(a - c * 0.5, b - d * 0.5, c, d);
-                break;
-            case RADIUS:
+            }
+            case RADIUS -> {
                 if (this.fill.a() > 0) fillRect(a - c, b - d, c * 2.0, d * 2.0);
                 if (this.stroke.a() > 0) drawRect(a - c, b - d, c * 2.0, d * 2.0);
-                break;
+            }
         }
     }
     
@@ -1328,13 +1329,13 @@ public class Renderer
         this.linesShader.setColor("tint", this.tint);
         this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
         this.linesShader.setUniform("thickness", this.weight);
-        
+    
         this.quadLinesVAO.bind().set(0, new float[] {
                 (float) x4, (float) y4, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3,
                 (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4,
                 (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4, (float) x1, (float) y1,
                 (float) x3, (float) y3, (float) x4, (float) y4, (float) x1, (float) y1, (float) x2, (float) y2
-        }, GL.DYNAMIC_DRAW).draw(GL.LINES_ADJACENCY).unbind();
+        }).draw(GL.LINES_ADJACENCY).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1365,13 +1366,13 @@ public class Renderer
         this.quadShader.setMat4("pv", this.view);
         this.quadShader.setColor("color", this.fill);
         this.quadShader.setColor("tint", this.tint);
-        
+    
         this.quadVAO.bind().set(0, new float[] {
                 (float) x1, (float) y1,
                 (float) x2, (float) y2,
                 (float) x3, (float) y3,
                 (float) x4, (float) y4
-        }, GL.DYNAMIC_DRAW).draw(GL.QUADS).unbind();
+        }, GL.STREAM_DRAW).draw(GL.QUADS).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1447,8 +1448,8 @@ public class Renderer
             array[index++] = (float) points[(2 * four)];
             array[index++] = (float) points[(2 * four) + 1];
         }
-        
-        this.polygonLinesVAO.bind().set(0, array, GL.DYNAMIC_DRAW).resize().draw(GL.LINES_ADJACENCY).unbind();
+    
+        this.polygonLinesVAO.bind().set(0, array, GL.STREAM_DRAW).resize().draw(GL.LINES_ADJACENCY).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1477,7 +1478,7 @@ public class Renderer
         
         float[] array = new float[points.length];
         for (int i = 0, n = points.length; i < n; i++) array[i] = (float) points[i];
-        this.polygonSSBO.bind().set(array, GL.STATIC_DRAW).unbind();
+        this.polygonSSBO.bind().set(array, GL.STREAM_DRAW).unbind();
         this.polygonVAO.bind().draw(GL.POINTS).unbind();
         
         this.target.markGPUDirty();
@@ -1559,22 +1560,20 @@ public class Renderer
     {
         switch (this.ellipseMode)
         {
-            case CENTER:
-            default:
+            case CENTER -> {
                 if (this.fill.a() > 0) fillCircle(a, b, c * 0.5);
                 if (this.stroke.a() > 0) drawCircle(a, b, c * 0.5);
-                break;
-            case RADIUS:
+            }
+            case RADIUS -> {
                 if (this.fill.a() > 0) fillCircle(a, b, c);
                 if (this.stroke.a() > 0) drawCircle(a, b, c);
-                break;
-            case CORNER:
+            }
+            case CORNER -> {
                 c *= 0.5;
                 if (this.fill.a() > 0) fillCircle(a + c, b + c, c);
                 if (this.stroke.a() > 0) drawCircle(a + c, b + c, c);
-                break;
-            case CORNERS:
-                throw new RuntimeException("CORNERS mode not supported for circle");
+            }
+            case CORNERS -> throw new RuntimeException("CORNERS mode not supported for circle");
         }
     }
     
@@ -1605,10 +1604,10 @@ public class Renderer
         this.ellipseOutlineShader.setVec2("radius", (float) rx, (float) ry);
         this.ellipseOutlineShader.setVec2("viewport", this.target.width(), this.target.height());
         this.ellipseOutlineShader.setUniform("thickness", (float) this.weight);
-        
+    
         this.ellipseOutlineVAO.bind().set(0, new float[] {
                 (float) x, (float) y
-        }, GL.DYNAMIC_DRAW).draw(GL.POINTS).unbind();
+        }).draw(GL.POINTS).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1634,10 +1633,10 @@ public class Renderer
         this.ellipseShader.setColor("color", this.fill);
         this.ellipseShader.setColor("tint", this.tint);
         this.ellipseShader.setVec2("radius", (float) rx, (float) ry);
-        
+    
         this.ellipseVAO.bind().set(0, new float[] {
                 (float) x, (float) y
-        }, GL.DYNAMIC_DRAW).draw(GL.POINTS).unbind();
+        }).draw(GL.POINTS).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1663,26 +1662,25 @@ public class Renderer
     {
         switch (this.ellipseMode)
         {
-            case CENTER:
-            default:
+            case CENTER -> {
                 if (this.fill.a() > 0) fillEllipse(a, b, c * 0.5, d * 0.5);
                 if (this.stroke.a() > 0) drawEllipse(a, b, c * 0.5, d * 0.5);
-                break;
-            case RADIUS:
+            }
+            case RADIUS -> {
                 if (this.fill.a() > 0) fillEllipse(a, b, c, d);
                 if (this.stroke.a() > 0) drawEllipse(a, b, c, d);
-                break;
-            case CORNER:
+            }
+            case CORNER -> {
                 c *= 0.5;
                 d *= 0.5;
                 if (this.fill.a() > 0) fillEllipse(a + c, b + d, c, d);
                 if (this.stroke.a() > 0) drawEllipse(a + c, b + d, c, d);
-                break;
-            case CORNERS:
+            }
+            case CORNERS -> {
                 double rx = (c - a) * 0.5, ry = (d - b) * 0.5;
                 if (this.fill.a() > 0) fillEllipse(a + rx, b + ry, rx, ry);
                 if (this.stroke.a() > 0) drawEllipse(a + rx, b + ry, rx, ry);
-                break;
+            }
         }
     }
     
@@ -1717,10 +1715,10 @@ public class Renderer
         this.arcOutlineShader.setUniform("thickness", this.weight);
         this.arcOutlineShader.setVec2("bounds", start, stop);
         this.arcOutlineShader.setUniform("mode", this.arcMode.ordinal());
-        
+    
         this.arcOutlineVAO.bind().set(0, new float[] {
                 (float) x, (float) y
-        }, GL.DYNAMIC_DRAW).draw(GL.POINTS).unbind();
+        }).draw(GL.POINTS).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1750,10 +1748,10 @@ public class Renderer
         this.arcShader.setVec2("radius", (float) rx, (float) ry);
         this.arcShader.setVec2("bounds", (float) start, (float) stop);
         this.arcShader.setUniform("mode", this.arcMode.ordinal());
-        
+    
         this.arcVAO.bind().set(0, new float[] {
                 (float) x, (float) y
-        }, GL.DYNAMIC_DRAW).draw(GL.POINTS).unbind();
+        }).draw(GL.POINTS).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1794,26 +1792,25 @@ public class Renderer
         
         switch (this.ellipseMode)
         {
-            case CENTER:
-            default:
+            case CENTER -> {
                 if (this.fill.a() > 0) fillArc(a, b, c * 0.5, d * 0.5, start, stop);
                 if (this.stroke.a() > 0) drawArc(a, b, c * 0.5, d * 0.5, start, stop);
-                break;
-            case RADIUS:
+            }
+            case RADIUS -> {
                 if (this.fill.a() > 0) fillArc(a, b, c, d, start, stop);
                 if (this.stroke.a() > 0) drawArc(a, b, c, d, start, stop);
-                break;
-            case CORNER:
+            }
+            case CORNER -> {
                 c *= 0.5;
                 d *= 0.5;
                 if (this.fill.a() > 0) fillArc(a + c, b + d, c, d, start, stop);
                 if (this.stroke.a() > 0) drawArc(a + c, b + d, c, d, start, stop);
-                break;
-            case CORNERS:
+            }
+            case CORNERS -> {
                 double rx = (c - a) * 0.5, ry = (d - b) * 0.5;
                 if (this.fill.a() > 0) fillArc(a + rx, b + ry, rx, ry, start, stop);
                 if (this.stroke.a() > 0) drawArc(a + rx, b + ry, rx, ry, start, stop);
-                break;
+            }
         }
     }
     
@@ -1850,13 +1847,13 @@ public class Renderer
         this.textureShader.setUniform("interpolate", -1f);
         this.textureShader.setTexture("tex1", 0, texture);
         this.textureShader.setTexture("tex2", 0, texture);
-        
+    
         this.textureVAO.bind().set(0, new float[] {
                 (float) x1, (float) y1, (float) u1, (float) v1,
                 (float) x1, (float) y2, (float) u1, (float) v2,
                 (float) x2, (float) y2, (float) u2, (float) v2,
                 (float) x2, (float) y1, (float) u2, (float) v1
-        }, GL.DYNAMIC_DRAW).draw(GL.QUADS).unbind();
+        }).draw(GL.QUADS).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1884,19 +1881,10 @@ public class Renderer
     {
         switch (this.rectMode)
         {
-            case CORNER:
-            default:
-                drawTexture(texture, a, b, a + c, b + d, u1, v1, u2, v2);
-                break;
-            case CORNERS:
-                drawTexture(texture, a, b, c, d, u1, v1, u2, v2);
-                break;
-            case CENTER:
-                drawTexture(texture, a - c * 0.5, b - d * 0.5, a + c * 0.5, b + d * 0.5, u1, v1, u2, v2);
-                break;
-            case RADIUS:
-                drawTexture(texture, a - c, b - d, a + c, b + d, u1, v1, u2, v2);
-                break;
+            case CORNER -> drawTexture(texture, a, b, a + c, b + d, u1, v1, u2, v2);
+            case CORNERS -> drawTexture(texture, a, b, c, d, u1, v1, u2, v2);
+            case CENTER -> drawTexture(texture, a - c * 0.5, b - d * 0.5, a + c * 0.5, b + d * 0.5, u1, v1, u2, v2);
+            case RADIUS -> drawTexture(texture, a - c, b - d, a + c, b + d, u1, v1, u2, v2);
         }
     }
     
@@ -1983,13 +1971,13 @@ public class Renderer
         this.textureShader.setUniform("interpolate", (float) amount);
         this.textureShader.setTexture("tex1", 0, texture1);
         this.textureShader.setTexture("tex2", 1, texture2);
-        
+    
         this.textureVAO.bind().set(0, new float[] {
                 (float) x1, (float) y1, (float) u1, (float) v1,
                 (float) x1, (float) y2, (float) u1, (float) v2,
                 (float) x2, (float) y2, (float) u2, (float) v2,
                 (float) x2, (float) y1, (float) u2, (float) v1
-        }, GL.DYNAMIC_DRAW).draw(GL.QUADS).unbind();
+        }).draw(GL.QUADS).unbind();
         
         this.target.markGPUDirty();
     }
@@ -2019,19 +2007,10 @@ public class Renderer
     {
         switch (this.rectMode)
         {
-            case CORNER:
-            default:
-                drawInterpolatedTexture(texture1, texture2, amount, a, b, c - a, d - b, u1, v1, u2, v2);
-                break;
-            case CORNERS:
-                drawInterpolatedTexture(texture1, texture2, amount, a, b, c, d, u1, v1, u2, v2);
-                break;
-            case CENTER:
-                drawInterpolatedTexture(texture1, texture2, amount, a - c * 0.5, b - d * 0.5, a + c * 0.5, b + d * 0.5, u1, v1, u2, v2);
-                break;
-            case RADIUS:
-                drawInterpolatedTexture(texture1, texture2, amount, a - c, b - d, a + c, b + d, u1, v1, u2, v2);
-                break;
+            case CORNER -> drawInterpolatedTexture(texture1, texture2, amount, a, b, c - a, d - b, u1, v1, u2, v2);
+            case CORNERS -> drawInterpolatedTexture(texture1, texture2, amount, a, b, c, d, u1, v1, u2, v2);
+            case CENTER -> drawInterpolatedTexture(texture1, texture2, amount, a - c * 0.5, b - d * 0.5, a + c * 0.5, b + d * 0.5, u1, v1, u2, v2);
+            case RADIUS -> drawInterpolatedTexture(texture1, texture2, amount, a - c, b - d, a + c, b + d, u1, v1, u2, v2);
         }
     }
     
@@ -2191,27 +2170,26 @@ public class Renderer
             {
                 switch (this.rectMode)
                 {
-                    case CORNER:
-                    default:
+                    case CORNER -> {
                         w = c;
                         h = d;
-                        break;
-                    case CORNERS:
+                    }
+                    case CORNERS -> {
                         w = c - a;
                         h = d - b;
-                        break;
-                    case CENTER:
+                    }
+                    case CENTER -> {
                         x = a - c * 0.5;
                         y = b - d * 0.5;
                         w = c;
                         h = d;
-                        break;
-                    case RADIUS:
+                    }
+                    case RADIUS -> {
                         x = a - c;
                         y = b - d;
                         w = c * 2.0;
                         h = d * 2.0;
-                        break;
+                    }
                 }
                 lines = new ArrayList<>();
                 for (String line : text.split("\n"))
@@ -2317,7 +2295,12 @@ public class Renderer
     public void updatePixels()
     {
         Renderer.LOGGER.finer("Updating Pixels");
-        
+    
         this.target.fromArray(this.pixels).bindTexture().sync();
+    }
+    
+    private void updateViewMatrix()
+    {
+        this.updateViewBuffer = false;
     }
 }

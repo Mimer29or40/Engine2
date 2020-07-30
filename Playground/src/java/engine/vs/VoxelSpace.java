@@ -1,4 +1,4 @@
-package engine.VoxelSpace;
+package engine.vs;
 
 import engine.Engine;
 import engine.color.Color;
@@ -17,36 +17,37 @@ public class VoxelSpace extends Engine
         public boolean flying   = true;
         public boolean onGround = false;
         
-        Vector3d pos = new Vector3d(512, 78, 512);
-        Vector3d vel = new Vector3d(0);
-        Vector3d acc = new Vector3d(0);
+        final Vector3d pos = new Vector3d(512, 78, 512);
+        final Vector3d vel = new Vector3d(0);
+        final Vector3d acc = new Vector3d(0);
         
-        Vector3d x = new Vector3d(1, 0, 0);
-        Vector3d y = new Vector3d(0, 1, 0);
-        Vector3d z = new Vector3d(0, 0, 1);
+        final Vector3d x = new Vector3d(1, 0, 0);
+        final Vector3d y = new Vector3d(0, 1, 0);
+        final Vector3d z = new Vector3d(0, 0, 1);
         
-        Vector3d right = new Vector3d(1, 0, 0);
-        Vector3d up    = new Vector3d(0, 1, 0);
-        Vector3d front = new Vector3d(0, 0, 1);
+        final Vector3d right = new Vector3d(1, 0, 0);
+        final Vector3d up    = new Vector3d(0, 1, 0);
+        final Vector3d front = new Vector3d(0, 0, 1);
         
-        Vector3d look = new Vector3d(0, 0, -1);
+        final Vector3d look = new Vector3d(0, 0, -1);
         
-        double fov = 75;
+        final double fov = 75;
         
         // double x        = 512.; // x position on the map
         // double y        = 800.; // y position on the map
         // double height   = 78.;  // height of the camera
         // double angle    = 0.;   // direction of the camera
-        double horizon  = 100.; // horizon position (look up and down)
-        int    distance = 800;  // distance of map
+        double horizon = 100.; // horizon position (look up and down)
+        final int distance = 800;  // distance of map
     }
     
     static class HeightMap
     {
         final Color temp = new Color();
         
-        int size = 1024;
+        final int size = 1024;
         
+        @SuppressWarnings("SameReturnValue")
         double maxHeight()
         {
             return 255;
@@ -121,12 +122,12 @@ public class VoxelSpace extends Engine
         notification("Loaded Map: " + fileNames);
     }
     
-    Camera camera = new Camera();
+    final Camera camera = new Camera();
     
-    Color background = new Color("#FFE09090");
+    final Color background = new Color("#FFE09090");
     
-    TextureHeightMap  map;
-    ArrayList<String> maps = new ArrayList<>();
+    TextureHeightMap map;
+    final ArrayList<String> maps = new ArrayList<>();
     
     int selectedMap = 0;
     
@@ -174,6 +175,7 @@ public class VoxelSpace extends Engine
         loadMap(maps.get(selectedMap));
     }
     
+    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public void draw(double elapsedTime)
     {

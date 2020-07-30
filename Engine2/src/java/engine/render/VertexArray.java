@@ -881,22 +881,13 @@ public class VertexArray
     
     private int getBytes(int type)
     {
-        switch (type)
-        {
-            case GL_UNSIGNED_BYTE:
-            case GL_BYTE:
-            default:
-                return Byte.BYTES;
-            case GL_UNSIGNED_SHORT:
-            case GL_SHORT:
-                return Short.BYTES;
-            case GL_UNSIGNED_INT:
-            case GL_INT:
-                return Integer.BYTES;
-            case GL_FLOAT:
-                return Float.BYTES;
-            case GL_DOUBLE:
-                return Double.BYTES;
-        }
+        return switch (type)
+                {
+                    default -> Byte.BYTES;
+                    case GL_UNSIGNED_SHORT, GL_SHORT -> Short.BYTES;
+                    case GL_UNSIGNED_INT, GL_INT -> Integer.BYTES;
+                    case GL_FLOAT -> Float.BYTES;
+                    case GL_DOUBLE -> Double.BYTES;
+                };
     }
 }

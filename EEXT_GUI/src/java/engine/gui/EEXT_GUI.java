@@ -8,7 +8,7 @@ import engine.gui.elment.UIContainer;
 import engine.gui.elment.UIWindow;
 import engine.gui.util.Rect;
 import engine.util.IPair;
-import engine.util.PairD;
+import engine.util.Pair;
 import org.joml.Vector2i;
 
 import static engine.Engine.*;
@@ -18,8 +18,8 @@ public class EEXT_GUI extends Extension
 {
     public static final EEXT_GUI INSTANCE = new EEXT_GUI();
     
-    private static final PairD screenToGUI = new PairD(0, 0);
-    private static final PairD guiToScreen = new PairD(0, 0);
+    private static final Pair.D screenToGUI = new Pair.D(0, 0);
+    private static final Pair.D guiToScreen = new Pair.D(0, 0);
     
     private final Vector2i size = new Vector2i();
     

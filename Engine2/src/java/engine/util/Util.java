@@ -157,7 +157,7 @@ public class Util
      * @param values The double values.
      * @return The pair of number.
      */
-    public static PairI getFormatNumbers(double... values)
+    public static Pair.I getFormatNumbers(double... values)
     {
         int numI = 1, numD = 0;
         for (double val : values)
@@ -166,7 +166,7 @@ public class Util
             numI = Math.max(numI, num[0].length());
             if (val != (int) val) numD = Math.max(numD, num[1].length());
         }
-        return new PairI(numI, numD);
+        return new Pair.I(numI, numD);
     }
     
     /**
@@ -193,7 +193,7 @@ public class Util
      * @param numbers The pair of number for before and after the decimal point.
      * @return The formatter number string.
      */
-    public static String format(double x, PairI numbers)
+    public static String format(double x, Pair.I numbers)
     {
         return format(x, numbers.a, numbers.b);
     }

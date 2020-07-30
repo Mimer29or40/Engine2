@@ -1,7 +1,7 @@
 package engine;
 
 import engine.util.ITuple;
-import engine.util.TupleI;
+import engine.util.Tuple;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 import org.joml.Vector2i;
@@ -22,8 +22,8 @@ public class Monitor
     private final int    index;
     private final String name;
     
-    private final TupleI bitTuple;
-    private final int    refreshRate;
+    private final Tuple.I bitTuple;
+    private final int     refreshRate;
     
     private final Vector2i pos  = new Vector2i();
     private final Vector2i size = new Vector2i();
@@ -42,8 +42,8 @@ public class Monitor
         this.name   = glfwGetMonitorName(this.handle);
         
         GLFWVidMode videoMode = Objects.requireNonNull(glfwGetVideoMode(this.handle), "Monitor not found!");
-        
-        this.bitTuple    = new TupleI(videoMode.redBits(), videoMode.greenBits(), videoMode.blueBits());
+    
+        this.bitTuple    = new Tuple.I(videoMode.redBits(), videoMode.greenBits(), videoMode.blueBits());
         this.refreshRate = videoMode.refreshRate();
         
         try (MemoryStack stack = MemoryStack.stackPush())

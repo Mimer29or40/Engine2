@@ -8,7 +8,7 @@ import java.util.Objects;
  * A Generic pair of two objects. The objects can be modified or completely replaced.
  */
 @SuppressWarnings("unused")
-public class Pair<A, B> implements IPair<A, B>, Map.Entry<A, B>, Comparable<IPair<A, B>>, Serializable
+public class Pair<A, B> implements IPair<A, B>, Comparable<Map.Entry<A, B>>, Serializable
 {
     public A a;
     public B b;
@@ -108,40 +108,205 @@ public class Pair<A, B> implements IPair<A, B>, Map.Entry<A, B>, Comparable<IPai
     }
     
     @Override
-    public int compareTo(IPair<A, B> o)
+    public int compareTo(Map.Entry<A, B> o)
     {
         int comparison;
         
-        if (getA() != o.getA())
+        if (getA() != o.getKey())
         {
             if (getA() == null)
             {
                 return -1;
             }
-            if (o.getA() == null)
+            if (o.getKey() == null)
             {
                 return 1;
             }
             @SuppressWarnings("unchecked") // assume this can be done; if not throw CCE as per Javadoc
             final Comparable<Object> comparable = (Comparable<Object>) getA();
-            if ((comparison = comparable.compareTo(o.getA())) != 0) return comparison;
+            if ((comparison = comparable.compareTo(o.getKey())) != 0) return comparison;
         }
         
-        if (getB() != o.getB())
+        if (getB() != o.getValue())
         {
             if (getB() == null)
             {
                 return -1;
             }
-            if (o.getB() == null)
+            if (o.getValue() == null)
             {
                 return 1;
             }
             @SuppressWarnings("unchecked") // assume this can be done; if not throw CCE as per Javadoc
             final Comparable<Object> comparable = (Comparable<Object>) getB();
-            if ((comparison = comparable.compareTo(o.getB())) != 0) return comparison;
+            if ((comparison = comparable.compareTo(o.getValue())) != 0) return comparison;
         }
         
         return 0;
+    }
+    
+    /**
+     * A simple {@code int} pair.
+     */
+    public static class I extends Pair<Integer, Integer>
+    {
+        /**
+         * Creates a new pair with two ints.
+         *
+         * @param a The first int.
+         * @param b The second int.
+         */
+        public I(int a, int b)
+        {
+            super(a, b);
+        }
+        
+        /**
+         * @return The first int value.
+         */
+        public int a()
+        {
+            return this.a;
+        }
+        
+        /**
+         * @return The second int value.
+         */
+        public int b()
+        {
+            return this.b;
+        }
+    }
+    
+    /**
+     * A simple {@code long} pair.
+     */
+    public static class L extends Pair<Long, Long>
+    {
+        /**
+         * Creates a new pair with two long.
+         *
+         * @param a The first long.
+         * @param b The second long.
+         */
+        public L(long a, long b)
+        {
+            super(a, b);
+        }
+        
+        /**
+         * @return The first long value.
+         */
+        public long a()
+        {
+            return this.a;
+        }
+        
+        /**
+         * @return The second long value.
+         */
+        public long b()
+        {
+            return this.b;
+        }
+    }
+    
+    /**
+     * A simple {@code float} pair.
+     */
+    public static class F extends Pair<Float, Float>
+    {
+        /**
+         * Creates a new pair with two floats.
+         *
+         * @param a The first float.
+         * @param b The second float.
+         */
+        public F(float a, float b)
+        {
+            super(a, b);
+        }
+        
+        /**
+         * @return The first float value.
+         */
+        public float a()
+        {
+            return this.a;
+        }
+        
+        /**
+         * @return The second float value.
+         */
+        public float b()
+        {
+            return this.b;
+        }
+    }
+    
+    /**
+     * A simple {@code double} pair.
+     */
+    public static class D extends Pair<Double, Double>
+    {
+        /**
+         * Creates a new pair with two doubles.
+         *
+         * @param a The first double.
+         * @param b The second double.
+         */
+        public D(double a, double b)
+        {
+            super(a, b);
+        }
+        
+        /**
+         * @return The first double value.
+         */
+        public double a()
+        {
+            return this.a;
+        }
+        
+        /**
+         * @return The second double value.
+         */
+        public double b()
+        {
+            return this.b;
+        }
+    }
+    
+    /**
+     * A simple {@code String} pair.
+     */
+    public static class S extends Pair<String, String>
+    {
+        /**
+         * Creates a new pair with two Strings.
+         *
+         * @param a The first String.
+         * @param b The second String.
+         */
+        public S(String a, String b)
+        {
+            super(a, b);
+        }
+        
+        /**
+         * @return The first String value.
+         */
+        public String a()
+        {
+            return this.a;
+        }
+        
+        /**
+         * @return The second String value.
+         */
+        public String b()
+        {
+            return this.b;
+        }
     }
 }

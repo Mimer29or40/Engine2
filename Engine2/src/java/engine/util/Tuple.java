@@ -126,4 +126,214 @@ public class Tuple<A, B, C> implements ITuple<A, B, C>, Comparable<ITuple<A, B, 
     
         return 0;
     }
+    
+    /**
+     * A simple {@code int} tuple.
+     */
+    public static class I extends Tuple<Integer, Integer, Integer>
+    {
+        /**
+         * Creates a new pair with three ints.
+         *
+         * @param a The first int.
+         * @param b The second int.
+         * @param c The third int.
+         */
+        public I(int a, int b, int c)
+        {
+            super(a, b, c);
+        }
+        
+        /**
+         * @return The first int value.
+         */
+        public int a()
+        {
+            return this.a;
+        }
+        
+        /**
+         * @return The second int value.
+         */
+        public int b()
+        {
+            return this.b;
+        }
+        
+        /**
+         * @return The third int value.
+         */
+        public int c()
+        {
+            return this.c;
+        }
+    }
+    
+    /**
+     * A simple {@code long} tuple.
+     */
+    public static class L extends Tuple<Long, Long, Long>
+    {
+        /**
+         * Creates a new pair with three longs.
+         *
+         * @param a The first long.
+         * @param b The second long.
+         * @param c The third long.
+         */
+        public L(long a, long b, long c)
+        {
+            super(a, b, c);
+        }
+        
+        /**
+         * @return The first long value.
+         */
+        public long a()
+        {
+            return this.a;
+        }
+        
+        /**
+         * @return The second long value.
+         */
+        public long b()
+        {
+            return this.b;
+        }
+        
+        /**
+         * @return The third long value.
+         */
+        public long c()
+        {
+            return this.c;
+        }
+    }
+    
+    /**
+     * A simple {@code double} float.
+     */
+    public static class F extends Tuple<Float, Float, Float>
+    {
+        /**
+         * Creates a new pair with three floats.
+         *
+         * @param a The first float.
+         * @param b The second float.
+         * @param c The third float.
+         */
+        public F(float a, float b, float c)
+        {
+            super(a, b, c);
+        }
+        
+        /**
+         * @return The first float value.
+         */
+        public float a()
+        {
+            return this.a;
+        }
+        
+        /**
+         * @return The second float value.
+         */
+        public float b()
+        {
+            return this.b;
+        }
+        
+        /**
+         * @return The third float value.
+         */
+        public float c()
+        {
+            return this.c;
+        }
+    }
+    
+    /**
+     * A simple {@code double} tuple.
+     */
+    public static class D extends Tuple<Double, Double, Double>
+    {
+        /**
+         * Creates a new pair with three doubles.
+         *
+         * @param a The first double.
+         * @param b The second double.
+         * @param c The third double.
+         */
+        public D(double a, double b, double c)
+        {
+            super(a, b, c);
+        }
+        
+        /**
+         * @return The first double value.
+         */
+        public double a()
+        {
+            return this.a;
+        }
+        
+        /**
+         * @return The second double value.
+         */
+        public double b()
+        {
+            return this.b;
+        }
+        
+        /**
+         * @return The third double value.
+         */
+        public double c()
+        {
+            return this.c;
+        }
+    }
+    
+    /**
+     * A simple {@code String} tuple.
+     */
+    public static class S extends Tuple<String, String, String>
+    {
+        /**
+         * Creates a new tuple with three Strings.
+         *
+         * @param a The first String.
+         * @param b The second String.
+         * @param c The third String.
+         */
+        public S(String a, String b, String c)
+        {
+            super(a, b, c);
+        }
+        
+        /**
+         * @return The first String value.
+         */
+        public String a()
+        {
+            return this.a;
+        }
+        
+        /**
+         * @return The second String value.
+         */
+        public String b()
+        {
+            return this.b;
+        }
+        
+        /**
+         * @return The third String value.
+         */
+        public String c()
+        {
+            return this.c;
+        }
+    }
 }

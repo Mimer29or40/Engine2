@@ -10,7 +10,7 @@ public class NumberFormatTests
                 100, -100, 0.123, 0.1, 12345, -1.34234
         };
         
-        PairI format = Util.getFormatNumbers(numbers);
+        Pair.I format = Util.getFormatNumbers(numbers);
         
         for (double number : numbers)
         {

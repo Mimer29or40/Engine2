@@ -22,6 +22,7 @@ import org.reflections.Reflections;
 
 import java.lang.Math;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -466,21 +467,29 @@ public class Engine
                                                 
                                                 try (MemoryStack frame = stackPush())
                                                 {
-                                                    ByteBuffer textBuffer = frame.malloc(24 * 1024);
+                                                    ByteBuffer  textBuffer = frame.malloc(24 * 1024);
+                                                    FloatBuffer boxBuffer  = frame.mallocFloat(8);
                                                     for (Tuple<Integer, Integer, String> line : Engine.debugLines)
                                                     {
                                                         int quads  = stb_easy_font_print(line.a + 2, line.b + 2, line.c, null, textBuffer);
                                                         int width  = stb_easy_font_width(line.c);
                                                         int height = stb_easy_font_height(line.c);
-                                                        
+        
+                                                        boxBuffer.put(0, (float) line.a);
+                                                        boxBuffer.put(1, (float) line.b);
+                                                        boxBuffer.put(2, (float) line.a + width + 2);
+                                                        boxBuffer.put(3, (float) line.b);
+                                                        boxBuffer.put(4, (float) line.a + width + 2);
+                                                        boxBuffer.put(5, (float) line.b + height);
+                                                        boxBuffer.put(6, (float) line.a);
+                                                        boxBuffer.put(7, (float) line.b + height);
+        
                                                         Engine.debugShader.setColor("color", Engine.debugLineBackground);
-                                                        Engine.debugBoxVAO.bind().set(0, new float[] {
-                                                                line.a, line.b, line.a + width + 2, line.b, line.a + width + 2, line.b + height, line.a, line.b + height
-                                                        }, GL.DYNAMIC_DRAW).draw(GL.QUADS).unbind();
-                                                        
+                                                        Engine.debugBoxVAO.bind().set(0, boxBuffer).draw(GL.QUADS).unbind();
+        
                                                         Engine.debugShader.setColor("color", Engine.debugLineText);
-                                                        Engine.debugTextVAO.bind().set(0, textBuffer.limit(quads * 64), GL.DYNAMIC_DRAW).draw(GL.QUADS).unbind();
-                                                        
+                                                        Engine.debugTextVAO.bind().set(0, textBuffer.limit(quads * 64)).draw(GL.QUADS).unbind();
+        
                                                         textBuffer.clear();
                                                     }
                                                 }

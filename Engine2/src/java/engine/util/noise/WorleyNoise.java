@@ -1,4 +1,4 @@
-package engine.util;
+package engine.util.noise;
 
 import java.util.Arrays;
 import java.util.function.Function;

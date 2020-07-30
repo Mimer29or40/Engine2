@@ -3,9 +3,9 @@ package engine.noise;
 import engine.Engine;
 import engine.color.Color;
 import engine.render.Texture;
-import engine.util.Noise;
-import engine.util.PerlinNoise;
-import engine.util.ValueNoise;
+import engine.util.noise.Noise;
+import engine.util.noise.PerlinNoise;
+import engine.util.noise.ValueNoise;
 
 import static engine.util.Util.map;
 

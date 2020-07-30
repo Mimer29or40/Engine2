@@ -1,4 +1,4 @@
-package engine.util;
+package engine.util.noise;
 
 import static engine.util.Util.fastFloor;
 import static engine.util.Util.smoothstep;

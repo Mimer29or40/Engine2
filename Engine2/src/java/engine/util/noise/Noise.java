@@ -1,4 +1,6 @@
-package engine.util;
+package engine.util.noise;
+
+import engine.util.Random;
 
 import static engine.util.Util.clamp;
 

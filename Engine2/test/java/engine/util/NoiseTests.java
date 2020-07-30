@@ -2,8 +2,8 @@ package engine.noise;
 
 import engine.Engine;
 import engine.color.Color;
-import engine.util.Noise;
-import engine.util.PerlinNoise;
+import engine.util.noise.Noise;
+import engine.util.noise.PerlinNoise;
 
 import java.util.function.Function;
 

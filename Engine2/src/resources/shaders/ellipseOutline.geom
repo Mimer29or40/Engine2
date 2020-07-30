@@ -5,7 +5,8 @@ const float PI = 3.141592653;
 layout(points) in;
 layout(triangle_strip, max_vertices = 256) out;// 36 * 7
 
-uniform mat4 pv;
+layout(std140, binding = 0) uniform View { mat4 view; };
+
 uniform vec2 radius;
 uniform ivec2 viewport;
 uniform float thickness;
@@ -27,7 +28,7 @@ void main(void)
     // Generates Vertices of ellipse from point and radius
     for (int i = 0; i < segments; i++) {
         float angle = i * scale;
-        Points[i] = pv * vec4(position[0].xy + radius * vec2(cos(angle), sin(angle)), 0.0, 1.0);
+        Points[i] = view * vec4(position[0].xy + radius * vec2(cos(angle), sin(angle)), 0.0, 1.0);
     }
     
     // Generates Line List with Adjacency minus the 4th point

@@ -5,6 +5,7 @@ import engine.color.Color;
 import engine.color.Colorc;
 import engine.util.Logger;
 import org.joml.Matrix4f;
+import org.lwjgl.system.MemoryStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -683,7 +684,7 @@ public class Renderer
     
         this.view.setOrtho(0F, this.target.width(), 0F, this.target.height(), -1F, 1F);
     
-        // TODO - Maybe use a uniform buffer object for the view matrix to prevent uploading to shader every draw call. Maybe detect changes in the transform methods then upload in the draw call if it's changed as a further optimization
+        this.updateViewBuffer = true;
     }
     
     /**
@@ -695,8 +696,10 @@ public class Renderer
     public void translate(double x, double y)
     {
         Renderer.LOGGER.finest("Translating View:", x, y);
-        
+    
         this.view.translate((float) x, (float) y, 0);
+    
+        this.updateViewBuffer = true;
     }
     
     /**
@@ -707,8 +710,10 @@ public class Renderer
     public void rotate(double angle)
     {
         Renderer.LOGGER.finest("Rotating View:", angle);
-        
+    
         this.view.rotate((float) angle, 0, 0, 1);
+    
+        this.updateViewBuffer = true;
     }
     
     /**
@@ -720,8 +725,10 @@ public class Renderer
     public void scale(double x, double y)
     {
         Renderer.LOGGER.finest("Scaling View:", x, y);
-        
+    
         this.view.scale((float) x, (float) y, 1);
+    
+        this.updateViewBuffer = true;
     }
     
     // --------------------
@@ -933,8 +940,9 @@ public class Renderer
     
         this.target.bindFramebuffer();
     
+        updateViewMatrix();
+    
         this.pointShader.bind();
-        this.pointShader.setMat4("pv", this.view);
         this.pointShader.setColor("color", this.stroke);
         this.pointShader.setColor("tint", this.tint);
         this.pointShader.setVec2("viewport", this.target.width(), this.target.height());
@@ -982,8 +990,9 @@ public class Renderer
     
         this.target.bindFramebuffer();
     
+        updateViewMatrix();
+    
         this.lineShader.bind();
-        this.lineShader.setMat4("pv", this.view);
         this.lineShader.setColor("color", this.stroke);
         this.lineShader.setColor("tint", this.tint);
         this.lineShader.setVec2("viewport", this.target.width(), this.target.height());
@@ -1079,8 +1088,9 @@ public class Renderer
     
         this.target.bindFramebuffer();
     
+        updateViewMatrix();
+    
         this.linesShader.bind();
-        this.linesShader.setMat4("pv", this.view);
         this.linesShader.setColor("color", this.stroke);
         this.linesShader.setColor("tint", this.tint);
         this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
@@ -1112,8 +1122,9 @@ public class Renderer
     
         this.target.bindFramebuffer();
     
+        updateViewMatrix();
+    
         this.triangleShader.bind();
-        this.triangleShader.setMat4("pv", this.view);
         this.triangleShader.setColor("color", this.fill);
         this.triangleShader.setColor("tint", this.tint);
     
@@ -1320,8 +1331,9 @@ public class Renderer
     
         this.target.bindFramebuffer();
     
+        updateViewMatrix();
+    
         this.linesShader.bind();
-        this.linesShader.setMat4("pv", this.view);
         this.linesShader.setColor("color", this.stroke);
         this.linesShader.setColor("tint", this.tint);
         this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
@@ -1358,8 +1370,9 @@ public class Renderer
     
         this.target.bindFramebuffer();
     
+        updateViewMatrix();
+    
         this.quadShader.bind();
-        this.quadShader.setMat4("pv", this.view);
         this.quadShader.setColor("color", this.fill);
         this.quadShader.setColor("tint", this.tint);
     
@@ -1416,16 +1429,17 @@ public class Renderer
     public void drawPolygon(double... points)
     {
         Renderer.LOGGER.finer("Drawing Polygon:", Arrays.toString(points));
-        
+    
         this.target.bindFramebuffer();
-        
+    
+        updateViewMatrix();
+    
         this.linesShader.bind();
-        this.linesShader.setMat4("pv", this.view);
         this.linesShader.setColor("color", this.stroke);
         this.linesShader.setColor("tint", this.tint);
         this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
         this.linesShader.setUniform("thickness", (float) this.weight);
-        
+    
         float[] array = new float[points.length * 4];
         int     index = 0;
         for (int i = 0, n = points.length >> 1; i < n; i++)
@@ -1433,7 +1447,7 @@ public class Renderer
             int prev = (i - 1 + n) % n;
             int next = (i + 1 + n) % n;
             int four = (i + 2 + n) % n;
-    
+        
             array[index++] = (float) points[(2 * prev)];
             array[index++] = (float) points[(2 * prev) + 1];
             array[index++] = (float) points[(2 * i)];
@@ -1463,19 +1477,20 @@ public class Renderer
     public void fillPolygon(double... points)
     {
         Renderer.LOGGER.finer("Filling Polygon:", Arrays.toString(points));
-        
+    
         this.target.bindFramebuffer();
-        
+    
+        updateViewMatrix();
+    
         this.polygonShader.bind();
-        this.polygonShader.setMat4("pv", this.view);
         this.polygonShader.setColor("color", this.fill);
         this.polygonShader.setColor("tint", this.tint);
-        
+    
         float[] array = new float[points.length];
         for (int i = 0, n = points.length; i < n; i++) array[i] = (float) points[i];
         this.polygonSSBO.bind().set(array).unbind();
         this.polygonVAO.bind().draw(GL.POINTS).unbind();
-        
+    
         this.target.markGPUDirty();
     }
     
@@ -1592,8 +1607,9 @@ public class Renderer
     
         this.target.bindFramebuffer();
     
+        updateViewMatrix();
+    
         this.ellipseOutlineShader.bind();
-        this.ellipseOutlineShader.setMat4("pv", this.view);
         this.ellipseOutlineShader.setColor("color", this.stroke);
         this.ellipseOutlineShader.setColor("tint", this.tint);
         this.ellipseOutlineShader.setVec2("radius", (float) rx, (float) ry);
@@ -1621,8 +1637,9 @@ public class Renderer
     
         this.target.bindFramebuffer();
     
+        updateViewMatrix();
+    
         this.ellipseShader.bind();
-        this.ellipseShader.setMat4("pv", this.view);
         this.ellipseShader.setColor("color", this.fill);
         this.ellipseShader.setColor("tint", this.tint);
         this.ellipseShader.setVec2("radius", (float) rx, (float) ry);
@@ -1694,11 +1711,12 @@ public class Renderer
     public void drawArc(double x, double y, double rx, double ry, double start, double stop)
     {
         Renderer.LOGGER.finer("Drawing Arc:", x, y, rx, ry, start, stop);
-        
+    
         this.target.bindFramebuffer();
     
+        updateViewMatrix();
+    
         this.arcOutlineShader.bind();
-        this.arcOutlineShader.setMat4("pv", this.view);
         this.arcOutlineShader.setColor("color", this.stroke);
         this.arcOutlineShader.setColor("tint", this.tint);
         this.arcOutlineShader.setVec2("radius", rx, ry);
@@ -1730,8 +1748,9 @@ public class Renderer
     
         this.target.bindFramebuffer();
     
+        updateViewMatrix();
+    
         this.arcShader.bind();
-        this.arcShader.setMat4("pv", this.view);
         this.arcShader.setColor("color", this.fill);
         this.arcShader.setColor("tint", this.tint);
         this.arcShader.setVec2("radius", (float) rx, (float) ry);
@@ -1828,8 +1847,9 @@ public class Renderer
     
         this.target.bindFramebuffer();
     
+        updateViewMatrix();
+    
         this.textureShader.bind();
-        this.textureShader.setMat4("pv", this.view);
         this.textureShader.setColor("tint", this.tint);
         this.textureShader.setUniform("interpolate", -1f);
         this.textureShader.setTexture("tex1", 0, texture);
@@ -1951,8 +1971,9 @@ public class Renderer
     
         this.target.bindFramebuffer();
     
+        updateViewMatrix();
+    
         this.textureShader.bind();
-        this.textureShader.setMat4("pv", this.view);
         this.textureShader.setColor("tint", this.tint);
         this.textureShader.setUniform("interpolate", (float) amount);
         this.textureShader.setTexture("tex1", 0, texture1);
@@ -2076,17 +2097,18 @@ public class Renderer
     public void drawText(String text, double x, double y)
     {
         Renderer.LOGGER.finer("Drawing Text:", text, x, y);
-        
+    
         this.target.bindFramebuffer();
-        
+    
+        updateViewMatrix();
+    
         this.textShader.bind();
-        this.textShader.setMat4("pv", this.view);
         this.textShader.setColor("color", this.fill);
         this.textShader.setColor("tint", this.tint);
         this.textShader.setTexture("tex", 0, this.font.texture());
-        
+    
         float[] data = new float[text.length() * 16];
-        
+    
         double[] vertices = this.font.renderText(text);
         for (int i = 0, n = text.length(), index = 0; i < n; i++)
         {
@@ -2286,6 +2308,13 @@ public class Renderer
     
     private void updateViewMatrix()
     {
+        if (this.updateViewBuffer)
+        {
+            try (MemoryStack stack = MemoryStack.stackPush())
+            {
+                this.viewBuffer.bind().set(this.view.get(stack.mallocFloat(16)));
+            }
+        }
         this.updateViewBuffer = false;
     }
 }

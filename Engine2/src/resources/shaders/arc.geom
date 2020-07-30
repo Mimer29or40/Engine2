@@ -5,7 +5,8 @@ const float PI = 3.141592653;
 layout(points) in;
 layout(triangle_strip, max_vertices = 256) out;
 
-uniform mat4 pv;
+layout(std140, binding = 0) uniform View { mat4 view; };
+
 uniform vec2 radius;
 uniform vec2 bounds;
 uniform int mode;
@@ -28,14 +29,14 @@ void main(void)
     
     for (int i = start; i <= segments; i++) {
         float angle = bounds.x + i * scale;
-        
+    
         if (i > 0 && (i & 1) == 0)
         {
-            gl_Position = pv * vec4(origin, 0.0, 1.0);
+            gl_Position = view * vec4(origin, 0.0, 1.0);
             EmitVertex();
         }
-        
-        gl_Position = pv * vec4(position[0].xy + radius * vec2(cos(angle), sin(angle)), 0.0, 1.0);
+    
+        gl_Position = view * vec4(position[0].xy + radius * vec2(cos(angle), sin(angle)), 0.0, 1.0);
         EmitVertex();
     }
     EndPrimitive();

@@ -3,7 +3,6 @@
 layout(lines_adjacency) in;
 layout(triangle_strip, max_vertices = 7) out;
 
-uniform mat4 pv;
 uniform ivec2 viewport;
 uniform float thickness;
 

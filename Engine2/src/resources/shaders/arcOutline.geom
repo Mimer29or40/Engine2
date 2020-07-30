@@ -5,7 +5,8 @@ const float PI = 3.141592653;
 layout(points) in;
 layout(triangle_strip, max_vertices = 256) out;// 36 * 7
 
-uniform mat4 pv;
+layout(std140, binding = 0) uniform View { mat4 view; };
+
 uniform vec2 radius;
 uniform ivec2 viewport;
 uniform float thickness;
@@ -30,11 +31,11 @@ void main(void)
     
     for (int i = 0; i <= segments; i++) {
         float angle = bounds.x + i * scale;
-        Points[i] = pv * vec4(position[0].xy + radius * vec2(cos(angle), sin(angle)), 0.0, 1.0);
+        Points[i] = view * vec4(position[0].xy + radius * vec2(cos(angle), sin(angle)), 0.0, 1.0);
     }
     
     int total = segments + 1;
-    if (mode == 0 || mode == 3) Points[total++] = pv * vec4(position[0].xy, 0.0, 1.0);
+    if (mode == 0 || mode == 3) Points[total++] = view * vec4(position[0].xy, 0.0, 1.0);
     
     vec3 p[4];
     for (int i = 0; i < total; i++)

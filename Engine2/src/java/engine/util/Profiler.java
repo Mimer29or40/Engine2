@@ -380,7 +380,7 @@ public class Profiler
         @Override
         public String values()
         {
-            return String.format("Avg: %s us Min: %s us Max: %s us", this.avgTime, this.minTime, this.maxTime);
+            return String.format("Avg: % 6d us Min: % 6d us Max: % 6d us", this.avgTime, this.minTime, this.maxTime);
         }
     }
     
@@ -406,7 +406,7 @@ public class Profiler
         @Override
         public String values()
         {
-            return String.format("%s us (%.3f%% / %.3f%%)", this.time, this.percentage, this.globalPercentage);
+            return String.format("% 6d us (%3.3f%% / %3.3f%%)", this.time, this.percentage, this.globalPercentage);
         }
     }
 }

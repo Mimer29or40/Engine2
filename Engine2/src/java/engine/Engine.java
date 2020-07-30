@@ -329,6 +329,12 @@ public class Engine
                                                 Engine.profilerMode = 3;
                                                 notification("Profile Mode: Max");
                                             }
+                                            if (Engine.keyboard.F5.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
+                                            {
+                                                Engine.profiler.enabled(true);
+                                                Engine.profilerMode = 4;
+                                                notification("Profile Mode: Real-Time");
+                                            }
                                             if (Engine.keyboard.F10.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
                                             {
                                                 Engine.renderer.debug(!Engine.renderer.debug());
@@ -348,17 +354,17 @@ public class Engine
                                         Engine.profiler.endSection();
                                     }
                                     Engine.profiler.endSection();
-                                    
-                                    if (!Engine.paused)
+    
+                                    Engine.profiler.startSection("Draw");
                                     {
-                                        Engine.profiler.startSection("Draw");
+                                        if (!Engine.paused)
                                         {
                                             Engine.profiler.startSection("Start");
                                             {
                                                 Engine.renderer.start();
                                             }
                                             Engine.profiler.endSection();
-                                            
+            
                                             Engine.profiler.startSection("Extension Pre Draw");
                                             {
                                                 Engine.LOGGER.finer("Extension Pre Draw");
@@ -405,35 +411,39 @@ public class Engine
                                                 }
                                             }
                                             Engine.profiler.endSection();
-                                            
+            
                                             Engine.profiler.startSection("Finish");
                                             {
                                                 Engine.renderer.finish();
                                             }
                                             Engine.profiler.endSection();
                                         }
-                                        Engine.profiler.endSection();
-                                    }
-                                    
-                                    Engine.profiler.startSection("Render");
-                                    {
-                                        if (Engine.window.updateViewport())
+        
+                                        Engine.profiler.startSection("Update Viewport");
                                         {
-                                            Engine.pixelSize.x = Math.max(Engine.window.viewW() / Engine.screenSize.x, 1);
-                                            Engine.pixelSize.y = Math.max(Engine.window.viewH() / Engine.screenSize.y, 1);
-                                        }
-                                        
-                                        Engine.screenShader.bind();
-                                        Engine.screenVAO.bind();
-                                        for (int i = 0; i < Engine.layerCount; i++)
-                                        {
-                                            if (Engine.activeLayers[i])
+                                            if (Engine.window.updateViewport())
                                             {
-                                                Engine.layers[i].bindTexture().unbindFramebuffer();
-                                                Engine.screenVAO.draw(GL.QUADS);
+                                                Engine.pixelSize.x = Math.max(Engine.window.viewW() / Engine.screenSize.x, 1);
+                                                Engine.pixelSize.y = Math.max(Engine.window.viewH() / Engine.screenSize.y, 1);
                                             }
+                                            Engine.profiler.endSection();
                                         }
-                                        Engine.screenVAO.unbind();
+        
+                                        Engine.profiler.startSection("Layers");
+                                        {
+                                            Engine.screenShader.bind();
+                                            Engine.screenVAO.bind();
+                                            for (int i = 0; i < Engine.layerCount; i++)
+                                            {
+                                                if (Engine.activeLayers[i])
+                                                {
+                                                    Engine.layers[i].bindTexture().unbindFramebuffer();
+                                                    Engine.screenVAO.draw(GL.QUADS);
+                                                }
+                                            }
+                                            Engine.screenVAO.unbind();
+                                        }
+                                        Engine.profiler.endSection();
                                     }
                                     Engine.profiler.endSection();
                                     
@@ -477,7 +487,7 @@ public class Engine
                                                         int quads  = stb_easy_font_print(line.a + 2, line.b + 2, line.c, null, textBuffer);
                                                         int width  = stb_easy_font_width(line.c);
                                                         int height = stb_easy_font_height(line.c);
-        
+    
                                                         boxBuffer.put(0, (float) line.a);
                                                         boxBuffer.put(1, (float) line.b);
                                                         boxBuffer.put(2, (float) line.a + width + 2);
@@ -486,13 +496,13 @@ public class Engine
                                                         boxBuffer.put(5, (float) line.b + height);
                                                         boxBuffer.put(6, (float) line.a);
                                                         boxBuffer.put(7, (float) line.b + height);
-        
+    
                                                         Engine.debugShader.setColor("color", Engine.debugLineBackground);
                                                         Engine.debugBoxVAO.bind().set(0, boxBuffer).draw(GL.QUADS).unbind();
-        
+    
                                                         Engine.debugShader.setColor("color", Engine.debugLineText);
                                                         Engine.debugTextVAO.bind().set(0, textBuffer.limit(quads * 64)).draw(GL.QUADS).unbind();
-        
+    
                                                         textBuffer.clear();
                                                     }
                                                 }
@@ -554,16 +564,16 @@ public class Engine
                             }
                             
                             dt = t - lastProfile;
-                            if (dt >= Engine.profilerFrequency && !Engine.paused)
+                            if ((Engine.profilerMode == 4 || dt >= Engine.profilerFrequency) && !Engine.paused)
                             {
                                 lastProfile = t;
-                                
+        
                                 // TODO - Add navigable profiler tree
                                 switch (Engine.profilerMode)
                                 {
                                     case 0 -> Engine.profilerOutput = null;
                                     case 1 -> Engine.profilerOutput = Engine.profiler.getAvgData(null);
-                                    case 2 -> Engine.profilerOutput = Engine.profiler.getMinData(null);
+                                    case 2, 4 -> Engine.profilerOutput = Engine.profiler.getMinData(null);
                                     case 3 -> Engine.profilerOutput = Engine.profiler.getMaxData(null);
                                 }
                                 Engine.profiler.clear();

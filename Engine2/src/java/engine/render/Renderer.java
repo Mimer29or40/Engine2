@@ -1042,7 +1042,7 @@ public class Renderer
     {
         Renderer.LOGGER.finer("Drawing Bezier:", x1, y1, x2, y2, x3, y3);
         
-        // TODO
+        // TODO - Bezier curve
         drawLine(x1, y1, x2, y2);
         drawLine(x2, y2, x3, y3);
     }

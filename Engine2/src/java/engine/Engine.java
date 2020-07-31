@@ -104,7 +104,7 @@ public class Engine
     
     private static long                profilerFrequency;
     private static int                 profilerMode;
-    private static String              profilerOutput;
+    private static String              profilerParent;
     private static List<Profiler.Data> profilerData;
     
     private static boolean paused;
@@ -164,14 +164,14 @@ public class Engine
         try
         {
             Engine.config.load();
-            
+    
             ConfigSpec spec = new ConfigSpec();
             spec.defineInRange("layer_count", 10, 1, 100);
             spec.define("debug_text_color", "#FFFFFFFF");
             spec.define("debug_background_color", "#32000000");
-            spec.define("notification_duration", 2.0);
-            spec.define("profiler_frequency", 1.0);
-            spec.define("title_frequency", 1.0);
+            spec.defineInRange("notification_duration", 2.0, 1.0, 10.0);
+            spec.defineInRange("profiler_frequency", 10, 1, 60);
+            spec.defineInRange("title_frequency", 10, 1, 60);
             spec.correct(Engine.config);
         }
         catch (ParsingException ignored)
@@ -180,21 +180,21 @@ public class Engine
             Engine.config.set("debug_text_color", "#FFFFFFFF");
             Engine.config.set("debug_background_color", "#32000000");
             Engine.config.set("notification_duration", 2.0);
-            Engine.config.set("profiler_frequency", 1.0);
-            Engine.config.set("title_frequency", 1.0);
+            Engine.config.set("profiler_frequency", 10);
+            Engine.config.set("title_frequency", 10);
         }
-        
+    
         Engine.layerCount = Engine.config.getInt("layer_count");
         Engine.debugLineText.fromHex(Engine.config.get("debug_text_color"));
         Engine.debugLineBackground.fromHex(Engine.config.get("debug_background_color"));
-        Engine.notificationDuration = 1_000_000_000L * Engine.config.getLong("notification_duration");
-        Engine.profilerFrequency    = 1_000_000_000L * Engine.config.getLong("profiler_frequency");
-        Engine.titleFrequency       = 1_000_000_000L * Engine.config.getLong("title_frequency");
-        
+        Engine.notificationDuration = (long) (1_000_000_000L * Engine.config.<Number>getRaw("notification_duration").doubleValue());
+        Engine.profilerFrequency    = (long) (1_000_000_000L / Engine.config.<Number>getRaw("profiler_frequency").doubleValue());
+        Engine.titleFrequency       = (long) (1_000_000_000L / Engine.config.<Number>getRaw("title_frequency").doubleValue());
+    
         Engine.logic     = logic;
         Engine.running   = true;
         Engine.startTime = System.nanoTime();
-        
+    
         Engine.LOGGER.fine("Looking for Extensions");
         for (Class<? extends Extension> ext : new Reflections("engine").getSubTypesOf(Extension.class))
         {
@@ -311,6 +311,7 @@ public class Engine
                                         {
                                             if (Engine.keyboard.F1.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
                                             {
+                                                Engine.profilerData = null;
                                                 Engine.profiler.enabled(false);
                                                 Engine.profilerMode = 0;
                                                 notification("Profile Mode: Off");
@@ -353,6 +354,29 @@ public class Engine
                                             {
                                                 Engine.paused = !Engine.paused;
                                                 notification(Engine.paused ? "Engine Paused" : "Engine Unpaused");
+                                            }
+                                            if (Engine.profilerMode > 0 && Engine.profilerData != null)
+                                            {
+                                                for (int i = 1; i < 9; i++)
+                                                {
+                                                    if (Engine.keyboard.get("K" + i).down() && Engine.profilerData.size() > i)
+                                                    {
+                                                        String name = Engine.profilerData.get(i).name;
+                                                        if (name.contains(".")) name = name.substring(name.lastIndexOf(".") + 1);
+                                                        Engine.profilerParent = (Engine.profilerParent != null ? Engine.profilerParent + "." : "") + name;
+                                                    }
+                                                }
+                                                if (Engine.keyboard.K0.down() && Engine.profilerParent != null)
+                                                {
+                                                    if (Engine.profilerParent.contains("."))
+                                                    {
+                                                        Engine.profilerParent = Engine.profilerParent.substring(0, Engine.profilerParent.lastIndexOf("."));
+                                                    }
+                                                    else
+                                                    {
+                                                        Engine.profilerParent = null;
+                                                    }
+                                                }
                                             }
                                         }
                                         Engine.profiler.endSection();
@@ -464,22 +488,28 @@ public class Engine
                                         if (Engine.debug)
                                         {
                                             drawDebugText(0, 0, "Frame: " + Engine.frameCount);
-                                            
                                         }
-                                        if (Engine.profilerOutput != null)
+                                        if (Engine.profilerData != null && Engine.profilerData.size() > 0)
                                         {
                                             // int y = Engine.window.viewH() - stb_easy_font_height(Engine.profilerOutput) - stb_easy_font_height(" ");
                                             // for (String line : Engine.profilerOutput.split("\n"))
                                             // {
                                             //     drawDebugText(0, y += stb_easy_font_height(line), line);
                                             // }
-    
-                                            int    y = 0;
-                                            String line;
-                                            for (Profiler.Data data : Engine.profilerData)
+        
+                                            int nameLength = 0;
+                                            for (Profiler.Data data : Engine.profilerData) nameLength = Math.max(nameLength, data.name.length());
+        
+                                            int y = Engine.window.viewH() - stb_easy_font_height(" " + "\n".repeat(Engine.profilerData.size() - 1) + " ");
+                                            for (int i = 0, n = Engine.profilerData.size(); i < n; i++)
                                             {
-                                                line = data.name + " " + data.valueString();
-                                                drawDebugText(0, y += stb_easy_font_height(line), line);
+                                                Profiler.Data data = Engine.profilerData.get(i);
+                                                String        line = String.format("%s %-20s %s", i, data.name, data.valueString());
+                                                drawDebugText(0, y, i + "");
+                                                drawDebugText(20, y, data.name);
+                                                drawDebugText(20 + nameLength * 8, y, data.valueString());
+            
+                                                y += stb_easy_font_height(line);
                                             }
                                         }
                                         
@@ -499,12 +529,12 @@ public class Engine
                                                         for (Tuple<Integer, Integer, String> line : Engine.debugLines)
                                                         {
                                                             int quads = stb_easy_font_print(line.a + 2, line.b + 2, line.c, null, charBuffer.clear());
-                
+    
                                                             float x1 = line.a;
                                                             float y1 = line.b;
                                                             float x2 = line.a + stb_easy_font_width(line.c) + 2;
                                                             float y2 = line.b + stb_easy_font_height(line.c);
-                
+    
                                                             boxBuffer.put(0, x1);
                                                             boxBuffer.put(1, y1);
                                                             boxBuffer.put(2, x2);
@@ -513,10 +543,10 @@ public class Engine
                                                             boxBuffer.put(5, y2);
                                                             boxBuffer.put(6, x1);
                                                             boxBuffer.put(7, y2);
-                
+    
                                                             Engine.debugShader.setColor("color", Engine.debugLineBackground);
                                                             Engine.debugBoxVAO.bind().set(boxBuffer).draw(GL.QUADS).unbind();
-                
+    
                                                             Engine.debugShader.setColor("color", Engine.debugLineText);
                                                             Engine.debugTextVAO.bind().set(charBuffer).draw(GL.QUADS, quads * 4).unbind();
                                                         }
@@ -584,25 +614,12 @@ public class Engine
                             {
                                 lastProfile = t;
     
-                                // TODO - Add navigable profiler tree
                                 switch (Engine.profilerMode)
                                 {
-                                    case 0 -> {
-                                        Engine.profilerOutput = null;
-                                        Engine.profilerData   = null;
-                                    }
-                                    case 1 -> {
-                                        Engine.profilerOutput = Engine.profiler.getAvgDataString(null);
-                                        Engine.profilerData   = Engine.profiler.getAverageData(null);
-                                    }
-                                    case 2, 4 -> {
-                                        Engine.profilerOutput = Engine.profiler.getMinDataString(null);
-                                        Engine.profilerData   = Engine.profiler.getMinData(null);
-                                    }
-                                    case 3 -> {
-                                        Engine.profilerOutput = Engine.profiler.getMaxDataString(null);
-                                        Engine.profilerData   = Engine.profiler.getMaxData(null);
-                                    }
+                                    case 0 -> Engine.profilerData = null;
+                                    case 1 -> Engine.profilerData = Engine.profiler.getAverageData(Engine.profilerParent);
+                                    case 2, 4 -> Engine.profilerData = Engine.profiler.getMinData(Engine.profilerParent);
+                                    case 3 -> Engine.profilerData = Engine.profiler.getMaxData(Engine.profilerParent);
                                 }
                                 Engine.profiler.clear();
                             }

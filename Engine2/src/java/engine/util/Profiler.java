@@ -290,9 +290,11 @@ public class Profiler
     public List<Data> getMinData(String parent)
     {
         if (!this.enabled) return new ArrayList<>();
-        
+    
         ArrayList<Long> data = parent != null ? this.sectionsTimeList.get(parent) : this.frameTimeList;
-        
+    
+        if (data == null) return new ArrayList<>();
+    
         long min = Long.MAX_VALUE;
         int  idx = 0;
         for (int i = 0, n = data.size(); i < n; i++)
@@ -319,9 +321,11 @@ public class Profiler
     public List<Data> getMaxData(String parent)
     {
         if (!this.enabled) return new ArrayList<>();
-        
+    
         ArrayList<Long> data = parent != null ? this.sectionsTimeList.get(parent) : this.frameTimeList;
-        
+    
+        if (data == null) return new ArrayList<>();
+    
         long max = Long.MIN_VALUE;
         int  idx = 0;
         for (int i = 0, n = data.size(); i < n; i++)
@@ -439,7 +443,7 @@ public class Profiler
         @Override
         public String valueString()
         {
-            return String.format("% 6d us (%3.3f%% / %3.3f%%)", this.time, this.percentage, this.globalPercentage);
+            return String.format("% 6d us (%7.3f%% / %7.3f%%)", this.time, this.percentage, this.globalPercentage);
         }
     }
 }

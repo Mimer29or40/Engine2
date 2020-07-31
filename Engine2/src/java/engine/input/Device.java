@@ -72,11 +72,13 @@ public abstract class Device<I extends Device.Input>
     public static void doubleDelay(double doubleDelay)
     {
         Device.LOGGER.finest("Setting Device Double Delay:", holdDelay);
-        
+    
         Device.doubleDelay = (long) (doubleDelay * 1_000_000_000L);
     }
     
     private final HashMap<Integer, I> inputs = new HashMap<>();
+    
+    private final HashMap<String, Integer> nameMap = new HashMap<>();
     
     /**
      * @return Gets all inputs for this Device
@@ -87,11 +89,19 @@ public abstract class Device<I extends Device.Input>
     }
     
     /**
-     * @return Gets the Input that represents the GLFW constant.
+     * @return Gets the Input that corresponds to the GLFW constant.
      */
     public I get(int reference)
     {
         return this.inputs.getOrDefault(reference, getDefault());
+    }
+    
+    /**
+     * @return Gets the Input that corresponds to the specified name
+     */
+    public I get(String name)
+    {
+        return get(this.nameMap.getOrDefault(name, 0));
     }
     
     /**
@@ -186,6 +196,7 @@ public abstract class Device<I extends Device.Input>
         {
             this.name = name;
             device.inputs.put(reference, (I) this);
+            device.nameMap.put(this.name, reference);
         }
         
         @Override

@@ -72,7 +72,7 @@ public class Tuple<A, B, C> implements ITuple<A, B, C>, Comparable<ITuple<A, B, 
     @Override
     public String toString()
     {
-        return getClass().getName() + '{' + this.a + ", " + this.b + ", " + this.c + '}';
+        return getClass().getSimpleName() + '{' + this.a + ", " + this.b + ", " + this.c + '}';
     }
     @Override
     public int compareTo(ITuple<A, B, C> o)

@@ -1,9 +1,6 @@
 package engine.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Stack;
+import java.util.*;
 import java.util.function.Function;
 
 import static engine.util.Util.round;
@@ -170,7 +167,7 @@ public class Profiler
      * @param parent The parent section to collect or null for the entire data set.
      * @return The multiline string.
      */
-    public String getAvgData(String parent)
+    public String getAvgDataString(String parent)
     {
         return this.enabled ? format(0, parent, new StringBuilder(), true, this::getAverageData).toString() : null;
     }
@@ -184,24 +181,9 @@ public class Profiler
      * @param parent The parent section to collect or null for the entire data set.
      * @return The multiline string.
      */
-    public String getMinData(String parent)
+    public String getMinDataString(String parent)
     {
-        ArrayList<Long> data = parent != null ? this.sectionsTimeList.get(parent) : this.frameTimeList;
-        
-        long min = Long.MAX_VALUE;
-        int  idx = 0;
-        for (int i = 0, n = data.size(); i < n; i++)
-        {
-            long value = data.get(i);
-            if (value < min)
-            {
-                min = value;
-                idx = i;
-            }
-        }
-        final int index = idx;
-        
-        return this.enabled ? format(0, parent, new StringBuilder(), true, p -> getFrameData(index, p)).toString() : null;
+        return this.enabled ? format(0, parent, new StringBuilder(), true, this::getMinData).toString() : null;
     }
     
     /**
@@ -213,36 +195,21 @@ public class Profiler
      * @param parent The parent section to collect or null for the entire data set.
      * @return The multiline string.
      */
-    public String getMaxData(String parent)
+    public String getMaxDataString(String parent)
     {
-        ArrayList<Long> data = parent != null ? this.sectionsTimeList.get(parent) : this.frameTimeList;
-        
-        long max = Long.MIN_VALUE;
-        int  idx = 0;
-        for (int i = 0, n = data.size(); i < n; i++)
-        {
-            long value = data.get(i);
-            if (value > max)
-            {
-                max = value;
-                idx = i;
-            }
-        }
-        final int index = idx;
-        
-        return this.enabled ? format(0, parent, new StringBuilder(), true, p -> getFrameData(index, p)).toString() : null;
+        return this.enabled ? format(0, parent, new StringBuilder(), true, this::getMaxData).toString() : null;
     }
     
-    private StringBuilder format(int level, String parent, StringBuilder builder, boolean header, Function<String, ArrayList<? extends Data>> points)
+    private StringBuilder format(int level, String parent, StringBuilder builder, boolean header, Function<String, List<? extends Data>> points)
     {
-        ArrayList<? extends Data> apply = points.apply(parent);
+        List<? extends Data> apply = points.apply(parent);
         for (int i = header ? 0 : 1, n = apply.size(); i < n; i++)
         {
             Data point = apply.get(i);
             // builder.append(String.format("[%02d] ", level));
             builder.append("|   ".repeat(Math.max(0, level)));
             builder.append(point.name.contains(".") ? point.name.substring(point.name.lastIndexOf(".") + 1) : point.name);
-            builder.append(" - ").append(point.values()).append('\n');
+            builder.append(" - ").append(point.valueString()).append('\n');
             if (point.name.equals(parent) || point.name.equals("Frame"))
             {
                 level += 1;
@@ -262,11 +229,19 @@ public class Profiler
         return builder;
     }
     
-    private ArrayList<SectionData> getAverageData(String parent)
+    /**
+     * Gets a ArrayList of data points that shows the average, minimum, and maximum for each section in the parent over the number of frames profiled.
+     *
+     * @param parent The parent section to collect or null for the top level.
+     * @return The ArrayList of data points.
+     */
+    public List<Data> getAverageData(String parent)
     {
+        if (!this.enabled) return new ArrayList<>();
+        
         Function<String, Boolean> check = s -> (parent == null && !s.contains(".")) || (s.startsWith(parent + '.') && !s.replaceFirst(parent + '.', "").contains("."));
         
-        ArrayList<SectionData> data = new ArrayList<>();
+        ArrayList<Data> data = new ArrayList<>();
         for (String section : this.sectionsTimeList.keySet())
         {
             if (check.apply(section))
@@ -303,7 +278,65 @@ public class Profiler
         return data;
     }
     
-    private ArrayList<SectionPercent> getFrameData(int frame, String parent)
+    /**
+     * Gets a ArrayList of data points that shows the frame that the parent took the minimum amount of time to execute.
+     * </p>
+     * The child sections will be included in the string with the percentage that the child took in the parent
+     * as well as the percentage of the frame time taken.
+     *
+     * @param parent The parent section to collect or null for the top level.
+     * @return The ArrayList of data points.
+     */
+    public List<Data> getMinData(String parent)
+    {
+        if (!this.enabled) return new ArrayList<>();
+        
+        ArrayList<Long> data = parent != null ? this.sectionsTimeList.get(parent) : this.frameTimeList;
+        
+        long min = Long.MAX_VALUE;
+        int  idx = 0;
+        for (int i = 0, n = data.size(); i < n; i++)
+        {
+            long value = data.get(i);
+            if (value < min)
+            {
+                min = value;
+                idx = i;
+            }
+        }
+        return getFrameData(idx, parent);
+    }
+    
+    /**
+     * Gets a ArrayList of data points that shows the frame that the parent took the maximum amount of time to execute.
+     * </p>
+     * The child sections will be included in the string with the percentage that the child took in the parent
+     * as well as the percentage of the frame time taken.
+     *
+     * @param parent The parent section to collect or null for the top level.
+     * @return The ArrayList of data points.
+     */
+    public List<Data> getMaxData(String parent)
+    {
+        if (!this.enabled) return new ArrayList<>();
+        
+        ArrayList<Long> data = parent != null ? this.sectionsTimeList.get(parent) : this.frameTimeList;
+        
+        long max = Long.MIN_VALUE;
+        int  idx = 0;
+        for (int i = 0, n = data.size(); i < n; i++)
+        {
+            long value = data.get(i);
+            if (value > max)
+            {
+                max = value;
+                idx = i;
+            }
+        }
+        return getFrameData(idx, parent);
+    }
+    
+    private List<Data> getFrameData(int frame, String parent)
     {
         Function<String, Boolean> check = s -> (parent == null && !s.contains(".")) || (s.startsWith(parent + '.') && !s.replaceAll(parent + '.', "").contains("."));
         
@@ -315,7 +348,7 @@ public class Profiler
         
         long total = Math.max(actualTotal, parentTotal);
         
-        ArrayList<SectionPercent> data = new ArrayList<>();
+        ArrayList<Data> data = new ArrayList<>();
         for (String section : this.sectionsTimeList.keySet())
         {
             if (check.apply(section))
@@ -340,7 +373,7 @@ public class Profiler
         return data;
     }
     
-    private static abstract class Data implements Comparable<Data>
+    public static abstract class Data implements Comparable<Data>
     {
         public final String name;
         
@@ -349,17 +382,17 @@ public class Profiler
             this.name = name;
         }
         
-        public abstract long compareValue();
+        public abstract long value();
         
-        public abstract String values();
+        public abstract String valueString();
         
         public int compareTo(Data o)
         {
-            return compareValue() < o.compareValue() ? -1 : compareValue() > o.compareValue() ? 1 : this.name.compareTo(o.name);
+            return value() < o.value() ? -1 : value() > o.value() ? 1 : this.name.compareTo(o.name);
         }
     }
     
-    private static class SectionData extends Data
+    public static class SectionData extends Data
     {
         public final long avgTime, minTime, maxTime;
         
@@ -372,19 +405,19 @@ public class Profiler
         }
         
         @Override
-        public long compareValue()
+        public long value()
         {
             return this.avgTime;
         }
         
         @Override
-        public String values()
+        public String valueString()
         {
             return String.format("Avg: % 6d us Min: % 6d us Max: % 6d us", this.avgTime, this.minTime, this.maxTime);
         }
     }
     
-    private static class SectionPercent extends Data
+    public static class SectionPercent extends Data
     {
         public final long   time;
         public final double percentage, globalPercentage;
@@ -398,13 +431,13 @@ public class Profiler
         }
         
         @Override
-        public long compareValue()
+        public long value()
         {
             return this.time;
         }
         
         @Override
-        public String values()
+        public String valueString()
         {
             return String.format("% 6d us (%3.3f%% / %3.3f%%)", this.time, this.percentage, this.globalPercentage);
         }

@@ -61,7 +61,7 @@ public class Pair<A, B> implements IPair<A, B>, Comparable<Map.Entry<A, B>>, Ser
     @Override
     public String toString()
     {
-        return getClass().getName() + '{' + this.a + ", " + this.b + '}';
+        return getClass().getSimpleName() + '{' + this.a + ", " + this.b + '}';
     }
     
     /**

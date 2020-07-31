@@ -1,6 +1,7 @@
 package engine.render;
 
 import engine.util.Logger;
+import engine.util.Pair;
 
 import java.nio.*;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class VertexArray
     
     private GLBuffer indexBuffer = null;
     
-    private final ArrayList<ArrayList<Integer>> attributes = new ArrayList<>();
+    private final ArrayList<ArrayList<Pair.I>> attributes = new ArrayList<>();
     
     private int vertexCount;
     
@@ -84,8 +85,18 @@ public class VertexArray
     public int attributeCount()
     {
         int count = 0;
-        for (ArrayList<Integer> bufferAttributes : this.attributes) count += bufferAttributes.size();
+        for (ArrayList<Pair.I> bufferAttributes : this.attributes) count += bufferAttributes.size();
         return count;
+    }
+    
+    /**
+     * @return The size in bytes of the attributes.
+     */
+    public int attributesSize()
+    {
+        int size = 0;
+        for (ArrayList<Pair.I> bufferAttributes : this.attributes) for (Pair.I attribute : bufferAttributes) size += attribute.a * attribute.b;
+        return size;
     }
     
     /**
@@ -101,7 +112,28 @@ public class VertexArray
      */
     public int indexCount()
     {
-        return this.indexBuffer != null ? this.indexBuffer.size() : 0;
+        return this.indexBuffer != null ? this.indexBuffer.bufferSize() : 0;
+    }
+    
+    /**
+     * Gets the size of the buffer at the index specified.
+     *
+     * @param buffer The buffer index.
+     * @return The size of the buffer in bytes
+     */
+    public int bufferSize(int buffer)
+    {
+        return this.vertexBuffers.get(buffer).bufferSize();
+    }
+    
+    /**
+     * Gets the size of the buffer at the index specified.
+     *
+     * @return The size of the buffer in bytes
+     */
+    public int bufferSize()
+    {
+        return bufferSize(0);
     }
     
     /**
@@ -159,9 +191,9 @@ public class VertexArray
         if (this.indexBuffer != null) this.indexBuffer.delete();
         
         int i = 0;
-        for (ArrayList<Integer> bufferAttributes : this.attributes)
+        for (ArrayList<Pair.I> bufferAttributes : this.attributes)
         {
-            for (int attribute : bufferAttributes) glDisableVertexAttribArray(i++);
+            for (Pair.I attribute : bufferAttributes) glDisableVertexAttribArray(i++);
             bufferAttributes.clear();
         }
         this.attributes.clear();
@@ -183,8 +215,34 @@ public class VertexArray
         for (int i = 0, n = this.vertexBuffers.size(); i < n; i++)
         {
             int bufferAttributesSize = 0;
-            for (int v : this.attributes.get(i)) bufferAttributesSize += v;
-            this.vertexCount = Math.min(this.vertexCount, this.vertexBuffers.get(i).size() / bufferAttributesSize);
+            for (Pair.I v : this.attributes.get(i)) bufferAttributesSize += v.a * v.b;
+            this.vertexCount = Math.min(this.vertexCount, this.vertexBuffers.get(i).dataSize() / bufferAttributesSize);
+        }
+        return this;
+    }
+    
+    /**
+     * Draws the array in the specified mode. If an element buffer is available, it used it.
+     * <p>
+     * Make sure to bind the vertex array first.
+     *
+     * @param mode The primitive type.
+     * @param size The size of the buffer to draw.
+     * @return This instance for call chaining.
+     */
+    public VertexArray draw(GL mode, int size)
+    {
+        if (this.indexBuffer != null)
+        {
+            VertexArray.LOGGER.finest("Drawing indices for VertexArray: %s", this.id);
+            
+            if (this.indexBuffer.dataSize() > 0) glDrawElements(mode.ref(), size, GL.UNSIGNED_INT.ref(), 0);
+        }
+        else
+        {
+            VertexArray.LOGGER.finest("Drawing vertices for VertexArray: %s", this.id);
+            
+            if (this.vertexCount > 0) glDrawArrays(mode.ref(), 0, size);
         }
         return this;
     }
@@ -199,19 +257,7 @@ public class VertexArray
      */
     public VertexArray draw(GL mode)
     {
-        if (this.indexBuffer != null)
-        {
-            VertexArray.LOGGER.finest("Drawing indices for VertexArray: %s", this.id);
-            
-            if (this.indexBuffer.size() > 0) glDrawElements(mode.ref(), this.indexBuffer.size(), GL.UNSIGNED_INT.ref(), 0);
-        }
-        else
-        {
-            VertexArray.LOGGER.finest("Drawing vertices for VertexArray: %s", this.id);
-            
-            if (this.vertexCount > 0) glDrawArrays(mode.ref(), 0, this.vertexCount);
-        }
-        return this;
+        return draw(mode, this.indexBuffer != null ? this.indexBuffer.dataSize() : this.vertexCount);
     }
     
     /**
@@ -353,10 +399,10 @@ public class VertexArray
         
         int bufferAttributesSize = sum(sizes);
         if (bufferAttributesSize == 0) throw new RuntimeException("Invalid vertex format: Vertex length must be > 0");
-        
-        this.vertexCount = Math.min(this.vertexCount > 0 ? this.vertexCount : Integer.MAX_VALUE, buffer.size() / bufferAttributesSize);
-        
-        ArrayList<Integer> bufferAttributes = new ArrayList<>();
+    
+        this.vertexCount = Math.min(this.vertexCount > 0 ? this.vertexCount : Integer.MAX_VALUE, buffer.bufferSize() / bufferAttributesSize);
+    
+        ArrayList<Pair.I> bufferAttributes = new ArrayList<>();
         
         buffer.bind();
         int attributeCount = attributeCount(), offset = 0;
@@ -364,7 +410,7 @@ public class VertexArray
         {
             int type = types[i];
             int size = sizes[i];
-            bufferAttributes.add(size);
+            bufferAttributes.add(new Pair.I(size, bytes[i]));
             glVertexAttribPointer(attributeCount, size, type, false, stride, offset);
             glEnableVertexAttribArray(attributeCount++);
             offset += size * bytes[i];
@@ -379,7 +425,7 @@ public class VertexArray
      * <p>
      * Make sure to bind the vertex array first.
      *
-     * @param size    The size of the data
+     * @param size    The size of the data in bytes
      * @param usage   How the data should be used.
      * @param formats The type and size pairs for how the buffer is organized.
      * @return This instance for call chaining.
@@ -545,6 +591,20 @@ public class VertexArray
      * <p>
      * Make sure to bind the vertex array first.
      *
+     * @param usage How the data will be used.
+     * @param data  The data.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(GL usage, short... data)
+    {
+        return set(0, usage, data);
+    }
+    
+    /**
+     * Changes the contents of the buffer at index.
+     * <p>
+     * Make sure to bind the vertex array first.
+     *
      * @param buffer The buffer index.
      * @param usage  How the data will be used.
      * @param data   The data.
@@ -554,6 +614,20 @@ public class VertexArray
     {
         this.vertexBuffers.get(buffer).usage(usage).bind().set(data).unbind();
         return this;
+    }
+    
+    /**
+     * Changes the contents of the buffer at index.
+     * <p>
+     * Make sure to bind the vertex array first.
+     *
+     * @param usage How the data will be used.
+     * @param data  The data.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(GL usage, int... data)
+    {
+        return set(0, usage, data);
     }
     
     /**
@@ -577,6 +651,20 @@ public class VertexArray
      * <p>
      * Make sure to bind the vertex array first.
      *
+     * @param usage How the data will be used.
+     * @param data  The data.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(GL usage, long... data)
+    {
+        return set(0, usage, data);
+    }
+    
+    /**
+     * Changes the contents of the buffer at index.
+     * <p>
+     * Make sure to bind the vertex array first.
+     *
      * @param buffer The buffer index.
      * @param usage  How the data will be used.
      * @param data   The data.
@@ -586,6 +674,20 @@ public class VertexArray
     {
         this.vertexBuffers.get(buffer).usage(usage).bind().set(data).unbind();
         return this;
+    }
+    
+    /**
+     * Changes the contents of the buffer at index.
+     * <p>
+     * Make sure to bind the vertex array first.
+     *
+     * @param usage How the data will be used.
+     * @param data  The data.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(GL usage, float... data)
+    {
+        return set(0, usage, data);
     }
     
     /**
@@ -609,6 +711,20 @@ public class VertexArray
      * <p>
      * Make sure to bind the vertex array first.
      *
+     * @param usage How the data will be used.
+     * @param data  The data.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(GL usage, double... data)
+    {
+        return set(0, usage, data);
+    }
+    
+    /**
+     * Changes the contents of the buffer at index.
+     * <p>
+     * Make sure to bind the vertex array first.
+     *
      * @param buffer The buffer index.
      * @param usage  How the data will be used.
      * @param data   The data.
@@ -618,6 +734,20 @@ public class VertexArray
     {
         this.vertexBuffers.get(buffer).usage(usage).bind().set(data).unbind();
         return this;
+    }
+    
+    /**
+     * Changes the contents of the buffer at index.
+     * <p>
+     * Make sure to bind the vertex array first.
+     *
+     * @param usage How the data will be used.
+     * @param data  The data.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(GL usage, ByteBuffer data)
+    {
+        return set(0, usage, data);
     }
     
     /**
@@ -641,6 +771,20 @@ public class VertexArray
      * <p>
      * Make sure to bind the vertex array first.
      *
+     * @param usage How the data will be used.
+     * @param data  The data.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(GL usage, ShortBuffer data)
+    {
+        return set(0, usage, data);
+    }
+    
+    /**
+     * Changes the contents of the buffer at index.
+     * <p>
+     * Make sure to bind the vertex array first.
+     *
      * @param buffer The buffer index.
      * @param usage  How the data will be used.
      * @param data   The data.
@@ -650,6 +794,20 @@ public class VertexArray
     {
         this.vertexBuffers.get(buffer).usage(usage).bind().set(data).unbind();
         return this;
+    }
+    
+    /**
+     * Changes the contents of the buffer at index.
+     * <p>
+     * Make sure to bind the vertex array first.
+     *
+     * @param usage How the data will be used.
+     * @param data  The data.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(GL usage, IntBuffer data)
+    {
+        return set(0, usage, data);
     }
     
     /**
@@ -673,6 +831,20 @@ public class VertexArray
      * <p>
      * Make sure to bind the vertex array first.
      *
+     * @param usage How the data will be used.
+     * @param data  The data.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(GL usage, LongBuffer data)
+    {
+        return set(0, usage, data);
+    }
+    
+    /**
+     * Changes the contents of the buffer at index.
+     * <p>
+     * Make sure to bind the vertex array first.
+     *
      * @param buffer The buffer index.
      * @param usage  How the data will be used.
      * @param data   The data.
@@ -689,6 +861,20 @@ public class VertexArray
      * <p>
      * Make sure to bind the vertex array first.
      *
+     * @param usage How the data will be used.
+     * @param data  The data.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(GL usage, FloatBuffer data)
+    {
+        return set(0, usage, data);
+    }
+    
+    /**
+     * Changes the contents of the buffer at index.
+     * <p>
+     * Make sure to bind the vertex array first.
+     *
      * @param buffer The buffer index.
      * @param usage  How the data will be used.
      * @param data   The data.
@@ -698,6 +884,20 @@ public class VertexArray
     {
         this.vertexBuffers.get(buffer).usage(usage).bind().set(data).unbind();
         return this;
+    }
+    
+    /**
+     * Changes the contents of the buffer at index.
+     * <p>
+     * Make sure to bind the vertex array first.
+     *
+     * @param usage How the data will be used.
+     * @param data  The data.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(GL usage, DoubleBuffer data)
+    {
+        return set(0, usage, data);
     }
     
     /**
@@ -720,6 +920,19 @@ public class VertexArray
      * <p>
      * Make sure to bind the buffer first.
      *
+     * @param data The data.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(short... data)
+    {
+        return set(0, data);
+    }
+    
+    /**
+     * Changes the contents of the buffer at the index. The size of the data must match the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
      * @param buffer The buffer index.
      * @param data   The data.
      * @return This instance for call chaining.
@@ -728,6 +941,19 @@ public class VertexArray
     {
         this.vertexBuffers.get(buffer).bind().set(data).unbind();
         return this;
+    }
+    
+    /**
+     * Changes the contents of the buffer at the index. The size of the data must match the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
+     * @param data The data.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(int... data)
+    {
+        return set(0, data);
     }
     
     /**
@@ -750,6 +976,19 @@ public class VertexArray
      * <p>
      * Make sure to bind the buffer first.
      *
+     * @param data The data.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(long... data)
+    {
+        return set(0, data);
+    }
+    
+    /**
+     * Changes the contents of the buffer at the index. The size of the data must match the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
      * @param buffer The buffer index.
      * @param data   The data.
      * @return This instance for call chaining.
@@ -758,6 +997,19 @@ public class VertexArray
     {
         this.vertexBuffers.get(buffer).bind().set(data).unbind();
         return this;
+    }
+    
+    /**
+     * Changes the contents of the buffer at the index. The size of the data must match the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
+     * @param data The data.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(float... data)
+    {
+        return set(0, data);
     }
     
     /**
@@ -780,6 +1032,19 @@ public class VertexArray
      * <p>
      * Make sure to bind the buffer first.
      *
+     * @param data The data.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(double... data)
+    {
+        return set(0, data);
+    }
+    
+    /**
+     * Changes the contents of the buffer at the index. The size of the data must match the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
      * @param buffer The buffer index.
      * @param data   The data.
      * @return This instance for call chaining.
@@ -788,6 +1053,19 @@ public class VertexArray
     {
         this.vertexBuffers.get(buffer).bind().set(data).unbind();
         return this;
+    }
+    
+    /**
+     * Changes the contents of the buffer at the index. The size of the data must match the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
+     * @param data The data.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(ByteBuffer data)
+    {
+        return set(0, data);
     }
     
     /**
@@ -810,6 +1088,19 @@ public class VertexArray
      * <p>
      * Make sure to bind the buffer first.
      *
+     * @param data The data.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(ShortBuffer data)
+    {
+        return set(0, data);
+    }
+    
+    /**
+     * Changes the contents of the buffer at the index. The size of the data must match the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
      * @param buffer The buffer index.
      * @param data   The data.
      * @return This instance for call chaining.
@@ -818,6 +1109,19 @@ public class VertexArray
     {
         this.vertexBuffers.get(buffer).bind().set(data).unbind();
         return this;
+    }
+    
+    /**
+     * Changes the contents of the buffer at the index. The size of the data must match the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
+     * @param data The data.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(IntBuffer data)
+    {
+        return set(0, data);
     }
     
     /**
@@ -840,6 +1144,19 @@ public class VertexArray
      * <p>
      * Make sure to bind the buffer first.
      *
+     * @param data The data.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(LongBuffer data)
+    {
+        return set(0, data);
+    }
+    
+    /**
+     * Changes the contents of the buffer at the index. The size of the data must match the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
      * @param buffer The buffer index.
      * @param data   The data.
      * @return This instance for call chaining.
@@ -855,6 +1172,19 @@ public class VertexArray
      * <p>
      * Make sure to bind the buffer first.
      *
+     * @param data The data.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(FloatBuffer data)
+    {
+        return set(0, data);
+    }
+    
+    /**
+     * Changes the contents of the buffer at the index. The size of the data must match the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
      * @param buffer The buffer index.
      * @param data   The data.
      * @return This instance for call chaining.
@@ -863,6 +1193,19 @@ public class VertexArray
     {
         this.vertexBuffers.get(buffer).bind().set(data).unbind();
         return this;
+    }
+    
+    /**
+     * Changes the contents of the buffer at the index. The size of the data must match the buffer.
+     * <p>
+     * Make sure to bind the buffer first.
+     *
+     * @param data The data.
+     * @return This instance for call chaining.
+     */
+    public VertexArray set(DoubleBuffer data)
+    {
+        return set(0, data);
     }
     
     private Object[] getFormatArray(int[] sizes, GL type)

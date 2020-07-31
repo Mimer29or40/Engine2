@@ -2444,42 +2444,22 @@ public class Engine
     }
     
     /**
-     * See {@link Renderer#drawBezier(double, double, double, double, double, double)}
+     * See {@link Renderer#drawBezier(double...)}
      */
-    public static void drawBezier(double x1, double y1, double x2, double y2, double x3, double y3)
+    public static void drawBezier(double... points)
     {
         Engine.profiler.startSection("drawBezier");
-        Engine.renderer.drawBezier(x1, y1, x2, y2, x3, y3);
+        Engine.renderer.drawBezier(points);
         Engine.profiler.endSection();
     }
     
     /**
-     * See {@link Renderer#bezier(double, double, double, double, double, double)}
+     * See {@link Renderer#bezier(double...)}
      */
-    public static void bezier(double x1, double y1, double x2, double y2, double x3, double y3)
+    public static void bezier(double... points)
     {
         Engine.profiler.startSection("bezier");
-        Engine.renderer.bezier(x1, y1, x2, y2, x3, y3);
-        Engine.profiler.endSection();
-    }
-    
-    /**
-     * See {@link Renderer#drawBezier(double, double, double, double, double, double, double, double)}
-     */
-    public static void drawBezier(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
-    {
-        Engine.profiler.startSection("drawBezier");
-        Engine.renderer.drawBezier(x1, y1, x2, y2, x3, y3, x4, y4);
-        Engine.profiler.endSection();
-    }
-    
-    /**
-     * See {@link Renderer#bezier(double, double, double, double, double, double, double, double)}
-     */
-    public static void bezier(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
-    {
-        Engine.profiler.startSection("bezier");
-        Engine.renderer.bezier(x1, y1, x2, y2, x3, y3, x4, y4);
+        Engine.renderer.bezier(points);
         Engine.profiler.endSection();
     }
     

@@ -82,8 +82,18 @@ public class EngineTest extends Engine
                 double y2 = mouse().y();
                 double x3 = (1 + Math.cos(angle) * 2 * noise(seconds() * 0.1)) * screenWidth() * 0.5;
                 double y3 = (1 + Math.sin(angle) * 2 * noise(seconds() * 0.1)) * screenHeight() * 0.5;
-                double x4 = screenWidth() - 1;
-                double y4 = (noise(seconds() * 0.25) + 1) * 0.5 * screenHeight();
+                double x4 = (1 + -Math.cos(angle) * 2 * noise(seconds() * 0.1 + 100000)) * screenWidth() * 0.5;
+                double y4 = (1 + -Math.sin(angle) * 2 * noise(seconds() * 0.1 + 100000)) * screenHeight() * 0.5;
+                double x5 = screenWidth() - 1;
+                double y5 = (noise(seconds() * 0.25) + 1) * 0.5 * screenHeight();
+    
+                stroke(0, 0, 255);
+                weight(5);
+                line(x1, y1, x2, y2);
+                line(x2, y2, x3, y3);
+                line(x3, y3, x4, y4);
+                line(x4, y4, x5, y5);
+                line(x2, y2, x5, y5);
     
                 stroke(255, 0, 0);
                 weight(10);
@@ -91,17 +101,13 @@ public class EngineTest extends Engine
                 point(x2, y2);
                 point(x3, y3);
                 point(x4, y4);
+                point(x5, y5);
     
-                stroke(0, 0, 255);
-                weight(5);
-                line(x1, y1, x2, y2);
-                line(x2, y2, x3, y3);
-                line(x3, y3, x4, y4);
-                line(x2, y2, x4, y4);
-    
-                stroke(255);
-                bezier(x1, y1, x2, y2, x4, y4);
-                bezier(x1, y1, x2, y2, x3, y3, x4, y4);
+                stroke(255, 100);
+                weight(20);
+                bezier(x1, y1, x2, y2, x5, y5);
+                bezier(x1, y1, x2, y2, x3, y3, x5, y5);
+                bezier(x1, y1, x2, y2, x3, y3, x4, y4, x5, y5);
             }
             case 3 -> {
                 stroke(255, 0, 0, 100);

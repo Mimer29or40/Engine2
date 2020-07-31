@@ -1025,113 +1025,20 @@ public class Renderer
         if (this.stroke.a() > 0) drawLine(x1, y1, x2, y2);
     }
     
-    // --------------------
-    // -- Bezier Methods --
-    // --------------------
+    // // --------------------
+    // // -- Bezier Methods --
+    // // --------------------
     
     /**
-     * Draws a bezier from {@code (x1, y1)} through {@code (x2, y2) to {@code (x3, y3)} that is {@link #weight()} pixels thick and {@link #stroke()} in color.
+     * Draws a bezier from the points provided that is {@link #weight()} pixels thick and {@link #stroke()} in color.
      * <p>
-     * The coordinates passed in will be transformed by the view matrix
+     * The coordinates passed in will be transformed by the view matrix.
      *
-     * @param x1 The start x coordinate to draw the line at.
-     * @param y1 The start y coordinate to draw the line at.
-     * @param x2 The midpoint x coordinate to determine the curve.
-     * @param y2 The midpoint y coordinate to determine the curve.
-     * @param x3 The end x coordinate to draw the line at.
-     * @param y3 The end y coordinate to draw the line at.
+     * @param points The coordinates of the bezier curve.
      */
-    public void drawBezier(double x1, double y1, double x2, double y2, double x3, double y3)
+    public void drawBezier(double... points)
     {
-        Renderer.LOGGER.finer("Drawing Bezier:", x1, y1, x2, y2, x3, y3);
-    
-        this.target.bindFramebuffer();
-    
-        updateViewMatrix();
-    
-        this.linesShader.bind();
-        this.linesShader.setColor("color", this.stroke);
-        this.linesShader.setColor("tint", this.tint);
-        this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
-        this.linesShader.setUniform("thickness", (float) this.weight);
-    
-        int segments = (int) Math.sqrt(x1 * x1 + x3 * x3) >> 1;
-    
-        double[] points = new double[(segments + 1) << 1];
-        for (int i = 0, index = 0; i <= segments; i++)
-        {
-            double t    = (double) i / (double) segments;
-            double tInv = 1.0 - t;
-        
-            double t2    = t * t;
-            double tInv2 = tInv * tInv;
-        
-            double ttInv = t * tInv;
-        
-            // tInv2 * p0 + 2 * ttInv * p1 + t2 * p2;
-            points[index++] = tInv2 * x1 + 2 * ttInv * x2 + t2 * x3;
-            points[index++] = tInv2 * y1 + 2 * ttInv * y2 + t2 * y3;
-        }
-    
-        // float[] array = new float[segments << 3];
-        float[] array = new float[points.length * 4];
-        for (int p1 = 0, index = 0; p1 <= segments; p1++)
-        {
-            int p0 = Math.max(p1 - 1, 0);
-            int p2 = Math.min(p1 + 1, segments);
-            int p3 = Math.min(p1 + 2, segments);
-        
-            array[index++] = (float) points[(2 * p0)];
-            array[index++] = (float) points[(2 * p0) + 1];
-            array[index++] = (float) points[(2 * p1)];
-            array[index++] = (float) points[(2 * p1) + 1];
-            array[index++] = (float) points[(2 * p2)];
-            array[index++] = (float) points[(2 * p2) + 1];
-            array[index++] = (float) points[(2 * p3)];
-            array[index++] = (float) points[(2 * p3) + 1];
-        }
-    
-        this.bezier3VAO.bind().set(array).resize().draw(GL.LINES_ADJACENCY).unbind();
-    
-        this.target.markGPUDirty();
-    }
-    
-    /**
-     * Draws a bezier from {@code (x1, y1)} through {@code (x2, y2) to {@code (x3, y3)} that is {@link #weight()} pixels thick and {@link #stroke()} in color.
-     * <p>
-     * If the strokes alpha is equal to zero then the point will not be drawn.
-     * <p>
-     * The coordinates passed in will be transformed by the view matrix
-     *
-     * @param x1 The start x coordinate to draw the line at.
-     * @param y1 The start y coordinate to draw the line at.
-     * @param x2 The midpoint x coordinate to determine the curve.
-     * @param y2 The midpoint y coordinate to determine the curve.
-     * @param x3 The end x coordinate to draw the line at.
-     * @param y3 The end y coordinate to draw the line at.
-     */
-    public void bezier(double x1, double y1, double x2, double y2, double x3, double y3)
-    {
-        if (this.stroke.a() > 0) drawBezier(x1, y1, x2, y2, x3, y3);
-    }
-    
-    /**
-     * Draws a bezier from {@code (x1, y1)} through {@code (x2, y2) to {@code (x3, y3)} that is {@link #weight()} pixels thick and {@link #stroke()} in color.
-     * <p>
-     * The coordinates passed in will be transformed by the view matrix
-     *
-     * @param x1 The start x coordinate to draw the line at.
-     * @param y1 The start y coordinate to draw the line at.
-     * @param x2 The first midpoint x coordinate to determine the curve.
-     * @param y2 The first midpoint y coordinate to determine the curve.
-     * @param x3 The second midpoint x coordinate to determine the curve.
-     * @param y3 The second midpoint y coordinate to determine the curve.
-     * @param x4 The end x coordinate to draw the line at.
-     * @param y4 The end y coordinate to draw the line at.
-     */
-    public void drawBezier(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
-    {
-        Renderer.LOGGER.finer("Drawing Bezier:", x1, y1, x2, y2, x3, y3);
+        Renderer.LOGGER.finer("Drawing Bezier:", points);
         
         this.target.bindFramebuffer();
         
@@ -1143,41 +1050,47 @@ public class Renderer
         this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
         this.linesShader.setUniform("thickness", (float) this.weight);
         
-        int segments = (int) Math.sqrt(x1 * x1 + x4 * x4) >> 1;
+        int order = (points.length >> 1) - 1;
         
-        double[] points = new double[(segments + 1) << 1];
+        double dx = points[points.length - 2] - points[0];
+        double dy = points[points.length - 1] - points[1];
+        
+        int segments = (int) Math.sqrt(dx * dx + dy * dy) >> 4;
+        
+        double[] newPoints = new double[(segments + 1) << 1];
         for (int i = 0, index = 0; i <= segments; i++)
         {
             double t    = (double) i / (double) segments;
             double tInv = 1.0 - t;
             
-            double t2    = t * t;
-            double tInv2 = tInv * tInv;
-            
-            double t3    = t2 * t;
-            double tInv3 = tInv2 * tInv;
-            
-            // tInv^3 * p0 + 3 * tInv^2 * t * p1 + 3 * tInv * t^2 * p2 + t^3 * p3
-            points[index++] = tInv3 * x1 + 3 * tInv2 * t * x2 + 3 * tInv * t2 * x3 + t3 * x4;
-            points[index++] = tInv3 * y1 + 3 * tInv2 * t * y2 + 3 * tInv * t2 * y3 + t3 * y4;
+            // sum i=0-n binome-coeff(n, i) * tInv^(n-i) * t^i * pi
+            double x = 0;
+            double y = 0;
+            for (int j = 0; j <= order; j++)
+            {
+                double coeff = binomial(order, j) * Math.pow(tInv, order - j) * Math.pow(t, j);
+                x += coeff * points[(j << 1)];
+                y += coeff * points[(j << 1) + 1];
+            }
+            newPoints[index++] = x;
+            newPoints[index++] = y;
         }
         
-        // float[] array = new float[segments << 3];
-        float[] array = new float[points.length * 4];
+        float[] array = new float[newPoints.length * 4];
         for (int p1 = 0, index = 0; p1 <= segments; p1++)
         {
             int p0 = Math.max(p1 - 1, 0);
             int p2 = Math.min(p1 + 1, segments);
             int p3 = Math.min(p1 + 2, segments);
-            
-            array[index++] = (float) points[(2 * p0)];
-            array[index++] = (float) points[(2 * p0) + 1];
-            array[index++] = (float) points[(2 * p1)];
-            array[index++] = (float) points[(2 * p1) + 1];
-            array[index++] = (float) points[(2 * p2)];
-            array[index++] = (float) points[(2 * p2) + 1];
-            array[index++] = (float) points[(2 * p3)];
-            array[index++] = (float) points[(2 * p3) + 1];
+    
+            array[index++] = (float) newPoints[(2 * p0)];
+            array[index++] = (float) newPoints[(2 * p0) + 1];
+            array[index++] = (float) newPoints[(2 * p1)];
+            array[index++] = (float) newPoints[(2 * p1) + 1];
+            array[index++] = (float) newPoints[(2 * p2)];
+            array[index++] = (float) newPoints[(2 * p2) + 1];
+            array[index++] = (float) newPoints[(2 * p3)];
+            array[index++] = (float) newPoints[(2 * p3) + 1];
         }
         
         this.bezier4VAO.bind().set(array).resize().draw(GL.LINES_ADJACENCY).unbind();
@@ -1186,24 +1099,17 @@ public class Renderer
     }
     
     /**
-     * Draws a bezier from {@code (x1, y1)} through {@code (x2, y2) to {@code (x3, y3)} that is {@link #weight()} pixels thick and {@link #stroke()} in color.
+     * Draws a bezier from the points provided that is {@link #weight()} pixels thick and {@link #stroke()} in color.
      * <p>
      * If the strokes alpha is equal to zero then the point will not be drawn.
      * <p>
-     * The coordinates passed in will be transformed by the view matrix
+     * The coordinates passed in will be transformed by the view matrix.
      *
-     * @param x1 The start x coordinate to draw the line at.
-     * @param y1 The start y coordinate to draw the line at.
-     * @param x2 The first midpoint x coordinate to determine the curve.
-     * @param y2 The first midpoint y coordinate to determine the curve.
-     * @param x3 The second midpoint x coordinate to determine the curve.
-     * @param y3 The second midpoint y coordinate to determine the curve.
-     * @param x4 The end x coordinate to draw the line at.
-     * @param y4 The end y coordinate to draw the line at.
+     * @param points The coordinates of the bezier curve.
      */
-    public void bezier(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
+    public void bezier(double... points)
     {
-        if (this.stroke.a() > 0) drawBezier(x1, y1, x2, y2, x3, y3, x4, y4);
+        if (this.stroke.a() > 0) drawBezier(points);
     }
     
     // ----------------------
@@ -1582,7 +1488,7 @@ public class Renderer
             int p0 = (p1 - 1 + n) % n;
             int p2 = (p1 + 1 + n) % n;
             int p3 = (p1 + 2 + n) % n;
-        
+    
             array[index++] = (float) points[(2 * p0)];
             array[index++] = (float) points[(2 * p0) + 1];
             array[index++] = (float) points[(2 * p1)];
@@ -2449,5 +2355,13 @@ public class Renderer
             }
         }
         this.updateViewBuffer = false;
+    }
+    
+    private static long binomial(int n, int k)
+    {
+        if (k > n - k) k = n - k;
+        long b = 1;
+        for (int i = 1, m = n; i <= k; i++, m--) b = (b * m) / i;
+        return b;
     }
 }

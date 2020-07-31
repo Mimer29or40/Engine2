@@ -3,10 +3,7 @@ package engine.util;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
@@ -233,8 +230,8 @@ public class Logger
         if (applyFilters(this.name)) return;
         int n = objects.length;
         if (n == 0) return;
-        StringBuilder builder = new StringBuilder().append(objects[0] instanceof Throwable ? printThrowable((Throwable) objects[0]) : objects[0]);
-        for (int i = 1; i < n; i++) builder.append(' ').append(objects[i] instanceof Throwable ? printThrowable((Throwable) objects[i]) : objects[i]);
+        StringBuilder builder = new StringBuilder().append(printObject(objects[0]));
+        for (int i = 1; i < n; i++) builder.append(' ').append(printObject(objects[i]));
         logImpl(level, builder.toString());
     }
     
@@ -256,7 +253,7 @@ public class Logger
         else
         {
             StringBuilder builder = new StringBuilder(format);
-            for (Object object : objects) builder.append(' ').append(object instanceof Throwable ? printThrowable((Throwable) object) : object);
+            for (Object object : objects) builder.append(' ').append(printObject(objects));
             logImpl(level, builder.toString());
         }
     }
@@ -507,6 +504,51 @@ public class Logger
     public void all(String format, Object... objects)
     {
         log(Level.ALL, format, objects);
+    }
+    
+    private String printObject(Object o)
+    {
+        if (o instanceof Throwable)
+        {
+            return printThrowable((Throwable) o);
+        }
+        else if (o instanceof boolean[])
+        {
+            return Arrays.toString((boolean[]) o);
+        }
+        else if (o instanceof byte[])
+        {
+            return Arrays.toString((byte[]) o);
+        }
+        else if (o instanceof short[])
+        {
+            return Arrays.toString((short[]) o);
+        }
+        else if (o instanceof char[])
+        {
+            return Arrays.toString((char[]) o);
+        }
+        else if (o instanceof int[])
+        {
+            return Arrays.toString((int[]) o);
+        }
+        else if (o instanceof long[])
+        {
+            return Arrays.toString((long[]) o);
+        }
+        else if (o instanceof float[])
+        {
+            return Arrays.toString((float[]) o);
+        }
+        else if (o instanceof double[])
+        {
+            return Arrays.toString((double[]) o);
+        }
+        else if (o instanceof Object[])
+        {
+            return Arrays.toString((Object[]) o);
+        }
+        return String.valueOf(o);
     }
     
     private String printThrowable(Throwable throwable)

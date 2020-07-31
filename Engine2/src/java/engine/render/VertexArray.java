@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static engine.util.Util.sum;
 import static org.lwjgl.opengl.GL30.*;
 
 /**
@@ -394,26 +393,25 @@ public class VertexArray
             sizes[i] = (int) formats[index + 1];
             stride += bytes[i] * sizes[i];
         }
-        
-        VertexArray.LOGGER.finest("Adding VBO (%s) of types %s into VertexArray: %s", buffer, Arrays.toString(types), this.id);
-        
-        int bufferAttributesSize = sum(sizes);
-        if (bufferAttributesSize == 0) throw new RuntimeException("Invalid vertex format: Vertex length must be > 0");
     
-        this.vertexCount = Math.min(this.vertexCount > 0 ? this.vertexCount : Integer.MAX_VALUE, buffer.bufferSize() / bufferAttributesSize);
+        VertexArray.LOGGER.finest("Adding VBO (%s) of types %s into VertexArray: %s", buffer, Arrays.toString(types), this.id);
+    
+        // int bufferAttributesSize = sum(sizes);
+        // if (bufferAttributesSize == 0) throw new RuntimeException("Invalid vertex format: Vertex length must be > 0");
+    
+        // this.vertexCount = Math.min(this.vertexCount > 0 ? this.vertexCount : Integer.MAX_VALUE, buffer.dataSize() / bufferAttributesSize);
+        this.vertexCount = Math.min(this.vertexCount > 0 ? this.vertexCount : Integer.MAX_VALUE, buffer.dataSize() / stride);
     
         ArrayList<Pair.I> bufferAttributes = new ArrayList<>();
-        
+    
         buffer.bind();
         int attributeCount = attributeCount(), offset = 0;
         for (int i = 0; i < n; i++)
         {
-            int type = types[i];
-            int size = sizes[i];
-            bufferAttributes.add(new Pair.I(size, bytes[i]));
-            glVertexAttribPointer(attributeCount, size, type, false, stride, offset);
+            bufferAttributes.add(new Pair.I(sizes[i], bytes[i]));
+            glVertexAttribPointer(attributeCount, sizes[i], types[i], false, stride, offset);
             glEnableVertexAttribArray(attributeCount++);
-            offset += size * bytes[i];
+            offset += sizes[i] * bytes[i];
         }
         this.vertexBuffers.add(buffer.unbind());
         this.attributes.add(bufferAttributes);

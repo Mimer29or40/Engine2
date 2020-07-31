@@ -91,6 +91,9 @@ public class Renderer
     
     protected final Shader linesShader;
     
+    protected final VertexArray bezier3VAO;
+    protected final VertexArray bezier4VAO;
+    
     protected final VertexArray triangleLinesVAO;
     protected final Shader      triangleShader;
     protected final VertexArray triangleVAO;
@@ -130,43 +133,46 @@ public class Renderer
         this.updateViewBuffer = true;
     
         this.pointShader = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/point.geom").loadFragmentFile("shaders/shared.frag").validate();
-        this.pointVAO    = new VertexArray().bind().add(2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+        this.pointVAO    = new VertexArray().bind().add(Float.BYTES * 2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
     
         this.lineShader = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/line.geom").loadFragmentFile("shaders/shared.frag").validate();
-        this.lineVAO    = new VertexArray().bind().add(4, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+        this.lineVAO    = new VertexArray().bind().add((Float.BYTES * 2) * 2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
     
         this.linesShader = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/lines.geom").loadFragmentFile("shaders/shared.frag").validate();
     
-        this.triangleLinesVAO = new VertexArray().bind().add(24, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+        this.bezier3VAO = new VertexArray().bind().add((Float.BYTES * 2) * 3, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+        this.bezier4VAO = new VertexArray().bind().add((Float.BYTES * 2) * 4, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+    
+        this.triangleLinesVAO = new VertexArray().bind().add((Float.BYTES * 2) * 24, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
         this.triangleShader   = new Shader().loadVertexFile("shaders/shared.vert").loadFragmentFile("shaders/shared.frag").validate();
-        this.triangleVAO      = new VertexArray().bind().add(6, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+        this.triangleVAO      = new VertexArray().bind().add((Float.BYTES * 2) * 6, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
     
-        this.quadLinesVAO = new VertexArray().bind().add(32, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+        this.quadLinesVAO = new VertexArray().bind().add((Float.BYTES * 2) * 32, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
         this.quadShader   = new Shader().loadVertexFile("shaders/shared.vert").loadFragmentFile("shaders/shared.frag").validate();
-        this.quadVAO      = new VertexArray().bind().add(8, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+        this.quadVAO      = new VertexArray().bind().add((Float.BYTES * 2) * 8, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
     
-        this.polygonLinesVAO = new VertexArray().bind().add(new GLBuffer(GL.ARRAY_BUFFER), GL.FLOAT, 2).unbind();
+        this.polygonLinesVAO = new VertexArray().bind().add(new GLBuffer(GL.ARRAY_BUFFER).usage(GL.DYNAMIC_DRAW), GL.FLOAT, 2).unbind();
         this.polygonShader   = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/poly.geom").loadFragmentFile("shaders/shared.frag").validate();
-        this.polygonVAO      = new VertexArray().bind().add(2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+        this.polygonVAO      = new VertexArray().bind().add(Float.BYTES * 2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
         this.polygonSSBO     = new GLBuffer(GL.SHADER_STORAGE_BUFFER).usage(GL.STREAM_DRAW).bind().base(1).unbind();
     
         this.ellipseOutlineShader = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/ellipseOutline.geom").loadFragmentFile("shaders/shared.frag").validate();
-        this.ellipseOutlineVAO    = new VertexArray().bind().add(2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+        this.ellipseOutlineVAO    = new VertexArray().bind().add(Float.BYTES * 2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
     
         this.ellipseShader = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/ellipse.geom").loadFragmentFile("shaders/shared.frag").validate();
-        this.ellipseVAO    = new VertexArray().bind().add(2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+        this.ellipseVAO    = new VertexArray().bind().add(Float.BYTES * 2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
     
         this.arcOutlineShader = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/arcOutline.geom").loadFragmentFile("shaders/shared.frag").validate();
-        this.arcOutlineVAO    = new VertexArray().bind().add(2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+        this.arcOutlineVAO    = new VertexArray().bind().add(Float.BYTES * 2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
     
         this.arcShader = new Shader().loadVertexFile("shaders/shared.vert").loadGeometryFile("shaders/arc.geom").loadFragmentFile("shaders/shared.frag").validate();
-        this.arcVAO    = new VertexArray().bind().add(2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+        this.arcVAO    = new VertexArray().bind().add(Float.BYTES * 2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
     
         this.textureShader = new Shader().loadVertexFile("shaders/texture.vert").loadFragmentFile("shaders/texture.frag").validate();
-        this.textureVAO    = new VertexArray().bind().add(16, GL.DYNAMIC_DRAW, GL.FLOAT, 2, GL.FLOAT, 2).unbind();
+        this.textureVAO    = new VertexArray().bind().add((Float.BYTES * 2 + Float.BYTES * 2) * 16, GL.DYNAMIC_DRAW, GL.FLOAT, 2, GL.FLOAT, 2).unbind();
     
         this.textShader = new Shader().loadVertexFile("shaders/texture.vert").loadFragmentFile("shaders/text.frag").validate();
-        this.textVAO    = new VertexArray().bind().add(new GLBuffer(GL.ARRAY_BUFFER), GL.FLOAT, 2, GL.FLOAT, 2).unbind();
+        this.textVAO    = new VertexArray().bind().add(new GLBuffer(GL.ARRAY_BUFFER).usage(GL.DYNAMIC_DRAW), GL.FLOAT, 2, GL.FLOAT, 2).unbind();
     }
     
     // ----------------
@@ -948,9 +954,7 @@ public class Renderer
         this.pointShader.setVec2("viewport", this.target.width(), this.target.height());
         this.pointShader.setUniform("thickness", this.weight);
     
-        // this.pointVAO.bind().set(0, GL.DYNAMIC_DRAW, (float) x, (float) y).draw(GL.POINTS).unbind();
-    
-        this.pointVAO.bind().set(0, (float) x, (float) y).draw(GL.POINTS).unbind();
+        this.pointVAO.bind().set((float) x, (float) y).draw(GL.POINTS).unbind();
     
         this.target.markGPUDirty();
     }
@@ -998,8 +1002,7 @@ public class Renderer
         this.lineShader.setVec2("viewport", this.target.width(), this.target.height());
         this.lineShader.setUniform("thickness", this.weight);
     
-        this.lineVAO.bind().set(0,
-                                (float) x1, (float) y1,
+        this.lineVAO.bind().set((float) x1, (float) y1,
                                 (float) x2, (float) y2).draw(GL.LINES).unbind();
     
         this.target.markGPUDirty();
@@ -1041,10 +1044,56 @@ public class Renderer
     public void drawBezier(double x1, double y1, double x2, double y2, double x3, double y3)
     {
         Renderer.LOGGER.finer("Drawing Bezier:", x1, y1, x2, y2, x3, y3);
+    
+        this.target.bindFramebuffer();
+    
+        updateViewMatrix();
+    
+        this.linesShader.bind();
+        this.linesShader.setColor("color", this.stroke);
+        this.linesShader.setColor("tint", this.tint);
+        this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
+        this.linesShader.setUniform("thickness", (float) this.weight);
+    
+        int segments = (int) Math.sqrt(x1 * x1 + x3 * x3) >> 1;
+    
+        double[] points = new double[(segments + 1) << 1];
+        for (int i = 0, index = 0; i <= segments; i++)
+        {
+            double t    = (double) i / (double) segments;
+            double tInv = 1.0 - t;
         
-        // TODO - Bezier curve
-        drawLine(x1, y1, x2, y2);
-        drawLine(x2, y2, x3, y3);
+            double t2    = t * t;
+            double tInv2 = tInv * tInv;
+        
+            double ttInv = t * tInv;
+        
+            // tInv2 * p0 + 2 * ttInv * p1 + t2 * p2;
+            points[index++] = tInv2 * x1 + 2 * ttInv * x2 + t2 * x3;
+            points[index++] = tInv2 * y1 + 2 * ttInv * y2 + t2 * y3;
+        }
+    
+        // float[] array = new float[segments << 3];
+        float[] array = new float[points.length * 4];
+        for (int p1 = 0, index = 0; p1 <= segments; p1++)
+        {
+            int p0 = Math.max(p1 - 1, 0);
+            int p2 = Math.min(p1 + 1, segments);
+            int p3 = Math.min(p1 + 2, segments);
+        
+            array[index++] = (float) points[(2 * p0)];
+            array[index++] = (float) points[(2 * p0) + 1];
+            array[index++] = (float) points[(2 * p1)];
+            array[index++] = (float) points[(2 * p1) + 1];
+            array[index++] = (float) points[(2 * p2)];
+            array[index++] = (float) points[(2 * p2) + 1];
+            array[index++] = (float) points[(2 * p3)];
+            array[index++] = (float) points[(2 * p3) + 1];
+        }
+    
+        this.bezier3VAO.bind().set(array).resize().draw(GL.LINES_ADJACENCY).unbind();
+    
+        this.target.markGPUDirty();
     }
     
     /**
@@ -1064,6 +1113,97 @@ public class Renderer
     public void bezier(double x1, double y1, double x2, double y2, double x3, double y3)
     {
         if (this.stroke.a() > 0) drawBezier(x1, y1, x2, y2, x3, y3);
+    }
+    
+    /**
+     * Draws a bezier from {@code (x1, y1)} through {@code (x2, y2) to {@code (x3, y3)} that is {@link #weight()} pixels thick and {@link #stroke()} in color.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x1 The start x coordinate to draw the line at.
+     * @param y1 The start y coordinate to draw the line at.
+     * @param x2 The first midpoint x coordinate to determine the curve.
+     * @param y2 The first midpoint y coordinate to determine the curve.
+     * @param x3 The second midpoint x coordinate to determine the curve.
+     * @param y3 The second midpoint y coordinate to determine the curve.
+     * @param x4 The end x coordinate to draw the line at.
+     * @param y4 The end y coordinate to draw the line at.
+     */
+    public void drawBezier(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
+    {
+        Renderer.LOGGER.finer("Drawing Bezier:", x1, y1, x2, y2, x3, y3);
+        
+        this.target.bindFramebuffer();
+        
+        updateViewMatrix();
+        
+        this.linesShader.bind();
+        this.linesShader.setColor("color", this.stroke);
+        this.linesShader.setColor("tint", this.tint);
+        this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
+        this.linesShader.setUniform("thickness", (float) this.weight);
+        
+        int segments = (int) Math.sqrt(x1 * x1 + x4 * x4) >> 1;
+        
+        double[] points = new double[(segments + 1) << 1];
+        for (int i = 0, index = 0; i <= segments; i++)
+        {
+            double t    = (double) i / (double) segments;
+            double tInv = 1.0 - t;
+            
+            double t2    = t * t;
+            double tInv2 = tInv * tInv;
+            
+            double t3    = t2 * t;
+            double tInv3 = tInv2 * tInv;
+            
+            // tInv^3 * p0 + 3 * tInv^2 * t * p1 + 3 * tInv * t^2 * p2 + t^3 * p3
+            points[index++] = tInv3 * x1 + 3 * tInv2 * t * x2 + 3 * tInv * t2 * x3 + t3 * x4;
+            points[index++] = tInv3 * y1 + 3 * tInv2 * t * y2 + 3 * tInv * t2 * y3 + t3 * y4;
+        }
+        
+        // float[] array = new float[segments << 3];
+        float[] array = new float[points.length * 4];
+        for (int p1 = 0, index = 0; p1 <= segments; p1++)
+        {
+            int p0 = Math.max(p1 - 1, 0);
+            int p2 = Math.min(p1 + 1, segments);
+            int p3 = Math.min(p1 + 2, segments);
+            
+            array[index++] = (float) points[(2 * p0)];
+            array[index++] = (float) points[(2 * p0) + 1];
+            array[index++] = (float) points[(2 * p1)];
+            array[index++] = (float) points[(2 * p1) + 1];
+            array[index++] = (float) points[(2 * p2)];
+            array[index++] = (float) points[(2 * p2) + 1];
+            array[index++] = (float) points[(2 * p3)];
+            array[index++] = (float) points[(2 * p3) + 1];
+        }
+        
+        this.bezier4VAO.bind().set(array).resize().draw(GL.LINES_ADJACENCY).unbind();
+        
+        this.target.markGPUDirty();
+    }
+    
+    /**
+     * Draws a bezier from {@code (x1, y1)} through {@code (x2, y2) to {@code (x3, y3)} that is {@link #weight()} pixels thick and {@link #stroke()} in color.
+     * <p>
+     * If the strokes alpha is equal to zero then the point will not be drawn.
+     * <p>
+     * The coordinates passed in will be transformed by the view matrix
+     *
+     * @param x1 The start x coordinate to draw the line at.
+     * @param y1 The start y coordinate to draw the line at.
+     * @param x2 The first midpoint x coordinate to determine the curve.
+     * @param y2 The first midpoint y coordinate to determine the curve.
+     * @param x3 The second midpoint x coordinate to determine the curve.
+     * @param y3 The second midpoint y coordinate to determine the curve.
+     * @param x4 The end x coordinate to draw the line at.
+     * @param y4 The end y coordinate to draw the line at.
+     */
+    public void bezier(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
+    {
+        if (this.stroke.a() > 0) drawBezier(x1, y1, x2, y2, x3, y3, x4, y4);
     }
     
     // ----------------------
@@ -1096,8 +1236,7 @@ public class Renderer
         this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
         this.linesShader.setUniform("thickness", this.weight);
     
-        this.triangleLinesVAO.bind().set(0,
-                                         (float) x3, (float) y3, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3,
+        this.triangleLinesVAO.bind().set((float) x3, (float) y3, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3,
                                          (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x1, (float) y1,
                                          (float) x2, (float) y2, (float) x3, (float) y3, (float) x1, (float) y1, (float) x2, (float) y2).draw(GL.LINES_ADJACENCY).unbind();
     
@@ -1128,8 +1267,7 @@ public class Renderer
         this.triangleShader.setColor("color", this.fill);
         this.triangleShader.setColor("tint", this.tint);
     
-        this.triangleVAO.bind().set(0,
-                                    (float) x1, (float) y1,
+        this.triangleVAO.bind().set((float) x1, (float) y1,
                                     (float) x2, (float) y2,
                                     (float) x3, (float) y3).draw(GL.TRIANGLES).unbind();
     
@@ -1339,8 +1477,7 @@ public class Renderer
         this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
         this.linesShader.setUniform("thickness", this.weight);
     
-        this.quadLinesVAO.bind().set(0,
-                                     (float) x4, (float) y4, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3,
+        this.quadLinesVAO.bind().set((float) x4, (float) y4, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3,
                                      (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4,
                                      (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4, (float) x1, (float) y1,
                                      (float) x3, (float) y3, (float) x4, (float) y4, (float) x1, (float) y1, (float) x2, (float) y2).draw(GL.LINES_ADJACENCY).unbind();
@@ -1376,8 +1513,7 @@ public class Renderer
         this.quadShader.setColor("color", this.fill);
         this.quadShader.setColor("tint", this.tint);
     
-        this.quadVAO.bind().set(0,
-                                (float) x1, (float) y1,
+        this.quadVAO.bind().set((float) x1, (float) y1,
                                 (float) x2, (float) y2,
                                 (float) x3, (float) y3,
                                 (float) x4, (float) y4).draw(GL.QUADS).unbind();
@@ -1440,25 +1576,24 @@ public class Renderer
         this.linesShader.setVec2("viewport", this.target.width(), this.target.height());
         this.linesShader.setUniform("thickness", (float) this.weight);
     
-        float[] array = new float[points.length * 4];
-        int     index = 0;
-        for (int i = 0, n = points.length >> 1; i < n; i++)
+        float[] array = new float[points.length << 2];
+        for (int p1 = 0, index = 0, n = points.length >> 1; p1 < n; p1++)
         {
-            int prev = (i - 1 + n) % n;
-            int next = (i + 1 + n) % n;
-            int four = (i + 2 + n) % n;
+            int p0 = (p1 - 1 + n) % n;
+            int p2 = (p1 + 1 + n) % n;
+            int p3 = (p1 + 2 + n) % n;
         
-            array[index++] = (float) points[(2 * prev)];
-            array[index++] = (float) points[(2 * prev) + 1];
-            array[index++] = (float) points[(2 * i)];
-            array[index++] = (float) points[(2 * i) + 1];
-            array[index++] = (float) points[(2 * next)];
-            array[index++] = (float) points[(2 * next) + 1];
-            array[index++] = (float) points[(2 * four)];
-            array[index++] = (float) points[(2 * four) + 1];
+            array[index++] = (float) points[(2 * p0)];
+            array[index++] = (float) points[(2 * p0) + 1];
+            array[index++] = (float) points[(2 * p1)];
+            array[index++] = (float) points[(2 * p1) + 1];
+            array[index++] = (float) points[(2 * p2)];
+            array[index++] = (float) points[(2 * p2) + 1];
+            array[index++] = (float) points[(2 * p3)];
+            array[index++] = (float) points[(2 * p3) + 1];
         }
     
-        this.polygonLinesVAO.bind().set(0, array).resize().draw(GL.LINES_ADJACENCY).unbind();
+        this.polygonLinesVAO.bind().set(array).resize().draw(GL.LINES_ADJACENCY).unbind();
     
         this.target.markGPUDirty();
     }
@@ -1616,7 +1751,7 @@ public class Renderer
         this.ellipseOutlineShader.setVec2("viewport", this.target.width(), this.target.height());
         this.ellipseOutlineShader.setUniform("thickness", (float) this.weight);
     
-        this.ellipseOutlineVAO.bind().set(0, (float) x, (float) y).draw(GL.POINTS).unbind();
+        this.ellipseOutlineVAO.bind().set((float) x, (float) y).draw(GL.POINTS).unbind();
     
         this.target.markGPUDirty();
     }
@@ -1644,7 +1779,7 @@ public class Renderer
         this.ellipseShader.setColor("tint", this.tint);
         this.ellipseShader.setVec2("radius", (float) rx, (float) ry);
     
-        this.ellipseVAO.bind().set(0, (float) x, (float) y).draw(GL.POINTS).unbind();
+        this.ellipseVAO.bind().set((float) x, (float) y).draw(GL.POINTS).unbind();
     
         this.target.markGPUDirty();
     }
@@ -1725,7 +1860,7 @@ public class Renderer
         this.arcOutlineShader.setVec2("bounds", start, stop);
         this.arcOutlineShader.setUniform("mode", this.arcMode.ordinal());
     
-        this.arcOutlineVAO.bind().set(0, (float) x, (float) y).draw(GL.POINTS).unbind();
+        this.arcOutlineVAO.bind().set((float) x, (float) y).draw(GL.POINTS).unbind();
     
         this.target.markGPUDirty();
     }
@@ -1757,7 +1892,7 @@ public class Renderer
         this.arcShader.setVec2("bounds", (float) start, (float) stop);
         this.arcShader.setUniform("mode", this.arcMode.ordinal());
     
-        this.arcVAO.bind().set(0, (float) x, (float) y).draw(GL.POINTS).unbind();
+        this.arcVAO.bind().set((float) x, (float) y).draw(GL.POINTS).unbind();
     
         this.target.markGPUDirty();
     }
@@ -1855,8 +1990,7 @@ public class Renderer
         this.textureShader.setTexture("tex1", 0, texture);
         this.textureShader.setTexture("tex2", 0, texture);
     
-        this.textureVAO.bind().set(0,
-                                   (float) x1, (float) y1, (float) u1, (float) v1,
+        this.textureVAO.bind().set((float) x1, (float) y1, (float) u1, (float) v1,
                                    (float) x1, (float) y2, (float) u1, (float) v2,
                                    (float) x2, (float) y2, (float) u2, (float) v2,
                                    (float) x2, (float) y1, (float) u2, (float) v1).draw(GL.QUADS).unbind();
@@ -1979,8 +2113,7 @@ public class Renderer
         this.textureShader.setTexture("tex1", 0, texture1);
         this.textureShader.setTexture("tex2", 1, texture2);
     
-        this.textureVAO.bind().set(0,
-                                   (float) x1, (float) y1, (float) u1, (float) v1,
+        this.textureVAO.bind().set((float) x1, (float) y1, (float) u1, (float) v1,
                                    (float) x1, (float) y2, (float) u1, (float) v2,
                                    (float) x2, (float) y2, (float) u2, (float) v2,
                                    (float) x2, (float) y1, (float) u2, (float) v1).draw(GL.QUADS).unbind();
@@ -2141,8 +2274,8 @@ public class Renderer
             data[index++] = (float) v1;
         }
     
-        this.textVAO.bind().set(0, data).resize().draw(GL.QUADS).unbind();
-        
+        this.textVAO.bind().set(data).resize().draw(GL.QUADS).unbind();
+    
         this.target.markGPUDirty();
     }
     

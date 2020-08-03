@@ -13,17 +13,24 @@
       <w>joml</w>
       <w>lerp</w>
       <w>menger</w>
+      <w>noninfringement</w>
       <w>opengl</w>
       <w>proj</w>
       <w>pygame</w>
       <w>rectc</w>
+      <w>rhombohedral</w>
+      <w>rhombohedron</w>
       <w>shaders</w>
+      <w>simplectic</w>
       <w>themeing</w>
       <w>unfocus</w>
       <w>unpaused</w>
       <w>unselect</w>
       <w>uuuu</w>
       <w>worley</w>
+      <w>xins</w>
+      <w>yins</w>
+      <w>zins</w>
     </words>
   </dictionary>
 </component>

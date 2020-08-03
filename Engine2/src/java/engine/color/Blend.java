@@ -11,7 +11,7 @@ import static org.lwjgl.opengl.GL46.*;
  * An object to blend colors in a similar way to OpenGL.
  * The blend functions happens in integer space because I wanted repeatability.
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class Blend implements IBlend
 {
     private static final Logger LOGGER = new Logger();

@@ -396,10 +396,6 @@ public class VertexArray
     
         VertexArray.LOGGER.finest("Adding VBO (%s) of types %s into VertexArray: %s", buffer, Arrays.toString(types), this.id);
     
-        // int bufferAttributesSize = sum(sizes);
-        // if (bufferAttributesSize == 0) throw new RuntimeException("Invalid vertex format: Vertex length must be > 0");
-    
-        // this.vertexCount = Math.min(this.vertexCount > 0 ? this.vertexCount : Integer.MAX_VALUE, buffer.dataSize() / bufferAttributesSize);
         this.vertexCount = Math.min(this.vertexCount > 0 ? this.vertexCount : Integer.MAX_VALUE, buffer.dataSize() / stride);
     
         ArrayList<Pair.I> bufferAttributes = new ArrayList<>();

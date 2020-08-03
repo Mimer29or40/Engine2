@@ -1,7 +1,6 @@
 package engine.gui.elment;
 
 import engine.gui.EEXT_GUI;
-import engine.gui.EEXT_GUI;
 import engine.gui.UIElement;
 import engine.gui.interfaces.IFocus;
 import engine.gui.util.Rect;

@@ -853,6 +853,8 @@ public class Renderer
         this.font        = this.fonts.pop();
         this.textAlign   = this.textAligns.pop();
         this.view.set(this.views.pop());
+    
+        this.updateViewBuffer = true;
     }
     
     // -------------------

@@ -712,7 +712,8 @@ public class Color implements Colorc
      */
     public Color fromInt(int x)
     {
-        return set(x, x >> 8, x >> 16, x >> 24);
+        long l = x & 0x00000000FFFFFFFFL;
+        return set(l & 0xFF, l >> 8 & 0xFF, l >> 16 & 0xFF, l >> 24 & 0xFF);
     }
     
     public Color fromHex(String hex)
@@ -741,6 +742,7 @@ public class Color implements Colorc
     {
         return clamp(x instanceof Float ? (int) ((float) x * 255) :
                      x instanceof Double ? (int) ((double) x * 255) :
+                     x instanceof Long ? (int) (long) x :
                      x instanceof Short ? (short) x :
                      x instanceof Byte ? (byte) x :
                      (int) x, 0, 255);

@@ -398,12 +398,13 @@ public class Engine
                                                 Engine.LOGGER.finer("Extension Pre Draw");
                                                 for (String name : Engine.extensions.keySet())
                                                 {
-                                                    if (Engine.extensions.get(name).enabled())
+                                                    Extension extension = Engine.extensions.get(name);
+                                                    if (extension.enabled())
                                                     {
                                                         Engine.profiler.startSection(name);
                                                         {
                                                             Engine.renderer.push();
-                                                            Engine.extensions.get(name).beforeDraw(dt / 1_000_000_000D);
+                                                            extension.beforeDraw(dt / 1_000_000_000D);
                                                             Engine.renderer.pop();
                                                         }
                                                         Engine.profiler.endSection();
@@ -426,12 +427,13 @@ public class Engine
                                                 Engine.LOGGER.finer("Extension Post Draw");
                                                 for (String name : Engine.extensions.keySet())
                                                 {
-                                                    if (Engine.extensions.get(name).enabled())
+                                                    Extension extension = Engine.extensions.get(name);
+                                                    if (extension.enabled())
                                                     {
                                                         Engine.profiler.startSection(name);
                                                         {
                                                             Engine.renderer.push();
-                                                            Engine.extensions.get(name).afterDraw(dt / 1_000_000_000D);
+                                                            extension.afterDraw(dt / 1_000_000_000D);
                                                             Engine.renderer.pop();
                                                         }
                                                         Engine.profiler.endSection();
@@ -469,6 +471,7 @@ public class Engine
                                                     Engine.screenVAO.draw(GL.QUADS);
                                                 }
                                             }
+                                            Engine.screenShader.unbind();
                                             Engine.screenVAO.unbind();
                                         }
                                         Engine.profiler.endSection();

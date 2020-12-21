@@ -550,13 +550,14 @@ public class Window
         if (this.update)
         {
             double aspect = (double) (screenWidth() * pixelWidth()) / (double) (screenHeight() * pixelHeight());
-            
+    
             this.viewSize.set(this.frame.x, (int) (this.frame.x / aspect));
             if (this.viewSize.y > this.frame.y) this.viewSize.set((int) (this.frame.y * aspect), this.frame.y);
-            
+    
             this.viewPos.set((this.frame.x - this.viewSize.x) >> 1, (this.frame.y - this.viewSize.y) >> 1);
+    
+            glViewport(this.viewPos.x, this.viewPos.y, this.viewSize.x, this.viewSize.y);
         }
-        glViewport(this.viewPos.x, this.viewPos.y, this.viewSize.x, this.viewSize.y);
         
         return this.update;
     }

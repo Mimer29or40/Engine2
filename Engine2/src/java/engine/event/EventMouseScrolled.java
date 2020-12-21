@@ -11,21 +11,21 @@ public class EventMouseScrolled extends Event
 {
     public EventMouseScrolled(Object[] values)
     {
-        super(new String[] {"scroll"}, values);
+        super(new String[] {"dir"}, values);
     }
     
-    public Vector2dc scroll()
+    public Vector2dc dir()
     {
         return (Vector2d) this.values[0];
     }
     
     public double x()
     {
-        return scroll().x();
+        return dir().x();
     }
     
     public double y()
     {
-        return scroll().y();
+        return dir().y();
     }
 }

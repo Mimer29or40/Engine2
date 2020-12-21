@@ -1,6 +1,7 @@
 package engine.shader;
 
 import engine.Engine;
+import engine.color.Color;
 
 import static engine.shader.EEXT_Shader.addShader;
 
@@ -26,7 +27,10 @@ public class ShaderTest extends Engine
     @Override
     public void draw(double elapsedTime)
     {
-        
+        clear(Color.RED);
+    
+        weight(20);
+        point(mouse().x(), mouse().y());
     }
     
     /**

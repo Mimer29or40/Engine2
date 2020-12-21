@@ -456,8 +456,8 @@ public class Engine
                                                 Engine.pixelSize.x = Math.max(Engine.window.viewW() / Engine.screenSize.x, 1);
                                                 Engine.pixelSize.y = Math.max(Engine.window.viewH() / Engine.screenSize.y, 1);
                                             }
-                                            Engine.profiler.endSection();
                                         }
+                                        Engine.profiler.endSection();
     
                                         Engine.profiler.startSection("Layers");
                                         {
@@ -580,21 +580,53 @@ public class Engine
                                 }
                                 Engine.profiler.endFrame();
                             }
-                            
+    
+                            dt = t - lastProfile;
+                            if ((Engine.profilerMode == 4 || dt >= Engine.profilerFrequency) && !Engine.paused)
+                            {
+                                lastProfile = t;
+        
+                                switch (Engine.profilerMode)
+                                {
+                                    case 0 -> Engine.profilerData = null;
+                                    case 1 -> Engine.profilerData = Engine.profiler.getAverageData(Engine.profilerParent);
+                                    case 2, 4 -> Engine.profilerData = Engine.profiler.getMinData(Engine.profilerParent);
+                                    case 3 -> Engine.profilerData = Engine.profiler.getMaxData(Engine.profilerParent);
+                                }
+                                Engine.profiler.clear();
+                            }
+    
+                            dt = t - lastTitle;
+                            if (dt >= Engine.titleFrequency && totalFrames > 0 && !Engine.paused)
+                            {
+                                lastTitle = t;
+        
+                                totalTime /= totalFrames;
+        
+                                Engine.window.title(String.format(Engine.TITLE, Engine.logic.name, totalFrames, totalTime / 1000D, minTime / 1000D, maxTime / 1000D));
+        
+                                totalTime = 0;
+        
+                                minTime = Long.MAX_VALUE;
+                                maxTime = Long.MIN_VALUE;
+        
+                                totalFrames = 0;
+                            }
+    
                             if (Engine.screenshot != null)
                             {
                                 String fileName = Engine.screenshot + (!Engine.screenshot.endsWith(".png") ? ".png" : "");
-                                
+        
                                 int w = Engine.window.frameBufferWidth();
                                 int h = Engine.window.frameBufferHeight();
                                 int c = 3;
-                                
+        
                                 int stride = w * c;
-                                
+        
                                 ByteBuffer buf = MemoryUtil.memAlloc(w * h * c);
                                 glReadBuffer(GL_FRONT);
                                 glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buf);
-                                
+        
                                 byte[] tmp1 = new byte[stride], tmp2 = new byte[stride];
                                 for (int i = 0, n = h >> 1, col1, col2; i < n; i++)
                                 {

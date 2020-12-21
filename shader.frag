@@ -151,7 +151,6 @@ void main(void)
     color = (1.0 - pct) * color + pct * vec3(0.0, 1.0, 0.0);
 
     FragColor = vec4(color, 1.0);
-    // FragColor = vec4(0.0, 0.0, 0.0, 1.0);
     
     // * cos(seconds) + 21
     float fuzzCenter = 1.0 / 32.0;

@@ -6,13 +6,11 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static engine.util.Util.getPath;
-import static engine.util.Util.println;
 
 public class FileWatcher extends Thread
 {
@@ -81,7 +79,6 @@ public class FileWatcher extends Thread
                     if (kind == StandardWatchEventKinds.OVERFLOW)
                     {
                         Thread.yield();
-                        continue;
                     }
                     else if (kind == StandardWatchEventKinds.ENTRY_MODIFY)
                     {

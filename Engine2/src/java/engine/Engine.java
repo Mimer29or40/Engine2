@@ -7,6 +7,7 @@ import engine.color.Blend;
 import engine.color.Color;
 import engine.color.Colorc;
 import engine.event.Events;
+import engine.font.Font;
 import engine.input.Keyboard;
 import engine.input.Modifiers;
 import engine.input.Mouse;
@@ -2236,16 +2237,6 @@ public class Engine
     {
         Engine.profiler.startSection("textFont");
         Engine.renderer.textFont(font);
-        Engine.profiler.endSection();
-    }
-    
-    /**
-     * See {@link Renderer#textFont(String)}
-     */
-    public static void textFont(String font, int size)
-    {
-        Engine.profiler.startSection("textFont");
-        Engine.renderer.textFont(font, size);
         Engine.profiler.endSection();
     }
     

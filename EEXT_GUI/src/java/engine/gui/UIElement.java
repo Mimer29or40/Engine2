@@ -1,12 +1,12 @@
 package engine.gui;
 
 import engine.Engine;
+import engine.font.Font;
 import engine.gui.interfaces.*;
 import engine.gui.util.Rect;
 import engine.gui.util.Rectc;
 import engine.input.Keyboard;
 import engine.input.Mouse;
-import engine.render.Font;
 import engine.render.RectMode;
 import engine.render.TextAlign;
 import engine.render.Texture;
@@ -846,7 +846,7 @@ public abstract class UIElement
         
         if (text() != null && font() != null && text().length() > 0)
         {
-            Rect rect = new Rect(0, 0, (int) font().getStringWidth(text()), (int) font().getStringHeight(text()));
+            Rect rect = new Rect(0, 0, (int) font().getStringWidth(text()), (int) font().getTextHeight(text()));
     
             switch (this.textHAlignment)
             {

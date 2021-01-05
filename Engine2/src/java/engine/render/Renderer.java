@@ -3,6 +3,7 @@ package engine.render;
 import engine.color.Blend;
 import engine.color.Color;
 import engine.color.Colorc;
+import engine.font.Font;
 import engine.render.gl.GLBuffer;
 import engine.render.gl.GLConst;
 import engine.render.gl.GLShader;
@@ -11,6 +12,7 @@ import engine.util.Logger;
 import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryStack;
 
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +38,8 @@ public class Renderer
     private static final RectMode     DEFAULT_RECT_MODE    = RectMode.CORNER;
     private static final EllipseMode  DEFAULT_ELLIPSE_MODE = EllipseMode.CENTER;
     private static final ArcMode      DEFAULT_ARC_MODE     = ArcMode.DEFAULT;
-    private static final Font         DEFAULT_FONT         = Font.DEFAULT_FONT;
+    private static final Font         DEFAULT_TEXT_FONT    = Font.DEFAULT;
+    private static final int          DEFAULT_TEXT_SIZE    = 16;
     private static final TextAlign    DEFAULT_TEXT_ALIGN   = TextAlign.TOP_LEFT;
     
     protected static final Color CLEAR = new Color();
@@ -71,8 +74,11 @@ public class Renderer
     protected       ArcMode        arcMode  = Renderer.DEFAULT_ARC_MODE;
     protected final Stack<ArcMode> arcModes = new Stack<>();
     
-    protected       Font        font  = Renderer.DEFAULT_FONT;
-    protected final Stack<Font> fonts = new Stack<>();
+    protected       Font        textFont  = Renderer.DEFAULT_TEXT_FONT;
+    protected final Stack<Font> textFonts = new Stack<>();
+    
+    protected       int            textSize  = Renderer.DEFAULT_TEXT_SIZE;
+    protected final Stack<Integer> textSizes = new Stack<>();
     
     protected       TextAlign        textAlign  = Renderer.DEFAULT_TEXT_ALIGN;
     protected final Stack<TextAlign> textAligns = new Stack<>();
@@ -585,7 +591,7 @@ public class Renderer
      */
     public Font textFont()
     {
-        return this.font;
+        return this.textFont;
     }
     
     /**
@@ -595,7 +601,7 @@ public class Renderer
      */
     public void textFont(Font font)
     {
-        this.font = font;
+        this.textFont = font;
     }
     
     /**
@@ -605,22 +611,9 @@ public class Renderer
      */
     public void textFont(String font)
     {
-        this.font = Font.getFont(font);
-        
-        Renderer.LOGGER.finest("Setting Font:", this.font);
-    }
+        this.textFont = Font.get(font);
     
-    /**
-     * Creates and sets the current Font.
-     *
-     * @param font The path to the ttf file.
-     * @param size The size of the font in pixels. [4::Integer.MAX_VALUE]
-     */
-    public void textFont(String font, int size)
-    {
-        this.font = Font.getFont(font, size);
-        
-        Renderer.LOGGER.finest("Setting Font:", this.font);
+        Renderer.LOGGER.finest("Setting Font:", this.textFont);
     }
     
     /**
@@ -628,7 +621,7 @@ public class Renderer
      */
     public int textSize()
     {
-        return this.font.size();
+        return this.textSize;
     }
     
     /**
@@ -639,8 +632,8 @@ public class Renderer
     public void textSize(int textSize)
     {
         Renderer.LOGGER.finest("Setting Font Size:", textSize);
-        
-        this.font = Font.getFont(textSize);
+    
+        this.textSize = textSize;
     }
     
     /**
@@ -648,7 +641,7 @@ public class Renderer
      */
     public double textAscent()
     {
-        return this.font.ascent();
+        return this.textFont.ascent(this.textSize);
     }
     
     /**
@@ -656,7 +649,7 @@ public class Renderer
      */
     public double textDescent()
     {
-        return this.font.descent();
+        return this.textFont.descent(this.textSize);
     }
     
     /**
@@ -775,25 +768,28 @@ public class Renderer
         
         this.weight = Renderer.DEFAULT_WEIGHT;
         this.weights.clear();
-        
+    
         this.rectMode = Renderer.DEFAULT_RECT_MODE;
         this.rectModes.clear();
-        
+    
         this.ellipseMode = Renderer.DEFAULT_ELLIPSE_MODE;
         this.ellipseModes.clear();
-        
+    
         this.arcMode = Renderer.DEFAULT_ARC_MODE;
         this.arcModes.clear();
-        
-        this.font = Renderer.DEFAULT_FONT;
-        this.fonts.clear();
-        
+    
+        this.textFont = Renderer.DEFAULT_TEXT_FONT;
+        this.textFonts.clear();
+    
+        this.textSize = Renderer.DEFAULT_TEXT_SIZE;
+        this.textSizes.clear();
+    
         this.textAlign = Renderer.DEFAULT_TEXT_ALIGN;
         this.textAligns.clear();
-        
+    
         identity();
         this.views.clear();
-        
+    
         this.target.bindFramebuffer();
     
         if (this.debug) glPolygonMode(GLConst.FRONT_AND_BACK.ref(), GLConst.LINE.ref());
@@ -823,7 +819,7 @@ public class Renderer
     public void push()
     {
         Renderer.LOGGER.finer("Pushing Renderer State");
-        
+    
         this.targets.push(this.target);
         this.blends.push(new Blend.BTuple(this.blend));
         this.fills.push(this.fill.toInt());
@@ -833,7 +829,8 @@ public class Renderer
         this.rectModes.push(this.rectMode);
         this.ellipseModes.push(this.ellipseMode);
         this.arcModes.push(this.arcMode);
-        this.fonts.push(this.font);
+        this.textFonts.push(this.textFont);
+        this.textSizes.push(this.textSize);
         this.textAligns.push(this.textAlign);
         this.views.push(new Matrix4f(this.view));
     }
@@ -844,7 +841,7 @@ public class Renderer
     public void pop()
     {
         Renderer.LOGGER.finer("Popping Renderer State");
-        
+    
         this.target = this.targets.pop();
         this.blends.pop().setBlend(this.blend);
         this.fill.fromInt(this.fills.pop());
@@ -854,7 +851,8 @@ public class Renderer
         this.rectMode    = this.rectModes.pop();
         this.ellipseMode = this.ellipseModes.pop();
         this.arcMode     = this.arcModes.pop();
-        this.font        = this.fonts.pop();
+        this.textFont    = this.textFonts.pop();
+        this.textSize    = this.textSizes.pop();
         this.textAlign   = this.textAligns.pop();
         this.view.set(this.views.pop());
     
@@ -1494,7 +1492,7 @@ public class Renderer
             int p0 = (p1 - 1 + n) % n;
             int p2 = (p1 + 1 + n) % n;
             int p3 = (p1 + 2 + n) % n;
-        
+    
             array[index++] = (float) points[(2 * p0)];
             array[index++] = (float) points[(2 * p0) + 1];
             array[index++] = (float) points[(2 * p1)];
@@ -1899,8 +1897,8 @@ public class Renderer
         this.textureShader.bind();
         this.textureShader.setUniform("tint", this.tint);
         this.textureShader.setUniform("interpolate", -1f);
-        this.textureShader.setTexture("tex1", 0, texture);
-        this.textureShader.setTexture("tex2", 0, texture);
+        this.textureShader.setUniform("tex1", texture, 0);
+        this.textureShader.setUniform("tex2", texture, 0);
     
         this.textureVAO.bind().set((float) x1, (float) y1, (float) u1, (float) v1,
                                    (float) x1, (float) y2, (float) u1, (float) v2,
@@ -2022,8 +2020,8 @@ public class Renderer
         this.textureShader.bind();
         this.textureShader.setUniform("tint", this.tint);
         this.textureShader.setUniform("interpolate", (float) amount);
-        this.textureShader.setTexture("tex1", 0, texture1);
-        this.textureShader.setTexture("tex2", 1, texture2);
+        this.textureShader.setUniform("tex1", texture1, 0);
+        this.textureShader.setUniform("tex2", texture2, 1);
     
         this.textureVAO.bind().set((float) x1, (float) y1, (float) u1, (float) v1,
                                    (float) x1, (float) y2, (float) u1, (float) v2,
@@ -2127,7 +2125,7 @@ public class Renderer
     // ------------------
     
     /**
-     * Draws a string of text to the screen. The coordinate specified will be the top left of the text.
+     * Draws a line of text to the screen. The coordinate specified will be the top left of the text.
      * <p>
      * You can change the font with {@link #textFont()}.
      * <p>
@@ -2150,42 +2148,68 @@ public class Renderer
         this.textShader.bind();
         this.textShader.setUniform("color", this.fill);
         this.textShader.setUniform("tint", this.tint);
-        this.textShader.setTexture("tex", 0, this.font.texture());
+        this.textShader.setUniform("tex", this.textFont.texture(this.textSize), 0);
     
-        float[] data = new float[text.length() * 16];
+        int lineLength = text.length();
     
-        double[] vertices = this.font.renderText(text);
-        for (int i = 0, n = text.length(), index = 0; i < n; i++)
+        float[] data = new float[lineLength * this.textVAO.attributeSize()];
+    
+        Font.SizeData sizeData = this.textFont.getSizeData(this.textSize);
+    
+        Font.CharData prevChar = null, currChar;
+    
+        try (MemoryStack stack = MemoryStack.stackPush())
         {
-            int i8 = i * 8;
+            FloatBuffer xBuf = stack.mallocFloat(1);
+            FloatBuffer yBuf = stack.mallocFloat(1);
         
-            double x1 = vertices[i8] + x;
-            double y1 = vertices[i8 + 1] + y;
-            double x2 = vertices[i8 + 2] + x;
-            double y2 = vertices[i8 + 3] + y;
-            double u1 = vertices[i8 + 4];
-            double v1 = vertices[i8 + 5];
-            double u2 = vertices[i8 + 6];
-            double v2 = vertices[i8 + 7];
+            FloatBuffer quad = stack.mallocFloat(8);
+        
+            float x0, y0, x1, y1, u0, v0, u1, v1;
+        
+            for (int i = 0, index = 0; i < lineLength; i++)
+            {
+                char character = text.charAt(i);
             
-            data[index++] = (float) x1;
-            data[index++] = (float) y1;
-            data[index++] = (float) u1;
-            data[index++] = (float) v1;
-            data[index++] = (float) x1;
-            data[index++] = (float) y2;
-            data[index++] = (float) u1;
-            data[index++] = (float) v2;
-            data[index++] = (float) x2;
-            data[index++] = (float) y2;
-            data[index++] = (float) u2;
-            data[index++] = (float) v2;
-            data[index++] = (float) x2;
-            data[index++] = (float) y1;
-            data[index++] = (float) u2;
-            data[index++] = (float) v1;
+                currChar = this.textFont.getCharData(character);
+            
+                x += this.textFont.getKernAdvance(prevChar, currChar) * sizeData.scale;
+            
+                this.textFont.buildCharQuad(currChar, sizeData, xBuf.put(0, (float) x), yBuf.put(0, (float) y), quad.clear());
+            
+                x0 = quad.get();
+                y0 = quad.get() + sizeData.ascent;
+                x1 = quad.get();
+                y1 = quad.get() + sizeData.ascent;
+                u0 = quad.get();
+                v0 = quad.get();
+                u1 = quad.get();
+                v1 = quad.get();
+            
+                data[index++] = x0;
+                data[index++] = y0;
+                data[index++] = u0;
+                data[index++] = v0;
+                data[index++] = x0;
+                data[index++] = y1;
+                data[index++] = u0;
+                data[index++] = v1;
+                data[index++] = x1;
+                data[index++] = y1;
+                data[index++] = u1;
+                data[index++] = v1;
+                data[index++] = x1;
+                data[index++] = y0;
+                data[index++] = u1;
+                data[index++] = v0;
+            
+                x += currChar.advanceWidthUnscaled * sizeData.scale;
+            
+                prevChar = currChar;
+            }
         }
     
+        // this.textVAO.bind().set(data).resize().draw(GLConst.QUADS).unbind();
         this.textVAO.bind().set(data).resize().draw(GLConst.QUADS).unbind();
     
         this.target.markGPUDirty();
@@ -2246,16 +2270,16 @@ public class Renderer
                 lines = new ArrayList<>();
                 for (String line : text.split("\n"))
                 {
-                    if (this.font.getStringWidth(line) > w)
+                    if (this.textFont.getTextWidth(line, this.textSize) > w)
                     {
                         String[]      subLines = line.split(" ");
                         StringBuilder builder  = new StringBuilder(subLines[0]);
                         for (int j = 1, n = subLines.length; j < n; j++)
                         {
-                            if (this.font.getStringWidth(builder.toString() + " " + subLines[j]) > w)
+                            if (this.textFont.getTextWidth(builder.toString() + " " + subLines[j], this.textSize) > w)
                             {
-                                if (this.font.getStringWidth(builder.toString()) > w) break;
-                                if ((lines.size() + 1) * this.font.size() > h) break;
+                                if (this.textFont.getTextWidth(builder.toString(), this.textSize) > w) break;
+                                if ((lines.size() + 1) * this.textSize > h) break;
                                 lines.add(builder.toString());
                                 builder.setLength(0);
                                 builder.append(subLines[j]);
@@ -2263,13 +2287,13 @@ public class Renderer
                             }
                             builder.append(" ").append(subLines[j]);
                         }
-                        if (this.font.getStringWidth(builder.toString()) > w) break;
-                        if ((lines.size() + 1) * this.font.size() > h) break;
+                        if (this.textFont.getTextWidth(builder.toString(), this.textSize) > w) break;
+                        if ((lines.size() + 1) * this.textSize > h) break;
                         lines.add(builder.toString());
                     }
                     else
                     {
-                        if ((lines.size() + 1) * this.font.size() > h) break;
+                        if ((lines.size() + 1) * this.textSize > h) break;
                         lines.add(line);
                     }
                 }
@@ -2278,20 +2302,22 @@ public class Renderer
             {
                 lines = Arrays.asList(text.split("\n"));
             }
-            
-            double actualHeight = this.font.getStringHeight(text);
-            
-            int    hPos    = this.textAlign.getHorizontal();
-            int    vPos    = this.textAlign.getVertical();
+    
+            double actualHeight = this.textFont.getTextHeight(text, this.textSize);
+    
+            int hPos = this.textAlign.getHorizontal(), vPos = this.textAlign.getVertical();
+    
             double yOffset = vPos == -1 ? 0 : vPos == 0 ? 0.5 * (h - actualHeight) : h - actualHeight;
             for (String line : lines)
             {
-                double lineWidth = Math.ceil(this.font.getStringWidth(line));
-                double xOffset   = hPos == -1 ? 0 : hPos == 0 ? 0.5 * (w - lineWidth) : w - lineWidth;
-                
+                double lineWidth  = Math.ceil(this.textFont.getTextWidth(line, this.textSize));
+                double lineHeight = Math.ceil(this.textFont.getTextHeight(line, this.textSize));
+        
+                double xOffset = hPos == -1 ? 0 : hPos == 0 ? 0.5 * (w - lineWidth) : w - lineWidth;
+        
                 drawText(line, x + xOffset, y + yOffset);
-                
-                yOffset += this.font.getStringHeight(line);
+        
+                yOffset += lineHeight;
             }
         }
     }

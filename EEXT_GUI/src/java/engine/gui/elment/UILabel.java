@@ -2,10 +2,10 @@ package engine.gui.elment;
 
 import engine.Engine;
 import engine.color.Colorc;
+import engine.font.Font;
 import engine.gui.EEXT_GUI;
 import engine.gui.UIElement;
 import engine.gui.util.Rectc;
-import engine.render.Font;
 import engine.render.TextAlign;
 import engine.render.Texture;
 import engine.util.Logger;
@@ -241,7 +241,7 @@ public class UILabel extends UIElement
     protected void drawElement(double elapsedTime, double mouseX, double mouseY)
     {
         int textWidth  = (int) Math.ceil(font().getStringWidth(text()));
-        int textHeight = (int) Math.ceil(font().getStringHeight(text()));
+        int textHeight = (int) Math.ceil(font().getTextHeight(text()));
         
         if (textWidth > rect().width() || textHeight > rect().height())
         {

@@ -2,6 +2,7 @@ package engine.render;
 
 import engine.Engine;
 import engine.color.Color;
+import engine.font.Font;
 
 import java.util.logging.Level;
 
@@ -16,10 +17,10 @@ public class FontTests extends Engine
     {
         // size(800, 800, 1, 1);
         size(800, 800, 1, 1);
-        
+    
         // font = new Font("demo/FiraSans.ttf", 24, false);
-        // font = new Font("fonts/BetterPixels.ttf", 24, false);
-        font = Font.getFont(24);
+        // font = new Font("fonts/BetterPixels-Regular.ttf", 24, false);
+        font = Font.DEFAULT;
     }
     
     @Override

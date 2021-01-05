@@ -32,7 +32,7 @@ public class EventTests extends Engine
         
         textSize(20);
         
-        int lines = (int) ((screenHeight() - 2) / textFont().getStringHeight(""));
+        int lines = (int) ((screenHeight() - 2) / textFont().getTextHeight("", textSize()));
         for (int i = 0; i < lines; i++) events.add("");
         
         // Events.subscribe(Events.INPUT_EVENTS, this::onInputEvent);
@@ -65,7 +65,7 @@ public class EventTests extends Engine
         {
             int c = (int) map(nLog, 0, events.size() - 1, 60, 255);
             fill(255, c);
-            text(s, 2, nLog * textFont().getStringHeight("") + 2);
+            text(s, 2, nLog * textFont().getTextHeight("", textSize()) + 2);
             nLog++;
         }
     }

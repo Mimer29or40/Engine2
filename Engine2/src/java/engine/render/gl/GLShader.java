@@ -521,60 +521,10 @@ public class GLShader
         glUniform4f(getUniform(name), color.rf(), color.gf(), color.bf(), color.af());
     }
     
-    // /**
-    //  * Sets a vec4 uniform that represents a color in the shader.
-    //  *
-    //  * @param name The uniform name.
-    //  * @param r    The red value.
-    //  * @param g    The green value.
-    //  * @param b    The blue value.
-    //  * @param a    The alpha value.
-    //  */
-    // public void setUniform(final String name, Number r, Number g, Number b, Number a)
-    // {
-    //     setUniform(name, this.color.set(r, g, b, a));
-    // }
-    //
-    // /**
-    //  * Sets a vec4 uniform that represents a color in the shader.
-    //  *
-    //  * @param name The uniform name.
-    //  * @param r    The red value.
-    //  * @param g    The green value.
-    //  * @param b    The blue value.
-    //  */
-    // public void setUniform(final String name, Number r, Number g, Number b)
-    // {
-    //     setUniform(name, this.color.set(r, g, b, 255));
-    // }
-    //
-    // /**
-    //  * Sets a vec4 uniform that represents a color in the shader.
-    //  *
-    //  * @param name The uniform name.
-    //  * @param grey The red, green, and blue value.
-    //  * @param a    The alpha value.
-    //  */
-    // public void setUniform(final String name, Number grey, Number a)
-    // {
-    //     setUniform(name, this.color.set(grey, grey, grey, a));
-    // }
-    //
-    // /**
-    //  * Sets a vec4 uniform that represents a color in the shader.
-    //  *
-    //  * @param name The uniform name.
-    //  * @param grey The red, green, and blue value.
-    //  */
-    // public void setUniform(final String name, Number grey)
-    // {
-    //     setUniform(name, this.color.set(grey, grey, grey, 255));
-    // }
-    
-    public void setTexture(final String name, int textureNum, Texture texture)
+    public void setUniform(final String name, Texture texture, int textureNum)
     {
         GLShader.LOGGER.finest("Setting Texture Uniform: %s=%s(%s)", name, textureNum, texture);
-        
+    
         texture.bindTexture(textureNum);
         glUniform1i(getUniform(name), textureNum);
     }

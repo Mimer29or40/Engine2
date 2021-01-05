@@ -3,8 +3,8 @@ package engine.gui;
 import com.google.gson.stream.JsonReader;
 import engine.color.Color;
 import engine.color.Colorc;
+import engine.font.Font;
 import engine.gui.util.Rect;
-import engine.render.Font;
 import engine.render.Texture;
 import engine.util.Logger;
 
@@ -579,8 +579,8 @@ public class Theme
     
     private static final class FData
     {
-        private String name = Font.DEFAULT_FONT_FAMILY;
-        private int    size = Font.DEFAULT_FONT_SIZE;
+        private String name = Font.DEFAULT_NAME;
+        private int    size = Font.DEFAULT_SIZE;
         
         private boolean bold   = false;
         private boolean italic = false;

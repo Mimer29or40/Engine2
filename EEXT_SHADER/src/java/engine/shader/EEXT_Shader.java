@@ -5,7 +5,11 @@ import engine.Extension;
 import engine.color.Color;
 import engine.input.Keyboard;
 import engine.input.Mouse;
-import engine.render.*;
+import engine.render.TextAlign;
+import engine.render.Texture;
+import engine.render.gl.GLConst;
+import engine.render.gl.GLShader;
+import engine.render.gl.GLVertexArray;
 
 import java.util.HashMap;
 
@@ -15,14 +19,14 @@ public class EEXT_Shader extends Extension
 {
     public static final EEXT_Shader INSTANCE = new EEXT_Shader();
     
-    private Texture     texture;
-    private VertexArray vao;
+    private Texture       texture;
+    private GLVertexArray vao;
     
     private final FileWatcher fileWatcher = new FileWatcher();
     
     private String defaultShader = null;
     
-    private final HashMap<String, Shader> shaders = new HashMap<>();
+    private final HashMap<String, GLShader> shaders = new HashMap<>();
     
     private String errorMessage;
     
@@ -48,7 +52,7 @@ public class EEXT_Shader extends Extension
     public void afterSetup()
     {
         this.texture = new Texture(screenWidth(), screenHeight());
-        this.vao     = new VertexArray().bind().add(new float[] {-1f, -1f, 1f, -1f, 1f, 1f, -1f, 1f}, GL.STATIC_DRAW, 2).unbind();
+        this.vao     = new GLVertexArray().bind().add(new float[] {-1f, -1f, 1f, -1f, 1f, 1f, -1f, 1f}, GLConst.STATIC_DRAW, 2).unbind();
     }
     
     /**
@@ -63,7 +67,7 @@ public class EEXT_Shader extends Extension
         {
             try
             {
-                this.shaders.replace(changedFile, new Shader().loadVertexFile("shaders/pixel.vert").loadFragmentFile(changedFile).validate());
+                this.shaders.replace(changedFile, new GLShader().loadFile("shaders/pixel.vert").loadFile(changedFile).validate());
                 this.errorMessage = null;
             }
             catch (RuntimeException exception)
@@ -72,32 +76,32 @@ public class EEXT_Shader extends Extension
                 this.errorMessage = exception.getMessage();
             }
         }
-
+    
         if (keyboard().ESCAPE.down()) mouse().toggleCaptured();
-
-        for (Shader shader : this.shaders.values())
+    
+        for (GLShader shader : this.shaders.values())
         {
             if (shader != null)
             {
                 shader.bind();
-                shader.setVec2("resolution", screenWidth(), screenHeight());
-
+                shader.setUniform("resolution", screenWidth(), screenHeight());
+            
                 shader.setUniform("frameCount", frameCount());
                 shader.setUniform("seconds", seconds());
                 shader.setUniform("elapsedTime", elapsedTime);
-    
+            
                 shader.setUniform("mouseCaptured", mouse().captured());
                 shader.setUniform("mouseEntered", mouse().entered());
-                shader.setVec2("mousePos", mouse().x(), mouse().y());
-                shader.setVec2("mouseRel", mouse().relX(), mouse().relY());
-                shader.setVec2("mouseScroll", mouse().scrollX(), mouse().scrollY());
+                shader.setUniform("mousePos", mouse().x(), mouse().y());
+                shader.setUniform("mouseRel", mouse().relX(), mouse().relY());
+                shader.setUniform("mouseScroll", mouse().scrollX(), mouse().scrollY());
                 for (Mouse.Button button : mouse().inputs())
                 {
-                    shader.setVec4(button.toString().replace(".", ""), button.down(), button.up(), button.held(), button.repeat());
+                    shader.setUniform(button.toString().replace(".", ""), button.down(), button.up(), button.held(), button.repeat());
                 }
                 for (Keyboard.Key key : keyboard().inputs())
                 {
-                    shader.setVec4(key.toString().replace(".", ""), key.down(), key.up(), key.held(), key.repeat());
+                    shader.setUniform(key.toString().replace(".", ""), key.down(), key.up(), key.held(), key.repeat());
                 }
             }
         }
@@ -117,7 +121,7 @@ public class EEXT_Shader extends Extension
             // this.texture.bindFramebuffer();
     
             // this.shader.bind();
-            // this.vao.bind().draw(GL.QUADS).unbind();
+            // this.vao.bind().draw(GLConst.QUADS).unbind();
     
             // this.texture.markGPUDirty();
     
@@ -160,26 +164,26 @@ public class EEXT_Shader extends Extension
         EEXT_Shader.INSTANCE.shaders.put(shaderFile, null);
         EEXT_Shader.INSTANCE.fileWatcher.addFile(shaderFile);
         // EEXT_Shader.INSTANCE.texture = new Texture(screenWidth(), screenHeight());
-        // EEXT_Shader.INSTANCE.vao     = new VertexArray().bind().add(new float[] {-1f, -1f, 1f, -1f, 1f, 1f, -1f, 1f}, GL.STATIC_DRAW, 2);
+        // EEXT_Shader.INSTANCE.vao     = new GLVertexArray().bind().add(new float[] {-1f, -1f, 1f, -1f, 1f, 1f, -1f, 1f}, GLConst.STATIC_DRAW, 2);
     
         return shaderFile;
     }
     
-    public static Shader shader(String shader)
+    public static GLShader shader(String shader)
     {
         return EEXT_Shader.INSTANCE.shaders.get(shader);
     }
     
-    public static Shader shader()
+    public static GLShader shader()
     {
         return EEXT_Shader.INSTANCE.shaders.get(EEXT_Shader.INSTANCE.defaultShader);
     }
     
-    public static void drawShader(Texture target, Shader shader)
+    public static void drawShader(Texture target, GLShader shader)
     {
         target.bindFramebuffer();
         shader.bind();
-        EEXT_Shader.INSTANCE.vao.bind().draw(GL.QUADS).unbind();
+        EEXT_Shader.INSTANCE.vao.bind().draw(GLConst.QUADS).unbind();
         target.markGPUDirty();
     }
 }

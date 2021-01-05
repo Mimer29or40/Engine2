@@ -1,20 +1,20 @@
-package engine.render;
+package engine.render.gl;
 
 import engine.util.Logger;
-import engine.util.Pair;
 
 import java.nio.*;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Objects;
 
+import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.*;
 
 /**
  * A wrapper class for OpenGL's vertex arrays. This class adds helper functions that make it easy to send data to the buffers.
  */
 @SuppressWarnings({"unused", "UnusedReturnValue"})
-public class VertexArray
+public class GLVertexArray
 {
     private static final Logger LOGGER = new Logger();
     
@@ -24,16 +24,18 @@ public class VertexArray
     
     private GLBuffer indexBuffer = null;
     
-    private final ArrayList<ArrayList<Pair.I>> attributes = new ArrayList<>();
+    private final ArrayList<ArrayList<Attribute>> attributes = new ArrayList<>();
     
     private int vertexCount;
     
     /**
-     * Creates a new VertexArray.
+     * Creates a new GLVertexArray.
      */
-    public VertexArray()
+    public GLVertexArray()
     {
         this.id = glGenVertexArrays();
+        
+        GLVertexArray.LOGGER.fine("Generating GLVertexArray{id=%s}", this.id);
     }
     
     @Override
@@ -41,7 +43,7 @@ public class VertexArray
     {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        VertexArray that = (VertexArray) o;
+        GLVertexArray that = (GLVertexArray) o;
         return this.id == that.id;
     }
     
@@ -54,11 +56,23 @@ public class VertexArray
     @Override
     public String toString()
     {
-        return "VertexArray{" + "id=" + this.id + ", VBOs=" + this.vertexBuffers + ", EBO=" + this.indexBuffer + '}';
+        return "GLVertexArray{" + "id=" + this.id + ", vertex=" + printVertex() + ", vertexCount=" + this.vertexCount + (indexCount() > 0 ? ", indexCount=" + indexCount() : "") + '}';
+    }
+    
+    public String printArrays()
+    {
+        return "[VBOs=" + this.vertexBuffers + ", EBO=" + this.indexBuffer + ']';
+    }
+    
+    public String printVertex()
+    {
+        ArrayList<Attribute> vertex = new ArrayList<>();
+        for (ArrayList<Attribute> bufferAttributes : this.attributes) vertex.addAll(bufferAttributes);
+        return vertex.toString();
     }
     
     /**
-     * Gets the GLBuffer that holds the indices bound to the VertexArray. Can be null.
+     * Gets the GLBuffer that holds the indices bound to the GLVertexArray. Can be null.
      *
      * @return The index GLBuffer
      */
@@ -68,7 +82,7 @@ public class VertexArray
     }
     
     /**
-     * Gets the GLBuffer that has been bound to the VertexArray.
+     * Gets the GLBuffer that has been bound to the GLVertexArray.
      *
      * @param index The index.
      * @return The GLBuffer
@@ -81,20 +95,45 @@ public class VertexArray
     /**
      * @return The number of attributes in the vertex array.
      */
-    public int attributeCount()
+    public int attributeAmount()
     {
         int count = 0;
-        for (ArrayList<Pair.I> bufferAttributes : this.attributes) count += bufferAttributes.size();
+        for (ArrayList<Attribute> bufferAttributes : this.attributes)
+        {
+            count += bufferAttributes.size();
+        }
         return count;
     }
     
     /**
-     * @return The size in bytes of the attributes.
+     * @return The count of elements in a vertex.
      */
-    public int attributesSize()
+    public int attributeCount()
+    {
+        int count = 0;
+        for (ArrayList<Attribute> bufferAttributes : this.attributes)
+        {
+            for (Attribute attribute : bufferAttributes)
+            {
+                count += attribute.count;
+            }
+        }
+        return count;
+    }
+    
+    /**
+     * @return The size in bytes of a vertex.
+     */
+    public int attributeSize()
     {
         int size = 0;
-        for (ArrayList<Pair.I> bufferAttributes : this.attributes) for (Pair.I attribute : bufferAttributes) size += attribute.a * attribute.b;
+        for (ArrayList<Attribute> bufferAttributes : this.attributes)
+        {
+            for (Attribute attribute : bufferAttributes)
+            {
+                size += attribute.size;
+            }
+        }
         return size;
     }
     
@@ -111,7 +150,7 @@ public class VertexArray
      */
     public int indexCount()
     {
-        return this.indexBuffer != null ? this.indexBuffer.bufferSize() : 0;
+        return this.indexBuffer != null ? this.indexBuffer.dataSize() / Integer.BYTES : 0;
     }
     
     /**
@@ -136,63 +175,73 @@ public class VertexArray
     }
     
     /**
-     * Bind the VertexArray for use.
+     * Bind the GLVertexArray for use.
      *
      * @return This instance for call chaining.
      */
-    public VertexArray bind()
+    public GLVertexArray bind()
     {
-        VertexArray.LOGGER.finest("Binding VertexArray: %s", this.id);
+        GLVertexArray.LOGGER.finer("%s: Binding", this);
         
         glBindVertexArray(this.id);
+        
+        if (this.indexBuffer != null) this.indexBuffer.bind();
+        
         return this;
     }
     
     /**
-     * Unbind the VertexArray from use.
+     * Unbind the GLVertexArray from use.
      *
      * @return This instance for call chaining.
      */
-    public VertexArray unbind()
+    public GLVertexArray unbind()
     {
-        VertexArray.LOGGER.finest("Unbinding VertexArray: %s", this.id);
+        GLVertexArray.LOGGER.finer("%s: Unbinding", this);
         
         glBindVertexArray(0);
+        
+        if (this.indexBuffer != null) this.indexBuffer.unbind();
+        
         return this;
     }
     
     /**
-     * Deletes the VertexArray and Buffers.
+     * Deletes the GLVertexArray and Buffers.
      *
      * @return This instance for call chaining.
      */
-    public VertexArray delete()
+    public GLVertexArray delete()
     {
-        VertexArray.LOGGER.finest("Deleting VertexArray: %s", this.id);
+        GLVertexArray.LOGGER.fine("%s: Deleting", this);
         
         glDeleteVertexArrays(this.id);
+        
         return reset();
     }
     
     /**
-     * Resets the VertexArray by deleting all buffers and attributes.
+     * Resets the GLVertexArray by deleting all buffers and attributes.
      * <p>
      * Make sure to bind the vertex array first.
      *
      * @return This instance for call chaining.
      */
-    public VertexArray reset()
+    public GLVertexArray reset()
     {
-        VertexArray.LOGGER.finest("Resetting VertexArray: %s", this.id);
+        GLVertexArray.LOGGER.fine("%s: Resetting", this);
         
         for (GLBuffer vbo : this.vertexBuffers) vbo.delete();
         this.vertexBuffers.clear();
         if (this.indexBuffer != null) this.indexBuffer.delete();
         
         int i = 0;
-        for (ArrayList<Pair.I> bufferAttributes : this.attributes)
+        for (ArrayList<Attribute> bufferAttributes : this.attributes)
         {
-            for (Pair.I attribute : bufferAttributes) glDisableVertexAttribArray(i++);
+            for (Attribute attribute : bufferAttributes)
+            {
+                glDisableVertexAttribArray(i++);
+            }
             bufferAttributes.clear();
         }
         this.attributes.clear();
@@ -206,15 +255,15 @@ public class VertexArray
      *
      * @return This instance for call chaining.
      */
-    public VertexArray resize()
+    public GLVertexArray resize()
     {
-        VertexArray.LOGGER.finest("Resizing VertexArray: %s", this.id);
+        GLVertexArray.LOGGER.finest("%s: Resizing", this);
         
         this.vertexCount = Integer.MAX_VALUE;
         for (int i = 0, n = this.vertexBuffers.size(); i < n; i++)
         {
             int bufferAttributesSize = 0;
-            for (Pair.I v : this.attributes.get(i)) bufferAttributesSize += v.a * v.b;
+            for (Attribute attribute : this.attributes.get(i)) bufferAttributesSize += attribute.size;
             this.vertexCount = Math.min(this.vertexCount, this.vertexBuffers.get(i).dataSize() / bufferAttributesSize);
         }
         return this;
@@ -229,17 +278,17 @@ public class VertexArray
      * @param size The size of the buffer to draw.
      * @return This instance for call chaining.
      */
-    public VertexArray draw(GL mode, int size)
+    public GLVertexArray draw(GLConst mode, int size)
     {
         if (this.indexBuffer != null)
         {
-            VertexArray.LOGGER.finest("Drawing indices for VertexArray: %s", this.id);
+            GLVertexArray.LOGGER.finer("%s: Drawing Elements size=%s", this, size);
             
-            if (this.indexBuffer.dataSize() > 0) glDrawElements(mode.ref(), size, GL.UNSIGNED_INT.ref(), 0);
+            if (indexCount() > 0) glDrawElements(mode.ref(), size, GLConst.UNSIGNED_INT.ref(), 0);
         }
         else
         {
-            VertexArray.LOGGER.finest("Drawing vertices for VertexArray: %s", this.id);
+            GLVertexArray.LOGGER.finer("%s: Drawing Array size=%s", this, size);
             
             if (this.vertexCount > 0) glDrawArrays(mode.ref(), 0, size);
         }
@@ -254,25 +303,27 @@ public class VertexArray
      * @param mode The primitive type.
      * @return This instance for call chaining.
      */
-    public VertexArray draw(GL mode)
+    public GLVertexArray draw(GLConst mode)
     {
-        return draw(mode, this.indexBuffer != null ? this.indexBuffer.dataSize() : this.vertexCount);
+        return draw(mode, this.indexBuffer != null ? indexCount() : this.vertexCount);
     }
     
     /**
-     * Adds an element array buffer to the Vertex Array, if one is already present then is deletes and replaces it. The buffer object will be managed by the VertexArray object.
+     * Adds an element array buffer to the Vertex Array, if one is already present then is deletes and replaces it. The buffer object will be managed by the GLVertexArray object.
      * <p>
      * Make sure to bind the vertex array first.
      *
      * @param buffer The index array buffer
      * @return This instance for call chaining.
      */
-    public VertexArray addEBO(GLBuffer buffer, GL usage)
+    public GLVertexArray addEBO(GLBuffer buffer)
     {
-        VertexArray.LOGGER.finest("Adding EBO (%s) into VertexArray: %s", buffer, this.id);
-    
+        GLVertexArray.LOGGER.fine("%s: Adding EBO %s", this, buffer);
+        
         if (this.indexBuffer != null) this.indexBuffer.delete();
-        this.indexBuffer = buffer.usage(usage);
+        
+        this.indexBuffer = buffer.unbind();
+        
         return this;
     }
     
@@ -285,9 +336,9 @@ public class VertexArray
      * @param usage How the data should be used.
      * @return This instance for call chaining.
      */
-    public VertexArray addEBO(int[] data, GL usage)
+    public GLVertexArray addEBO(int[] data, GLConst usage)
     {
-        return addEBO(new GLBuffer(GL.ELEMENT_ARRAY_BUFFER).bind().set(data), usage);
+        return addEBO(new GLBuffer(GLConst.ELEMENT_ARRAY_BUFFER).usage(usage).bind().set(data));
     }
     
     /**
@@ -299,9 +350,9 @@ public class VertexArray
      * @param usage How the data should be used.
      * @return This instance for call chaining.
      */
-    public VertexArray addEBO(IntBuffer data, GL usage)
+    public GLVertexArray addEBO(IntBuffer data, GLConst usage)
     {
-        return addEBO(new GLBuffer(GL.ELEMENT_ARRAY_BUFFER).bind().set(data), usage);
+        return addEBO(new GLBuffer(GLConst.ELEMENT_ARRAY_BUFFER).usage(usage).bind().set(data));
     }
     
     /**
@@ -313,10 +364,14 @@ public class VertexArray
      * @param usage How the data should be used.
      * @return This instance for call chaining.
      */
-    public VertexArray setEBO(int[] data, GL usage)
+    public GLVertexArray setEBO(GLConst usage, int... data)
     {
-        if (this.indexBuffer == null) this.indexBuffer = new GLBuffer(GL.ELEMENT_ARRAY_BUFFER);
-        this.indexBuffer.usage(usage).bind().set(data);
+        GLVertexArray.LOGGER.finer("%s: Setting EBO date from int array with usage %s", this, usage);
+        
+        if (this.indexBuffer == null) this.indexBuffer = new GLBuffer(GLConst.ELEMENT_ARRAY_BUFFER);
+        
+        this.indexBuffer.usage(usage).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -329,10 +384,14 @@ public class VertexArray
      * @param usage How the data should be used.
      * @return This instance for call chaining.
      */
-    public VertexArray setEBO(IntBuffer data, GL usage)
+    public GLVertexArray setEBO(GLConst usage, IntBuffer data)
     {
-        if (this.indexBuffer == null) this.indexBuffer = new GLBuffer(GL.ELEMENT_ARRAY_BUFFER);
-        this.indexBuffer.usage(usage).bind().set(data);
+        GLVertexArray.LOGGER.finer("%s: Setting EBO date from IntBuffer with usage %s", this, usage);
+        
+        if (this.indexBuffer == null) this.indexBuffer = new GLBuffer(GLConst.ELEMENT_ARRAY_BUFFER);
+        
+        this.indexBuffer.usage(usage).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -344,9 +403,14 @@ public class VertexArray
      * @param data The index array
      * @return This instance for call chaining.
      */
-    public VertexArray setEBO(int[] data)
+    public GLVertexArray setEBO(int... data)
     {
-        this.indexBuffer.bind().set(data);
+        GLVertexArray.LOGGER.finer("%s: Setting EBO date from int array", this);
+        
+        if (this.indexBuffer == null) this.indexBuffer = new GLBuffer(GLConst.ELEMENT_ARRAY_BUFFER);
+        
+        this.indexBuffer.bind().set(data).unbind();
+        
         return this;
     }
     
@@ -358,14 +422,19 @@ public class VertexArray
      * @param data The index array
      * @return This instance for call chaining.
      */
-    public VertexArray setEBO(IntBuffer data)
+    public GLVertexArray setEBO(IntBuffer data)
     {
-        this.indexBuffer.bind().set(data);
+        GLVertexArray.LOGGER.finer("%s: Setting EBO date from IntBuffer", this);
+        
+        if (this.indexBuffer == null) this.indexBuffer = new GLBuffer(GLConst.ELEMENT_ARRAY_BUFFER);
+        
+        this.indexBuffer.bind().set(data).unbind();
+        
         return this;
     }
     
     /**
-     * Adds a buffer object with any number of attributes to the Vertex Array. The VertexArray object will manage the buffer.
+     * Adds a buffer object with any number of attributes to the Vertex Array. The GLVertexArray object will manage the buffer.
      * <p>
      * Make sure to bind the vertex array first.
      *
@@ -373,44 +442,41 @@ public class VertexArray
      * @param formats The type and size pairs for how the buffer is organized.
      * @return This instance for call chaining.
      */
-    public VertexArray add(GLBuffer buffer, Object... formats)
+    public GLVertexArray add(GLBuffer buffer, Object... formats)
     {
         int n = formats.length;
         if (n == 0) throw new RuntimeException("Invalid vertex format: Must have at least one type/size pair");
         if ((n & 1) == 1) throw new RuntimeException("Invalid vertex format: A type/size pair is missing a value");
         
         n >>= 1;
-        int[] types  = new int[n];
-        int[] bytes  = new int[n];
-        int[] sizes  = new int[n];
-        int   stride = 0;
+        
+        ArrayList<Attribute> bufferAttributes = new ArrayList<>(n);
+        
+        int stride = 0;
         for (int i = 0, index; i < n; i++)
         {
             index = i << 1;
-            if (!(formats[index] instanceof GL)) throw new RuntimeException("Invalid vertex format: Not recognized OpenGL type: " + formats[index]);
-            types[i] = ((GL) formats[index]).ref();
-            bytes[i] = getBytes(types[i]);
-            sizes[i] = (int) formats[index + 1];
-            stride += bytes[i] * sizes[i];
+            if (!(formats[index] instanceof GLConst)) throw new RuntimeException("Invalid vertex format: Not recognized OpenGL type: " + formats[index]);
+            Attribute attribute = getAttribute((GLConst) formats[index], (int) formats[index + 1]);
+            bufferAttributes.add(attribute);
+            stride += attribute.size;
         }
-    
-        VertexArray.LOGGER.finest("Adding VBO (%s) of types %s into VertexArray: %s", buffer, Arrays.toString(types), this.id);
-    
+        
+        GLVertexArray.LOGGER.finest("%s: Adding VBO %s of structure %s", this, buffer, bufferAttributes);
+        
         this.vertexCount = Math.min(this.vertexCount > 0 ? this.vertexCount : Integer.MAX_VALUE, buffer.dataSize() / stride);
-    
-        ArrayList<Pair.I> bufferAttributes = new ArrayList<>();
-    
+        
         buffer.bind();
-        int attributeCount = attributeCount(), offset = 0;
-        for (int i = 0; i < n; i++)
+        for (int i = 0, size = bufferAttributes.size(), attributeCount = attributeAmount(), offset = 0; i < size; i++)
         {
-            bufferAttributes.add(new Pair.I(sizes[i], bytes[i]));
-            glVertexAttribPointer(attributeCount, sizes[i], types[i], false, stride, offset);
+            Attribute attribute = bufferAttributes.get(i);
+            glVertexAttribPointer(attributeCount, attribute.count, attribute.type.ref(), false, stride, offset);
             glEnableVertexAttribArray(attributeCount++);
-            offset += sizes[i] * bytes[i];
+            offset += attribute.size;
         }
         this.vertexBuffers.add(buffer.unbind());
         this.attributes.add(bufferAttributes);
+        
         return this;
     }
     
@@ -424,9 +490,9 @@ public class VertexArray
      * @param formats The type and size pairs for how the buffer is organized.
      * @return This instance for call chaining.
      */
-    public VertexArray add(int size, GL usage, Object... formats)
+    public GLVertexArray add(int size, GLConst usage, Object... formats)
     {
-        return add(new GLBuffer(GL.ARRAY_BUFFER).usage(usage).bind().set(size).unbind(), formats);
+        return add(new GLBuffer(GLConst.ARRAY_BUFFER).usage(usage).bind().set(size), formats);
     }
     
     /**
@@ -439,9 +505,9 @@ public class VertexArray
      * @param sizes The attributes lengths
      * @return This instance for call chaining.
      */
-    public VertexArray add(short[] data, GL usage, int... sizes)
+    public GLVertexArray add(short[] data, GLConst usage, int... sizes)
     {
-        return add(new GLBuffer(GL.ARRAY_BUFFER).usage(usage).bind().set(data), getFormatArray(sizes, GL.SHORT));
+        return add(new GLBuffer(GLConst.ARRAY_BUFFER).usage(usage).bind().set(data), getFormatArray(sizes, GLConst.SHORT));
     }
     
     /**
@@ -454,9 +520,9 @@ public class VertexArray
      * @param sizes The attributes lengths
      * @return This instance for call chaining.
      */
-    public VertexArray add(int[] data, GL usage, int... sizes)
+    public GLVertexArray add(int[] data, GLConst usage, int... sizes)
     {
-        return add(new GLBuffer(GL.ARRAY_BUFFER).usage(usage).bind().set(data), getFormatArray(sizes, GL.INT));
+        return add(new GLBuffer(GLConst.ARRAY_BUFFER).usage(usage).bind().set(data), getFormatArray(sizes, GLConst.INT));
     }
     
     /**
@@ -469,9 +535,9 @@ public class VertexArray
      * @param sizes The attributes lengths
      * @return This instance for call chaining.
      */
-    public VertexArray add(float[] data, GL usage, int... sizes)
+    public GLVertexArray add(float[] data, GLConst usage, int... sizes)
     {
-        return add(new GLBuffer(GL.ARRAY_BUFFER).usage(usage).bind().set(data), getFormatArray(sizes, GL.FLOAT));
+        return add(new GLBuffer(GLConst.ARRAY_BUFFER).usage(usage).bind().set(data), getFormatArray(sizes, GLConst.FLOAT));
     }
     
     /**
@@ -484,9 +550,9 @@ public class VertexArray
      * @param sizes The attributes lengths
      * @return This instance for call chaining.
      */
-    public VertexArray add(double[] data, GL usage, int... sizes)
+    public GLVertexArray add(double[] data, GLConst usage, int... sizes)
     {
-        return add(new GLBuffer(GL.ARRAY_BUFFER).usage(usage).bind().set(data), getFormatArray(sizes, GL.DOUBLE));
+        return add(new GLBuffer(GLConst.ARRAY_BUFFER).usage(usage).bind().set(data), getFormatArray(sizes, GLConst.DOUBLE));
     }
     
     /**
@@ -499,9 +565,9 @@ public class VertexArray
      * @param formats The type and size pairs for how the buffer is organized.
      * @return This instance for call chaining.
      */
-    public VertexArray add(ByteBuffer data, GL usage, Object... formats)
+    public GLVertexArray add(ByteBuffer data, GLConst usage, Object... formats)
     {
-        return add(new GLBuffer(GL.ARRAY_BUFFER).usage(usage).bind().set(data), formats);
+        return add(new GLBuffer(GLConst.ARRAY_BUFFER).usage(usage).bind().set(data), formats);
     }
     
     /**
@@ -514,9 +580,9 @@ public class VertexArray
      * @param sizes The attributes lengths
      * @return This instance for call chaining.
      */
-    public VertexArray add(ShortBuffer data, GL usage, int... sizes)
+    public GLVertexArray add(ShortBuffer data, GLConst usage, int... sizes)
     {
-        return add(new GLBuffer(GL.ARRAY_BUFFER).usage(usage).bind().set(data), getFormatArray(sizes, GL.UNSIGNED_SHORT));
+        return add(new GLBuffer(GLConst.ARRAY_BUFFER).usage(usage).bind().set(data), getFormatArray(sizes, GLConst.UNSIGNED_SHORT));
     }
     
     /**
@@ -529,9 +595,9 @@ public class VertexArray
      * @param sizes The attributes lengths
      * @return This instance for call chaining.
      */
-    public VertexArray add(IntBuffer data, GL usage, int... sizes)
+    public GLVertexArray add(IntBuffer data, GLConst usage, int... sizes)
     {
-        return add(new GLBuffer(GL.ARRAY_BUFFER).usage(usage).bind().set(data), getFormatArray(sizes, GL.UNSIGNED_INT));
+        return add(new GLBuffer(GLConst.ARRAY_BUFFER).usage(usage).bind().set(data), getFormatArray(sizes, GLConst.UNSIGNED_INT));
     }
     
     /**
@@ -544,9 +610,9 @@ public class VertexArray
      * @param sizes The attributes lengths
      * @return This instance for call chaining.
      */
-    public VertexArray add(FloatBuffer data, GL usage, int... sizes)
+    public GLVertexArray add(FloatBuffer data, GLConst usage, int... sizes)
     {
-        return add(new GLBuffer(GL.ARRAY_BUFFER).usage(usage).bind().set(data), getFormatArray(sizes, GL.FLOAT));
+        return add(new GLBuffer(GLConst.ARRAY_BUFFER).usage(usage).bind().set(data), getFormatArray(sizes, GLConst.FLOAT));
     }
     
     /**
@@ -559,9 +625,9 @@ public class VertexArray
      * @param sizes The attributes lengths
      * @return This instance for call chaining.
      */
-    public VertexArray add(DoubleBuffer data, GL usage, int... sizes)
+    public GLVertexArray add(DoubleBuffer data, GLConst usage, int... sizes)
     {
-        return add(new GLBuffer(GL.ARRAY_BUFFER).usage(usage).bind().set(data), getFormatArray(sizes, GL.DOUBLE));
+        return add(new GLBuffer(GLConst.ARRAY_BUFFER).usage(usage).bind().set(data), getFormatArray(sizes, GLConst.DOUBLE));
     }
     
     /**
@@ -574,9 +640,12 @@ public class VertexArray
      * @param data   The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, GL usage, short... data)
+    public GLVertexArray set(int buffer, GLConst usage, short... data)
     {
+        GLVertexArray.LOGGER.finer("%s: Setting Buffer '%s' data from short array with usage %s", this, buffer, usage);
+        
         this.vertexBuffers.get(buffer).usage(usage).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -589,7 +658,7 @@ public class VertexArray
      * @param data  The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(GL usage, short... data)
+    public GLVertexArray set(GLConst usage, short... data)
     {
         return set(0, usage, data);
     }
@@ -604,9 +673,12 @@ public class VertexArray
      * @param data   The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, GL usage, int... data)
+    public GLVertexArray set(int buffer, GLConst usage, int... data)
     {
+        GLVertexArray.LOGGER.finer("%s: Setting Buffer '%s' data from int array with usage %s", this, buffer, usage);
+        
         this.vertexBuffers.get(buffer).usage(usage).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -619,7 +691,7 @@ public class VertexArray
      * @param data  The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(GL usage, int... data)
+    public GLVertexArray set(GLConst usage, int... data)
     {
         return set(0, usage, data);
     }
@@ -634,9 +706,12 @@ public class VertexArray
      * @param data   The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, GL usage, long... data)
+    public GLVertexArray set(int buffer, GLConst usage, long... data)
     {
+        GLVertexArray.LOGGER.finer("%s: Setting Buffer '%s' data from long array with usage %s", this, buffer, usage);
+        
         this.vertexBuffers.get(buffer).usage(usage).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -649,7 +724,7 @@ public class VertexArray
      * @param data  The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(GL usage, long... data)
+    public GLVertexArray set(GLConst usage, long... data)
     {
         return set(0, usage, data);
     }
@@ -664,9 +739,12 @@ public class VertexArray
      * @param data   The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, GL usage, float... data)
+    public GLVertexArray set(int buffer, GLConst usage, float... data)
     {
+        GLVertexArray.LOGGER.finer("%s: Setting Buffer '%s' data from float array with usage %s", this, buffer, usage);
+        
         this.vertexBuffers.get(buffer).usage(usage).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -679,7 +757,7 @@ public class VertexArray
      * @param data  The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(GL usage, float... data)
+    public GLVertexArray set(GLConst usage, float... data)
     {
         return set(0, usage, data);
     }
@@ -694,9 +772,12 @@ public class VertexArray
      * @param data   The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, GL usage, double... data)
+    public GLVertexArray set(int buffer, GLConst usage, double... data)
     {
+        GLVertexArray.LOGGER.finer("%s: Setting Buffer '%s' data from double array with usage %s", this, buffer, usage);
+        
         this.vertexBuffers.get(buffer).usage(usage).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -709,7 +790,7 @@ public class VertexArray
      * @param data  The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(GL usage, double... data)
+    public GLVertexArray set(GLConst usage, double... data)
     {
         return set(0, usage, data);
     }
@@ -724,9 +805,12 @@ public class VertexArray
      * @param data   The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, GL usage, ByteBuffer data)
+    public GLVertexArray set(int buffer, GLConst usage, ByteBuffer data)
     {
+        GLVertexArray.LOGGER.finer("%s: Setting Buffer '%s' data from ByteBuffer with usage %s", this, buffer, usage);
+        
         this.vertexBuffers.get(buffer).usage(usage).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -739,7 +823,7 @@ public class VertexArray
      * @param data  The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(GL usage, ByteBuffer data)
+    public GLVertexArray set(GLConst usage, ByteBuffer data)
     {
         return set(0, usage, data);
     }
@@ -754,9 +838,12 @@ public class VertexArray
      * @param data   The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, GL usage, ShortBuffer data)
+    public GLVertexArray set(int buffer, GLConst usage, ShortBuffer data)
     {
+        GLVertexArray.LOGGER.finer("%s: Setting Buffer '%s' data from ShortBuffer with usage %s", this, buffer, usage);
+        
         this.vertexBuffers.get(buffer).usage(usage).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -769,7 +856,7 @@ public class VertexArray
      * @param data  The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(GL usage, ShortBuffer data)
+    public GLVertexArray set(GLConst usage, ShortBuffer data)
     {
         return set(0, usage, data);
     }
@@ -784,9 +871,12 @@ public class VertexArray
      * @param data   The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, GL usage, IntBuffer data)
+    public GLVertexArray set(int buffer, GLConst usage, IntBuffer data)
     {
+        GLVertexArray.LOGGER.finer("%s: Setting Buffer '%s' data from IntBuffer with usage %s", this, buffer, usage);
+        
         this.vertexBuffers.get(buffer).usage(usage).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -799,7 +889,7 @@ public class VertexArray
      * @param data  The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(GL usage, IntBuffer data)
+    public GLVertexArray set(GLConst usage, IntBuffer data)
     {
         return set(0, usage, data);
     }
@@ -814,9 +904,12 @@ public class VertexArray
      * @param data   The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, GL usage, LongBuffer data)
+    public GLVertexArray set(int buffer, GLConst usage, LongBuffer data)
     {
+        GLVertexArray.LOGGER.finer("%s: Setting Buffer '%s' data from LongBuffer with usage %s", this, buffer, usage);
+        
         this.vertexBuffers.get(buffer).usage(usage).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -829,7 +922,7 @@ public class VertexArray
      * @param data  The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(GL usage, LongBuffer data)
+    public GLVertexArray set(GLConst usage, LongBuffer data)
     {
         return set(0, usage, data);
     }
@@ -844,9 +937,12 @@ public class VertexArray
      * @param data   The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, GL usage, FloatBuffer data)
+    public GLVertexArray set(int buffer, GLConst usage, FloatBuffer data)
     {
+        GLVertexArray.LOGGER.finer("%s: Setting Buffer '%s' data from FloatBuffer with usage %s", this, buffer, usage);
+        
         this.vertexBuffers.get(buffer).usage(usage).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -859,7 +955,7 @@ public class VertexArray
      * @param data  The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(GL usage, FloatBuffer data)
+    public GLVertexArray set(GLConst usage, FloatBuffer data)
     {
         return set(0, usage, data);
     }
@@ -874,9 +970,12 @@ public class VertexArray
      * @param data   The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, GL usage, DoubleBuffer data)
+    public GLVertexArray set(int buffer, GLConst usage, DoubleBuffer data)
     {
+        GLVertexArray.LOGGER.finer("%s: Setting Buffer '%s' data from DoubleBuffer with usage %s", this, buffer, usage);
+        
         this.vertexBuffers.get(buffer).usage(usage).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -889,7 +988,7 @@ public class VertexArray
      * @param data  The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(GL usage, DoubleBuffer data)
+    public GLVertexArray set(GLConst usage, DoubleBuffer data)
     {
         return set(0, usage, data);
     }
@@ -903,9 +1002,12 @@ public class VertexArray
      * @param data   The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, short... data)
+    public GLVertexArray set(int buffer, short... data)
     {
+        GLVertexArray.LOGGER.finer("%s: Setting Buffer '%s' data from short array", this, buffer);
+        
         this.vertexBuffers.get(buffer).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -917,7 +1019,7 @@ public class VertexArray
      * @param data The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(short... data)
+    public GLVertexArray set(short... data)
     {
         return set(0, data);
     }
@@ -931,9 +1033,12 @@ public class VertexArray
      * @param data   The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, int... data)
+    public GLVertexArray set(int buffer, int... data)
     {
+        GLVertexArray.LOGGER.finer("%s: Setting Buffer '%s' data from int array", this, buffer);
+        
         this.vertexBuffers.get(buffer).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -945,7 +1050,7 @@ public class VertexArray
      * @param data The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int... data)
+    public GLVertexArray set(int... data)
     {
         return set(0, data);
     }
@@ -959,9 +1064,12 @@ public class VertexArray
      * @param data   The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, long... data)
+    public GLVertexArray set(int buffer, long... data)
     {
+        GLVertexArray.LOGGER.finer("%s: Setting Buffer '%s' data from long array", this, buffer);
+        
         this.vertexBuffers.get(buffer).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -973,7 +1081,7 @@ public class VertexArray
      * @param data The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(long... data)
+    public GLVertexArray set(long... data)
     {
         return set(0, data);
     }
@@ -987,9 +1095,12 @@ public class VertexArray
      * @param data   The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, float... data)
+    public GLVertexArray set(int buffer, float... data)
     {
+        GLVertexArray.LOGGER.finer("%s: Setting Buffer '%s' data from float array", this, buffer);
+        
         this.vertexBuffers.get(buffer).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -1001,7 +1112,7 @@ public class VertexArray
      * @param data The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(float... data)
+    public GLVertexArray set(float... data)
     {
         return set(0, data);
     }
@@ -1015,9 +1126,12 @@ public class VertexArray
      * @param data   The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, double... data)
+    public GLVertexArray set(int buffer, double... data)
     {
+        GLVertexArray.LOGGER.finer("%s: Setting Buffer '%s' data from double array", this, buffer);
+        
         this.vertexBuffers.get(buffer).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -1029,7 +1143,7 @@ public class VertexArray
      * @param data The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(double... data)
+    public GLVertexArray set(double... data)
     {
         return set(0, data);
     }
@@ -1043,9 +1157,12 @@ public class VertexArray
      * @param data   The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, ByteBuffer data)
+    public GLVertexArray set(int buffer, ByteBuffer data)
     {
+        GLVertexArray.LOGGER.finer("%s: Setting Buffer '%s' data from ByteBuffer", this, buffer);
+        
         this.vertexBuffers.get(buffer).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -1057,7 +1174,7 @@ public class VertexArray
      * @param data The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(ByteBuffer data)
+    public GLVertexArray set(ByteBuffer data)
     {
         return set(0, data);
     }
@@ -1071,9 +1188,12 @@ public class VertexArray
      * @param data   The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, ShortBuffer data)
+    public GLVertexArray set(int buffer, ShortBuffer data)
     {
+        GLVertexArray.LOGGER.finer("%s: Setting Buffer '%s' data from ShortBuffer", this, buffer);
+        
         this.vertexBuffers.get(buffer).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -1085,7 +1205,7 @@ public class VertexArray
      * @param data The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(ShortBuffer data)
+    public GLVertexArray set(ShortBuffer data)
     {
         return set(0, data);
     }
@@ -1099,9 +1219,12 @@ public class VertexArray
      * @param data   The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, IntBuffer data)
+    public GLVertexArray set(int buffer, IntBuffer data)
     {
+        GLVertexArray.LOGGER.finer("%s: Setting Buffer '%s' data from IntBuffer", this, buffer);
+        
         this.vertexBuffers.get(buffer).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -1113,7 +1236,7 @@ public class VertexArray
      * @param data The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(IntBuffer data)
+    public GLVertexArray set(IntBuffer data)
     {
         return set(0, data);
     }
@@ -1127,9 +1250,12 @@ public class VertexArray
      * @param data   The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, LongBuffer data)
+    public GLVertexArray set(int buffer, LongBuffer data)
     {
+        GLVertexArray.LOGGER.finer("%s: Setting Buffer '%s' data from LongBuffer", this, buffer);
+        
         this.vertexBuffers.get(buffer).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -1141,7 +1267,7 @@ public class VertexArray
      * @param data The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(LongBuffer data)
+    public GLVertexArray set(LongBuffer data)
     {
         return set(0, data);
     }
@@ -1155,9 +1281,12 @@ public class VertexArray
      * @param data   The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, FloatBuffer data)
+    public GLVertexArray set(int buffer, FloatBuffer data)
     {
+        GLVertexArray.LOGGER.finer("%s: Setting Buffer '%s' data from FloatBuffer", this, buffer);
+        
         this.vertexBuffers.get(buffer).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -1169,7 +1298,7 @@ public class VertexArray
      * @param data The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(FloatBuffer data)
+    public GLVertexArray set(FloatBuffer data)
     {
         return set(0, data);
     }
@@ -1183,9 +1312,12 @@ public class VertexArray
      * @param data   The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(int buffer, DoubleBuffer data)
+    public GLVertexArray set(int buffer, DoubleBuffer data)
     {
+        GLVertexArray.LOGGER.finer("%s: Setting Buffer '%s' data from DoubleBuffer", this, buffer);
+        
         this.vertexBuffers.get(buffer).bind().set(data).unbind();
+        
         return this;
     }
     
@@ -1197,12 +1329,12 @@ public class VertexArray
      * @param data The data.
      * @return This instance for call chaining.
      */
-    public VertexArray set(DoubleBuffer data)
+    public GLVertexArray set(DoubleBuffer data)
     {
         return set(0, data);
     }
     
-    private Object[] getFormatArray(int[] sizes, GL type)
+    private static Object[] getFormatArray(int[] sizes, GLConst type)
     {
         int      n      = sizes.length;
         Object[] format = new Object[n << 1];
@@ -1214,15 +1346,68 @@ public class VertexArray
         return format;
     }
     
-    private int getBytes(int type)
+    private static int getBytes(GLConst type)
     {
         return switch (type)
                 {
                     default -> Byte.BYTES;
-                    case GL_UNSIGNED_SHORT, GL_SHORT -> Short.BYTES;
-                    case GL_UNSIGNED_INT, GL_INT -> Integer.BYTES;
-                    case GL_FLOAT -> Float.BYTES;
-                    case GL_DOUBLE -> Double.BYTES;
+                    case UNSIGNED_SHORT, SHORT -> Short.BYTES;
+                    case UNSIGNED_INT, INT -> Integer.BYTES;
+                    case FLOAT -> Float.BYTES;
+                    case DOUBLE -> Double.BYTES;
                 };
+    }
+    
+    private static final HashMap<Integer, Attribute> ATTRIBUTE_CACHE = new HashMap<>();
+    
+    private static Attribute getAttribute(GLConst type, int count)
+    {
+        int hash = Objects.hash(type, count);
+        
+        if (!GLVertexArray.ATTRIBUTE_CACHE.containsKey(hash))
+        {
+            Attribute attribute = new Attribute(type, count);
+            
+            GLVertexArray.ATTRIBUTE_CACHE.put(hash, attribute);
+        }
+        
+        return GLVertexArray.ATTRIBUTE_CACHE.get(hash);
+    }
+    
+    public static class Attribute
+    {
+        public final GLConst type;
+        public final int     count;
+        public final int     bytes;
+        public final int     size;
+        
+        private Attribute(GLConst type, int count)
+        {
+            this.type  = type;
+            this.count = count;
+            this.bytes = getBytes(type);
+            this.size  = this.count * this.bytes;
+        }
+        
+        @Override
+        public boolean equals(Object o)
+        {
+            if (this == o) return true;
+            if (!(o instanceof Attribute)) return false;
+            Attribute attribute = (Attribute) o;
+            return this.type == attribute.type && this.count == attribute.count;
+        }
+        
+        @Override
+        public int hashCode()
+        {
+            return Objects.hash(this.type, this.count);
+        }
+        
+        @Override
+        public String toString()
+        {
+            return this.type + "x" + this.count;
+        }
     }
 }

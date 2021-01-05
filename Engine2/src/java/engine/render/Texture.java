@@ -2,6 +2,7 @@ package engine.render;
 
 import engine.color.Color;
 import engine.color.Colorc;
+import engine.render.gl.GLConst;
 import engine.util.Logger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.system.MemoryUtil;
@@ -28,20 +29,20 @@ public class Texture
     protected final Color tempColor = new Color();
     
     protected final int id;
-    
     protected final int width;
     protected final int height;
     protected final int channels;
-    protected final int format;
+    
+    protected final GLConst format;
     
     protected final ByteBuffer data;
     
     protected int[] array;
     
-    protected int wrapS     = GL_CLAMP_TO_EDGE;
-    protected int wrapT     = GL_CLAMP_TO_EDGE;
-    protected int minFilter = GL_NEAREST;
-    protected int magFilter = GL_NEAREST;
+    protected GLConst wrapS     = GLConst.CLAMP_TO_EDGE;
+    protected GLConst wrapT     = GLConst.CLAMP_TO_EDGE;
+    protected GLConst minFilter = GLConst.NEAREST;
+    protected GLConst magFilter = GLConst.NEAREST;
     
     protected final int fbo;
     
@@ -59,17 +60,16 @@ public class Texture
     protected Texture(int width, int height, int channels, ByteBuffer data, Colorc initial)
     {
         if (channels < 1 || 4 < channels) throw new RuntimeException("Sprites can only have 1-4 channels");
-        
-        this.id = glGenTextures();
-        glBindTexture(GL_TEXTURE_2D, this.id);
-        
+    
+        this.id       = glGenTextures();
         this.width    = width;
         this.height   = height;
         this.channels = channels;
-        this.format   = getFormat(channels);
-        
+    
+        this.format = getFormat(channels);
+    
         this.data = data;
-        
+    
         if (this.data != null && initial != null)
         {
             if (this.channels == 4)
@@ -88,19 +88,21 @@ public class Texture
                 }
             }
         }
-        
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, this.wrapS);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, this.wrapT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this.minFilter);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, this.magFilter);
+    
+        glBindTexture(GL_TEXTURE_2D, this.id);
+    
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, this.wrapS.ref());
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, this.wrapT.ref());
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this.minFilter.ref());
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, this.magFilter.ref());
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-        
-        glTexImage2D(GL_TEXTURE_2D, 0, this.format, this.width, this.height, 0, this.format, GL_UNSIGNED_BYTE, this.data);
-        
+    
+        glTexImage2D(GL_TEXTURE_2D, 0, this.format.ref(), this.width, this.height, 0, this.format.ref(), GL_UNSIGNED_BYTE, this.data);
+    
         this.fbo = glGenFramebuffers();
         glBindFramebuffer(GL_FRAMEBUFFER, this.fbo);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this.id, 0);
-        
+    
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) Texture.LOGGER.severe("Could not create FrameBuffer");
         
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -173,7 +175,7 @@ public class Texture
     @Override
     public String toString()
     {
-        return "Texture{" + "id=" + this.id + ", width=" + this.width + ", height=" + this.height + ", channels=" + this.channels + '}';
+        return "Texture{" + "id=" + this.id + ", width=" + this.width + ", height=" + this.height + ", format=" + this.format + '}';
     }
     
     /**
@@ -223,10 +225,14 @@ public class Texture
      * @param wrapT The new wrapT mode.
      * @return This instance for call chaining.
      */
-    public Texture wrapMode(int wrapS, int wrapT)
+    public Texture wrapMode(GLConst wrapS, GLConst wrapT)
     {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, this.wrapS = wrapS);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, this.wrapT = wrapT);
+        this.wrapS = wrapS;
+        this.wrapT = wrapT;
+        
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, this.wrapS.ref());
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, this.wrapT.ref());
+        
         return this;
     }
     
@@ -237,10 +243,14 @@ public class Texture
      * @param magFilter The new magFilter mode.
      * @return This instance for call chaining.
      */
-    public Texture filterMode(int minFilter, int magFilter)
+    public Texture filterMode(GLConst minFilter, GLConst magFilter)
     {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this.minFilter = minFilter);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, this.magFilter = magFilter);
+        this.minFilter = minFilter;
+        this.magFilter = magFilter;
+        
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this.minFilter.ref());
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, this.magFilter.ref());
+        
         return this;
     }
     
@@ -590,7 +600,7 @@ public class Texture
      */
     public Texture upload()
     {
-        if (this.data != null) glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this.width, this.height, this.format, GL_UNSIGNED_BYTE, this.data);
+        if (this.data != null) glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this.width, this.height, this.format.ref(), GL_UNSIGNED_BYTE, this.data);
         return this;
     }
     
@@ -603,7 +613,7 @@ public class Texture
      */
     public Texture download()
     {
-        if (this.data != null) glGetTexImage(GL_TEXTURE_2D, 0, this.format, GL_UNSIGNED_BYTE, this.data);
+        if (this.data != null) glGetTexImage(GL_TEXTURE_2D, 0, this.format.ref(), GL_UNSIGNED_BYTE, this.data);
         return this;
     }
     
@@ -759,14 +769,38 @@ public class Texture
         return loadImage(filePath, false);
     }
     
-    private static int getFormat(int channels)
+    public static Texture loadFromArray(int width, int height, int channels, int[] array)
+    {
+        int size = width * height * channels;
+        if (array.length != size) throw new RuntimeException("Array size mismatch: " + array.length + " != " + size);
+        
+        ByteBuffer data = BufferUtils.createByteBuffer(size);
+        
+        for (int i = 0; i < size; i++) data.put(i, (byte) (array[i] & 0xFF));
+        
+        return new Texture(width, height, channels, data, null);
+    }
+    
+    public static Texture loadFromBuffer(int width, int height, int channels, ByteBuffer buffer)
+    {
+        int size = width * height * channels;
+        if (buffer.remaining() != size) throw new RuntimeException("Array size mismatch: " + buffer.remaining() + " != " + size);
+        
+        ByteBuffer data = BufferUtils.createByteBuffer(size);
+        
+        MemoryUtil.memCopy(buffer, data);
+        
+        return new Texture(width, height, channels, data, null);
+    }
+    
+    private static GLConst getFormat(int channels)
     {
         return switch (channels)
                 {
-                    case 1 -> GL_RED;
-                    case 2 -> GL_RG;
-                    case 3 -> GL_RGB;
-                    default -> GL_RGBA;
+                    case 1 -> GLConst.RED;
+                    case 2 -> GLConst.RG;
+                    case 3 -> GLConst.RGB;
+                    default -> GLConst.RGBA;
                 };
     }
 }

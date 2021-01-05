@@ -1,5 +1,8 @@
 package engine.render;
 
+import engine.render.gl.GLConst;
+import engine.render.gl.GLShader;
+import engine.render.gl.GLVertexArray;
 import org.joml.Matrix4f;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -50,23 +53,23 @@ public class Framebuffer
         
         // tell GLFW to capture our mouse
         // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        
+    
         // glad: load all OpenGL function pointers
         // ---------------------------------------
         org.lwjgl.opengl.GL.createCapabilities();
-        
+    
         // configure global opengl state
         // -----------------------------
         glEnable(GL_DEPTH_TEST);
-        
+    
         // build and compile shaders
         // -------------------------
-        Shader shader       = new Shader().loadVertexFile("shaders/5.1.framebuffers.vert").loadFragmentFile("shaders/5.1.framebuffers.frag").validate();
-        Shader screenShader = new Shader().loadVertexFile("shaders/5.1.framebuffers_screen.vert").loadFragmentFile("shaders/5.1.framebuffers_screen.frag").validate();
-        
+        GLShader shader       = new GLShader().loadFile("shaders/5.1.framebuffers.vert").loadFile("shaders/5.1.framebuffers.frag").validate();
+        GLShader screenShader = new GLShader().loadFile("shaders/5.1.framebuffers_screen.vert").loadFile("shaders/5.1.framebuffers_screen.frag").validate();
+    
         // set up vertex data (and buffer(s)) and configure vertex attributes
         // ------------------------------------------------------------------
-        VertexArray cubeArray = new VertexArray().bind();
+        GLVertexArray cubeArray = new GLVertexArray().bind();
         cubeArray.add(new float[] {
                 -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
                 0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
@@ -104,10 +107,10 @@ public class Framebuffer
                 0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
                 -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
                 -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
-        }, GL.STATIC_DRAW, 3, 2).unbind();
+        }, GLConst.STATIC_DRAW, 3, 2).unbind();
         
         // plane VAO
-        VertexArray planeArray = new VertexArray().bind();
+        GLVertexArray planeArray = new GLVertexArray().bind();
         planeArray.add(new float[] {
                 5.0f, -0.5f, 5.0f, 2.0f, 0.0f,
                 -5.0f, -0.5f, 5.0f, 0.0f, 0.0f,
@@ -115,33 +118,33 @@ public class Framebuffer
                 5.0f, -0.5f, 5.0f, 2.0f, 0.0f,
                 -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
                 5.0f, -0.5f, -5.0f, 2.0f, 2.0f
-        }, GL.STATIC_DRAW, 3, 2);
+        }, GLConst.STATIC_DRAW, 3, 2);
         planeArray.unbind();
-        
+    
         // screen quad VAO
-        VertexArray quadArray = new VertexArray().bind();
+        GLVertexArray quadArray = new GLVertexArray().bind();
         quadArray.add(new float[] {
                 -1.0f, 1.0f, 0.0f, 1.0f,
                 -1.0f, -1.0f, 0.0f, 0.0f,
                 1.0f, -1.0f, 1.0f, 0.0f,
                 1.0f, 1.0f, 1.0f, 1.0f
-        }, GL.STATIC_DRAW, 2, 2);
-        quadArray.addEBO(new int[] {0, 1, 2, 0, 2, 3}, GL.STATIC_DRAW);
+        }, GLConst.STATIC_DRAW, 2, 2);
+        quadArray.addEBO(new int[] {0, 1, 2, 0, 2, 3}, GLConst.STATIC_DRAW);
         quadArray.unbind();
-        
+    
         // load textures
         // -------------
-        Texture cubeTexture  = Texture.loadImage("textures/marble.jpg").wrapMode(GL_REPEAT, GL_REPEAT).bindTexture().upload();
-        Texture floorTexture = Texture.loadImage("textures/metal.png").wrapMode(GL_REPEAT, GL_REPEAT).bindTexture().upload();
-        
+        Texture cubeTexture  = Texture.loadImage("textures/marble.jpg").wrapMode(GLConst.REPEAT, GLConst.REPEAT).bindTexture().upload();
+        Texture floorTexture = Texture.loadImage("textures/metal.png").wrapMode(GLConst.REPEAT, GLConst.REPEAT).bindTexture().upload();
+    
         // shader configuration
         // --------------------
         shader.bind();
         shader.setUniform("texture1", 0);
-        
+    
         screenShader.bind();
         screenShader.setUniform("screenTexture", 0);
-        
+    
         // framebuffer configuration
         // -------------------------
         int framebufferWidth  = SCR_WIDTH / 1;
@@ -185,45 +188,45 @@ public class Framebuffer
             glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
             glViewport(0, 0, framebufferWidth, framebufferHeight);
             glEnable(GL_DEPTH_TEST); // enable depth testing (is disabled for rendering screen-space quad)
-            
+    
             // make sure we clear the framebuffer's content
             glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            
+    
             shader.bind();
             model.identity();
             view.identity().lookAt(5 * (float) Math.cos(currentFrame), 1, 5 * (float) Math.sin(currentFrame), 0, 0, 0, 0, 1, 0);
             projection.identity().perspective((float) Math.toRadians(90), (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f, 100.0f);
-            shader.setMat4("view", view);
-            shader.setMat4("projection", projection);
+            shader.setUniform("view", view);
+            shader.setUniform("projection", projection);
             // cubes
             cubeArray.bind();
             cubeTexture.bindTexture();
             model.translate(-1.0f, 0.0f, -1.0f);
-            shader.setMat4("model", model);
-            cubeArray.draw(GL.TRIANGLES);
+            shader.setUniform("model", model);
+            cubeArray.draw(GLConst.TRIANGLES);
             model.identity();
             model.translate(2.0f, 0.0f, 0.0f);
-            shader.setMat4("model", model);
-            cubeArray.draw(GL.TRIANGLES);
+            shader.setUniform("model", model);
+            cubeArray.draw(GLConst.TRIANGLES);
             cubeArray.unbind();
-            
+    
             // floor
             floorTexture.bindTexture();
-            shader.setMat4("model", model.identity());
-            planeArray.bind().draw(GL.TRIANGLES).unbind();
-            
+            shader.setUniform("model", model.identity());
+            planeArray.bind().draw(GLConst.TRIANGLES).unbind();
+    
             // now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
             glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
             // clear all relevant buffers
             glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessery actually, since we won't be able to see behind the quad anyways)
-            glClear(GL.COLOR_BUFFER_BIT.ref());
-            
+            glClear(GLConst.COLOR_BUFFER_BIT.ref());
+    
             screenShader.bind();
             texture.bindTexture();    // use the color attachment texture as the texture of the quad plane
-            quadArray.bind().draw(GL.TRIANGLES).unbind();
+            quadArray.bind().draw(GLConst.TRIANGLES).unbind();
             
             
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

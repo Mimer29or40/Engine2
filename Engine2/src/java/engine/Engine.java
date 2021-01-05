@@ -11,6 +11,9 @@ import engine.input.Keyboard;
 import engine.input.Modifiers;
 import engine.input.Mouse;
 import engine.render.*;
+import engine.render.gl.GLConst;
+import engine.render.gl.GLShader;
+import engine.render.gl.GLVertexArray;
 import engine.util.Logger;
 import engine.util.Profiler;
 import engine.util.Random;
@@ -78,16 +81,16 @@ public class Engine
     
     private static Renderer renderer;
     
-    private static int         layerCount;
-    private static Texture[]   layers;
-    private static boolean[]   activeLayers;
-    private static Shader      screenShader;
-    private static VertexArray screenVAO;
+    private static int           layerCount;
+    private static Texture[]     layers;
+    private static boolean[]     activeLayers;
+    private static GLShader      screenShader;
+    private static GLVertexArray screenVAO;
     
-    private static Shader      debugShader;
-    private static VertexArray debugTextVAO;
-    private static VertexArray debugBoxVAO;
-    private static Matrix4f    debugView;
+    private static GLShader      debugShader;
+    private static GLVertexArray debugTextVAO;
+    private static GLVertexArray debugBoxVAO;
+    private static Matrix4f      debugView;
     
     private static final Profiler profiler = new Profiler();
     
@@ -468,7 +471,7 @@ public class Engine
                                                 if (Engine.activeLayers[i])
                                                 {
                                                     Engine.layers[i].bindTexture().unbindFramebuffer();
-                                                    Engine.screenVAO.draw(GL.QUADS);
+                                                    Engine.screenVAO.draw(GLConst.QUADS);
                                                 }
                                             }
                                             Engine.screenShader.unbind();
@@ -499,10 +502,10 @@ public class Engine
                                             // {
                                             //     drawDebugText(0, y += stb_easy_font_height(line), line);
                                             // }
-        
+    
                                             int nameLength = 0;
                                             for (Profiler.Data data : Engine.profilerData) nameLength = Math.max(nameLength, data.name.length());
-        
+    
                                             int y = Engine.window.viewH() - stb_easy_font_height(" " + "\n".repeat(Engine.profilerData.size() - 1) + " ");
                                             for (int i = 0, n = Engine.profilerData.size(); i < n; i++)
                                             {
@@ -511,7 +514,7 @@ public class Engine
                                                 drawDebugText(0, y, i + "");
                                                 drawDebugText(20, y, data.name);
                                                 drawDebugText(20 + nameLength * 8, y, data.valueString());
-            
+    
                                                 y += stb_easy_font_height(line);
                                             }
                                         }
@@ -521,8 +524,8 @@ public class Engine
                                             Engine.profiler.startSection("Text");
                                             {
                                                 Engine.debugShader.bind();
-                                                Engine.debugShader.setMat4("pv", Engine.debugView.setOrtho(0F, Engine.window.viewW(), Engine.window.viewH(), 0F, -1F, 1F));
-    
+                                                Engine.debugShader.setUniform("pv", Engine.debugView.setOrtho(0F, Engine.window.viewW(), Engine.window.viewH(), 0F, -1F, 1F));
+        
                                                 if (!Engine.debugLines.isEmpty())
                                                 {
                                                     try (MemoryStack frame = stackPush())
@@ -532,12 +535,12 @@ public class Engine
                                                         for (Tuple<Integer, Integer, String> line : Engine.debugLines)
                                                         {
                                                             int quads = stb_easy_font_print(line.a + 2, line.b + 2, line.c, null, charBuffer.clear());
-    
+                    
                                                             float x1 = line.a;
                                                             float y1 = line.b;
                                                             float x2 = line.a + stb_easy_font_width(line.c) + 2;
                                                             float y2 = line.b + stb_easy_font_height(line.c);
-    
+                    
                                                             boxBuffer.put(0, x1);
                                                             boxBuffer.put(1, y1);
                                                             boxBuffer.put(2, x2);
@@ -546,12 +549,12 @@ public class Engine
                                                             boxBuffer.put(5, y2);
                                                             boxBuffer.put(6, x1);
                                                             boxBuffer.put(7, y2);
-    
-                                                            Engine.debugShader.setColor("color", Engine.debugLineBackground);
-                                                            Engine.debugBoxVAO.bind().set(boxBuffer).draw(GL.QUADS).unbind();
-    
-                                                            Engine.debugShader.setColor("color", Engine.debugLineText);
-                                                            Engine.debugTextVAO.bind().set(charBuffer).draw(GL.QUADS, quads * 4).unbind();
+                    
+                                                            Engine.debugShader.setUniform("color", Engine.debugLineBackground);
+                                                            Engine.debugBoxVAO.bind().set(boxBuffer).draw(GLConst.QUADS).unbind();
+                    
+                                                            Engine.debugShader.setUniform("color", Engine.debugLineText);
+                                                            Engine.debugTextVAO.bind().set(charBuffer).draw(GLConst.QUADS, quads * 4).unbind();
                                                         }
                                                     }
                                                     Engine.debugLines.clear();
@@ -585,7 +588,7 @@ public class Engine
                             if ((Engine.profilerMode == 4 || dt >= Engine.profilerFrequency) && !Engine.paused)
                             {
                                 lastProfile = t;
-        
+    
                                 switch (Engine.profilerMode)
                                 {
                                     case 0 -> Engine.profilerData = null;
@@ -600,33 +603,33 @@ public class Engine
                             if (dt >= Engine.titleFrequency && totalFrames > 0 && !Engine.paused)
                             {
                                 lastTitle = t;
-        
+    
                                 totalTime /= totalFrames;
-        
+    
                                 Engine.window.title(String.format(Engine.TITLE, Engine.logic.name, totalFrames, totalTime / 1000D, minTime / 1000D, maxTime / 1000D));
-        
+    
                                 totalTime = 0;
-        
+    
                                 minTime = Long.MAX_VALUE;
                                 maxTime = Long.MIN_VALUE;
-        
+    
                                 totalFrames = 0;
                             }
     
                             if (Engine.screenshot != null)
                             {
                                 String fileName = Engine.screenshot + (!Engine.screenshot.endsWith(".png") ? ".png" : "");
-        
+    
                                 int w = Engine.window.frameBufferWidth();
                                 int h = Engine.window.frameBufferHeight();
                                 int c = 3;
-        
+    
                                 int stride = w * c;
-        
+    
                                 ByteBuffer buf = MemoryUtil.memAlloc(w * h * c);
                                 glReadBuffer(GL_FRONT);
                                 glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buf);
-        
+    
                                 byte[] tmp1 = new byte[stride], tmp2 = new byte[stride];
                                 for (int i = 0, n = h >> 1, col1, col2; i < n; i++)
                                 {
@@ -792,7 +795,7 @@ public class Engine
         
         Engine.window.makeCurrent();
         org.lwjgl.opengl.GL.createCapabilities();
-        
+    
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -804,12 +807,12 @@ public class Engine
         Engine.renderer        = new Renderer(Engine.layers[0] = new Texture(screenW, screenH));
         Engine.activeLayers[0] = true;
     
-        Engine.screenShader = new Shader().loadVertexFile("shaders/pixel.vert").loadFragmentFile("shaders/pixel.frag").validate().unbind();
-        Engine.screenVAO    = new VertexArray().bind().add(new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, GL.DYNAMIC_DRAW, 2);
+        Engine.screenShader = new GLShader().loadFile("shaders/pixel.vert").loadFile("shaders/pixel.frag").validate().unbind();
+        Engine.screenVAO    = new GLVertexArray().bind().add(new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, GLConst.DYNAMIC_DRAW, 2);
     
-        Engine.debugShader  = new Shader().loadVertexFile("shaders/debug.vert").loadFragmentFile("shaders/debug.frag").validate().unbind();
-        Engine.debugTextVAO = new VertexArray().bind().add((Float.BYTES * 3 + Byte.BYTES * 4) * 1024, GL.DYNAMIC_DRAW, GL.FLOAT, 3, GL.UNSIGNED_BYTE, 4).unbind();
-        Engine.debugBoxVAO  = new VertexArray().bind().add((Float.BYTES * 2) * 8, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+        Engine.debugShader  = new GLShader().loadFile("shaders/debug.vert").loadFile("shaders/debug.frag").validate().unbind();
+        Engine.debugTextVAO = new GLVertexArray().bind().add((Float.BYTES * 3 + Byte.BYTES * 4) * 1024, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 3, GLConst.UNSIGNED_BYTE, 4).unbind();
+        Engine.debugBoxVAO  = new GLVertexArray().bind().add((Float.BYTES * 2) * 8, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 2).unbind();
         Engine.debugView    = new Matrix4f().setOrtho(0F, Engine.window.viewW(), Engine.window.viewH(), 0F, -1F, 1F);
     }
     

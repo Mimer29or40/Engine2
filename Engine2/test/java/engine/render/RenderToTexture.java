@@ -1,6 +1,9 @@
 package engine.render;
 
 import engine.color.Color;
+import engine.render.gl.GLConst;
+import engine.render.gl.GLShader;
+import engine.render.gl.GLVertexArray;
 import org.joml.Matrix4f;
 
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
@@ -104,8 +107,8 @@ public class RenderToTexture extends OpenGLDemo
     
     boolean running = true;
     
-    Shader      shader;
-    VertexArray vertexArray;
+    GLShader      shader;
+    GLVertexArray vertexArray;
     
     Texture texture;
     
@@ -117,17 +120,17 @@ public class RenderToTexture extends OpenGLDemo
     {
         super.init(title);
         
-        this.shader = new Shader().loadVertex(vertexShader).loadFragment(fragmentShader).validate().bind();
-        this.shader.setVec3("lightSource.ambient", 0.0f, 0.0f, 0.0f);
-        this.shader.setVec3("lightSource.diffuse", 1.0f, 1.0f, 1.0f);
-        this.shader.setVec3("lightSource.specular", 1.0f, 1.0f, 1.0f);
-        this.shader.setVec3("lightSource.position", 0.0f, 1.0f, 1.0f);
-        this.shader.setVec3("lightModel.ambient", 0.2f, 0.2f, 0.2f);
-        this.shader.setVec3("material.emission", 0.0f, 0.0f, 0.0f);
-        this.shader.setVec3("material.specular", 1.0f, 1.0f, 1.0f);
+        this.shader = new GLShader().load(GLConst.VERTEX_SHADER, vertexShader).load(GLConst.FRAGMENT_SHADER, fragmentShader).validate().bind();
+        this.shader.setUniform("lightSource.ambient", 0.0f, 0.0f, 0.0f);
+        this.shader.setUniform("lightSource.diffuse", 1.0f, 1.0f, 1.0f);
+        this.shader.setUniform("lightSource.specular", 1.0f, 1.0f, 1.0f);
+        this.shader.setUniform("lightSource.position", 0.0f, 1.0f, 1.0f);
+        this.shader.setUniform("lightModel.ambient", 0.2f, 0.2f, 0.2f);
+        this.shader.setUniform("material.emission", 0.0f, 0.0f, 0.0f);
+        this.shader.setUniform("material.specular", 1.0f, 1.0f, 1.0f);
         this.shader.setUniform("material.shininess", 10.0f);
         
-        this.vertexArray = new VertexArray();
+        this.vertexArray = new GLVertexArray();
         this.vertexArray.add(new float[] {
                 1.0f, 1.0f, -1.0f,  // Green
                 -1.0f, 1.0f, -1.0f, // Green
@@ -153,7 +156,7 @@ public class RenderToTexture extends OpenGLDemo
                 1.0f, 1.0f, 1.0f,   // Magenta
                 1.0f, -1.0f, 1.0f,  // Magenta
                 1.0f, -1.0f, -1.0f  // Magenta
-        }, GL.STATIC_DRAW, 3);
+        }, GLConst.STATIC_DRAW, 3);
         this.vertexArray.add(new float[] {
                 0.0f, 1.0f, 0.0f,  // Green
                 0.0f, 1.0f, 0.0f,  // Green
@@ -179,7 +182,7 @@ public class RenderToTexture extends OpenGLDemo
                 1.0f, 0.0f, 0.0f,  // Magenta
                 1.0f, 0.0f, 0.0f,  // Magenta
                 1.0f, 0.0f, 0.0f,  // Magenta
-        }, GL.STATIC_DRAW, 3);
+        }, GLConst.STATIC_DRAW, 3);
         this.vertexArray.add(new float[] {
                 0.0f, 1.0f, 0.0f, // Green
                 0.0f, 1.0f, 0.0f, // Green
@@ -205,7 +208,7 @@ public class RenderToTexture extends OpenGLDemo
                 1.0f, 0.0f, 1.0f, // Magenta
                 1.0f, 0.0f, 1.0f, // Magenta
                 1.0f, 0.0f, 1.0f, // Magenta
-        }, GL.STATIC_DRAW, 3);
+        }, GLConst.STATIC_DRAW, 3);
         this.vertexArray.add(new float[] {
                 0.0f, 0.0f, // Green
                 0.0f, 1.0f, // Green
@@ -231,7 +234,7 @@ public class RenderToTexture extends OpenGLDemo
                 0.0f, 1.0f, // Magenta
                 1.0f, 1.0f, // Magenta
                 1.0f, 0.0f, // Magenta
-        }, GL.STATIC_DRAW, 3);
+        }, GLConst.STATIC_DRAW, 3);
         
         int[] indices = new int[36];
         for (int i = 0, v = 0, n = 6 * 4; v < n; v += 4)
@@ -245,7 +248,7 @@ public class RenderToTexture extends OpenGLDemo
             indices[i++] = v + 2;
             indices[i++] = v + 3;
         }
-        this.vertexArray.addEBO(indices, GL.STATIC_DRAW);
+        this.vertexArray.addEBO(indices, GLConst.STATIC_DRAW);
         
         this.view.identity();
         
@@ -267,7 +270,7 @@ public class RenderToTexture extends OpenGLDemo
             }
         }
         this.texture.bindTexture().upload();
-    
+        
         glClearColor(.5f, .5f, .5f, 1.f);
     }
     

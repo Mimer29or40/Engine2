@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-import static engine.Engine.*;
 import static engine.util.Util.println;
 
 /**
@@ -390,6 +389,7 @@ public abstract class UIElement
     private double tooltipDelay;
     
     private Font font;
+    private int  fontSize;
     
     private String textHAlignment        = "center";
     private String textVAlignment        = "center";
@@ -430,6 +430,14 @@ public abstract class UIElement
     public Font font()
     {
         return this.font;
+    }
+    
+    /**
+     * @return The font size supplied by the theme.
+     */
+    public int fontSize()
+    {
+        return this.fontSize;
     }
     
     /**
@@ -547,16 +555,23 @@ public abstract class UIElement
                 anyChanged        = true;
             }
         }
-        
+    
         Font font = EEXT_GUI.theme().getFont(this.objectIDs, this.elementIDs);
         if (this.font == null || this.font.equals(font))
         {
             this.font  = font;
             anyChanged = true;
         }
-        
+    
+        int fontSize = EEXT_GUI.theme().getFontSize(this.objectIDs, this.elementIDs);
+        if (this.fontSize != fontSize)
+        {
+            this.fontSize = fontSize;
+            anyChanged    = true;
+        }
+    
         if (rebuildTextAlignment()) anyChanged = true;
-        
+    
         return anyChanged;
     }
     
@@ -746,13 +761,13 @@ public abstract class UIElement
             {
                 if (this.prevState != null && this.prevStateTexture != null)
                 {
-                    target(this.prevStateTexture);
+                    Engine.target(this.prevStateTexture);
                     drawState(this.prevState);
                 }
                 
                 if (this.state != null && this.stateTexture != null)
                 {
-                    target(this.stateTexture);
+                    Engine.target(this.stateTexture);
                     drawState(this.state);
                 }
                 
@@ -763,33 +778,33 @@ public abstract class UIElement
             {
                 if (this.texture != null)
                 {
-                    target(this.texture);
+                    Engine.target(this.texture);
                 }
                 else
                 {
-                    translate(rect().x(), rect().y());
+                    Engine.translate(rect().x(), rect().y());
                 }
                 
                 if (this.transitionRemaining > 0)
                 {
-                    interpolateTexture(this.prevStateTexture, this.stateTexture, this.transitionPercentage, 0, 0);
+                    Engine.interpolateTexture(this.prevStateTexture, this.stateTexture, this.transitionPercentage, 0, 0);
                 }
                 else if (this.stateTexture != null)
                 {
-                    texture(this.stateTexture, 0, 0);
+                    Engine.texture(this.stateTexture, 0, 0);
                 }
                 drawElement(elapsedTime, mouseX, mouseY);
                 
                 for (UIElement child : this.elements)
                 {
-                    push();
+                    Engine.push();
                     child.draw(elapsedTime, mouseX, mouseY);
-                    pop();
+                    Engine.pop();
                     
                     if (child.visible() && child.texture != null)
                     {
-                        rectMode(RectMode.CORNER);
-                        texture(child.texture, child.rect.x(), child.rect.y(), child.rect.width(), child.rect.height());
+                        Engine.rectMode(RectMode.CORNER);
+                        Engine.texture(child.texture, child.rect.x(), child.rect.y(), child.rect.width(), child.rect.height());
                     }
                 }
                 this.redraw = false;
@@ -820,15 +835,15 @@ public abstract class UIElement
     {
         String stateBorder     = state + "_border";
         String stateBackground = state + "_bg";
-        
+    
         if (borderWidth() > 0)
         {
-            fill(EEXT_GUI.theme().getColor(this.objectIDs, this.elementIDs, stateBorder));
-            fillRect(0, 0, rect().width(), rect().height());
+            Engine.fill(EEXT_GUI.theme().getColor(this.objectIDs, this.elementIDs, stateBorder));
+            Engine.fillRect(0, 0, rect().width(), rect().height());
         }
-        
-        fill(EEXT_GUI.theme().getColor(this.objectIDs, this.elementIDs, stateBackground));
-        fillRect(borderWidth(), borderWidth(), rect().width() - (borderWidth() << 1), rect().height() - (borderWidth() << 1));
+    
+        Engine.fill(EEXT_GUI.theme().getColor(this.objectIDs, this.elementIDs, stateBackground));
+        Engine.fillRect(borderWidth(), borderWidth(), rect().width() - (borderWidth() << 1), rect().height() - (borderWidth() << 1));
     }
     
     public void drawImageAndText(String state)
@@ -840,13 +855,13 @@ public abstract class UIElement
         if (image == null) image = EEXT_GUI.theme().getImage(this.objectIDs, this.elementIDs, "normal_image");
         if (image != null)
         {
-            rectMode(RectMode.CENTER);
-            texture(image, rect().centerX(), rect().centerY(), image.width(), image.height());
+            Engine.rectMode(RectMode.CENTER);
+            Engine.texture(image, rect().centerX(), rect().centerY(), image.width(), image.height());
         }
         
         if (text() != null && font() != null && text().length() > 0)
         {
-            Rect rect = new Rect(0, 0, (int) font().getStringWidth(text()), (int) font().getTextHeight(text()));
+            Rect rect = new Rect(0, 0, (int) font().getTextWidth(text(), fontSize()), (int) font().getTextHeight(text(), fontSize()));
     
             switch (this.textHAlignment)
             {
@@ -861,18 +876,18 @@ public abstract class UIElement
                 case "top" -> rect.y(this.textVAlignmentPadding + this.borderWidth);
                 case "bottom" -> rect.y(rect().height() - this.textVAlignmentPadding - this.borderWidth);
             }
-            
-            textFont(font());
-            rectMode(RectMode.CENTER);
-            textAlign(TextAlign.CENTER);
-            
-            fill(EEXT_GUI.theme().getColor(this.objectIDs, this.elementIDs, "text_shadow"));
+    
+            Engine.textFont(font());
+            Engine.rectMode(RectMode.CENTER);
+            Engine.textAlign(TextAlign.CENTER);
+    
+            Engine.fill(EEXT_GUI.theme().getColor(this.objectIDs, this.elementIDs, "text_shadow"));
             Engine.text(text(), rect.centerX(), rect.centerY() + 1);
             Engine.text(text(), rect.centerX(), rect.centerY() - 1);
             Engine.text(text(), rect.centerX() + 1, rect.centerY());
             Engine.text(text(), rect.centerX() - 1, rect.centerY());
-            
-            fill(EEXT_GUI.theme().getColor(this.objectIDs, this.elementIDs, textColorState));
+    
+            Engine.fill(EEXT_GUI.theme().getColor(this.objectIDs, this.elementIDs, textColorState));
             Engine.text(text(), rect.centerX(), rect.centerY());
         }
     }

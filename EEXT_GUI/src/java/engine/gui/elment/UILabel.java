@@ -240,16 +240,16 @@ public class UILabel extends UIElement
     @Override
     protected void drawElement(double elapsedTime, double mouseX, double mouseY)
     {
-        int textWidth  = (int) Math.ceil(font().getStringWidth(text()));
-        int textHeight = (int) Math.ceil(font().getTextHeight(text()));
-        
+        int textWidth  = (int) Math.ceil(font().getTextWidth(text(), fontSize()));
+        int textHeight = (int) Math.ceil(font().getTextHeight(text(), fontSize()));
+    
         if (textWidth > rect().width() || textHeight > rect().height())
         {
             int widthOverlap  = rect().width() - textWidth;
             int heightOverlap = rect().height() - textHeight;
             UILabel.LOGGER.warning("Label is too small for text: %s Overlap(%s,%s)", text(), widthOverlap, heightOverlap);
         }
-        
+    
         target(this.texture);
         
         clear(bgColor());

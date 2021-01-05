@@ -42,19 +42,19 @@ public class GuiTest extends Engine
     public void draw(double elapsedTime)
     {
         clear();
-        
+    
         translate(screenWidth() >> 1, screenHeight() >> 1);
-        
+    
         circle(0, 0, 100);
-        
+    
         if (keyboard().T.down()) button.toggleToggleable();
         if (keyboard().V.down()) button.toggleVisibility();
         if (keyboard().SPACE.down()) button.toggleEnabled();
         // if (keyboard().A.down()) element.setState("active");
         // if (keyboard().S.down()) element.setState("normal");
-        
-        // IPair<Double, Double> gui = EEXT_GUI.screenToGUI(mouse().x(), mouse().y());
-        // element.position((int) ((double) gui.getA()), (int) ((double) gui.getB()));
+    
+        // Vector2dc gui = EEXT_GUI.screenToGUI(mouse().x(), mouse().y());
+        // element.position((int) gui.x(), (int) gui.y());
     }
     
     /**

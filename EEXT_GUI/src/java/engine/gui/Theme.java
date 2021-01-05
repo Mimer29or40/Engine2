@@ -4,6 +4,7 @@ import com.google.gson.stream.JsonReader;
 import engine.color.Color;
 import engine.color.Colorc;
 import engine.font.Font;
+import engine.font.Weight;
 import engine.gui.util.Rect;
 import engine.render.Texture;
 import engine.util.Logger;
@@ -33,6 +34,7 @@ public class Theme
     private final HashMap<String, HashMap<String, Texture>> elementImages    = new HashMap<>();
     private final HashMap<String, FData>                    elementFontData  = new HashMap<>();
     private final HashMap<String, Font>                     elementFonts     = new HashMap<>();
+    private final HashMap<String, Integer>                  elementFontSizes = new HashMap<>();
     private final HashMap<String, HashMap<String, String>>  elementMiscData  = new HashMap<>();
     
     private final HashMap<String, Texture> loadedImages = new HashMap<>();
@@ -61,19 +63,17 @@ public class Theme
         this.baseColors.put("text_shadow", new Color("#777777"));
         this.baseColors.put("filled_bar", new Color("#f4251b"));
         this.baseColors.put("unfilled_bar", new Color("#CCCCCC"));
-        
+    
         FData baseFontInfo = new FData();
-        baseFontInfo.name           = "fira_code";
-        baseFontInfo.size           = 14;
-        baseFontInfo.bold           = false;
-        baseFontInfo.italic         = false;
-        baseFontInfo.regularPath    = "fonts/FiraCode-Regular.ttf";
-        baseFontInfo.boldPath       = "fonts/FiraCode-Bold.ttf";
-        baseFontInfo.italicPath     = "fonts/FiraMono-RegularItalic.ttf";
-        baseFontInfo.boldItalicPath = "fonts/FiraMono-BoldItalic.ttf";
-        
+        baseFontInfo.path    = "fonts/open-sans/OpenSans-Regular.ttf";
+        baseFontInfo.name    = "OpenSans";
+        baseFontInfo.weight  = Weight.REGULAR;
+        baseFontInfo.italic  = false;
+        baseFontInfo.kerning = true;
+        baseFontInfo.size    = 24;
+    
         this.baseFontInfo = new FontData(baseFontInfo);
-        
+    
         loadTheme("themes/default.json");
     }
     
@@ -258,14 +258,12 @@ public class Theme
             String data = jsonReader.nextString();
             switch (name)
             {
+                case "path" -> fData.path = data;
                 case "name" -> fData.name = data;
-                case "size" -> fData.size = Integer.parseInt(data);
-                case "bold" -> fData.bold = Integer.parseInt(data) == 1;
+                case "weight" -> fData.weight = Weight.get(data);
                 case "italic" -> fData.italic = Integer.parseInt(data) == 1;
-                case "regular_path" -> fData.regularPath = data;
-                case "bold_path" -> fData.boldPath = data;
-                case "italic_path" -> fData.italicPath = data;
-                case "bold_italic_path" -> fData.boldItalicPath = data;
+                case "kerning" -> fData.kerning = Integer.parseInt(data) == 1;
+                case "size" -> fData.size = Integer.parseInt(data);
             }
         }
         jsonReader.endObject();
@@ -404,20 +402,19 @@ public class Theme
     
     private void loadFonts()
     {
-        Font.registerFont(this.baseFontInfo.name, this.baseFontInfo.regularPath, this.baseFontInfo.boldPath, this.baseFontInfo.italicPath, this.baseFontInfo.boldItalicPath);
-        
-        Font.preloadFont(this.baseFontInfo.name, this.baseFontInfo.size, this.baseFontInfo.bold, this.baseFontInfo.italic);
+        Font.register(this.baseFontInfo.path, this.baseFontInfo.name, this.baseFontInfo.weight, this.baseFontInfo.italic, this.baseFontInfo.kerning);
         
         for (String elementKey : this.elementFontData.keySet())
         {
             FData fontData = this.elementFontData.get(elementKey);
-            
-            if (fontData.regularPath != null)
+    
+            if (fontData.path != null)
             {
-                Font.registerFont(fontData.name, fontData.regularPath, fontData.boldPath, fontData.italicPath, fontData.boldItalicPath);
+                Font.register(fontData.path, fontData.name, fontData.weight, fontData.italic, fontData.kerning);
             }
-            
-            this.elementFonts.put(elementKey, Font.getFont(fontData.name, fontData.size, fontData.bold, fontData.italic));
+    
+            this.elementFonts.put(elementKey, Font.get(fontData.name, fontData.weight, fontData.italic));
+            this.elementFontSizes.put(elementKey, fontData.size);
         }
     }
     
@@ -505,7 +502,19 @@ public class Theme
                 return this.elementFonts.get(combinedElementID);
             }
         }
-        return Font.getFont(this.baseFontInfo.name, this.baseFontInfo.size, this.baseFontInfo.bold, this.baseFontInfo.italic);
+        return Font.get(this.baseFontInfo.name, this.baseFontInfo.weight, this.baseFontInfo.italic);
+    }
+    
+    public int getFontSize(String[] objectIDs, String[] elementIDs)
+    {
+        for (String combinedElementID : buildAllCombinedIDs(objectIDs, elementIDs))
+        {
+            if (this.elementFonts.containsKey(combinedElementID))
+            {
+                return this.elementFontSizes.get(combinedElementID);
+            }
+        }
+        return this.baseFontInfo.size;
     }
     
     public String getMiscData(String[] objectIDs, String[] elementIDs, String miscDataID)
@@ -579,39 +588,49 @@ public class Theme
     
     private static final class FData
     {
-        private String name = Font.DEFAULT_NAME;
-        private int    size = Font.DEFAULT_SIZE;
+        private String path;
         
-        private boolean bold   = false;
-        private boolean italic = false;
+        private String  name    = Font.DEFAULT_NAME;
+        private Weight  weight  = Font.DEFAULT_WEIGHT;
+        private boolean italic  = Font.DEFAULT_ITALICS;
+        private boolean kerning = true;
         
-        private String regularPath;
-        private String boldPath       = null;
-        private String italicPath     = null;
-        private String boldItalicPath = null;
+        private int size = Font.DEFAULT_SIZE;
     }
     
     public static final class FontData
     {
+        public final String path;
+        
         public final String  name;
-        public final int     size;
-        public final boolean bold;
+        public final Weight  weight;
         public final boolean italic;
-        public final String  regularPath;
-        public final String  boldPath;
-        public final String  italicPath;
-        public final String  boldItalicPath;
+        public final boolean kerning;
+        
+        private final int size;
         
         private FontData(FData data)
         {
-            this.name           = data.name;
-            this.size           = data.size;
-            this.bold           = data.bold;
-            this.italic         = data.italic;
-            this.regularPath    = data.regularPath;
-            this.boldPath       = data.boldPath;
-            this.italicPath     = data.italicPath;
-            this.boldItalicPath = data.boldItalicPath;
+            this.path = data.path;
+            
+            this.name    = data.name;
+            this.weight  = data.weight;
+            this.italic  = data.italic;
+            this.kerning = data.kerning;
+            
+            this.size = data.size;
+        }
+        
+        private FontData(String path, String name, Weight weight, boolean italic, boolean kerning, int size)
+        {
+            this.path = path;
+            
+            this.name    = name;
+            this.weight  = weight;
+            this.italic  = italic;
+            this.kerning = kerning;
+            
+            this.size = size;
         }
     }
     

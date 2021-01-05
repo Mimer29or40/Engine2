@@ -4,22 +4,22 @@ import engine.Engine;
 import engine.Extension;
 import engine.color.Color;
 import engine.event.*;
+import engine.font.FontFamily;
 import engine.gui.elment.UIContainer;
 import engine.gui.elment.UIWindow;
 import engine.gui.util.Rect;
-import engine.util.IPair;
-import engine.util.Pair;
+import org.joml.Vector2d;
+import org.joml.Vector2dc;
 import org.joml.Vector2i;
 
-import static engine.Engine.*;
 import static engine.util.Util.println;
 
 public class EEXT_GUI extends Extension
 {
     public static final EEXT_GUI INSTANCE = new EEXT_GUI();
     
-    private static final Pair.D screenToGUI = new Pair.D(0, 0);
-    private static final Pair.D guiToScreen = new Pair.D(0, 0);
+    private static final Vector2d screenToGUI = new Vector2d(0, 0);
+    private static final Vector2d guiToScreen = new Vector2d(0, 0);
     
     private final Vector2i size = new Vector2i();
     
@@ -59,7 +59,7 @@ public class EEXT_GUI extends Extension
     @Override
     public void afterSetup()
     {
-    
+        FontFamily.register("fonts", "OpenSans");
     }
     
     /**
@@ -70,7 +70,7 @@ public class EEXT_GUI extends Extension
     @Override
     public void beforeDraw(double elapsedTime)
     {
-        profiler().startSection("Theme Update");
+        Engine.profiler().startSection("Theme Update");
         {
             if (this.liveThemeUpdates)
             {
@@ -81,26 +81,22 @@ public class EEXT_GUI extends Extension
                     {
                         this.redrawScreen = true;
                         this.rootContainer.rebuildThemeFromFileChange();
-                        // for (UIElement element : this.rootContainer.elements())
-                        // {
-                        //     element.rebuildThemeFromFileChange();
-                        // }
                     }
                 }
             }
         }
-        profiler().endSection();
-        
-        IPair<Double, Double> mouse = screenToGUI(mouse().x(), mouse().y());
-        
-        double mouseX = mouse.getA();
-        double mouseY = mouse.getB();
-        
-        profiler().startSection("Stack Solving");
+        Engine.profiler().endSection();
+    
+        Vector2dc mouse = screenToGUI(Engine.mouse().x(), Engine.mouse().y());
+    
+        double mouseX = mouse.x();
+        double mouseY = mouse.y();
+    
+        Engine.profiler().startSection("Stack Solving");
         {
             UIElement prevTopElement = this.topElement;
             this.topElement = null;
-            
+        
             boolean blockingWindow = false;
             for (UIElement element : this.rootContainer.elements())
             {
@@ -137,11 +133,11 @@ public class EEXT_GUI extends Extension
                 this.hoverTime += elapsedTime;
             }
         }
-        profiler().endSection();
-        
-        profiler().startSection("Events");
+        Engine.profiler().endSection();
+    
+        Engine.profiler().startSection("Events");
         {
-            profiler().startSection("Mouse");
+            Engine.profiler().startSection("Mouse");
             {
                 for (Event e : Events.get(Events.MOUSE_EVENTS))
                 {
@@ -244,9 +240,9 @@ public class EEXT_GUI extends Extension
                     }
                 }
             }
-            profiler().endSection();
-            
-            profiler().startSection("Keyboard");
+            Engine.profiler().endSection();
+    
+            Engine.profiler().startSection("Keyboard");
             {
                 if (this.focusedElement != null)
                 {
@@ -321,9 +317,9 @@ public class EEXT_GUI extends Extension
                     }
                 }
             }
-            profiler().endSection();
+            Engine.profiler().endSection();
         }
-        profiler().endSection();
+        Engine.profiler().endSection();
     }
     
     /**
@@ -334,30 +330,31 @@ public class EEXT_GUI extends Extension
     @Override
     public void afterDraw(double elapsedTime)
     {
-        IPair<Double, Double> mouse = screenToGUI(mouse().x(), mouse().y());
-        
-        double mouseX = mouse.getA();
-        double mouseY = mouse.getB();
-        
-        profiler().startSection("UIElements Update");
+        Vector2dc mouse = screenToGUI(Engine.mouse().x(), Engine.mouse().y());
+    
+        double mouseX = mouse.x();
+        double mouseY = mouse.y();
+    
+        Engine.profiler().startSection("UIElements Update");
         {
             this.redrawScreen |= this.rootContainer.update(elapsedTime, mouseX, mouseY);
         }
-        profiler().endSection();
+        Engine.profiler().endSection();
     
-        profiler().startSection("UIElements Draw");
+        Engine.profiler().startSection("UIElements Draw");
         {
             if (this.redrawScreen)
             {
-                layer(layerCount() - 1);
-        
-                clear(Color.BLANK);
-        
-                this.rootContainer.draw(elapsedTime, mouseX, mouseY);
-        
+                Engine.layer(Engine.layerCount() - 1);
+            
+                Engine.clear(Color.BLANK);
+            
+                // this.rootContainer.draw(elapsedTime, mouseX, mouseY);
+                Engine.rect(0, 0, mouseX, mouseY);
+            
                 this.redrawScreen = false;
             }
-            profiler().endSection();
+            Engine.profiler().endSection();
         }
     }
     
@@ -382,9 +379,9 @@ public class EEXT_GUI extends Extension
     public static void createGUI(int width, int height, String themePath, boolean liveThemeUpdates)
     {
         EEXT_GUI.INSTANCE.enabled = true;
-        
+    
         EEXT_GUI.INSTANCE.size.set(width, height);
-        createLayer(layerCount() - 1, width, height);
+        Engine.createLayer(Engine.layerCount() - 1, width, height);
     
         EEXT_GUI.INSTANCE.theme = new Theme();
         if (themePath != null) EEXT_GUI.INSTANCE.theme.loadTheme(themePath);
@@ -406,7 +403,7 @@ public class EEXT_GUI extends Extension
     
     public static void createGUI(String theme, boolean liveThemeUpdates)
     {
-        createGUI(screenWidth(), screenHeight(), theme, liveThemeUpdates);
+        createGUI(Engine.screenWidth(), Engine.screenHeight(), theme, liveThemeUpdates);
     }
     
     public static void createGUI(int width, int height)
@@ -416,17 +413,17 @@ public class EEXT_GUI extends Extension
     
     public static void createGUI(String theme)
     {
-        createGUI(screenWidth(), screenHeight(), theme, false);
+        createGUI(Engine.screenWidth(), Engine.screenHeight(), theme, false);
     }
     
     public static void createGUI(boolean liveThemeUpdates)
     {
-        createGUI(screenWidth(), screenHeight(), null, liveThemeUpdates);
+        createGUI(Engine.screenWidth(), Engine.screenHeight(), null, liveThemeUpdates);
     }
     
     public static void createGUI()
     {
-        createGUI(screenWidth() * pixelWidth(), screenHeight() * pixelHeight(), null, false);
+        createGUI(Engine.screenWidth() * Engine.pixelWidth(), Engine.screenHeight() * Engine.pixelHeight(), null, false);
     }
     
     public static Theme theme()
@@ -476,17 +473,17 @@ public class EEXT_GUI extends Extension
         if (element != null && EEXT_GUI.INSTANCE.focusedHScrollbar == element) EEXT_GUI.INSTANCE.focusedHScrollbar = null;
     }
     
-    public static IPair<Double, Double> screenToGUI(double screenX, double screenY)
+    public static Vector2dc screenToGUI(double screenX, double screenY)
     {
-        EEXT_GUI.screenToGUI.a = screenX * EEXT_GUI.INSTANCE.size.x() / screenWidth();
-        EEXT_GUI.screenToGUI.b = screenY * EEXT_GUI.INSTANCE.size.y() / screenHeight();
+        EEXT_GUI.screenToGUI.x = screenX * EEXT_GUI.INSTANCE.size.x() / Engine.screenWidth();
+        EEXT_GUI.screenToGUI.y = screenY * EEXT_GUI.INSTANCE.size.y() / Engine.screenHeight();
         return EEXT_GUI.screenToGUI;
     }
     
-    public static IPair<Double, Double> guiToScreen(double guiX, double guiY)
+    public static Vector2dc guiToScreen(double guiX, double guiY)
     {
-        EEXT_GUI.guiToScreen.a = guiX * screenWidth() / EEXT_GUI.INSTANCE.size.x();
-        EEXT_GUI.guiToScreen.b = guiY * screenHeight() / EEXT_GUI.INSTANCE.size.y();
+        EEXT_GUI.guiToScreen.x = guiX * Engine.screenWidth() / EEXT_GUI.INSTANCE.size.x();
+        EEXT_GUI.guiToScreen.y = guiY * Engine.screenHeight() / EEXT_GUI.INSTANCE.size.y();
         return EEXT_GUI.guiToScreen;
     }
 }

@@ -366,8 +366,7 @@ public class EEXT_GUI extends Extension
             
                 Engine.clear(Color.BLANK);
             
-                // this.rootContainer.draw(elapsedTime, mouseX, mouseY);
-                Engine.rect(0, 0, mouseX, mouseY);
+                this.rootContainer.draw(elapsedTime, mouseX, mouseY);
             
                 this.redrawScreen = false;
             }

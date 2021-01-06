@@ -53,7 +53,7 @@ public class EventTests extends Engine
         //     println(event.toString());
         // }
         
-        for (Event event : Events.get(EventMouseCaptured.class, EventMouseMoved.class))
+        for (Event event : Events.get(EventGroup.MOUSE))
         {
             addEvent(event.toString());
         }

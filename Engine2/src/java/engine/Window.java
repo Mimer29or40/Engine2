@@ -1,6 +1,7 @@
 package engine;
 
-import engine.event.*;
+import engine.event.Event;
+import engine.event.Events;
 import engine.input.Keyboard;
 import engine.input.Modifiers;
 import engine.input.Mouse;
@@ -475,13 +476,13 @@ public class Window
         if (this.focused != this.newFocused)
         {
             this.focused = this.newFocused;
-            Events.post(EventWindowFocused.class, this.focused);
+            Events.post(Event.WINDOW_FOCUSED, this.focused);
         }
         
         if (this.fullscreen != this.newFullscreen)
         {
             this.fullscreen = this.newFullscreen;
-            Events.post(EventWindowFullscreen.class, this.fullscreen);
+            Events.post(Event.WINDOW_FULLSCREEN, this.fullscreen);
             
             if (this.fullscreen)
             {
@@ -500,7 +501,7 @@ public class Window
         if (this.vsync != this.newVsync)
         {
             this.vsync = this.newVsync;
-            Events.post(EventWindowVSync.class, this.vsync);
+            Events.post(Event.WINDOW_VSYNC, this.vsync);
             
             glfwSwapInterval(this.vsync ? 1 : 0);
         }
@@ -508,7 +509,7 @@ public class Window
         if (this.pos.x != this.newPos.x || this.pos.y != this.newPos.y)
         {
             this.pos.set(this.newPos);
-            Events.post(EventWindowMoved.class, this.pos);
+            Events.post(Event.WINDOW_MOVED, this.pos);
             
             this.posChanged = true;
             
@@ -526,7 +527,7 @@ public class Window
         if (this.size.x != this.newSize.x || this.size.y != this.newSize.y)
         {
             this.size.set(this.newSize);
-            Events.post(EventWindowResized.class, this.size);
+            Events.post(Event.WINDOW_RESIZED, this.size);
             this.update = true;
             
             this.sizeChanged = true;
@@ -535,7 +536,7 @@ public class Window
         if (this.frame.x != this.newFrame.x || this.frame.y != this.newFrame.y)
         {
             this.frame.set(this.newFrame);
-            Events.post(EventFrameBufferResized.class, this.frame);
+            Events.post(Event.FRAMEBUFFER_RESIZED, this.frame);
             this.update = true;
         }
     }

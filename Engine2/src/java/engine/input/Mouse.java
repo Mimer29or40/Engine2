@@ -1,6 +1,7 @@
 package engine.input;
 
-import engine.event.*;
+import engine.event.Event;
+import engine.event.Events;
 import engine.util.Logger;
 import engine.util.Vector;
 import org.joml.Vector2d;
@@ -177,7 +178,7 @@ public class Mouse extends Device<Mouse.Button>
         {
             this.captured = this.newCaptured;
             this.newPos.set(this.pos.set(screenWidth() * 0.5, screenHeight() * 0.5));
-            Events.post(EventMouseCaptured.class, this.captured);
+            Events.post(Event.MOUSE_CAPTURED, this.captured);
         }
         profiler().endSection();
         
@@ -191,7 +192,7 @@ public class Mouse extends Device<Mouse.Button>
                 justEntered = true;
                 this.pos.set(this.newPos);
             }
-            Events.post(EventMouseEntered.class, this.entered);
+            Events.post(Event.MOUSE_ENTERED, this.entered);
         }
         profiler().endSection();
         
@@ -201,7 +202,7 @@ public class Mouse extends Device<Mouse.Button>
         {
             this.newPos.sub(this.pos, this.rel);
             this.pos.set(this.newPos);
-            Events.post(EventMouseMoved.class, this.captured ? Vector.ZERO2d : this.pos, this.rel);
+            Events.post(Event.MOUSE_MOVED, this.captured ? Vector.ZERO2d : this.pos, this.rel);
         }
         profiler().endSection();
         
@@ -210,7 +211,7 @@ public class Mouse extends Device<Mouse.Button>
         {
             this.scroll.set(this.newScroll);
             this.newScroll.set(0);
-            Events.post(EventMouseScrolled.class, this.scroll);
+            Events.post(Event.MOUSE_SCROLLED, this.scroll);
         }
         profiler().endSection();
         
@@ -231,7 +232,7 @@ public class Mouse extends Device<Mouse.Button>
     {
         if (input.down)
         {
-            Events.post(EventMouseButtonDown.class, input, this.pos);
+            Events.post(Event.MOUSE_BUTTON_DOWN, input, this.pos);
             
             input.click.set(this.pos);
             if (this.drag == null)
@@ -242,18 +243,18 @@ public class Mouse extends Device<Mouse.Button>
         }
         if (input.up)
         {
-            Events.post(EventMouseButtonUp.class, input, this.pos);
+            Events.post(Event.MOUSE_BUTTON_UP, input, this.pos);
             
             boolean inClickRange  = Math.abs(this.pos.x - input.click.x) < 2 && Math.abs(this.pos.y - input.click.y) < 2;
             boolean inDClickRange = Math.abs(this.pos.x - input.dClick.x) < 2 && Math.abs(this.pos.y - input.dClick.y) < 2;
             
             if (inDClickRange && time - input.pressTime < 500_000_000)
             {
-                Events.post(EventMouseButtonClicked.class, input, this.pos, true);
+                Events.post(Event.MOUSE_BUTTON_CLICKED, input, this.pos, true);
             }
             else if (inClickRange)
             {
-                Events.post(EventMouseButtonClicked.class, input, this.pos, false);
+                Events.post(Event.MOUSE_BUTTON_CLICKED, input, this.pos, false);
                 input.dClick.set(this.pos);
                 input.pressTime = time;
             }
@@ -262,16 +263,16 @@ public class Mouse extends Device<Mouse.Button>
         input.dragged = false;
         if (input.held)
         {
-            Events.post(EventMouseButtonHeld.class, input, this.pos);
-            
+            Events.post(Event.MOUSE_BUTTON_HELD, input, this.pos);
+    
             if (this.drag == input && (this.rel.x != 0 || this.rel.y != 0))
             {
                 input.dragged = true;
-                
-                Events.post(EventMouseButtonDragged.class, input, this.dragPos, this.pos, this.rel);
+        
+                Events.post(Event.MOUSE_BUTTON_DRAGGED, input, this.dragPos, this.pos, this.rel);
             }
         }
-        if (input.repeat) Events.post(EventMouseButtonRepeat.class, input, this.pos);
+        if (input.repeat) Events.post(Event.MOUSE_BUTTON_REPEAT, input, this.pos);
     }
     
     /**

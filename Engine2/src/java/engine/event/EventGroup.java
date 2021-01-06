@@ -1,41 +1,78 @@
 package engine.event;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * A group of events. This can be used to filter events from the entire list of events.
  */
 public class EventGroup
 {
-    private final ArrayList<Class<? extends Event>> classes = new ArrayList<>();
+    private final ArrayList<String>     events = new ArrayList<>();
+    private final ArrayList<EventGroup> groups = new ArrayList<>();
+    
+    private final ArrayList<String> cache   = new ArrayList<>();
+    private       boolean           rebuild = true;
     
     @Override
     public String toString()
     {
-        return "EventGroup{" + "classes=" + this.classes + '}';
+        return "EventGroup{" + this.events + '}';
     }
     
-    @SafeVarargs
-    public EventGroup(Class<? extends Event>... eventTypes)
+    public EventGroup(Object... eventTypes)
     {
-        this.classes.addAll(Arrays.asList(eventTypes));
-    }
-    
-    public EventGroup addFromGroups(EventGroup... eventGroups)
-    {
-        for (EventGroup eventGroup : eventGroups)
+        for (Object type : eventTypes)
         {
-            for (Class<? extends Event> eventType : eventGroup.getClasses())
+            if (type instanceof String)
             {
-                this.classes.add(eventType);
+                this.events.add((String) type);
+            }
+            else if (type instanceof EventGroup)
+            {
+                this.groups.add((EventGroup) type);
             }
         }
-        return this;
     }
     
-    public Iterable<Class<? extends Event>> getClasses()
+    public Iterable<String> events()
     {
-        return this.classes;
+        if (this.rebuild)
+        {
+            this.cache.clear();
+            
+            this.cache.addAll(this.events);
+            
+            for (EventGroup group : this.groups)
+            {
+                for (String event : group.events())
+                {
+                    this.cache.add(event);
+                }
+            }
+            
+            this.rebuild = false;
+        }
+        return this.cache;
     }
+    
+    public void add(String event)
+    {
+        this.rebuild = true;
+        
+        this.events.add(event);
+    }
+    
+    public void add(EventGroup eventGroup)
+    {
+        this.rebuild = true;
+        
+        this.groups.add(eventGroup);
+    }
+    
+    public static final EventGroup WINDOW       = new EventGroup();
+    public static final EventGroup MOUSE_BUTTON = new EventGroup();
+    public static final EventGroup MOUSE        = new EventGroup();
+    public static final EventGroup KEYBOARD_KEY = new EventGroup();
+    public static final EventGroup KEYBOARD     = new EventGroup();
+    public static final EventGroup INPUT        = new EventGroup();
 }

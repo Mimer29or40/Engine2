@@ -1,6 +1,7 @@
 package engine.input;
 
-import engine.event.*;
+import engine.event.Event;
+import engine.event.Events;
 import engine.util.Logger;
 
 import static engine.Engine.profiler;
@@ -153,7 +154,7 @@ public class Keyboard extends Device<Keyboard.Key>
         profiler().startSection("Captured Text");
         for (int i = 0, n = this.capturedText.length(); i < n; i++)
         {
-            Events.post(EventKeyboardKeyTyped.class, this.capturedText.charAt(i));
+            Events.post(Event.KEYBOARD_KEY_TYPED, this.capturedText.charAt(i));
         }
         this.capturedText = "";
         profiler().endSection();
@@ -173,23 +174,23 @@ public class Keyboard extends Device<Keyboard.Key>
     @Override
     protected void postEvents(Key input, long time, long delta)
     {
-        if (input.down) Events.post(EventKeyboardKeyDown.class, input);
+        if (input.down) Events.post(Event.KEYBOARD_KEY_DOWN, input);
         if (input.up)
         {
-            Events.post(EventKeyboardKeyUp.class, input);
-            
+            Events.post(Event.KEYBOARD_KEY_UP, input);
+        
             if (time - input.pressTime < Device.doubleDelay)
             {
-                Events.post(EventKeyboardKeyPressed.class, input, true);
+                Events.post(Event.KEYBOARD_KEY_PRESSED, input, true);
             }
             else
             {
-                Events.post(EventKeyboardKeyPressed.class, input, false);
+                Events.post(Event.KEYBOARD_KEY_PRESSED, input, false);
                 input.pressTime = time;
             }
         }
-        if (input.held) Events.post(EventKeyboardKeyHeld.class, input);
-        if (input.repeat) Events.post(EventKeyboardKeyRepeat.class, input);
+        if (input.held) Events.post(Event.KEYBOARD_KEY_HELD, input);
+        if (input.repeat) Events.post(Event.KEYBOARD_KEY_REPEAT, input);
     }
     
     /**

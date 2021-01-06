@@ -3,11 +3,15 @@ package engine.gui;
 import engine.Engine;
 import engine.Extension;
 import engine.color.Color;
-import engine.event.*;
+import engine.event.Event;
+import engine.event.EventGroup;
+import engine.event.Events;
 import engine.font.FontFamily;
 import engine.gui.elment.UIContainer;
 import engine.gui.elment.UIWindow;
 import engine.gui.util.Rect;
+import engine.input.Keyboard;
+import engine.input.Mouse;
 import org.joml.Vector2d;
 import org.joml.Vector2dc;
 import org.joml.Vector2i;
@@ -139,103 +143,117 @@ public class EEXT_GUI extends Extension
         {
             Engine.profiler().startSection("Mouse");
             {
-                for (Event e : Events.get(Events.MOUSE_EVENTS))
+                for (Event e : Events.get(EventGroup.MOUSE))
                 {
-                    if (e instanceof EventMouseButtonDown)
+                    switch (e.type())
                     {
-                        EventMouseButtonDown event = (EventMouseButtonDown) e;
-                        
-                        UIElement element = this.topElement;
-                        while (element != null)
-                        {
-                            if (element.onMouseButtonDown(event.button(), event.x() - element.absX(), event.y() - element.absY()))
-                            {
-                                println(elapsedTime, element);
-                                break;
-                            }
-                            element = element.parent();
-                        }
-                        setFocused(element);
-                    }
-                    else if (e instanceof EventMouseButtonUp)
-                    {
-                        // this.drag = null;
-                        EventMouseButtonUp event = (EventMouseButtonUp) e;
-                        
-                        UIElement element = this.topElement;
-                        while (element != null)
-                        {
-                            if (element.onMouseButtonUp(event.button(), event.x() - element.absX(), event.y() - element.absY())) break;
-                            element = element.parent();
-                        }
-                    }
-                    else if (e instanceof EventMouseButtonClicked)
-                    {
-                        EventMouseButtonClicked event = (EventMouseButtonClicked) e;
-                        
-                        UIElement element = this.topElement;
-                        while (element != null)
-                        {
-                            if (element.onMouseButtonClicked(event.button(), event.x() - element.absX(), event.y() - element.absY(), event.doubleClicked())) break;
-                            element = element.parent();
-                        }
-                    }
-                    else if (e instanceof EventMouseButtonHeld)
-                    {
-                        EventMouseButtonHeld event = (EventMouseButtonHeld) e;
-                        
-                        UIElement element = this.topElement;
-                        while (element != null)
-                        {
-                            if (element.onMouseButtonHeld(event.button(), event.x() - element.absX(), event.y() - element.absY())) break;
-                            element = element.parent();
-                        }
-                    }
-                    else if (e instanceof EventMouseButtonRepeat)
-                    {
-                        EventMouseButtonRepeat event = (EventMouseButtonRepeat) e;
-                        
-                        UIElement element = this.topElement;
-                        while (element != null)
-                        {
-                            if (element.onMouseButtonRepeated(event.button(), event.x() - element.absX(), event.y() - element.absY())) break;
-                            element = element.parent();
-                        }
-                    }
-                    else if (e instanceof EventMouseButtonDragged)
-                    {
-                        EventMouseButtonDragged event = (EventMouseButtonDragged) e;
-                        
-                        UIElement element = this.topElement;
-                        while (element != null)
-                        {
-                            if (element.onMouseButtonDragged(event.button(), event.x() - element.absX(), event.y() - element.absY(), event.dragX(), event.dragY(), event.relX(), event.relY()))
-                            {
-                                // this.drag = element;
-                                break;
-                            }
-                            element = element.parent();
-                        }
-                    }
-                    else if (e instanceof EventMouseScrolled)
-                    {
-                        EventMouseScrolled event = (EventMouseScrolled) e;
-                        
-                        if (this.topElement != this.focusedVScrollbar) // TODO - This may cause double events so look out for them
-                        {
-                            UIElement element = this.focusedVScrollbar;
+                        case Event.MOUSE_BUTTON_DOWN -> {
+                            Mouse.Button button = e.get("button");
+                
+                            double x = e.get("x");
+                            double y = e.get("y");
+                
+                            UIElement element = this.topElement;
                             while (element != null)
                             {
-                                if (element.onMouseScrolled(event.x(), event.y())) break;
+                                if (element.onMouseButtonDown(button, x - element.absX(), y - element.absY()))
+                                {
+                                    println(elapsedTime, element);
+                                    break;
+                                }
+                                element = element.parent();
+                            }
+                            setFocused(element);
+                        }
+                        case Event.MOUSE_BUTTON_UP -> {
+                            // this.drag = null;
+                            Mouse.Button button = e.get("button");
+                
+                            double x = e.get("x");
+                            double y = e.get("y");
+                
+                            UIElement element = this.topElement;
+                            while (element != null)
+                            {
+                                if (element.onMouseButtonUp(button, x - element.absX(), y - element.absY())) break;
                                 element = element.parent();
                             }
                         }
-                        
-                        UIElement element = this.topElement;
-                        while (element != null)
-                        {
-                            if (element.onMouseScrolled(event.x(), event.y())) break;
-                            element = element.parent();
+                        case Event.MOUSE_BUTTON_CLICKED -> {
+                            Mouse.Button button = e.get("button");
+                
+                            double x = e.get("x");
+                            double y = e.get("y");
+                
+                            boolean doubleClicked = e.get("doubleClicked");
+                
+                            UIElement element = this.topElement;
+                            while (element != null)
+                            {
+                                if (element.onMouseButtonClicked(button, x - element.absX(), y - element.absY(), doubleClicked)) break;
+                                element = element.parent();
+                            }
+                        }
+                        case Event.MOUSE_BUTTON_HELD -> {
+                            Mouse.Button button = e.get("button");
+                
+                            double x = e.get("x");
+                            double y = e.get("y");
+                
+                            UIElement element = this.topElement;
+                            while (element != null)
+                            {
+                                if (element.onMouseButtonHeld(button, x - element.absX(), y - element.absY())) break;
+                                element = element.parent();
+                            }
+                        }
+                        case Event.MOUSE_BUTTON_REPEAT -> {
+                            Mouse.Button button = e.get("button");
+                
+                            double x = e.get("x");
+                            double y = e.get("y");
+                
+                            UIElement element = this.topElement;
+                            while (element != null)
+                            {
+                                if (element.onMouseButtonRepeated(button, x - element.absX(), y - element.absY())) break;
+                                element = element.parent();
+                            }
+                        }
+                        case Event.MOUSE_BUTTON_DRAGGED -> {
+                            Mouse.Button button = e.get("button");
+                
+                            double x = e.get("x");
+                            double y = e.get("y");
+                
+                            double dragX = e.get("dragX");
+                            double dragY = e.get("dragY");
+                
+                            double relX = e.get("relX");
+                            double relY = e.get("relY");
+                
+                            UIElement element = this.topElement;
+                            while (element != null)
+                            {
+                                if (element.onMouseButtonDragged(button, x - element.absX(), y - element.absY(), dragX, dragY, relX, relY))
+                                {
+                                    // this.drag = element;
+                                    break;
+                                }
+                                element = element.parent();
+                            }
+                        }
+                        case Event.MOUSE_SCROLLED -> {
+                            double x = e.get("x");
+                            double y = e.get("y");
+                
+                            // TODO - This may cause double events so look out for them. FIXED MAYBE?
+                            UIElement element = this.topElement != this.focusedVScrollbar ? this.focusedVScrollbar : this.topElement;
+                            while (element != null)
+                            {
+                                if (element.onMouseScrolled(x, y)) break;
+                                element = element.parent();
+                            }
                         }
                     }
                 }
@@ -246,72 +264,71 @@ public class EEXT_GUI extends Extension
             {
                 if (this.focusedElement != null)
                 {
-                    for (Event e : Events.get(Events.KEYBOARD_EVENTS))
+                    for (Event e : Events.get(EventGroup.KEYBOARD))
                     {
-                        if (e instanceof EventKeyboardKeyDown)
+                        switch (e.type())
                         {
-                            EventKeyboardKeyDown event = (EventKeyboardKeyDown) e;
-                            
-                            UIElement element = this.focusedElement;
-                            while (element != null)
-                            {
-                                if (element.onKeyboardKeyDown(event.key())) break;
-                                element = element.parent();
+                            case Event.KEYBOARD_KEY_DOWN -> {
+                                Keyboard.Key key = e.get("key");
+                
+                                UIElement element = this.focusedElement;
+                                while (element != null)
+                                {
+                                    if (element.onKeyboardKeyDown(key)) break;
+                                    element = element.parent();
+                                }
                             }
-                        }
-                        else if (e instanceof EventKeyboardKeyUp)
-                        {
-                            EventKeyboardKeyUp event = (EventKeyboardKeyUp) e;
-                            
-                            UIElement element = this.focusedElement;
-                            while (element != null)
-                            {
-                                if (element.onKeyboardKeyUp(event.key())) break;
-                                element = element.parent();
+                            case Event.KEYBOARD_KEY_UP -> {
+                                Keyboard.Key key = e.get("key");
+                
+                                UIElement element = this.focusedElement;
+                                while (element != null)
+                                {
+                                    if (element.onKeyboardKeyUp(key)) break;
+                                    element = element.parent();
+                                }
                             }
-                        }
-                        else if (e instanceof EventKeyboardKeyHeld)
-                        {
-                            EventKeyboardKeyHeld event = (EventKeyboardKeyHeld) e;
-                            
-                            UIElement element = this.focusedElement;
-                            while (element != null)
-                            {
-                                if (element.onKeyboardKeyHeld(event.key())) break;
-                                element = element.parent();
+                            case Event.KEYBOARD_KEY_HELD -> {
+                                Keyboard.Key key = e.get("key");
+                
+                                UIElement element = this.focusedElement;
+                                while (element != null)
+                                {
+                                    if (element.onKeyboardKeyHeld(key)) break;
+                                    element = element.parent();
+                                }
                             }
-                        }
-                        else if (e instanceof EventKeyboardKeyRepeat)
-                        {
-                            EventKeyboardKeyRepeat event = (EventKeyboardKeyRepeat) e;
-                            
-                            UIElement element = this.focusedElement;
-                            while (element != null)
-                            {
-                                if (element.onKeyboardKeyRepeated(event.key())) break;
-                                element = element.parent();
+                            case Event.KEYBOARD_KEY_REPEAT -> {
+                                Keyboard.Key key = e.get("key");
+                
+                                UIElement element = this.focusedElement;
+                                while (element != null)
+                                {
+                                    if (element.onKeyboardKeyRepeated(key)) break;
+                                    element = element.parent();
+                                }
                             }
-                        }
-                        else if (e instanceof EventKeyboardKeyPressed)
-                        {
-                            EventKeyboardKeyPressed event = (EventKeyboardKeyPressed) e;
-                            
-                            UIElement element = this.focusedElement;
-                            while (element != null)
-                            {
-                                if (element.onKeyboardKeyPressed(event.key(), event.doublePressed())) break;
-                                element = element.parent();
+                            case Event.KEYBOARD_KEY_PRESSED -> {
+                                Keyboard.Key key = e.get("key");
+                
+                                boolean doublePressed = e.get("doublePressed");
+                
+                                UIElement element = this.focusedElement;
+                                while (element != null)
+                                {
+                                    if (element.onKeyboardKeyPressed(key, doublePressed)) break;
+                                    element = element.parent();
+                                }
                             }
-                        }
-                        else if (e instanceof EventKeyboardKeyTyped)
-                        {
-                            EventKeyboardKeyTyped event = (EventKeyboardKeyTyped) e;
-                            
-                            UIElement element = this.focusedElement;
-                            while (element != null)
-                            {
-                                if (element.onKeyboardKeyTyped(event.charTyped())) break;
-                                element = element.parent();
+                            case Event.KEYBOARD_KEY_TYPED -> {
+                                char charTyped = e.get("charTyped");
+                
+                                UIElement element = this.focusedElement;
+                                while (element != null)
+                                {
+                                    if (element.onKeyboardKeyTyped(charTyped)) break;
+                                    element = element.parent();
+                                }
                             }
                         }
                     }

@@ -2,7 +2,6 @@ package engine.ct;
 
 import engine.Engine;
 import engine.event.Event;
-import engine.event.EventMouseButtonDown;
 import engine.event.Events;
 import engine.render.Overloads;
 import engine.render.RectMode;
@@ -71,7 +70,7 @@ public class CT002_MengerSponge extends Engine
     @Override
     public void draw(double elapsedTime)
     {
-        for (Event e : Events.get(EventMouseButtonDown.class))
+        for (Event e : Events.get(Event.MOUSE_BUTTON_DOWN))
         {
             ArrayList<Box> next = new ArrayList<>();
             for (Box b : sponge) next.addAll(b.generate());

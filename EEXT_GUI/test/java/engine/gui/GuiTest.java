@@ -8,7 +8,7 @@ import engine.gui.util.Rect;
 
 import java.util.logging.Level;
 
-import static engine.gui.EEXT_GUI.createGUI;
+import static engine.gui.EEXT_GUI.*;
 
 public class GuiTest extends Engine
 {
@@ -25,12 +25,12 @@ public class GuiTest extends Engine
     public void setup()
     {
         size(100, 100, 8, 8);
-        // createGUI(800, 800);
-        createGUI(100, 100);
-        
+        createGUI(800, 800);
+        // createGUI(100, 100);
+    
         // button    = new UIButton("Button", new Rect(0, 0, 50, 50), null, "ToolTip", null, "#button");
         // label     = new UILabel("This is a label", new Rect(0, 0, 100, 10), null, null, "#label");
-        scrollBar = new UIVerticalScrollBar(0, new Rect(50, 0, 30, 100), null, null, "#scrollbar");
+        scrollBar = new UIVerticalScrollBar(0, new Rect(guiWidth() / 2, 0, guiWidth() / 3, guiHeight()), null, null, "#scrollbar");
     }
     
     /**

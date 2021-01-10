@@ -44,7 +44,6 @@ import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.opengl.GL43.*;
 import static org.lwjgl.stb.STBEasyFont.*;
 import static org.lwjgl.stb.STBImageWrite.stbi_write_png;
-import static org.lwjgl.system.MemoryStack.stackPush;
 
 @SuppressWarnings({"EmptyMethod", "unused"})
 public class Engine
@@ -529,19 +528,19 @@ public class Engine
         
                                                 if (!Engine.debugLines.isEmpty())
                                                 {
-                                                    try (MemoryStack frame = stackPush())
+                                                    try (MemoryStack stack = MemoryStack.stackPush())
                                                     {
-                                                        ByteBuffer  charBuffer = frame.malloc(Engine.debugTextVAO.bufferSize());
-                                                        FloatBuffer boxBuffer  = frame.malloc(Engine.debugBoxVAO.bufferSize()).asFloatBuffer();
+                                                        ByteBuffer  charBuffer = stack.malloc(Engine.debugTextVAO.bufferSize());
+                                                        FloatBuffer boxBuffer  = stack.malloc(Engine.debugBoxVAO.bufferSize()).asFloatBuffer();
                                                         for (Tuple<Integer, Integer, String> line : Engine.debugLines)
                                                         {
                                                             int quads = stb_easy_font_print(line.a + 2, line.b + 2, line.c, null, charBuffer.clear());
-                    
+        
                                                             float x1 = line.a;
                                                             float y1 = line.b;
                                                             float x2 = line.a + stb_easy_font_width(line.c) + 2;
                                                             float y2 = line.b + stb_easy_font_height(line.c);
-                    
+        
                                                             boxBuffer.put(0, x1);
                                                             boxBuffer.put(1, y1);
                                                             boxBuffer.put(2, x2);

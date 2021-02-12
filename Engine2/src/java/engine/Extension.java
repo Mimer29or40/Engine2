@@ -26,7 +26,7 @@ public abstract class Extension
      */
     public void toggleEnabled()
     {
-        this.enabled = !this.enabled;
+        enabled(!this.enabled);
     }
     
     /**

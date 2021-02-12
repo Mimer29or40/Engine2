@@ -94,11 +94,9 @@ public enum Modifier implements Predicate<Integer>
     
     public static boolean test(Modifier... modifiers)
     {
+        if (modifiers.length == 0) return Modifier.activeMods == 0;
         Predicate<Integer> predicate = null;
-        for (Modifier modifier : modifiers)
-        {
-            predicate = predicate != null ? predicate.and(modifier) : modifier;
-        }
-        return predicate != null && predicate.test(Modifier.activeMods);
+        for (Modifier modifier : modifiers) predicate = predicate != null ? predicate.and(modifier) : modifier;
+        return predicate.test(Modifier.activeMods);
     }
 }

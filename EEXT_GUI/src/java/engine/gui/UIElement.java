@@ -1306,7 +1306,7 @@ public abstract class UIElement
      * @param character The key's character.
      * @return If the event should be consumed.
      */
-    protected boolean onKeyboardKeyTyped(char character)
+    protected boolean onKeyboardKeyTyped(String character)
     {
         return this.kKTyped != null && this.kKTyped.fire(character);
     }

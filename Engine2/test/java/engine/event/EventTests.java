@@ -29,7 +29,6 @@ public class EventTests extends Engine
     {
         size(800, 400, 2, 2);
         // frameRate(10);
-        profiler().enabled(true);
         
         textSize(20);
         
@@ -38,6 +37,7 @@ public class EventTests extends Engine
         
         // Events.subscribe(Events.INPUT_EVENTS, this::onInputEvent);
         // Events.subscribe(EventMouseCaptured.class, this::onInputEvent);
+        profiler().enabled(true);
     }
     
     @Override
@@ -64,10 +64,10 @@ public class EventTests extends Engine
         //     println(event.toString());
         // }
     
-        for (Event event : Events.get(EventGroup.MOUSE))
-        {
-            addEvent(event.toString());
-        }
+        // for (Event event : Events.get(EventGroup.MOUSE))
+        // {
+        //     addEvent(event.toString());
+        // }
         
         clear();
         
@@ -79,6 +79,12 @@ public class EventTests extends Engine
             text(s, 2, nLog * textFont().getTextHeight("", textSize()) + 2);
             nLog++;
         }
+    }
+    
+    @EventBus.Subscribe
+    public void mouseEvent(EventMouse event)
+    {
+        addEvent(event.toString());
     }
     
     @Override

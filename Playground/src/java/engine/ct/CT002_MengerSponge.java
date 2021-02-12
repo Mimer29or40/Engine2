@@ -1,8 +1,8 @@
 package engine.ct;
 
 import engine.Engine;
-import engine.event.Event;
-import engine.event.Events;
+import engine.event.EventBus;
+import engine.event.EventMouseButtonDown;
 import engine.render.Overloads;
 import engine.render.RectMode;
 import org.joml.Vector2d;
@@ -67,16 +67,17 @@ public class CT002_MengerSponge extends Engine
         sponge.add(new Box(new Vector2d(0, 0), 300));
     }
     
+    @EventBus.Subscribe
+    public void handleButtonDown(EventMouseButtonDown event)
+    {
+        ArrayList<Box> next = new ArrayList<>();
+        for (Box b : sponge) next.addAll(b.generate());
+        sponge = next;
+    }
+    
     @Override
     public void draw(double elapsedTime)
     {
-        for (Event e : Events.get(Event.MOUSE_BUTTON_DOWN))
-        {
-            ArrayList<Box> next = new ArrayList<>();
-            for (Box b : sponge) next.addAll(b.generate());
-            sponge = next;
-        }
-        
         clear();
         stroke(255);
         noFill();

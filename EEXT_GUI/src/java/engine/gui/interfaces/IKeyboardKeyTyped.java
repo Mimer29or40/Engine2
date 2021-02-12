@@ -11,5 +11,5 @@ public interface IKeyboardKeyTyped
      * @param character The key's character.
      * @return If the event should be consumed.
      */
-    boolean fire(char character);
+    boolean fire(String character);
 }

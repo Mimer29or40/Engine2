@@ -1,5 +1,6 @@
 package engine;
 
+import engine.event.*;
 import rutils.Logger;
 import rutils.group.Pair;
 
@@ -74,7 +75,7 @@ public class Keyboard extends InputDevice
         String charChange;
         while ((charChange = this._charChanges.poll()) != null)
         {
-            // GLFW.EVENT_BUS.post(EventKeyboardTyped.create(charChange.getA(), charChange.getB())); // TODO
+            EventBus.post(EventKeyboardTyped.create(charChange));
         }
         
         Pair<Key, Integer> keyStateChange;
@@ -96,30 +97,30 @@ public class Keyboard extends InputDevice
                 case GLFW_PRESS -> {
                     input.held     = true;
                     input.holdTime = time + InputDevice.holdFrequency;
-                    // GLFW.EVENT_BUS.post(EventKeyboardKeyDown.create(input._window, key)); // TODO
+                    EventBus.post(EventKeyboardKeyDown.create(key));
                 }
                 case GLFW_RELEASE -> {
                     input.held     = false;
                     input.holdTime = Long.MAX_VALUE;
-                    // GLFW.EVENT_BUS.post(EventKeyboardKeyUp.create(input._window, key)); // TODO
+                    EventBus.post(EventKeyboardKeyUp.create(key));
                     
                     if (time - input.pressTime < InputDevice.doublePressedDelay)
                     {
                         input.pressTime = 0;
-                        // GLFW.EVENT_BUS.post(EventKeyboardKeyPressed.create(input._window, key, true)); // TODO
+                        EventBus.post(EventKeyboardKeyPressed.create(key, true));
                     }
                     else
                     {
                         input.pressTime = time;
-                        // GLFW.EVENT_BUS.post(EventKeyboardKeyPressed.create(input._window, key, false)); // TODO
+                        EventBus.post(EventKeyboardKeyPressed.create(key, false));
                     }
                 }
-                // case GLFW_REPEAT -> GLFW.EVENT_BUS.post(EventKeyboardKeyRepeated.create(input._window, key)); // TODO
+                case GLFW_REPEAT -> EventBus.post(EventKeyboardKeyRepeated.create(key));
             }
             if (input.held && time - input.holdTime >= InputDevice.holdFrequency)
             {
                 input.holdTime += InputDevice.holdFrequency;
-                // GLFW.EVENT_BUS.post(EventKeyboardKeyHeld.create(input._window, key)); // TODO
+                EventBus.post(EventKeyboardKeyHeld.create(key));
             }
         }
     }

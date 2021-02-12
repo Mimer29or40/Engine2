@@ -1,5 +1,6 @@
 package engine;
 
+import engine.event.*;
 import org.joml.*;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.system.MemoryStack;
@@ -1058,7 +1059,7 @@ public class Window
         if (this.close != this._close)
         {
             this.close = this._close;
-            // GLFW.EVENT_BUS.post(EventWindowClosed.create(this)); // TODO
+            EventBus.post(EventWindowClosed.create());
             Engine.stop();
         }
         
@@ -1066,32 +1067,32 @@ public class Window
         {
             this.vsync = this._vsync;
             glfwSwapInterval(this.vsync ? 1 : 0);
-            // GLFW.EVENT_BUS.post(EventWindowVsyncChanged.create(this, this.vsync)); // TODO
+            EventBus.post(EventWindowVsyncChanged.create(this.vsync));
         }
         
         if (this.focused != this._focused)
         {
             this.focused = this._focused;
-            // GLFW.EVENT_BUS.post(EventWindowFocused.create(this, this.focused)); // TODO
+            EventBus.post(EventWindowFocused.create(this.focused));
         }
         
         if (this.iconified != this._iconified)
         {
             this.iconified = this._iconified;
-            // GLFW.EVENT_BUS.post(EventWindowIconified.create(this, this.iconified)); // TODO
+            EventBus.post(EventWindowIconified.create(this.iconified));
         }
         
         if (this.maximized != this._maximized)
         {
             this.maximized = this._maximized;
-            // GLFW.EVENT_BUS.post(EventWindowMaximized.create(this, this.maximized)); // TODO
+            EventBus.post(EventWindowMaximized.create(this.maximized));
         }
         
         if (this.pos.x != this._pos.x || this.pos.y != this._pos.y)
         {
             this._pos.sub(this.pos, this.deltaI);
             this.pos.set(this._pos);
-            // GLFW.EVENT_BUS.post(EventWindowMoved.create(this, this.pos, this.deltaI)); // TODO
+            EventBus.post(EventWindowMoved.create(this.pos, this.deltaI));
             
             updateMonitor = true;
         }
@@ -1100,7 +1101,7 @@ public class Window
         {
             this._size.sub(this.size, this.deltaI);
             this.size.set(this._size);
-            // GLFW.EVENT_BUS.post(EventWindowResized.create(this, this.size, this.deltaI)); // TODO
+            EventBus.post(EventWindowResized.create(this.size, this.deltaI));
             
             updateMonitor = true;
         }
@@ -1109,14 +1110,14 @@ public class Window
         {
             this._scale.sub(this.scale, this.deltaD);
             this.scale.set(this._scale);
-            // GLFW.EVENT_BUS.post(EventWindowContentScaleChanged.create(this, this.scale, this.deltaD)); // TODO
+            EventBus.post(EventWindowContentScaleChanged.create(this.scale, this.deltaD));
         }
         
         if (this.fbSize.x != this._fbSize.x || this.fbSize.y != this._fbSize.y)
         {
             this._fbSize.sub(this.fbSize, this.deltaI);
             this.fbSize.set(this._fbSize);
-            // GLFW.EVENT_BUS.post(EventWindowFramebufferResized.create(this, this.fbSize, this.deltaI)); // TODO
+            EventBus.post(EventWindowFramebufferResized.create(this.fbSize, this.deltaI));
             
             this.viewMatrix.setOrtho(0, this.fbSize.x, this.fbSize.y, 0, -1F, 1F);
         }
@@ -1124,7 +1125,7 @@ public class Window
         if (this._refresh)
         {
             this._refresh = false;
-            // GLFW.EVENT_BUS.post(EventWindowRefreshed.create(this)); // TODO
+            EventBus.post(EventWindowRefreshed.create());
         }
         
         if (this._dropped != null)
@@ -1132,7 +1133,7 @@ public class Window
             Path[] paths = new Path[this._dropped.length];
             for (int i = 0; i < this._dropped.length; i++) paths[i] = Paths.get(this._dropped[i]);
             this._dropped = null;
-            // GLFW.EVENT_BUS.post(EventWindowDropped.create(this, paths)); // TODO
+            EventBus.post(EventWindowDropped.create(paths));
         }
         
         if (updateMonitor)
@@ -1158,7 +1159,7 @@ public class Window
                     this.monitor = monitor;
                 }
             }
-            // if (this.monitor != prevMonitor) GLFW.EVENT_BUS.post(EventWindowMonitorChanged.create(this, prevMonitor, this.monitor)); // TODO
+            if (this.monitor != prevMonitor) EventBus.post(EventWindowMonitorChanged.create(prevMonitor, this.monitor));
         }
     }
 }

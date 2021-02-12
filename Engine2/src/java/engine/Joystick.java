@@ -1,5 +1,6 @@
 package engine;
 
+import engine.event.*;
 import org.jetbrains.annotations.Nullable;
 import rutils.Logger;
 import rutils.group.Pair;
@@ -196,37 +197,37 @@ public class Joystick extends InputDevice
     
     protected void postAxisEvent(int axis, double value, double delta)
     {
-        // GLFW.EVENT_BUS.post(EventJoystickAxis.create(this, axis, value, delta)); // TODO
+        EventBus.post(EventJoystickAxis.create(this, axis, value, delta));
     }
     
     protected void postButtonDownEvent(int button)
     {
-        // GLFW.EVENT_BUS.post(EventJoystickButtonDown.create(this, button)); // TODO
+        EventBus.post(EventJoystickButtonDown.create(this, button));
     }
     
     protected void postButtonUpEvent(int button)
     {
-        // GLFW.EVENT_BUS.post(EventJoystickButtonUp.create(this, button)); // TODO
+        EventBus.post(EventJoystickButtonUp.create(this, button));
     }
     
     protected void postButtonPressedEvent(int button, boolean doublePressed)
     {
-        // GLFW.EVENT_BUS.post(EventJoystickButtonPressed.create(this, button, doublePressed)); // TODO
+        EventBus.post(EventJoystickButtonPressed.create(this, button, doublePressed));
     }
     
     protected void postButtonHeldEvent(int button)
     {
-        // GLFW.EVENT_BUS.post(EventJoystickButtonHeld.create(this, button)); // TODO
+        EventBus.post(EventJoystickButtonHeld.create(this, button));
     }
     
     protected void postButtonRepeatedEvent(int button)
     {
-        // GLFW.EVENT_BUS.post(EventJoystickButtonRepeated.create(this, button)); // TODO
+        EventBus.post(EventJoystickButtonRepeated.create(this, button));
     }
     
     protected void postHatEvent(int hat, int state)
     {
-        // GLFW.EVENT_BUS.post(EventJoystickHat.create(this, hat, Hat.get(state))); // TODO
+        EventBus.post(EventJoystickHat.create(this, hat, Hat.get(state)));
     }
     
     protected static final class AxisInput

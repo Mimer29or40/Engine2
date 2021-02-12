@@ -1,5 +1,6 @@
 package engine;
 
+import engine.event.*;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2d;
 import org.joml.Vector2dc;
@@ -376,7 +377,7 @@ public class Mouse extends InputDevice
         if (this.entered != this._entered)
         {
             this.entered = this._entered;
-            // GLFW.EVENT_BUS.post(EventMouseEntered.create(this.entered)); // TODO
+            EventBus.post(EventMouseEntered.create(this.entered));
             if (this.entered)
             {
                 entered = true;
@@ -390,7 +391,7 @@ public class Mouse extends InputDevice
         {
             this._pos.sub(this.pos, this.rel);
             this.pos.set(this._pos);
-            // GLFW.EVENT_BUS.post(EventMouseMoved.create(this._posW, this.pos, this.rel)); // TODO
+            EventBus.post(EventMouseMoved.create(this.pos, this.rel));
         }
         
         this.scroll.set(0);
@@ -398,7 +399,7 @@ public class Mouse extends InputDevice
         {
             this.scroll.set(this._scroll);
             this._scroll.set(0);
-            // GLFW.EVENT_BUS.post(EventMouseScrolled.create(this._scrollW, this.scroll)); // TODO
+            EventBus.post(EventMouseScrolled.create(this.scroll));
         }
         
         Pair<Button, Integer> buttonStateChange;
@@ -420,14 +421,14 @@ public class Mouse extends InputDevice
                 case GLFW_PRESS -> {
                     input.held     = true;
                     input.holdTime = time + InputDevice.holdFrequency;
-                    // GLFW.EVENT_BUS.post(EventMouseButtonDown.create(input._window, button, this.pos)); // TODO
+                    EventBus.post(EventMouseButtonDown.create(button, this.pos));
                     
                     input.click.set(this.pos);
                 }
                 case GLFW_RELEASE -> {
                     input.held     = false;
                     input.holdTime = Long.MAX_VALUE;
-                    // GLFW.EVENT_BUS.post(EventMouseButtonUp.create(input._window, button, this.pos)); // TODO
+                    EventBus.post(EventMouseButtonUp.create(button, this.pos));
                     
                     boolean inClickRange  = Math.abs(this.pos.x - input.click.x) < 2 && Math.abs(this.pos.y - input.click.y) < 2;
                     boolean inDClickRange = Math.abs(this.pos.x - input.dClick.x) < 2 && Math.abs(this.pos.y - input.dClick.y) < 2;
@@ -435,25 +436,25 @@ public class Mouse extends InputDevice
                     if (inDClickRange && time - input.pressTime < InputDevice.doublePressedDelay)
                     {
                         input.pressTime = 0;
-                        // GLFW.EVENT_BUS.post(EventMouseButtonPressed.create(input._window, button, this.pos, true)); // TODO
+                        EventBus.post(EventMouseButtonPressed.create(button, this.pos, true));
                     }
                     else if (inClickRange)
                     {
                         input.dClick.set(this.pos);
                         input.pressTime = time;
-                        // GLFW.EVENT_BUS.post(EventMouseButtonPressed.create(input._window, button, this.pos, false)); // TODO
+                        EventBus.post(EventMouseButtonPressed.create(button, this.pos, false));
                     }
                 }
-                // case GLFW_REPEAT -> GLFW.EVENT_BUS.post(EventMouseButtonRepeated.create(input._window, button, this.pos)); // TODO
+                case GLFW_REPEAT -> EventBus.post(EventMouseButtonRepeated.create(button, this.pos));
             }
             if (input.held)
             {
                 if (time - input.holdTime >= InputDevice.holdFrequency)
                 {
                     input.holdTime += InputDevice.holdFrequency;
-                    // GLFW.EVENT_BUS.post(EventMouseButtonHeld.create(input._window, button, this.pos)); // TODO
+                    EventBus.post(EventMouseButtonHeld.create(button, this.pos));
                 }
-                // if (this.rel.x != 0 || this.rel.y != 0) GLFW.EVENT_BUS.post(EventMouseButtonDragged.create(input._window, button, this.pos, this.rel, input.click)); // TODO
+                if (this.rel.x != 0 || this.rel.y != 0) EventBus.post(EventMouseButtonDragged.create(button, this.pos, this.rel, input.click));
             }
         }
     }

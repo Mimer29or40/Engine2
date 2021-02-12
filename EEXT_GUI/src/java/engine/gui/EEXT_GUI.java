@@ -5,9 +5,7 @@ import engine.Extension;
 import engine.Keyboard;
 import engine.Mouse;
 import engine.color.Color;
-import engine.event.Event;
-import engine.event.EventGroup;
-import engine.event.Events;
+import engine.event.*;
 import engine.font.FontFamily;
 import engine.gui.elment.UIContainer;
 import engine.gui.elment.UIWindow;
@@ -16,8 +14,6 @@ import org.joml.Vector2d;
 import org.joml.Vector2dc;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
-
-import static rutils.StringUtil.println;
 
 public class EEXT_GUI extends Extension
 {
@@ -47,6 +43,23 @@ public class EEXT_GUI extends Extension
     {
         super();
         this.enabled = false;
+    }
+    
+    /**
+     * Sets the extension enabled or not.
+     */
+    @Override
+    public void enabled(boolean enabled)
+    {
+        this.enabled = enabled;
+        if (this.enabled)
+        {
+            EventBus.register(this);
+        }
+        else
+        {
+            EventBus.unregister(this);
+        }
     }
     
     /**
@@ -91,17 +104,17 @@ public class EEXT_GUI extends Extension
             }
         }
         Engine.profiler().endSection();
-    
+        
         Vector2dc mouse = screenToGUI(Engine.mouse().x(), Engine.mouse().y());
-    
+        
         double mouseX = mouse.x();
         double mouseY = mouse.y();
-    
+        
         Engine.profiler().startSection("Stack Solving");
         {
             UIElement prevTopElement = this.topElement;
             this.topElement = null;
-    
+            
             boolean blockingWindow = false;
             for (UIElement element : this.rootContainer.elements())
             {
@@ -139,194 +152,188 @@ public class EEXT_GUI extends Extension
             }
         }
         Engine.profiler().endSection();
+    }
     
-        Engine.profiler().startSection("Events");
+    @EventBus.Subscribe
+    public void handleMouseButton(EventMouseButton event)
+    {
+        Engine.profiler().startSection("Mouse");
         {
-            Engine.profiler().startSection("Mouse");
+            Mouse.Button button = event.button();
+    
+            Vector2dc pos = event.pos();
+            
+            if (event instanceof EventMouseButtonDown)
             {
-                for (Event e : Events.get(EventGroup.MOUSE))
+                UIElement element = this.topElement;
+                while (element != null)
                 {
-                    switch (e.type())
-                    {
-                        case Event.MOUSE_BUTTON_DOWN -> {
-                            Mouse.Button button = e.get("button");
-    
-                            Vector2dc pos = e.get("pos");
-    
-                            UIElement element = this.topElement;
-                            while (element != null)
-                            {
-                                if (element.onMouseButtonDown(button, pos.x() - element.absX(), pos.y() - element.absY()))
-                                {
-                                    println(elapsedTime, element);
-                                    break;
-                                }
-                                element = element.parent();
-                            }
-                            setFocused(element);
-                        }
-                        case Event.MOUSE_BUTTON_UP -> {
-                            // this.drag = null;
-                            Mouse.Button button = e.get("button");
-    
-                            Vector2dc pos = e.get("pos");
-    
-                            UIElement element = this.topElement;
-                            while (element != null)
-                            {
-                                if (element.onMouseButtonUp(button, pos.x() - element.absX(), pos.y() - element.absY())) break;
-                                element = element.parent();
-                            }
-                        }
-                        case Event.MOUSE_BUTTON_CLICKED -> {
-                            Mouse.Button button = e.get("button");
-    
-                            Vector2dc pos = e.get("pos");
-    
-                            boolean doubleClicked = e.get("doubleClicked");
-    
-                            UIElement element = this.topElement;
-                            while (element != null)
-                            {
-                                if (element.onMouseButtonClicked(button, pos.x() - element.absX(), pos.y() - element.absY(), doubleClicked)) break;
-                                element = element.parent();
-                            }
-                        }
-                        case Event.MOUSE_BUTTON_HELD -> {
-                            Mouse.Button button = e.get("button");
-    
-                            Vector2dc pos = e.get("pos");
-    
-                            UIElement element = this.topElement;
-                            while (element != null)
-                            {
-                                if (element.onMouseButtonHeld(button, pos.x() - element.absX(), pos.y() - element.absY())) break;
-                                element = element.parent();
-                            }
-                        }
-                        case Event.MOUSE_BUTTON_REPEAT -> {
-                            Mouse.Button button = e.get("button");
-    
-                            Vector2dc pos = e.get("pos");
-    
-                            UIElement element = this.topElement;
-                            while (element != null)
-                            {
-                                if (element.onMouseButtonRepeated(button, pos.x() - element.absX(), pos.y() - element.absY())) break;
-                                element = element.parent();
-                            }
-                        }
-                        case Event.MOUSE_BUTTON_DRAGGED -> {
-                            Mouse.Button button = e.get("button");
-    
-                            Vector2dc drag = e.get("dragPos");
-                            Vector2dc pos  = e.get("pos");
-                            Vector2dc rel  = e.get("rel");
-    
-                            UIElement element = this.topElement;
-                            while (element != null)
-                            {
-                                if (element.onMouseButtonDragged(button, pos.x() - element.absX(), pos.y() - element.absY(), drag.x(), drag.y(), rel.x(), rel.y()))
-                                {
-                                    // this.drag = element;
-                                    break;
-                                }
-                                element = element.parent();
-                            }
-                        }
-                        case Event.MOUSE_SCROLLED -> {
-                            Vector2dc dir = e.get("dir");
-    
-                            // TODO - This may cause double events so look out for them. FIXED MAYBE?
-                            UIElement element = this.topElement != this.focusedVScrollbar ? this.focusedVScrollbar : this.topElement;
-                            while (element != null)
-                            {
-                                if (element.onMouseScrolled(dir.x(), dir.y())) break;
-                                element = element.parent();
-                            }
-                        }
-                    }
+                    if (element.onMouseButtonDown(button, pos.x() - element.absX(), pos.y() - element.absY())) break;
+                    element = element.parent();
                 }
+                setFocused(element);
+                return;
             }
-            Engine.profiler().endSection();
-    
-            Engine.profiler().startSection("Keyboard");
+            if (event instanceof EventMouseButtonUp)
             {
-                if (this.focusedElement != null)
+                // this.drag = null;
+    
+                UIElement element = this.topElement;
+                while (element != null)
                 {
-                    for (Event e : Events.get(EventGroup.KEYBOARD))
-                    {
-                        switch (e.type())
-                        {
-                            case Event.KEYBOARD_KEY_DOWN -> {
-                                Keyboard.Key key = e.get("key");
-    
-                                UIElement element = this.focusedElement;
-                                while (element != null)
-                                {
-                                    if (element.onKeyboardKeyDown(key)) break;
-                                    element = element.parent();
-                                }
-                            }
-                            case Event.KEYBOARD_KEY_UP -> {
-                                Keyboard.Key key = e.get("key");
-    
-                                UIElement element = this.focusedElement;
-                                while (element != null)
-                                {
-                                    if (element.onKeyboardKeyUp(key)) break;
-                                    element = element.parent();
-                                }
-                            }
-                            case Event.KEYBOARD_KEY_HELD -> {
-                                Keyboard.Key key = e.get("key");
-    
-                                UIElement element = this.focusedElement;
-                                while (element != null)
-                                {
-                                    if (element.onKeyboardKeyHeld(key)) break;
-                                    element = element.parent();
-                                }
-                            }
-                            case Event.KEYBOARD_KEY_REPEAT -> {
-                                Keyboard.Key key = e.get("key");
-    
-                                UIElement element = this.focusedElement;
-                                while (element != null)
-                                {
-                                    if (element.onKeyboardKeyRepeated(key)) break;
-                                    element = element.parent();
-                                }
-                            }
-                            case Event.KEYBOARD_KEY_PRESSED -> {
-                                Keyboard.Key key = e.get("key");
-    
-                                boolean doublePressed = e.get("doublePressed");
-    
-                                UIElement element = this.focusedElement;
-                                while (element != null)
-                                {
-                                    if (element.onKeyboardKeyPressed(key, doublePressed)) break;
-                                    element = element.parent();
-                                }
-                            }
-                            case Event.KEYBOARD_KEY_TYPED -> {
-                                char charTyped = e.get("charTyped");
-    
-                                UIElement element = this.focusedElement;
-                                while (element != null)
-                                {
-                                    if (element.onKeyboardKeyTyped(charTyped)) break;
-                                    element = element.parent();
-                                }
-                            }
-                        }
-                    }
+                    if (element.onMouseButtonUp(button, pos.x() - element.absX(), pos.y() - element.absY())) break;
+                    element = element.parent();
                 }
+                return;
             }
-            Engine.profiler().endSection();
+            if (event instanceof EventMouseButtonHeld)
+            {
+                UIElement element = this.topElement;
+                while (element != null)
+                {
+                    if (element.onMouseButtonHeld(button, pos.x() - element.absX(), pos.y() - element.absY())) break;
+                    element = element.parent();
+                }
+                return;
+            }
+            if (event instanceof EventMouseButtonRepeated)
+            {
+                UIElement element = this.topElement;
+                while (element != null)
+                {
+                    if (element.onMouseButtonRepeated(button, pos.x() - element.absX(), pos.y() - element.absY())) break;
+                    element = element.parent();
+                }
+                return;
+            }
+            if (event instanceof EventMouseButtonPressed)
+            {
+                EventMouseButtonPressed e = (EventMouseButtonPressed) event;
+    
+                boolean doubleClicked = e.doublePressed();
+    
+                UIElement element = this.topElement;
+                while (element != null)
+                {
+                    if (element.onMouseButtonClicked(button, pos.x() - element.absX(), pos.y() - element.absY(), doubleClicked)) break;
+                    element = element.parent();
+                }
+                return;
+            }
+            if (event instanceof EventMouseButtonDragged)
+            {
+                EventMouseButtonDragged e = (EventMouseButtonDragged) event;
+    
+                Vector2dc drag = e.dragStart();
+                Vector2dc rel  = e.rel();
+    
+                UIElement element = this.topElement;
+                while (element != null)
+                {
+                    if (element.onMouseButtonDragged(button, pos.x() - element.absX(), pos.y() - element.absY(), drag.x(), drag.y(), rel.x(), rel.y()))
+                    {
+                        // this.drag = element;
+                        break;
+                    }
+                    element = element.parent();
+                }
+                return;
+            }
         }
         Engine.profiler().endSection();
+    }
+    
+    @EventBus.Subscribe
+    public void handleMouseButton(EventMouseScrolled event)
+    {
+        Vector2dc dir = event.scroll();
+    
+        // TODO - This may cause double events so look out for them. FIXED MAYBE?
+        UIElement element = this.topElement != this.focusedVScrollbar ? this.focusedVScrollbar : this.topElement;
+        while (element != null)
+        {
+            if (element.onMouseScrolled(dir.x(), dir.y())) break;
+            element = element.parent();
+        }
+    }
+    
+    @EventBus.Subscribe
+    public void handleKeyboardKey(EventKeyboardKey event)
+    {
+        Engine.profiler().startSection("Keyboard");
+        {
+            if (this.focusedElement != null)
+            {
+                Keyboard.Key key = event.key();
+                
+                if (event instanceof EventKeyboardKeyDown)
+                {
+                    UIElement element = this.focusedElement;
+                    while (element != null)
+                    {
+                        if (element.onKeyboardKeyDown(key)) break;
+                        element = element.parent();
+                    }
+                    return;
+                }
+                if (event instanceof EventKeyboardKeyUp)
+                {
+                    UIElement element = this.focusedElement;
+                    while (element != null)
+                    {
+                        if (element.onKeyboardKeyUp(key)) break;
+                        element = element.parent();
+                    }
+                    return;
+                }
+                if (event instanceof EventKeyboardKeyHeld)
+                {
+                    UIElement element = this.focusedElement;
+                    while (element != null)
+                    {
+                        if (element.onKeyboardKeyHeld(key)) break;
+                        element = element.parent();
+                    }
+                    return;
+                }
+                if (event instanceof EventKeyboardKeyRepeated)
+                {
+                    UIElement element = this.focusedElement;
+                    while (element != null)
+                    {
+                        if (element.onKeyboardKeyRepeated(key)) break;
+                        element = element.parent();
+                    }
+                    return;
+                }
+                if (event instanceof EventKeyboardKeyPressed)
+                {
+                    boolean doublePressed = ((EventKeyboardKeyPressed) event).doublePressed();
+    
+                    UIElement element = this.focusedElement;
+                    while (element != null)
+                    {
+                        if (element.onKeyboardKeyPressed(key, doublePressed)) break;
+                        element = element.parent();
+                    }
+                    return;
+                }
+            }
+        }
+        Engine.profiler().endSection();
+    }
+    
+    @EventBus.Subscribe
+    public void handleKeyTyped(EventKeyboardTyped event)
+    {
+        String charTyped = event.typed();
+    
+        UIElement element = this.focusedElement;
+        while (element != null)
+        {
+            if (element.onKeyboardKeyTyped(charTyped)) break;
+            element = element.parent();
+        }
     }
     
     /**
@@ -338,26 +345,26 @@ public class EEXT_GUI extends Extension
     public void afterDraw(double elapsedTime)
     {
         Vector2dc mouse = screenToGUI(Engine.mouse().x(), Engine.mouse().y());
-    
+        
         double mouseX = mouse.x();
         double mouseY = mouse.y();
-    
+        
         Engine.profiler().startSection("UIElements Update");
         {
             this.redrawScreen |= this.rootContainer.update(elapsedTime, mouseX, mouseY);
         }
         Engine.profiler().endSection();
-    
+        
         Engine.profiler().startSection("UIElements Draw");
         {
             if (this.redrawScreen)
             {
                 Engine.layer(Engine.layerCount() - 1);
-    
+                
                 Engine.clear(Color.BLANK);
-    
+                
                 this.rootContainer.draw(elapsedTime, mouseX, mouseY);
-    
+                
                 this.redrawScreen = false;
             }
             Engine.profiler().endSection();
@@ -385,15 +392,15 @@ public class EEXT_GUI extends Extension
     public static void createGUI(int width, int height, String themePath, boolean liveThemeUpdates)
     {
         EEXT_GUI.INSTANCE.enabled = true;
-    
+        
         EEXT_GUI.INSTANCE.size.set(width, height);
         Engine.createLayer(Engine.layerCount() - 1, width, height);
-    
+        
         EEXT_GUI.INSTANCE.theme = new Theme();
         if (themePath != null) EEXT_GUI.INSTANCE.theme.loadTheme(themePath);
-    
+        
         EEXT_GUI.INSTANCE.liveThemeUpdates = liveThemeUpdates;
-    
+        
         EEXT_GUI.INSTANCE.rootContainer = new UIContainer(new Rect(0, 0, width, height), null, null, "#root_container");
     }
     
@@ -457,7 +464,7 @@ public class EEXT_GUI extends Extension
         if (element == EEXT_GUI.INSTANCE.focusedElement) return;
         
         if (EEXT_GUI.INSTANCE.focusedElement != null) EEXT_GUI.INSTANCE.focusedElement.onUnfocus();
-    
+        
         EEXT_GUI.INSTANCE.focusedElement = element;
         
         if (EEXT_GUI.INSTANCE.focusedElement != null)

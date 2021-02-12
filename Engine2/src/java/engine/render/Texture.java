@@ -272,11 +272,12 @@ public class Texture
     public Texture copy(Texture other)
     {
         if (this.width != other.width || this.height != other.height || this.channels != other.channels) throw new RuntimeException("Sprites are not same size.");
-        
+    
         MemoryUtil.memCopy(this.data, other.data);
-        // glCopyImageSubData(this.id, GL_TEXTURE_2D, 0, 0, 0, 0, other.id, GL_TEXTURE_2D, 0, 0, 0, 0, this.width, this.height, this.channels);
-        glBlitNamedFramebuffer(this.id, other.id, 0, 0, this.width, this.height, 0, 0, other.width, other.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-        
+        glCopyImageSubData(this.id, GL_TEXTURE_2D, 0, 0, 0, 0,
+                           other.id, GL_TEXTURE_2D, 0, 0, 0, 0,
+                           this.width, this.height, this.channels);
+    
         return other;
     }
     

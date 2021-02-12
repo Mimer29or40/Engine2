@@ -2897,14 +2897,7 @@ public class Engine
         {
             char ch = className.charAt(i);
             if (i > 0 && Character.isUpperCase(ch)) name.append(' ');
-            if (ch == '_')
-            {
-                name.append(" - ");
-            }
-            else
-            {
-                name.append(ch);
-            }
+            name.append(ch == '_' ? " - " : ch);
         }
         this.name = name.toString();
     }

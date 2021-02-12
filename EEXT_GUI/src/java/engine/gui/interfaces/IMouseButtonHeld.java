@@ -1,6 +1,6 @@
 package engine.gui.interfaces;
 
-import engine.input.Mouse;
+import engine.Mouse;
 
 /**
  * Interface to provide a way to attach a function to UIElement events

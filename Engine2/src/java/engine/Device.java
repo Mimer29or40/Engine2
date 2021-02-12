@@ -1,4 +1,4 @@
-package engine.input;
+package engine;
 
 import rutils.Logger;
 
@@ -204,50 +204,50 @@ public abstract class Device<I extends Device.Input>
         {
             return getClass().getSimpleName() + "." + this.name;
         }
-        
+    
         /**
-         * @return If the Input was pressed with optional modifiers. This will only be true for one frame.
+         * @return If the Input was pressed with optional modifier. This will only be true for one frame.
          */
-        public boolean down(Modifiers.Modifier... modifiers)
+        public boolean down(Modifier.Modifier... modifiers)
         {
             return this.down && checkModifiers(modifiers);
         }
-        
+    
         /**
-         * @return If the Input was released with optional modifiers. This will only be true for one frame.
+         * @return If the Input was released with optional modifier. This will only be true for one frame.
          */
-        public boolean up(Modifiers.Modifier... modifiers)
+        public boolean up(Modifier.Modifier... modifiers)
         {
             return this.up && checkModifiers(modifiers);
         }
-        
+    
         /**
-         * @return If the Input is being held down with optional modifiers.
+         * @return If the Input is being held down with optional modifier.
          */
-        public boolean held(Modifiers.Modifier... modifiers)
+        public boolean held(Modifier.Modifier... modifiers)
         {
             return this.held && checkModifiers(modifiers);
         }
-        
+    
         /**
-         * @return If the Input is being repeated with optional modifiers. This will be true for one frame at a time.
+         * @return If the Input is being repeated with optional modifier. This will be true for one frame at a time.
          */
-        public boolean repeat(Modifiers.Modifier... modifiers)
+        public boolean repeat(Modifier.Modifier... modifiers)
         {
             return this.repeat && checkModifiers(modifiers);
         }
-        
+    
         /**
-         * Checks if the supplied modifiers match which modifiers are pressed.
+         * Checks if the supplied modifier match which modifier are pressed.
          *
-         * @param modifiers The array of modifiers.
-         * @return True if the supplied modifiers matches the actual modifiers.
+         * @param modifiers The array of modifier.
+         * @return True if the supplied modifier matches the actual modifier.
          */
-        protected boolean checkModifiers(Modifiers.Modifier[] modifiers)
+        protected boolean checkModifiers(Modifier.Modifier[] modifiers)
         {
             if (modifiers.length == 0) return true;
             int mods = 0;
-            for (Modifiers.Modifier modifier : modifiers) mods |= modifier.value();
+            for (Modifier.Modifier modifier : modifiers) mods |= modifier.value();
             return (mods == 0 && this.mods == 0) || (this.mods & mods) != 0;
         }
     }

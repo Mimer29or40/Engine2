@@ -1,12 +1,12 @@
 package engine.gui;
 
 import engine.Engine;
+import engine.Keyboard;
+import engine.Mouse;
 import engine.font.Font;
 import engine.gui.interfaces.*;
 import engine.gui.util.Rect;
 import engine.gui.util.Rectc;
-import engine.input.Keyboard;
-import engine.input.Mouse;
 import engine.render.RectMode;
 import engine.render.TextAlign;
 import engine.render.Texture;

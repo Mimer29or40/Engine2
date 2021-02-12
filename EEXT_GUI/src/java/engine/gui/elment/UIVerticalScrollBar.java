@@ -1,11 +1,11 @@
 package engine.gui.elment;
 
+import engine.Mouse;
 import engine.gui.EEXT_GUI;
 import engine.gui.UIElement;
 import engine.gui.interfaces.IFocus;
 import engine.gui.util.Rect;
 import engine.gui.util.Rectc;
-import engine.input.Mouse;
 import engine.render.Texture;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;

@@ -1,9 +1,9 @@
 package engine.gui.elment;
 
+import engine.Mouse;
 import engine.gui.UIElement;
 import engine.gui.interfaces.*;
 import engine.gui.util.Rectc;
-import engine.input.Mouse;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 

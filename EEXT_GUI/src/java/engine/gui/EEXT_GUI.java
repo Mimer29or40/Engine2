@@ -2,6 +2,8 @@ package engine.gui;
 
 import engine.Engine;
 import engine.Extension;
+import engine.Keyboard;
+import engine.Mouse;
 import engine.color.Color;
 import engine.event.Event;
 import engine.event.EventGroup;
@@ -10,8 +12,6 @@ import engine.font.FontFamily;
 import engine.gui.elment.UIContainer;
 import engine.gui.elment.UIWindow;
 import engine.gui.util.Rect;
-import engine.input.Keyboard;
-import engine.input.Mouse;
 import org.joml.Vector2d;
 import org.joml.Vector2dc;
 import org.joml.Vector2i;

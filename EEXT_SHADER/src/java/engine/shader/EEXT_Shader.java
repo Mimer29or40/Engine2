@@ -2,9 +2,9 @@ package engine.shader;
 
 import engine.Engine;
 import engine.Extension;
+import engine.Keyboard;
+import engine.Mouse;
 import engine.color.Color;
-import engine.input.Keyboard;
-import engine.input.Mouse;
 import engine.render.TextAlign;
 import engine.render.Texture;
 import engine.render.gl.GLConst;

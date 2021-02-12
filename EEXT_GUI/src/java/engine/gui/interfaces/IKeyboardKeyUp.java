@@ -1,6 +1,6 @@
 package engine.gui.interfaces;
 
-import engine.input.Keyboard;
+import engine.Keyboard;
 
 /**
  * Interface to provide a way to attach a function to UIElement events

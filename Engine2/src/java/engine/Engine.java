@@ -8,9 +8,6 @@ import engine.color.Color;
 import engine.color.Colorc;
 import engine.event.Events;
 import engine.font.Font;
-import engine.input.Keyboard;
-import engine.input.Modifiers;
-import engine.input.Mouse;
 import engine.render.*;
 import engine.render.gl.GLConst;
 import engine.render.gl.GLShader;
@@ -18,12 +15,19 @@ import engine.render.gl.GLVertexArray;
 import engine.util.Random;
 import engine.util.noise.SimplexNoise;
 import engine.util.noise.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.*;
+import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWGamepadState;
+import org.lwjgl.system.APIUtil;
+import org.lwjgl.system.Callback;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import org.reflections.Reflections;
 import rutils.Logger;
+import rutils.group.Pair;
 import rutils.group.Triple;
 import rutils.profiler.Profiler;
 import rutils.profiler.SectionData;
@@ -32,14 +36,14 @@ import java.lang.Math;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.SynchronousQueue;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 
-import static org.lwjgl.glfw.GLFW.glfwInit;
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL43.*;
 import static org.lwjgl.stb.STBEasyFont.*;
 import static org.lwjgl.stb.STBImageWrite.stbi_write_png;
@@ -52,68 +56,89 @@ public class Engine
     private static final String TITLE  = "Engine - %s - FPS(%s) SPF(Avg: %s us, Min: %s us, Max: %s us)";
     private static final Logger LOGGER = new Logger();
     
-    private static FileConfig config;
+    protected static FileConfig config;
     
-    private static Engine  logic;
-    private static boolean running;
-    private static long    startTime;
+    protected static Engine  logic;
+    protected static boolean running;
+    protected static long    startTime;
     
-    private static final HashMap<String, Extension> extensions = new HashMap<>();
+    protected static final HashMap<String, Extension> extensions = new HashMap<>();
     
-    private static long frameRate;
-    private static long frameCount;
+    protected static long frameRate;
+    protected static long frameCount;
     
-    private static final Vector2i screenSize = new Vector2i();
-    private static final Vector2i pixelSize  = new Vector2i();
+    protected static final Vector2i screenSize = new Vector2i();
+    protected static final Vector2i pixelSize  = new Vector2i();
     
-    private static Random random;
+    protected static Random random;
     
-    private static Noise valueNoise;
-    private static Noise perlinNoise;
-    private static Noise simplexNoise;
-    private static Noise openSimplexNoise;
-    private static Noise worleyNoise;
-    private static Noise noise;
+    protected static Noise valueNoise;
+    protected static Noise perlinNoise;
+    protected static Noise simplexNoise;
+    protected static Noise openSimplexNoise;
+    protected static Noise worleyNoise;
+    protected static Noise noise;
     
-    private static Mouse     mouse;
-    private static Keyboard  keyboard;
-    private static Modifiers modifiers;
-    private static Window    window;
+    protected static final Map<Long, Monitor> monitors       = new LinkedHashMap<>();
+    protected static       Monitor            primaryMonitor = null;
     
-    private static Renderer renderer;
+    protected static Window window;
     
-    private static int           layerCount;
-    private static Texture[]     layers;
-    private static boolean[]     activeLayers;
-    private static GLShader      screenShader;
-    private static GLVertexArray screenVAO;
+    protected static Mouse    mouse;
+    protected static Keyboard keyboard;
     
-    private static GLShader      debugShader;
-    private static GLVertexArray debugTextVAO;
-    private static GLVertexArray debugBoxVAO;
-    private static Matrix4f      debugView;
+    protected static final Map<Integer, Joystick> joysticks = new LinkedHashMap<>(); // TODO
     
-    private static final Profiler profiler = Profiler.get("engine");
+    // -------------------- Joystick Callback Emulation -------------------- //
+    private static final float[][] JOYSTICK_AXIS_STATES   = new float[GLFW_JOYSTICK_LAST][];
+    private static final byte[][]  JOYSTICK_BUTTON_STATES = new byte[GLFW_JOYSTICK_LAST][];
+    private static final byte[][]  JOYSTICK_HAT_STATES    = new byte[GLFW_JOYSTICK_LAST][];
+    // -------------------- Joystick Callback Emulation -------------------- //
     
-    private static final Color debugLineText       = new Color();
-    private static final Color debugLineBackground = new Color();
+    protected static Renderer renderer;
     
-    private static final List<Triple<Integer, Integer, String>> debugLines = new ArrayList<>();
+    protected static int           layerCount;
+    protected static Texture[]     layers;
+    protected static boolean[]     activeLayers;
+    protected static GLShader      screenShader;
+    protected static GLVertexArray screenVAO;
     
-    private static long    titleFrequency;
-    private static boolean debug;
-    private static String  notification;
-    private static long    notificationTime;
-    private static long    notificationDuration;
+    protected static GLShader      debugShader;
+    protected static GLVertexArray debugTextVAO;
+    protected static GLVertexArray debugBoxVAO;
+    protected static Matrix4f      debugView;
     
-    private static long              profilerFrequency;
-    private static int               profilerMode;
-    private static String            profilerParent;
-    private static List<SectionData> profilerData;
+    protected static final Profiler profiler = Profiler.get("engine");
     
-    private static boolean paused;
+    protected static final Color debugLineText       = new Color();
+    protected static final Color debugLineBackground = new Color();
     
-    private static String screenshot;
+    protected static final List<Triple<Integer, Integer, String>> debugLines = new ArrayList<>();
+    
+    protected static long    titleFrequency;
+    protected static boolean debug;
+    protected static String  notification;
+    protected static long    notificationTime;
+    protected static long    notificationDuration;
+    
+    protected static long              profilerFrequency;
+    protected static int               profilerMode;
+    protected static String            profilerParent;
+    protected static List<SectionData> profilerData;
+    
+    protected static boolean paused;
+    
+    protected static String screenshot;
+    
+    // ----------------
+    // -- Task Stuff --
+    // ----------------
+    
+    protected static final Deque<Pair<Runnable, Boolean>>          runTasks          = new ArrayDeque<>();
+    protected static final Deque<Runnable>                         waitRunTasks      = new ArrayDeque<>();
+    protected static final BlockingQueue<Pair<Integer, Exception>> waitRunResults    = new SynchronousQueue<>();
+    protected static final Deque<Supplier<Object>>                 waitReturnTasks   = new ArrayDeque<>();
+    protected static final BlockingQueue<Pair<Object, Exception>>  waitReturnResults = new SynchronousQueue<>();
     
     // ----------------------
     // -- Engine Functions --
@@ -295,95 +320,96 @@ public class Engine
                                         
                                         Engine.profiler.startSection("Mouse");
                                         {
-                                            Engine.mouse.handleEvents(t, dt);
+                                            Engine.mouse.postEvents(t, dt);
                                         }
                                         Engine.profiler.endSection();
                                         
                                         Engine.profiler.startSection("Keyboard");
                                         {
-                                            Engine.keyboard.handleEvents(t, dt);
+                                            Engine.keyboard.postEvents(t, dt);
                                         }
                                         Engine.profiler.endSection();
-                                        
+    
                                         Engine.profiler.startSection("Window");
                                         {
-                                            Engine.window.handleEvents(t, dt);
+                                            Engine.window.postEvents(t, dt);
                                         }
                                         Engine.profiler.endSection();
-                                        
-                                        Engine.profiler.startSection("Internal");
-                                        {
-                                            if (Engine.keyboard.F1.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
-                                            {
-                                                Engine.profilerData = null;
-                                                Engine.profiler.enabled(false);
-                                                Engine.profilerMode = 0;
-                                                notification("Profile Mode: Off");
-                                            }
-                                            if (Engine.keyboard.F2.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
-                                            {
-                                                Engine.profiler.enabled(true);
-                                                Engine.profilerMode = 1;
-                                                notification("Profile Mode: Average");
-                                            }
-                                            if (Engine.keyboard.F3.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
-                                            {
-                                                Engine.profiler.enabled(true);
-                                                Engine.profilerMode = 2;
-                                                notification("Profile Mode: Min");
-                                            }
-                                            if (Engine.keyboard.F4.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
-                                            {
-                                                Engine.profiler.enabled(true);
-                                                Engine.profilerMode = 3;
-                                                notification("Profile Mode: Max");
-                                            }
-                                            if (Engine.keyboard.F5.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
-                                            {
-                                                Engine.profiler.enabled(true);
-                                                Engine.profilerMode = 4;
-                                                notification("Profile Mode: Real-Time");
-                                            }
-                                            if (Engine.keyboard.F10.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
-                                            {
-                                                Engine.renderer.debug(!Engine.renderer.debug());
-                                                notification(Engine.renderer.debug() ? "Renderer Debug Mode: On" : "Renderer Debug Mode: Off");
-                                            }
-                                            if (Engine.keyboard.F11.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
-                                            {
-                                                Engine.debug = !Engine.debug;
-                                                notification(Engine.debug ? "Debug Mode: On" : "Debug Mode: Off");
-                                            }
-                                            if (Engine.keyboard.F12.down(Engine.modifiers.CONTROL, Engine.modifiers.ALT, Engine.modifiers.SHIFT))
-                                            {
-                                                Engine.paused = !Engine.paused;
-                                                notification(Engine.paused ? "Engine Paused" : "Engine Unpaused");
-                                            }
-                                            if (Engine.profilerMode > 0 && Engine.profilerData != null)
-                                            {
-                                                for (int i = 1; i < 9; i++)
-                                                {
-                                                    if (Engine.keyboard.get("K" + i).down() && Engine.profilerData.size() > i)
-                                                    {
-                                                        String name = Engine.profilerData.get(i).name;
-                                                        if (name.contains(".")) name = name.substring(name.lastIndexOf(".") + 1);
-                                                        Engine.profilerParent = (Engine.profilerParent != null ? Engine.profilerParent + "." : "") + name;
-                                                    }
-                                                }
-                                                if (Engine.keyboard.K0.down() && Engine.profilerParent != null)
-                                                {
-                                                    if (Engine.profilerParent.contains("."))
-                                                    {
-                                                        Engine.profilerParent = Engine.profilerParent.substring(0, Engine.profilerParent.lastIndexOf("."));
-                                                    }
-                                                    else
-                                                    {
-                                                        Engine.profilerParent = null;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        Engine.profiler.endSection();
+    
+                                        // TODO
+                                        // Engine.profiler.startSection("Internal");
+                                        // {
+                                        //     if (Engine.keyboard.F1.down(Engine.modifier.CONTROL, Engine.modifier.ALT, Engine.modifier.SHIFT))
+                                        //     {
+                                        //         Engine.profilerData = null;
+                                        //         Engine.profiler.enabled(false);
+                                        //         Engine.profilerMode = 0;
+                                        //         notification("Profile Mode: Off");
+                                        //     }
+                                        //     if (Engine.keyboard.F2.down(Engine.modifier.CONTROL, Engine.modifier.ALT, Engine.modifier.SHIFT))
+                                        //     {
+                                        //         Engine.profiler.enabled(true);
+                                        //         Engine.profilerMode = 1;
+                                        //         notification("Profile Mode: Average");
+                                        //     }
+                                        //     if (Engine.keyboard.F3.down(Engine.modifier.CONTROL, Engine.modifier.ALT, Engine.modifier.SHIFT))
+                                        //     {
+                                        //         Engine.profiler.enabled(true);
+                                        //         Engine.profilerMode = 2;
+                                        //         notification("Profile Mode: Min");
+                                        //     }
+                                        //     if (Engine.keyboard.F4.down(Engine.modifier.CONTROL, Engine.modifier.ALT, Engine.modifier.SHIFT))
+                                        //     {
+                                        //         Engine.profiler.enabled(true);
+                                        //         Engine.profilerMode = 3;
+                                        //         notification("Profile Mode: Max");
+                                        //     }
+                                        //     if (Engine.keyboard.F5.down(Engine.modifier.CONTROL, Engine.modifier.ALT, Engine.modifier.SHIFT))
+                                        //     {
+                                        //         Engine.profiler.enabled(true);
+                                        //         Engine.profilerMode = 4;
+                                        //         notification("Profile Mode: Real-Time");
+                                        //     }
+                                        //     if (Engine.keyboard.F10.down(Engine.modifier.CONTROL, Engine.modifier.ALT, Engine.modifier.SHIFT))
+                                        //     {
+                                        //         Engine.renderer.debug(!Engine.renderer.debug());
+                                        //         notification(Engine.renderer.debug() ? "Renderer Debug Mode: On" : "Renderer Debug Mode: Off");
+                                        //     }
+                                        //     if (Engine.keyboard.F11.down(Engine.modifier.CONTROL, Engine.modifier.ALT, Engine.modifier.SHIFT))
+                                        //     {
+                                        //         Engine.debug = !Engine.debug;
+                                        //         notification(Engine.debug ? "Debug Mode: On" : "Debug Mode: Off");
+                                        //     }
+                                        //     if (Engine.keyboard.F12.down(Engine.modifier.CONTROL, Engine.modifier.ALT, Engine.modifier.SHIFT))
+                                        //     {
+                                        //         Engine.paused = !Engine.paused;
+                                        //         notification(Engine.paused ? "Engine Paused" : "Engine Unpaused");
+                                        //     }
+                                        //     if (Engine.profilerMode > 0 && Engine.profilerData != null)
+                                        //     {
+                                        //         for (int i = 1; i < 9; i++)
+                                        //         {
+                                        //             if (Engine.keyboard.get("K" + i).down() && Engine.profilerData.size() > i)
+                                        //             {
+                                        //                 String name = Engine.profilerData.get(i).name;
+                                        //                 if (name.contains(".")) name = name.substring(name.lastIndexOf(".") + 1);
+                                        //                 Engine.profilerParent = (Engine.profilerParent != null ? Engine.profilerParent + "." : "") + name;
+                                        //             }
+                                        //         }
+                                        //         if (Engine.keyboard.K0.down() && Engine.profilerParent != null)
+                                        //         {
+                                        //             if (Engine.profilerParent.contains("."))
+                                        //             {
+                                        //                 Engine.profilerParent = Engine.profilerParent.substring(0, Engine.profilerParent.lastIndexOf("."));
+                                        //             }
+                                        //             else
+                                        //             {
+                                        //                 Engine.profilerParent = null;
+                                        //             }
+                                        //         }
+                                        //     }
+                                        // }
+                                        // Engine.profiler.endSection();
                                     }
                                     Engine.profiler.endSection();
     
@@ -457,8 +483,8 @@ public class Engine
                                         {
                                             if (Engine.window.updateViewport())
                                             {
-                                                Engine.pixelSize.x = Math.max(Engine.window.viewW() / Engine.screenSize.x, 1);
-                                                Engine.pixelSize.y = Math.max(Engine.window.viewH() / Engine.screenSize.y, 1);
+                                                Engine.pixelSize.x = Math.max(Engine.window.framebufferWidth() / Engine.screenSize.x, 1);
+                                                Engine.pixelSize.y = Math.max(Engine.window.framebufferHeight() / Engine.screenSize.y, 1);
                                             }
                                         }
                                         Engine.profiler.endSection();
@@ -487,9 +513,9 @@ public class Engine
                                         dt = t - Engine.notificationTime;
                                         if (dt < Engine.notificationDuration && Engine.notification != null)
                                         {
-                                            int x = (Engine.window.viewW() - stb_easy_font_width(Engine.notification)) >> 1;
-                                            int y = (Engine.window.viewH() - stb_easy_font_height(Engine.notification)) >> 1;
-                                            
+                                            int x = (Engine.window.framebufferWidth() - stb_easy_font_width(Engine.notification)) >> 1;
+                                            int y = (Engine.window.framebufferHeight() - stb_easy_font_height(Engine.notification)) >> 1;
+    
                                             drawDebugText(x, y, Engine.notification);
                                         }
                                         if (Engine.debug)
@@ -507,7 +533,7 @@ public class Engine
                                             int nameLength = 0;
                                             for (SectionData data : Engine.profilerData) nameLength = Math.max(nameLength, data.name.length());
     
-                                            int y = Engine.window.viewH() - stb_easy_font_height(" " + "\n".repeat(Engine.profilerData.size() - 1) + " ");
+                                            int y = Engine.window.framebufferHeight() - stb_easy_font_height(" " + "\n".repeat(Engine.profilerData.size() - 1) + " ");
                                             for (int i = 0, n = Engine.profilerData.size(); i < n; i++)
                                             {
                                                 SectionData data = Engine.profilerData.get(i);
@@ -536,12 +562,12 @@ public class Engine
                                                         for (Triple<Integer, Integer, String> line : Engine.debugLines)
                                                         {
                                                             int quads = stb_easy_font_print(line.a + 2, line.b + 2, line.c, null, charBuffer.clear());
-        
+    
                                                             float x1 = line.a;
                                                             float y1 = line.b;
                                                             float x2 = line.a + stb_easy_font_width(line.c) + 2;
                                                             float y2 = line.b + stb_easy_font_height(line.c);
-        
+    
                                                             boxBuffer.put(0, x1);
                                                             boxBuffer.put(1, y1);
                                                             boxBuffer.put(2, x2);
@@ -550,10 +576,10 @@ public class Engine
                                                             boxBuffer.put(5, y2);
                                                             boxBuffer.put(6, x1);
                                                             boxBuffer.put(7, y2);
-        
+    
                                                             Engine.debugShader.setUniform("color", Engine.debugLineBackground);
                                                             Engine.debugBoxVAO.bind().set(boxBuffer).draw(GLConst.QUADS).unbind();
-        
+    
                                                             Engine.debugShader.setUniform("color", Engine.debugLineText);
                                                             Engine.debugTextVAO.bind().set(charBuffer).draw(GLConst.QUADS, quads * 4).unbind();
                                                         }
@@ -701,7 +727,91 @@ public class Engine
                 {
                     while (Engine.running)
                     {
-                        Engine.window.pollEvents();
+                        glfwPollEvents();
+    
+                        // -------------------- Joystick Callback Emulation -------------------- //
+                        {
+                            for (int jid = GLFW_JOYSTICK_1; jid < GLFW_JOYSTICK_LAST; jid++)
+                            {
+                                int n;
+            
+                                if (glfwJoystickPresent(jid))
+                                {
+                                    FloatBuffer axes    = null;
+                                    ByteBuffer  buttons = null;
+                                    ByteBuffer  hats    = glfwGetJoystickHats(jid);
+                
+                                    if (!glfwJoystickIsGamepad(jid))
+                                    {
+                                        axes    = glfwGetJoystickAxes(jid);
+                                        buttons = glfwGetJoystickButtons(jid);
+                                    }
+                                    else
+                                    {
+                                        try (MemoryStack stack = MemoryStack.stackPush())
+                                        {
+                                            GLFWGamepadState state = GLFWGamepadState.mallocStack(stack);
+                        
+                                            if (glfwGetGamepadState(jid, state))
+                                            {
+                                                axes    = state.axes();
+                                                buttons = state.buttons();
+                                            }
+                                        }
+                                    }
+                
+                                    if (axes != null)
+                                    {
+                                        n = axes.remaining();
+                                        if (Engine.JOYSTICK_AXIS_STATES[jid].length != n) Engine.JOYSTICK_AXIS_STATES[jid] = new float[n];
+                                        for (int axis = 0; axis < n; axis++)
+                                        {
+                                            float newValue = axes.get(axis);
+                                            if (Float.compare(Engine.JOYSTICK_AXIS_STATES[jid][axis], newValue) != 0)
+                                            {
+                                                Engine.JOYSTICK_AXIS_STATES[jid][axis] = newValue;
+                                                if (!glfwJoystickPresent(jid)) break;
+                                                joystickAxisCallback(jid, axis, Engine.JOYSTICK_AXIS_STATES[jid][axis]);
+                                            }
+                                        }
+                                    }
+                                    if (buttons != null)
+                                    {
+                                        n = buttons.remaining();
+                                        if (Engine.JOYSTICK_BUTTON_STATES[jid].length != n) Engine.JOYSTICK_BUTTON_STATES[jid] = new byte[n];
+                                        for (int button = 0; button < n; button++)
+                                        {
+                                            byte newValue = buttons.get(button);
+                                            if (Float.compare(Engine.JOYSTICK_BUTTON_STATES[jid][button], newValue) != 0)
+                                            {
+                                                Engine.JOYSTICK_BUTTON_STATES[jid][button] = newValue;
+                                                if (!glfwJoystickPresent(jid)) break;
+                                                joystickButtonCallback(jid, button, Engine.JOYSTICK_BUTTON_STATES[jid][button]);
+                                            }
+                                        }
+                                    }
+                                    if (hats != null)
+                                    {
+                                        n = hats.remaining();
+                                        if (Engine.JOYSTICK_HAT_STATES[jid].length != n) Engine.JOYSTICK_HAT_STATES[jid] = new byte[n];
+                                        for (int hat = 0; hat < n; hat++)
+                                        {
+                                            byte newValue = hats.get(hat);
+                                            if (Float.compare(Engine.JOYSTICK_HAT_STATES[jid][hat], newValue) != 0)
+                                            {
+                                                Engine.JOYSTICK_HAT_STATES[jid][hat] = newValue;
+                                                if (!glfwJoystickPresent(jid)) break;
+                                                joystickHatCallback(jid, hat, Engine.JOYSTICK_HAT_STATES[jid][hat]);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        // -------------------- Joystick Callback Emulation -------------------- //
+    
+                        runTasks();
+    
                         Thread.yield();
                     }
                     latch.await();
@@ -720,27 +830,33 @@ public class Engine
                 Engine.LOGGER.finer("Extension:", name);
                 Engine.extensions.get(name).beforeDestroy();
             }
-            
+    
             Engine.LOGGER.fine("User Destruction");
             Engine.logic.destroy();
-            
+    
             Engine.LOGGER.fine("Extension Post Destruction");
             for (String name : Engine.extensions.keySet())
             {
                 Engine.LOGGER.finer("Extension:", name);
                 Engine.extensions.get(name).afterDestroy();
             }
-            
-            if (Engine.window != null)
-            {
-                Engine.LOGGER.finer("Window Destruction");
     
-                org.lwjgl.opengl.GL.setCapabilities(null);
-                org.lwjgl.opengl.GL.destroy();
-                
-                Engine.window.destroy();
-            }
-            
+            Engine.monitors.clear();
+            Engine.primaryMonitor = null;
+    
+            if (Engine.window != null) Engine.window.destroy();
+    
+            org.lwjgl.opengl.GL.destroy();
+    
+            Callback callback;
+            if ((callback = glfwSetErrorCallback(null)) != null) callback.free();
+            if ((callback = glfwSetMonitorCallback(null)) != null) callback.free();
+            if ((callback = glfwSetJoystickCallback(null)) != null) callback.free();
+    
+            runTasks();
+    
+            glfwTerminate();
+    
             Engine.LOGGER.finer("Saving/Closing Config");
             Engine.config.save();
             Engine.config.close();
@@ -781,21 +897,88 @@ public class Engine
     {
         Engine.screenSize.set(screenW, screenH);
         Engine.LOGGER.finest("Screen Size %s", Engine.screenSize);
-        
+    
         Engine.pixelSize.set(pixelW, pixelH);
         Engine.LOGGER.finest("Pixel Dimensions %s", Engine.pixelSize);
-        
+    
         if (Engine.screenSize.lengthSquared() == 0) throw new RuntimeException("Screen dimension must be > 0");
         if (Engine.pixelSize.lengthSquared() == 0) throw new RuntimeException("Pixel dimension must be > 0");
-        
+    
         Engine.LOGGER.finest("GLFW: Init");
         GLFWErrorCallback.createPrint(System.err).set();
         if (!glfwInit()) throw new IllegalStateException("Unable to initialize GLFW");
+    
+        Engine.window = new Window();
+    
+        Engine.mouse    = new Mouse();
+        Engine.keyboard = new Keyboard();
+    
+        for (int jid = GLFW_JOYSTICK_1; jid < GLFW_JOYSTICK_LAST; jid++)
+        {
+            // -------------------- Joystick Callback Emulation -------------------- //
+            {
+                if (glfwJoystickIsGamepad(jid))
+                {
+                    try (MemoryStack stack = MemoryStack.stackPush())
+                    {
+                        GLFWGamepadState state = GLFWGamepadState.mallocStack(stack);
+                    
+                        if (glfwGetGamepadState(jid, state))
+                        {
+                            FloatBuffer axes = state.axes();
+                            Engine.JOYSTICK_AXIS_STATES[jid] = new float[axes.remaining()];
+                        
+                            ByteBuffer buttons = state.buttons();
+                            Engine.JOYSTICK_BUTTON_STATES[jid] = new byte[buttons.remaining()];
+                        }
+                        else
+                        {
+                            Engine.JOYSTICK_AXIS_STATES[jid]   = new float[0];
+                            Engine.JOYSTICK_BUTTON_STATES[jid] = new byte[0];
+                        }
+                    }
+                }
+                else
+                {
+                    FloatBuffer axes = glfwGetJoystickAxes(jid);
+                    Engine.JOYSTICK_AXIS_STATES[jid] = axes != null ? new float[axes.remaining()] : new float[0];
+                
+                    ByteBuffer buttons = glfwGetJoystickButtons(jid);
+                    Engine.JOYSTICK_BUTTON_STATES[jid] = buttons != null ? new byte[buttons.remaining()] : new byte[0];
+                }
+            
+                ByteBuffer hats = glfwGetJoystickHats(jid);
+                Engine.JOYSTICK_HAT_STATES[jid] = hats != null ? new byte[hats.remaining()] : new byte[0];
+            }
+            // -------------------- Joystick Callback Emulation -------------------- //
         
-        Engine.window = new Window(Engine.mouse = new Mouse(), Engine.keyboard = new Keyboard(), Engine.modifiers = new Modifiers());
-        
+            if (glfwJoystickPresent(jid))
+            {
+                boolean isGamepad = glfwJoystickIsGamepad(jid);
+                Engine.joysticks.put(jid, isGamepad ? new Gamepad(jid) : new Joystick(jid, false));
+            }
+        }
+    
+        glfwSetWindowCloseCallback(Engine.window.handle, Engine::windowCloseCallback);
+        glfwSetWindowFocusCallback(Engine.window.handle, Engine::windowFocusCallback);
+        glfwSetWindowIconifyCallback(Engine.window.handle, Engine::windowIconifyCallback);
+        glfwSetWindowMaximizeCallback(Engine.window.handle, Engine::windowMaximizeCallback);
+        glfwSetWindowPosCallback(Engine.window.handle, Engine::windowPosCallback);
+        glfwSetWindowSizeCallback(Engine.window.handle, Engine::windowSizeCallback);
+        glfwSetWindowContentScaleCallback(Engine.window.handle, Engine::windowContentScaleCallback);
+        glfwSetFramebufferSizeCallback(Engine.window.handle, Engine::framebufferSizeCallback);
+        glfwSetWindowRefreshCallback(Engine.window.handle, Engine::windowRefreshCallback);
+        glfwSetDropCallback(Engine.window.handle, Engine::dropCallback);
+    
+        glfwSetCursorEnterCallback(Engine.window.handle, Engine::mouseEnteredCallback);
+        glfwSetCursorPosCallback(Engine.window.handle, Engine::mousePosCallback);
+        glfwSetScrollCallback(Engine.window.handle, Engine::scrollCallback);
+        glfwSetMouseButtonCallback(Engine.window.handle, Engine::mouseButtonCallback);
+    
+        glfwSetKeyCallback(Engine.window.handle, Engine::keyCallback);
+        glfwSetCharCallback(Engine.window.handle, Engine::charCallback);
+    
         Engine.window.makeCurrent();
-        org.lwjgl.opengl.GL.createCapabilities();
     
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_BLEND);
@@ -814,7 +997,7 @@ public class Engine
         Engine.debugShader  = new GLShader().loadFile("shaders/debug.vert").loadFile("shaders/debug.frag").validate().unbind();
         Engine.debugTextVAO = new GLVertexArray().bind().add((Float.BYTES * 3 + Byte.BYTES * 4) * 1024, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 3, GLConst.UNSIGNED_BYTE, 4).unbind();
         Engine.debugBoxVAO  = new GLVertexArray().bind().add((Float.BYTES * 2) * 8, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 2).unbind();
-        Engine.debugView    = new Matrix4f().setOrtho(0F, Engine.window.viewW(), Engine.window.viewH(), 0F, -1F, 1F);
+        Engine.debugView    = new Matrix4f().setOrtho(0F, Engine.window.framebufferWidth(), Engine.window.framebufferHeight(), 0F, -1F, 1F);
     }
     
     /**
@@ -965,14 +1148,6 @@ public class Engine
     }
     
     /**
-     * @return The modifiers instance. This will be null unless {@link #size} is called.
-     */
-    public static Modifiers modifiers()
-    {
-        return Engine.modifiers;
-    }
-    
-    /**
      * @return The window instance. This will be null unless {@link #size} is called.
      */
     public static Window window()
@@ -1036,6 +1211,313 @@ public class Engine
         Engine.notificationTime = nanoseconds();
     }
     
+    // ----------------
+    // -- Task Stuff --
+    // ----------------
+    
+    /**
+     * Runs a task on the TaskDelegator's thread. Non-blocking.
+     *
+     * @param task          The task to complete.
+     * @param passException If the TaskDelegator should pass the exception to the calling thread. If false the exception if effectively ignored.
+     */
+    public static void runTask(@NotNull Runnable task, boolean passException)
+    {
+        Engine.LOGGER.finest("Passing task to TaskDelegator, passException=%s", passException);
+        
+        if (Thread.currentThread().getName().equals("main"))
+        {
+            task.run();
+            return;
+        }
+        
+        Engine.runTasks.offer(new Pair<>(task, passException));
+    }
+    
+    /**
+     * Runs a task on the TaskDelegator's thread. Non-blocking.
+     *
+     * @param task The task to complete.
+     */
+    public static void runTask(@NotNull Runnable task)
+    {
+        runTask(task, false);
+    }
+    
+    /**
+     * Runs a task on the TaskDelegator's thread. Blocks until the task is completed.
+     *
+     * @param task The task to complete.
+     */
+    public static void waitRunTask(@NotNull Runnable task)
+    {
+        Engine.LOGGER.finest("Passing task to TaskDelegator and waiting for completion");
+        
+        if (Thread.currentThread().getName().equals("main"))
+        {
+            task.run();
+            return;
+        }
+        
+        Engine.waitRunTasks.offer(task);
+        
+        try
+        {
+            Pair<Integer, Exception> result = Engine.waitRunResults.take();
+            if (result.a != 0) throw new RuntimeException(result.b);
+        }
+        catch (InterruptedException e)
+        {
+            Engine.LOGGER.warning("Run task was interrupted.");
+        }
+    }
+    
+    /**
+     * Runs a supplier on the TaskDelegator's thread. Blocks until the task is completed.
+     *
+     * @param task The supplier to run.
+     * @param <T>  The type of the supplier.
+     * @return The supplied object or null if the thread was interrupted
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> @Nullable T waitReturnTask(@NotNull Supplier<T> task)
+    {
+        Engine.LOGGER.finest("Passing task to TaskDelegator and waiting for return");
+        
+        if (Thread.currentThread().getName().equals("main")) return task.get();
+        
+        Engine.waitReturnTasks.offer((Supplier<Object>) task);
+        
+        try
+        {
+            Pair<Object, Exception> result = Engine.waitReturnResults.take();
+            if (result.b != null) throw new RuntimeException(result.b);
+            return (T) result.a;
+        }
+        catch (InterruptedException e)
+        {
+            Engine.LOGGER.warning("Return task was interrupted.");
+        }
+        return null;
+    }
+    
+    private static void runTasks()
+    {
+        while (!Engine.runTasks.isEmpty())
+        {
+            Pair<Runnable, Boolean> task = Engine.runTasks.poll();
+            try
+            {
+                task.a.run();
+            }
+            catch (Exception e)
+            {
+                if (task.b)
+                {
+                    throw new RuntimeException(e);
+                }
+                else
+                {
+                    Engine.LOGGER.severe("An exception occurred while trying to run task.");
+                    Engine.LOGGER.severe(e);
+                }
+            }
+        }
+        
+        while (!Engine.waitRunTasks.isEmpty())
+        {
+            Runnable task = Engine.waitRunTasks.poll();
+            
+            int       result = 0;
+            Exception except = null;
+            try
+            {
+                task.run();
+            }
+            catch (Exception e)
+            {
+                result = 1;
+                except = e;
+            }
+            Engine.waitRunResults.offer(new Pair<>(result, except));
+        }
+        
+        while (!Engine.waitReturnTasks.isEmpty())
+        {
+            Supplier<Object> task = waitReturnTasks.poll();
+            
+            Object    result = null;
+            Exception except = null;
+            try
+            {
+                result = task.get();
+            }
+            catch (Exception e)
+            {
+                except = e;
+            }
+            Engine.waitReturnResults.offer(new Pair<>(result, except));
+        }
+    }
+    
+    // --------------------
+    // -- Callback Stuff --
+    // --------------------
+    
+    private static final Map<Integer, String> ERROR_CODES = APIUtil.apiClassTokens((field, value) -> 0x10000 < value && value < 0x20000, null, org.lwjgl.glfw.GLFW.class);
+    
+    private static void errorCallback(int error, long description)
+    {
+        StringBuilder message = new StringBuilder();
+        message.append("[LWJGL] ").append(Engine.ERROR_CODES.get(error)).append(" error\n");
+        message.append("\tDescription : ").append(MemoryUtil.memUTF8(description)).append('\n');
+        message.append("\tStacktrace  :\n");
+        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+        for (int i = 4; i < stack.length; i++) message.append("\t\t").append(stack[i].toString()).append('\n');
+        Engine.LOGGER.severe(message.toString());
+    }
+    
+    private static void monitorCallback(long handle, int event)
+    {
+        switch (event)
+        {
+            case GLFW_CONNECTED -> {
+                Monitor monitor = new Monitor(handle, Engine.monitors.size());
+                Engine.monitors.put(handle, monitor);
+                // GLFW.EVENT_BUS.post(EventMonitorConnected.create(monitor)); // TODO
+            }
+            case GLFW_DISCONNECTED -> {
+                Monitor monitor = Engine.monitors.remove(handle);
+                // Engine.EVENT_BUS.post(EventMonitorDisconnected.create(monitor)); // TODO
+            }
+        }
+        Engine.primaryMonitor = Engine.monitors.get(glfwGetPrimaryMonitor());
+    }
+    
+    private static void joystickCallback(int jid, int event)
+    {
+        // switch (event) // TODO
+        // {
+        //     case GLFW_CONNECTED -> {
+        //         Joystick joystick = glfwJoystickIsGamepad(jid) ? new Gamepad(jid) : new Joystick(jid, false);
+        //         GLFW.JOYSTICKS.put(jid, joystick);
+        //         GLFW.EVENT_BUS.post(EventJoystickConnected.create(joystick)); // TODO
+        //     }
+        //     case GLFW_DISCONNECTED -> {
+        //         Joystick joystick = GLFW.JOYSTICKS.remove(jid);
+        //         GLFW.EVENT_BUS.post(EventJoystickDisconnected.create(joystick)); // TODO
+        //         joystick.destroy();
+        //     }
+        // }
+    }
+    
+    private static void joystickAxisCallback(int jid, int axis, float value)
+    {
+        // Joystick joystick = GLFW.JOYSTICKS.get(jid);
+        //
+        // joystick.axisStateChanges.offer(new Pair<>(axis, value));
+    }
+    
+    private static void joystickButtonCallback(int jid, int button, int action)
+    {
+        // Joystick joystick = GLFW.JOYSTICKS.get(jid);
+        //
+        // joystick.buttonStateChanges.offer(new Pair<>(button, action));
+    }
+    
+    private static void joystickHatCallback(int jid, int hat, int action)
+    {
+        // Joystick joystick = GLFW.JOYSTICKS.get(jid);
+        //
+        // joystick.hatStateChanges.offer(new Pair<>(hat, action));
+    }
+    
+    private static void windowCloseCallback(long handle)
+    {
+        Engine.window._close = true;
+    }
+    
+    private static void windowFocusCallback(long handle, boolean focused)
+    {
+        Engine.window._focused = focused;
+    }
+    
+    private static void windowIconifyCallback(long handle, boolean iconified)
+    {
+        Engine.window._iconified = iconified;
+    }
+    
+    private static void windowMaximizeCallback(long handle, boolean maximized)
+    {
+        Engine.window._maximized = maximized;
+    }
+    
+    private static void windowRefreshCallback(long handle)
+    {
+        Engine.window._refresh = true;
+    }
+    
+    private static void windowPosCallback(long handle, int x, int y)
+    {
+        Engine.window._pos.set(x, y);
+    }
+    
+    private static void windowSizeCallback(long handle, int width, int height)
+    {
+        Engine.window._size.set(width, height);
+    }
+    
+    private static void windowContentScaleCallback(long handle, float xScale, float yScale)
+    {
+        Engine.window._scale.set(xScale, yScale);
+    }
+    
+    private static void framebufferSizeCallback(long handle, int width, int height)
+    {
+        Engine.window._fbSize.set(width, height);
+    }
+    
+    private static void dropCallback(long handle, int count, long names)
+    {
+        Engine.window._dropped = new String[count];
+        PointerBuffer charPointers = MemoryUtil.memPointerBuffer(names, count);
+        for (int i = 0; i < count; i++) Engine.window._dropped[i] = MemoryUtil.memUTF8(charPointers.get(i));
+    }
+    
+    private static void mouseEnteredCallback(long handle, boolean entered)
+    {
+        Engine.mouse._entered = entered;
+    }
+    
+    private static void mousePosCallback(long handle, double x, double y)
+    {
+        Engine.mouse._pos.set(x, y);
+    }
+    
+    private static void scrollCallback(long handle, double dx, double dy)
+    {
+        Engine.mouse._scroll.add(dx, dy);
+    }
+    
+    private static void mouseButtonCallback(long handle, int button, int action, int mods)
+    {
+        Engine.mouse.buttonStateChanges.offer(new Pair<>(Mouse.Button.get(button), action));
+        
+        Modifier.updateMods(mods);
+    }
+    
+    private static void keyCallback(long handle, int key, int scancode, int action, int mods)
+    {
+        Engine.keyboard.keyStateChanges.offer(new Pair<>(Keyboard.Key.get(key, scancode), action));
+        
+        Modifier.updateMods(mods);
+    }
+    
+    private static void charCallback(long handle, int codePoint)
+    {
+        Engine.keyboard._charChanges.offer(Character.toString(codePoint));
+    }
+    
     // ---------------------
     // -- Random Instance --
     // ---------------------
@@ -1045,7 +1527,7 @@ public class Engine
      *
      * @return The common random instance.
      */
-    public static Random random()
+    public static @NotNull Random random()
     {
         return Engine.random;
     }
@@ -1326,7 +1808,7 @@ public class Engine
      * See {@link Random#nextFrom(T...)}
      */
     @SafeVarargs
-    public static <T> T nextFrom(T... array)
+    public static <T> @Nullable T nextFrom(@Nullable T... array)
     {
         return Engine.random.nextFrom(array);
     }
@@ -1334,7 +1816,7 @@ public class Engine
     /**
      * See {@link Random#> T nextFrom(Collection<T> collection)}
      */
-    public static <T> T nextFrom(Collection<T> collection)
+    public static <T> @Nullable T nextFrom(@Nullable Collection<T> collection)
     {
         return Engine.random.nextFrom(collection);
     }
@@ -1492,17 +1974,17 @@ public class Engine
     }
     
     /**
-     * See {@link Random#nextVector2d(float)}
+     * See {@link Random#nextVector2d(double)}
      */
-    public static Vector2d nextVector2d(float bound)
+    public static Vector2d nextVector2d(double bound)
     {
         return Engine.random.nextVector2d(bound);
     }
     
     /**
-     * See {@link Random#nextVector2d(float, float)}
+     * See {@link Random#nextVector2d(double, double)}
      */
-    public static Vector2d nextVector2d(float origin, float bound)
+    public static Vector2d nextVector2d(double origin, double bound)
     {
         return Engine.random.nextVector2d(origin, bound);
     }
@@ -1516,17 +1998,17 @@ public class Engine
     }
     
     /**
-     * See {@link Random#nextVector3d(float)}
+     * See {@link Random#nextVector3d(double)}
      */
-    public static Vector3d nextVector3d(float bound)
+    public static Vector3d nextVector3d(double bound)
     {
         return Engine.random.nextVector3d(bound);
     }
     
     /**
-     * See {@link Random#nextVector3d(float, float)}
+     * See {@link Random#nextVector3d(double, double)}
      */
-    public static Vector3d nextVector3d(float origin, float bound)
+    public static Vector3d nextVector3d(double origin, double bound)
     {
         return Engine.random.nextVector3d(origin, bound);
     }
@@ -1540,17 +2022,17 @@ public class Engine
     }
     
     /**
-     * See {@link Random#nextVector4d(float)}
+     * See {@link Random#nextVector4d(double)}
      */
-    public static Vector4d nextVector4d(float bound)
+    public static Vector4d nextVector4d(double bound)
     {
         return Engine.random.nextVector4d(bound);
     }
     
     /**
-     * See {@link Random#nextVector4d(float, float)}
+     * See {@link Random#nextVector4d(double, double)}
      */
-    public static Vector4d nextVector4d(float origin, float bound)
+    public static Vector4d nextVector4d(double origin, double bound)
     {
         return Engine.random.nextVector4d(origin, bound);
     }
@@ -1692,7 +2174,7 @@ public class Engine
      *
      * @return The common noise instance.
      */
-    public static Noise noise()
+    public static @NotNull Noise noise()
     {
         return Engine.noise;
     }
@@ -1880,7 +2362,7 @@ public class Engine
     /**
      * @return The engine's render instance. This should only be used for {@link Overloads} methods.
      */
-    public static Renderer renderer()
+    public static @NotNull Renderer renderer()
     {
         return Engine.renderer;
     }
@@ -1888,7 +2370,7 @@ public class Engine
     /**
      * See {@link Renderer#target()}
      */
-    public static Texture target()
+    public static @NotNull Texture target()
     {
         return Engine.renderer.target();
     }
@@ -1896,7 +2378,7 @@ public class Engine
     /**
      * See {@link Renderer#target(Texture)}
      */
-    public static void target(Texture target)
+    public static void target(@NotNull Texture target)
     {
         Engine.profiler.startSection("target");
         Engine.renderer.target(target);
@@ -1906,7 +2388,7 @@ public class Engine
     /**
      * See {@link Renderer#blend()}
      */
-    public static Blend blend()
+    public static @NotNull Blend blend()
     {
         return Engine.renderer.blend();
     }
@@ -1938,7 +2420,7 @@ public class Engine
     /**
      * See {@link Renderer#fill()}
      */
-    public static Colorc fill()
+    public static @NotNull Colorc fill()
     {
         return Engine.renderer.fill();
     }
@@ -1946,7 +2428,7 @@ public class Engine
     /**
      * See {@link Renderer#fill(Number, Number, Number, Number)}
      */
-    public static void fill(Number r, Number g, Number b, Number a)
+    public static void fill(@NotNull Number r, @NotNull Number g, @NotNull Number b, @NotNull Number a)
     {
         Engine.profiler.startSection("fill");
         Engine.renderer.fill(r, g, b, a);
@@ -1956,7 +2438,7 @@ public class Engine
     /**
      * See {@link Renderer#fill(Number, Number, Number)}
      */
-    public static void fill(Number r, Number g, Number b)
+    public static void fill(@NotNull Number r, @NotNull Number g, @NotNull Number b)
     {
         Engine.profiler.startSection("fill");
         Engine.renderer.fill(r, g, b);
@@ -1966,7 +2448,7 @@ public class Engine
     /**
      * See {@link Renderer#fill(Number, Number)}
      */
-    public static void fill(Number grey, Number a)
+    public static void fill(@NotNull Number grey, @NotNull Number a)
     {
         Engine.profiler.startSection("fill");
         Engine.renderer.fill(grey, a);
@@ -1976,7 +2458,7 @@ public class Engine
     /**
      * See {@link Renderer#fill(Number)}
      */
-    public static void fill(Number grey)
+    public static void fill(@NotNull Number grey)
     {
         Engine.profiler.startSection("fill");
         Engine.renderer.fill(grey);
@@ -1986,7 +2468,7 @@ public class Engine
     /**
      * See {@link Renderer#fill(Colorc)}
      */
-    public static void fill(Colorc fill)
+    public static void fill(@NotNull Colorc fill)
     {
         Engine.profiler.startSection("fill");
         Engine.renderer.fill(fill);
@@ -2014,7 +2496,7 @@ public class Engine
     /**
      * See {@link Renderer#stroke(Number, Number, Number, Number)}
      */
-    public static void stroke(Number r, Number g, Number b, Number a)
+    public static void stroke(@NotNull Number r, @NotNull Number g, @NotNull Number b, @NotNull Number a)
     {
         Engine.profiler.startSection("stroke");
         Engine.renderer.stroke(r, g, b, a);
@@ -2024,7 +2506,7 @@ public class Engine
     /**
      * See {@link Renderer#stroke(Number, Number, Number)}
      */
-    public static void stroke(Number r, Number g, Number b)
+    public static void stroke(@NotNull Number r, @NotNull Number g, @NotNull Number b)
     {
         Engine.profiler.startSection("stroke");
         Engine.renderer.stroke(r, g, b);
@@ -2034,7 +2516,7 @@ public class Engine
     /**
      * See {@link Renderer#stroke(Number, Number)}
      */
-    public static void stroke(Number grey, Number a)
+    public static void stroke(@NotNull Number grey, @NotNull Number a)
     {
         Engine.profiler.startSection("stroke");
         Engine.renderer.stroke(grey, a);
@@ -2044,7 +2526,7 @@ public class Engine
     /**
      * See {@link Renderer#stroke(Number)}
      */
-    public static void stroke(Number grey)
+    public static void stroke(@NotNull Number grey)
     {
         Engine.profiler.startSection("stroke");
         Engine.renderer.stroke(grey);
@@ -2054,7 +2536,7 @@ public class Engine
     /**
      * See {@link Renderer#stroke(Colorc)}
      */
-    public static void stroke(Colorc stroke)
+    public static void stroke(@NotNull Colorc stroke)
     {
         Engine.profiler.startSection("stroke");
         Engine.renderer.stroke(stroke);
@@ -2083,7 +2565,7 @@ public class Engine
     /**
      * See {@link Renderer#tint(Number, Number, Number, Number)}
      */
-    public static void tint(Number r, Number g, Number b, Number a)
+    public static void tint(@NotNull Number r, @NotNull Number g, @NotNull Number b, @NotNull Number a)
     {
         Engine.profiler.startSection("tint");
         Engine.renderer.tint(r, g, b, a);
@@ -2093,7 +2575,7 @@ public class Engine
     /**
      * See {@link Renderer#tint(Number, Number, Number)}
      */
-    public static void tint(Number r, Number g, Number b)
+    public static void tint(@NotNull Number r, @NotNull Number g, @NotNull Number b)
     {
         Engine.profiler.startSection("tint");
         Engine.renderer.tint(r, g, b);
@@ -2103,7 +2585,7 @@ public class Engine
     /**
      * See {@link Renderer#tint(Number, Number)}
      */
-    public static void tint(Number grey, Number a)
+    public static void tint(@NotNull Number grey, @NotNull Number a)
     {
         Engine.profiler.startSection("tint");
         Engine.renderer.tint(grey, a);
@@ -2113,7 +2595,7 @@ public class Engine
     /**
      * See {@link Renderer#tint(Number)}
      */
-    public static void tint(Number grey)
+    public static void tint(@NotNull Number grey)
     {
         Engine.profiler.startSection("tint");
         Engine.renderer.tint(grey);
@@ -2123,7 +2605,7 @@ public class Engine
     /**
      * See {@link Renderer#tint(Colorc)}
      */
-    public static void tint(Colorc tint)
+    public static void tint(@NotNull Colorc tint)
     {
         Engine.profiler.startSection("tint");
         Engine.renderer.tint(tint);
@@ -2161,7 +2643,7 @@ public class Engine
     /**
      * See {@link Renderer#rectMode()}
      */
-    public static RectMode rectMode()
+    public static @NotNull RectMode rectMode()
     {
         return Engine.renderer.rectMode();
     }
@@ -2169,7 +2651,7 @@ public class Engine
     /**
      * See {@link Renderer#rectMode(RectMode)}
      */
-    public static void rectMode(RectMode rectMode)
+    public static void rectMode(@NotNull RectMode rectMode)
     {
         Engine.profiler.startSection("rectMode");
         Engine.renderer.rectMode(rectMode);
@@ -2179,7 +2661,7 @@ public class Engine
     /**
      * See {@link Renderer#ellipseMode()}
      */
-    public static EllipseMode ellipseMode()
+    public static @NotNull EllipseMode ellipseMode()
     {
         return Engine.renderer.ellipseMode();
     }
@@ -2187,7 +2669,7 @@ public class Engine
     /**
      * See {@link Renderer#ellipseMode(EllipseMode)}
      */
-    public static void ellipseMode(EllipseMode ellipseMode)
+    public static void ellipseMode(@NotNull EllipseMode ellipseMode)
     {
         Engine.profiler.startSection("ellipseMode");
         Engine.renderer.ellipseMode(ellipseMode);
@@ -2197,7 +2679,7 @@ public class Engine
     /**
      * See {@link Renderer#arcMode()}
      */
-    public static ArcMode arcMode()
+    public static @NotNull ArcMode arcMode()
     {
         return Engine.renderer.arcMode();
     }
@@ -2205,7 +2687,7 @@ public class Engine
     /**
      * See {@link Renderer#arcMode(ArcMode)}
      */
-    public static void arcMode(ArcMode arcMode)
+    public static void arcMode(@NotNull ArcMode arcMode)
     {
         Engine.profiler.startSection("arcMode");
         Engine.renderer.arcMode(arcMode);
@@ -2215,7 +2697,7 @@ public class Engine
     /**
      * See {@link Renderer#textFont()}
      */
-    public static Font textFont()
+    public static @NotNull Font textFont()
     {
         return Engine.renderer.textFont();
     }
@@ -2223,7 +2705,7 @@ public class Engine
     /**
      * See {@link Renderer#textFont(Font)}
      */
-    public static void textFont(Font font)
+    public static void textFont(@NotNull Font font)
     {
         Engine.profiler.startSection("textFont");
         Engine.renderer.textFont(font);
@@ -2233,7 +2715,7 @@ public class Engine
     /**
      * See {@link Renderer#textFont(String)}
      */
-    public static void textFont(String font)
+    public static void textFont(@NotNull String font)
     {
         Engine.profiler.startSection("textFont");
         Engine.renderer.textFont(font);
@@ -2277,7 +2759,7 @@ public class Engine
     /**
      * See {@link Renderer#textAlign()}
      */
-    public static TextAlign textAlign()
+    public static @NotNull TextAlign textAlign()
     {
         return Engine.renderer.textAlign();
     }
@@ -2285,7 +2767,7 @@ public class Engine
     /**
      * See {@link Renderer#textAlign(TextAlign)}
      */
-    public static void textAlign(TextAlign textAlign)
+    public static void textAlign(@NotNull TextAlign textAlign)
     {
         Engine.profiler.startSection("textAlign");
         Engine.renderer.textAlign(textAlign);
@@ -2375,7 +2857,7 @@ public class Engine
     /**
      * See {@link Renderer#clear()}
      */
-    public static void clear(Number r, Number g, Number b, Number a)
+    public static void clear(@NotNull Number r, @NotNull Number g, @NotNull Number b, @NotNull Number a)
     {
         Engine.profiler.startSection("clear");
         Engine.renderer.clear(r, g, b, a);
@@ -2385,7 +2867,7 @@ public class Engine
     /**
      * See {@link Renderer#clear()}
      */
-    public static void clear(Number r, Number g, Number b)
+    public static void clear(@NotNull Number r, @NotNull Number g, @NotNull Number b)
     {
         Engine.profiler.startSection("clear");
         Engine.renderer.clear(r, g, b);
@@ -2395,7 +2877,7 @@ public class Engine
     /**
      * See {@link Renderer#clear()}
      */
-    public static void clear(Number grey, Number a)
+    public static void clear(@NotNull Number grey, @NotNull Number a)
     {
         Engine.profiler.startSection("clear");
         Engine.renderer.clear(grey, a);
@@ -2405,7 +2887,7 @@ public class Engine
     /**
      * See {@link Renderer#clear()}
      */
-    public static void clear(Number grey)
+    public static void clear(@NotNull Number grey)
     {
         Engine.profiler.startSection("clear");
         Engine.renderer.clear(grey);
@@ -2425,7 +2907,7 @@ public class Engine
     /**
      * See {@link Renderer#clear()}
      */
-    public static void clear(Colorc color)
+    public static void clear(@NotNull Colorc color)
     {
         Engine.profiler.startSection("clear");
         Engine.renderer.clear(color);
@@ -2735,7 +3217,7 @@ public class Engine
     /**
      * See {@link Renderer#drawTexture(Texture, double, double, double, double, double, double, double, double)}
      */
-    public static void drawTexture(Texture texture, double x1, double y1, double x2, double y2, double u1, double v1, double v2, double u2)
+    public static void drawTexture(@NotNull Texture texture, double x1, double y1, double x2, double y2, double u1, double v1, double v2, double u2)
     {
         Engine.profiler.startSection("drawTexture");
         Engine.renderer.drawTexture(texture, x1, y1, x2, y2, u1, v1, u2, v2);
@@ -2745,7 +3227,7 @@ public class Engine
     /**
      * See {@link Renderer#texture(Texture, double, double, double, double, double, double, double, double)}
      */
-    public static void texture(Texture texture, double a, double b, double c, double d, double u1, double v1, double v2, double u2)
+    public static void texture(@NotNull Texture texture, double a, double b, double c, double d, double u1, double v1, double v2, double u2)
     {
         Engine.profiler.startSection("texture");
         Engine.renderer.texture(texture, a, b, c, d, u1, v1, v2, u2);
@@ -2755,7 +3237,7 @@ public class Engine
     /**
      * See {@link Renderer#texture(Texture, double, double, double, double, double, double)}
      */
-    public static void texture(Texture t, double x, double y, double u1, double v1, double v2, double u2)
+    public static void texture(@NotNull Texture t, double x, double y, double u1, double v1, double v2, double u2)
     {
         Engine.profiler.startSection("texture");
         Engine.renderer.texture(t, x, y, u1, v1, v2, u2);
@@ -2765,7 +3247,7 @@ public class Engine
     /**
      * See {@link Renderer#texture(Texture, double, double, double, double)}
      */
-    public static void texture(Texture t, double a, double b, double c, double d)
+    public static void texture(@NotNull Texture t, double a, double b, double c, double d)
     {
         Engine.profiler.startSection("texture");
         Engine.renderer.texture(t, a, b, c, d);
@@ -2775,7 +3257,7 @@ public class Engine
     /**
      * See {@link Renderer#texture(Texture, double, double)}
      */
-    public static void texture(Texture t, double x, double y)
+    public static void texture(@NotNull Texture t, double x, double y)
     {
         Engine.profiler.startSection("texture");
         Engine.renderer.texture(t, x, y);
@@ -2785,7 +3267,7 @@ public class Engine
     /**
      * See {@link Renderer#drawInterpolatedTexture(Texture, Texture, double, double, double, double, double, double, double, double, double)}
      */
-    public static void drawInterpolatedTexture(Texture texture1, Texture texture2, double amount, double x1, double y1, double x2, double y2, double u1, double v1, double v2, double u2)
+    public static void drawInterpolatedTexture(@NotNull Texture texture1, @NotNull Texture texture2, double amount, double x1, double y1, double x2, double y2, double u1, double v1, double v2, double u2)
     {
         Engine.profiler.startSection("drawInterpolatedTexture");
         Engine.renderer.drawInterpolatedTexture(texture1, texture2, amount, x1, y1, x2, y2, u1, v1, u2, v2);
@@ -2795,7 +3277,7 @@ public class Engine
     /**
      * See {@link Renderer#interpolateTexture(Texture, Texture, double, double, double, double, double, double, double, double, double)}
      */
-    public static void interpolateTexture(Texture texture1, Texture texture2, double amount, double a, double b, double c, double d, double u1, double v1, double v2, double u2)
+    public static void interpolateTexture(@NotNull Texture texture1, @NotNull Texture texture2, double amount, double a, double b, double c, double d, double u1, double v1, double v2, double u2)
     {
         Engine.profiler.startSection("interpolateTexture");
         Engine.renderer.interpolateTexture(texture1, texture2, amount, a, b, c, d, u1, v1, v2, u2);
@@ -2805,7 +3287,7 @@ public class Engine
     /**
      * See {@link Renderer#interpolateTexture(Texture, Texture, double, double, double, double, double, double, double)}
      */
-    public static void interpolateTexture(Texture texture1, Texture texture2, double amount, double x, double y, double u1, double v1, double v2, double u2)
+    public static void interpolateTexture(@NotNull Texture texture1, @NotNull Texture texture2, double amount, double x, double y, double u1, double v1, double v2, double u2)
     {
         Engine.profiler.startSection("interpolateTexture");
         Engine.renderer.interpolateTexture(texture1, texture2, amount, x, y, u1, v1, v2, u2);
@@ -2815,7 +3297,7 @@ public class Engine
     /**
      * See {@link Renderer#interpolateTexture(Texture, Texture, double, double, double, double, double)}
      */
-    public static void interpolateTexture(Texture texture1, Texture texture2, double amount, double a, double b, double c, double d)
+    public static void interpolateTexture(@NotNull Texture texture1, @NotNull Texture texture2, double amount, double a, double b, double c, double d)
     {
         Engine.profiler.startSection("interpolateTexture");
         Engine.renderer.interpolateTexture(texture1, texture2, amount, a, b, c, d);
@@ -2825,7 +3307,7 @@ public class Engine
     /**
      * See {@link Renderer#interpolateTexture(Texture, Texture, double, double, double)}
      */
-    public static void interpolateTexture(Texture texture1, Texture texture2, double amount, double x, double y)
+    public static void interpolateTexture(@NotNull Texture texture1, @NotNull Texture texture2, double amount, double x, double y)
     {
         Engine.profiler.startSection("interpolateTexture");
         Engine.renderer.interpolateTexture(texture1, texture2, amount, x, y);
@@ -2835,7 +3317,7 @@ public class Engine
     /**
      * See {@link Renderer#drawText(String, double, double)}
      */
-    public static void drawText(String text, double x, double y)
+    public static void drawText(@NotNull String text, double x, double y)
     {
         Engine.profiler.startSection("drawText");
         Engine.renderer.drawText(text, x, y);
@@ -2845,7 +3327,7 @@ public class Engine
     /**
      * See {@link Renderer#text(String, double, double, double, double)}
      */
-    public static void text(String text, double a, double b, double c, double d)
+    public static void text(@NotNull String text, double a, double b, double c, double d)
     {
         Engine.profiler.startSection("text");
         Engine.renderer.text(text, a, b, c, d);
@@ -2855,7 +3337,7 @@ public class Engine
     /**
      * See {@link Renderer#text(String, double, double)}
      */
-    public static void text(String text, double x, double y)
+    public static void text(@NotNull String text, double x, double y)
     {
         Engine.profiler.startSection("text");
         Engine.renderer.text(text, x, y);

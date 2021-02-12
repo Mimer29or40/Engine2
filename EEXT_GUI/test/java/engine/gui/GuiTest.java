@@ -6,6 +6,7 @@ import engine.gui.elment.UIButton;
 import engine.gui.elment.UILabel;
 import engine.gui.elment.UIVerticalScrollBar;
 import engine.gui.util.Rect;
+import rutils.Logger;
 
 import java.util.logging.Level;
 
@@ -69,6 +70,8 @@ public class GuiTest extends Engine
     
     public static void main(String[] args)
     {
-        start(new GuiTest(), Level.FINE);
+        Logger.setLevel(Level.FINER);
+    
+        start(new GuiTest(), EEXT_GUI.class);
     }
 }

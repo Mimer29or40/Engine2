@@ -5,6 +5,7 @@ import engine.Keyboard;
 import engine.Mouse;
 import engine.color.Color;
 import engine.color.Colorc;
+import engine.gui.EEXT_GUI;
 import engine.render.Texture;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
@@ -511,6 +512,6 @@ public class VoxelSpace extends Engine
     
     public static void main(String[] args)
     {
-        start(new VoxelSpace());
+        start(new VoxelSpace(), EEXT_GUI.class);
     }
 }

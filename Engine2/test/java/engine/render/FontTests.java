@@ -4,6 +4,7 @@ import engine.Engine;
 import engine.Keyboard;
 import engine.color.Color;
 import engine.font.Font;
+import rutils.Logger;
 
 import java.util.logging.Level;
 
@@ -75,6 +76,8 @@ public class FontTests extends Engine
     
     public static void main(String[] args)
     {
-        start(new FontTests(), Level.FINE);
+        Logger.setLevel(Level.FINE);
+    
+        start(new FontTests());
     }
 }

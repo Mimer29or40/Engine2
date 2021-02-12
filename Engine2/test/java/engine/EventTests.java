@@ -1,11 +1,11 @@
-package engine.event;
+package engine;
 
-import engine.Engine;
-import engine.Keyboard;
+import engine.event.Event;
+import engine.event.EventBus;
+import engine.event.EventMouse;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import static rutils.NumUtil.map;
 
@@ -95,6 +95,6 @@ public class EventTests extends Engine
     
     public static void main(String[] args)
     {
-        start(new EventTests(), Level.INFO);
+        start(new EventTests());
     }
 }

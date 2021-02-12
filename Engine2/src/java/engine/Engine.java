@@ -1,8 +1,5 @@
 package engine;
 
-import com.electronwill.nightconfig.core.ConfigSpec;
-import com.electronwill.nightconfig.core.file.FileConfig;
-import com.electronwill.nightconfig.core.io.ParsingException;
 import engine.color.Blend;
 import engine.color.Color;
 import engine.color.Colorc;
@@ -13,8 +10,8 @@ import engine.render.gl.GLConst;
 import engine.render.gl.GLShader;
 import engine.render.gl.GLVertexArray;
 import engine.util.Random;
-import engine.util.noise.SimplexNoise;
-import engine.util.noise.*;
+import engine.util.SimplexNoise;
+import engine.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.*;
@@ -25,7 +22,6 @@ import org.lwjgl.system.APIUtil;
 import org.lwjgl.system.Callback;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
-import org.reflections.Reflections;
 import rutils.Logger;
 import rutils.group.Pair;
 import rutils.group.Triple;
@@ -36,28 +32,22 @@ import rutils.profiler.SectionData;
 import java.lang.Math;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.SynchronousQueue;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL43.*;
 import static org.lwjgl.stb.STBEasyFont.*;
 import static org.lwjgl.stb.STBImageWrite.stbi_write_png;
-import static rutils.IOUtil.getPath;
 import static rutils.StringUtil.getCurrentDateTimeString;
 
 @SuppressWarnings({"EmptyMethod", "unused"})
 public class Engine
 {
-    private static final String TITLE  = "Engine - %s - FPS(%s) SPF(Avg: %s us, Min: %s us, Max: %s us)";
     private static final Logger LOGGER = new Logger();
-    
-    protected static FileConfig config;
     
     protected static Engine  logic;
     protected static boolean running;
@@ -170,59 +160,31 @@ public class Engine
      * </pre>
      *
      * @param logic The engine instance to use.
-     * @param level The level logging is set to.
      */
-    protected static void start(Engine logic, Level level)
+    @SafeVarargs
+    protected static void start(@NotNull Engine logic, Class<? extends Extension>... extensions)
     {
-        Logger.setLevel(level);
-        
         Engine.LOGGER.info("Engine Started");
-        
+    
         if (Engine.logic != null) throw new RuntimeException("start can only be called once");
-        
-        Path configPath = getPath("engine_config.json");
-        
-        Engine.config = FileConfig.of(configPath);
-        try
-        {
-            Engine.config.load();
-            
-            ConfigSpec spec = new ConfigSpec();
-            spec.defineInRange("layer_count", 10, 1, 100);
-            spec.define("debug_text_color", "#FFFFFFFF");
-            spec.define("debug_background_color", "#32000000");
-            spec.defineInRange("notification_duration", 2.0, 1.0, 10.0);
-            spec.defineInRange("profiler_frequency", 10, 1, 60);
-            spec.defineInRange("title_frequency", 10, 1, 60);
-            spec.correct(Engine.config);
-        }
-        catch (ParsingException ignored)
-        {
-            Engine.config.set("layer_count", 10);
-            Engine.config.set("debug_text_color", "#FFFFFFFF");
-            Engine.config.set("debug_background_color", "#32000000");
-            Engine.config.set("notification_duration", 2.0);
-            Engine.config.set("profiler_frequency", 10);
-            Engine.config.set("title_frequency", 10);
-        }
-        
-        Engine.layerCount = Engine.config.getInt("layer_count");
-        Engine.debugLineText.fromHex(Engine.config.get("debug_text_color"));
-        Engine.debugLineBackground.fromHex(Engine.config.get("debug_background_color"));
-        Engine.notificationDuration = (long) (1_000_000_000L * Engine.config.<Number>getRaw("notification_duration").doubleValue());
-        Engine.profilerFrequency    = (long) (1_000_000_000L / Engine.config.<Number>getRaw("profiler_frequency").doubleValue());
-        Engine.titleFrequency       = (long) (1_000_000_000L / Engine.config.<Number>getRaw("title_frequency").doubleValue());
-        
+    
         Engine.logic     = logic;
         Engine.running   = true;
         Engine.startTime = System.nanoTime();
-        
+    
+        Engine.layerCount = Config.LAYER_COUNT.get();
+        Engine.debugLineText.fromHex(Config.DEBUG_TEXT_COLOR.get());
+        Engine.debugLineBackground.fromHex(Config.DEBUG_BACKGROUND_COLOR.get());
+        Engine.notificationDuration = (long) (1_000_000_000L * Config.NOTIFICATION_DURATION.get());
+        Engine.profilerFrequency    = 1_000_000_000L / Config.PROFILER_FREQUENCY.get();
+        Engine.titleFrequency       = 1_000_000_000L / Config.TITLE_FREQUENCY.get();
+    
         Engine.LOGGER.finest("GLFW: Init");
         if (!glfwInit()) throw new IllegalStateException("Unable to initialize GLFW");
-        
+    
         EventBus.start();
         EventBus.register(Engine.logic);
-        
+    
         glfwSetErrorCallback(Engine::errorCallback);
         glfwSetMonitorCallback(Engine::monitorCallback);
         glfwSetJoystickCallback(Engine::joystickCallback);
@@ -236,7 +198,7 @@ public class Engine
         Engine.primaryMonitor = Engine.monitors.get(glfwGetPrimaryMonitor());
         
         Engine.LOGGER.fine("Looking for Extensions");
-        for (Class<? extends Extension> ext : new Reflections("engine").getSubTypesOf(Extension.class))
+        for (Class<? extends Extension> ext : extensions)
         {
             try
             {
@@ -624,23 +586,6 @@ public class Engine
                                 Engine.profiler.clear();
                             }
                             
-                            dt = t - lastTitle;
-                            if (dt >= Engine.titleFrequency && totalFrames > 0 && !Engine.paused)
-                            {
-                                lastTitle = t;
-                                
-                                totalTime /= totalFrames;
-                                
-                                Engine.window.title(String.format(Engine.TITLE, Engine.logic.name, totalFrames, totalTime / 1000D, minTime / 1000D, maxTime / 1000D));
-                                
-                                totalTime = 0;
-                                
-                                minTime = Long.MAX_VALUE;
-                                maxTime = Long.MIN_VALUE;
-                                
-                                totalFrames = 0;
-                            }
-                            
                             if (Engine.screenshot != null)
                             {
                                 String fileName = Engine.screenshot + (!Engine.screenshot.endsWith(".png") ? ".png" : "");
@@ -691,16 +636,18 @@ public class Engine
                             if (dt >= Engine.titleFrequency && totalFrames > 0 && !Engine.paused)
                             {
                                 lastTitle = t;
-                                
+    
                                 totalTime /= totalFrames;
-                                
-                                Engine.window.title(String.format(Engine.TITLE, Engine.logic.name, totalFrames, totalTime / 1000D, minTime / 1000D, maxTime / 1000D));
-                                
+    
+                                String format = "Engine - %s - FPS(%s) SPF(Avg: %s us, Min: %s us, Max: %s us)";
+    
+                                Engine.window.title(String.format(format, Engine.logic.name, totalFrames, totalTime / 1000D, minTime / 1000D, maxTime / 1000D));
+    
                                 totalTime = 0;
-                                
+    
                                 minTime = Long.MAX_VALUE;
                                 maxTime = Long.MIN_VALUE;
-                                
+    
                                 totalFrames = 0;
                             }
                         }
@@ -852,32 +799,22 @@ public class Engine
             if (Engine.window != null) Engine.window.destroy();
             
             org.lwjgl.opengl.GL.destroy();
-            
+    
             Callback callback;
             if ((callback = glfwSetErrorCallback(null)) != null) callback.free();
             if ((callback = glfwSetMonitorCallback(null)) != null) callback.free();
             if ((callback = glfwSetJoystickCallback(null)) != null) callback.free();
-            
+    
             runTasks();
-            
+    
             glfwTerminate();
-            
-            Engine.LOGGER.finer("Saving/Closing Config");
-            Engine.config.save();
-            Engine.config.close();
+    
+            // Engine.LOGGER.finer("Saving/Closing Config");
+            // Engine.config.save(); // TODO
+            // Engine.config.close();
         }
         
         Engine.LOGGER.info("Engine Finished");
-    }
-    
-    /**
-     * Starts the engine with the engine instance at log level INFO. This method should only be called once in a static main method.
-     *
-     * @param logic The engine instance to use.
-     */
-    protected static void start(Engine logic)
-    {
-        start(logic, Level.INFO);
     }
     
     /**

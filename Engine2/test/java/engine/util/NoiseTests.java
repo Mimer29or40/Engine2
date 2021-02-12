@@ -3,8 +3,6 @@ package engine.util;
 import engine.Engine;
 import engine.Keyboard;
 import engine.color.Color;
-import engine.util.noise.Noise;
-import engine.util.noise.PerlinNoise;
 
 import java.util.function.Function;
 

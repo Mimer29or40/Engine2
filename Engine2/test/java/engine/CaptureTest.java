@@ -1,6 +1,5 @@
-package engine.input;
+package engine;
 
-import engine.Engine;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWErrorCallback;

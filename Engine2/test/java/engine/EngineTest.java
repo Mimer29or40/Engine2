@@ -5,8 +5,6 @@ import engine.render.ArcMode;
 import engine.render.RectMode;
 import engine.render.Texture;
 
-import java.util.logging.Level;
-
 import static rutils.NumUtil.map;
 import static rutils.StringUtil.println;
 
@@ -236,6 +234,6 @@ public class EngineTest extends Engine
     
     public static void main(String[] args)
     {
-        start(new EngineTest(), Level.INFO);
+        start(new EngineTest());
     }
 }

@@ -3,9 +3,6 @@ package engine.util;
 import engine.Engine;
 import engine.color.Color;
 import engine.render.Texture;
-import engine.util.noise.Noise;
-import engine.util.noise.PerlinNoise;
-import engine.util.noise.ValueNoise;
 
 import static rutils.NumUtil.map;
 

@@ -44,6 +44,6 @@ public class ShaderTest extends Engine
     
     public static void main(String[] args)
     {
-        start(new ShaderTest());
+        start(new ShaderTest(), EEXT_Shader.class);
     }
 }

@@ -1,6 +1,7 @@
 package engine;
 
 import engine.color.Color;
+import engine.gui.EEXT_GUI;
 
 import java.util.ArrayList;
 
@@ -141,6 +142,6 @@ public class Fireworks extends Engine
     
     public static void main(String[] args)
     {
-        start(new Fireworks());
+        start(new Fireworks(), EEXT_GUI.class);
     }
 }

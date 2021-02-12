@@ -1,5 +1,6 @@
 package engine;
 
+import engine.gui.EEXT_GUI;
 import engine.render.Texture;
 // import engine.shader.EEXT_Shader;
 
@@ -25,6 +26,6 @@ public class BookOfShaders extends Engine
     
     public static void main(String[] args)
     {
-        start(new BookOfShaders());
+        start(new BookOfShaders(), EEXT_GUI.class);
     }
 }

@@ -1,6 +1,6 @@
-package engine.color;
+package engine;
 
-import engine.Engine;
+import engine.color.Color;
 
 import static rutils.StringUtil.println;
 

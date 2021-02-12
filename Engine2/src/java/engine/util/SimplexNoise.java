@@ -1,4 +1,4 @@
-package engine.util.noise;
+package engine.util;
 
 import static rutils.NumUtil.fastFloor;
 

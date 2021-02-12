@@ -1,6 +1,5 @@
 package engine.render;
 
-import engine.Engine;
 import engine.color.Color;
 import engine.color.Colorc;
 import engine.render.gl.GLConst;
@@ -541,7 +540,6 @@ public class Texture
     public Texture unbindFramebuffer()
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, Engine.window().width(), Engine.window().height());
         return this;
     }
     

@@ -1,6 +1,7 @@
 package engine.gui.util;
 
 import engine.Engine;
+import engine.Keyboard;
 import engine.color.Color;
 import engine.render.RectMode;
 
@@ -36,18 +37,18 @@ public class RectTest extends Engine
     @Override
     public void draw(double elapsedTime)
     {
-        if (keyboard().K1.down()) state = 0;
-        if (keyboard().K2.down()) state = 1;
-        if (keyboard().K3.down()) state = 2;
-        if (keyboard().K4.down()) state = 3;
-        
+        if (keyboard().down(Keyboard.Key.K1)) state = 0;
+        if (keyboard().down(Keyboard.Key.K2)) state = 1;
+        if (keyboard().down(Keyboard.Key.K3)) state = 2;
+        if (keyboard().down(Keyboard.Key.K4)) state = 3;
+    
         if (mouse().scrollY() != 0)
         {
             r1.inflate((int) mouse().scrollY(), (int) mouse().scrollY());
             println(r1.topLeft(), r1.bottomRight());
             println(r1.size());
         }
-        
+    
         clear();
         
         r1.pos((int) mouse().x(), (int) mouse().y());

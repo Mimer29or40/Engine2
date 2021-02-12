@@ -62,7 +62,7 @@ public class EngineTest extends Engine
     {
         clear();
         // push();
-        if (keyboard().SPACE.held()) tint(255, 100, 100);
+        if (keyboard().held(Keyboard.Key.SPACE)) tint(255, 100, 100);
         switch (state)
         {
             case 1 -> {
@@ -169,10 +169,10 @@ public class EngineTest extends Engine
                 line(-10, 0, 10, 0);
             }
             case 8 -> {
-                if (keyboard().K1.held(modifiers().NONE)) arcMode(ArcMode.DEFAULT);
-                if (keyboard().K2.held(modifiers().NONE)) arcMode(ArcMode.OPEN);
-                if (keyboard().K3.held(modifiers().NONE)) arcMode(ArcMode.CHORD);
-                if (keyboard().K4.held(modifiers().NONE)) arcMode(ArcMode.PIE);
+                if (keyboard().held(Keyboard.Key.K1, Modifier.NONE)) arcMode(ArcMode.DEFAULT);
+                if (keyboard().held(Keyboard.Key.K2, Modifier.NONE)) arcMode(ArcMode.OPEN);
+                if (keyboard().held(Keyboard.Key.K3, Modifier.NONE)) arcMode(ArcMode.CHORD);
+                if (keyboard().held(Keyboard.Key.K4, Modifier.NONE)) arcMode(ArcMode.PIE);
                 weight(10);
                 translate(screenWidth() / 2., screenHeight() / 2.);
                 translate(50 * Math.cos(seconds()), 50 * Math.sin(seconds()));
@@ -205,26 +205,26 @@ public class EngineTest extends Engine
         // fill(Color.GREEN);
         // textSize(30);
         // text("Frame: " + frameCount(), 0, 0);
-        if (keyboard().K1.down(modifiers().CONTROL)) println("Modifier Tests");
-        if (keyboard().S.down()) screenShot();
-        if (keyboard().D.down()) rendererDebug(!rendererDebug());
-        if (keyboard().F.down()) window().toggleFullscreen();
-        if (keyboard().V.down()) window().toggleVsync();
-        
-        if (keyboard().F1.down(modifiers().NONE)) state = 1;
-        if (keyboard().F2.down(modifiers().NONE)) state = 2;
-        if (keyboard().F3.down(modifiers().NONE)) state = 3;
-        if (keyboard().F4.down(modifiers().NONE)) state = 4;
-        if (keyboard().F5.down(modifiers().NONE)) state = 5;
-        if (keyboard().F6.down(modifiers().NONE)) state = 6;
-        if (keyboard().F7.down(modifiers().NONE)) state = 7;
-        if (keyboard().F8.down(modifiers().NONE)) state = 8;
-        if (keyboard().F9.down(modifiers().NONE)) state = 9;
-        if (keyboard().F10.down(modifiers().NONE)) state = 10;
-        if (keyboard().F11.down(modifiers().NONE)) state = 11;
-        if (keyboard().F12.down(modifiers().NONE)) state = 12;
-        
-        if (keyboard().ESCAPE.down()) stop();
+        if (keyboard().down(Keyboard.Key.K1, Modifier.CONTROL)) println("Modifier Tests");
+        if (keyboard().down(Keyboard.Key.S)) screenShot();
+        if (keyboard().down(Keyboard.Key.D)) rendererDebug(!rendererDebug());
+        if (keyboard().down(Keyboard.Key.F)) window().windowed(!window().windowed());
+        if (keyboard().down(Keyboard.Key.V)) window().vsync(!window().vsync());
+    
+        if (keyboard().down(Keyboard.Key.F1, Modifier.NONE)) state = 1;
+        if (keyboard().down(Keyboard.Key.F2, Modifier.NONE)) state = 2;
+        if (keyboard().down(Keyboard.Key.F3, Modifier.NONE)) state = 3;
+        if (keyboard().down(Keyboard.Key.F4, Modifier.NONE)) state = 4;
+        if (keyboard().down(Keyboard.Key.F5, Modifier.NONE)) state = 5;
+        if (keyboard().down(Keyboard.Key.F6, Modifier.NONE)) state = 6;
+        if (keyboard().down(Keyboard.Key.F7, Modifier.NONE)) state = 7;
+        if (keyboard().down(Keyboard.Key.F8, Modifier.NONE)) state = 8;
+        if (keyboard().down(Keyboard.Key.F9, Modifier.NONE)) state = 9;
+        if (keyboard().down(Keyboard.Key.F10, Modifier.NONE)) state = 10;
+        if (keyboard().down(Keyboard.Key.F11, Modifier.NONE)) state = 11;
+        if (keyboard().down(Keyboard.Key.F12, Modifier.NONE)) state = 12;
+    
+        if (keyboard().down(Keyboard.Key.ESCAPE)) stop();
     }
     
     @Override

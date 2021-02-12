@@ -1,6 +1,7 @@
 package engine.event;
 
 import engine.Engine;
+import engine.Keyboard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,9 +43,19 @@ public class EventTests extends Engine
     @Override
     public void draw(double elapsedTime)
     {
-        if (keyboard().SPACE.down()) window().toggleFullscreen();
-        if (keyboard().C.down()) mouse().toggleCaptured();
-        
+        if (keyboard().down(Keyboard.Key.SPACE)) window().windowed(!window().windowed());
+        if (keyboard().down(Keyboard.Key.C))
+        {
+            if (mouse().isCaptured())
+            {
+                mouse().show();
+            }
+            else
+            {
+                mouse().capture();
+            }
+        }
+    
         // for (Event event : Events.get())
         // for (Event event : Events.get(EventMouseButtonDragged.class, EventMouseButtonDown.class))
         // for (Event event : Events.get(EventKeyboardKeyTyped.class))
@@ -52,7 +63,7 @@ public class EventTests extends Engine
         // {
         //     println(event.toString());
         // }
-        
+    
         for (Event event : Events.get(EventGroup.MOUSE))
         {
             addEvent(event.toString());

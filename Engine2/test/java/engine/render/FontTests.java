@@ -1,6 +1,7 @@
 package engine.render;
 
 import engine.Engine;
+import engine.Keyboard;
 import engine.color.Color;
 import engine.font.Font;
 
@@ -27,34 +28,34 @@ public class FontTests extends Engine
     public void draw(double elapsedTime)
     {
         clear();
-        
+    
         textSize((int) map(mouse().x(), 0, screenWidth() - 1, 4, 256));
         // textSize(64);
-        
+    
         translate(screenWidth() / 2., screenHeight() / 2.);
         rotate(seconds());
-        
-        if (keyboard().F1.held()) textAlign(TextAlign.TOP_LEFT);
-        if (keyboard().F2.held()) textAlign(TextAlign.TOP);
-        if (keyboard().F3.held()) textAlign(TextAlign.TOP_RIGHT);
-        if (keyboard().F4.held()) textAlign(TextAlign.LEFT);
-        if (keyboard().F5.held()) textAlign(TextAlign.CENTER);
-        if (keyboard().F6.held()) textAlign(TextAlign.RIGHT);
-        if (keyboard().F7.held()) textAlign(TextAlign.BOTTOM_LEFT);
-        if (keyboard().F8.held()) textAlign(TextAlign.BOTTOM);
-        if (keyboard().F9.held()) textAlign(TextAlign.BOTTOM_RIGHT);
-        
-        if (keyboard().K1.held()) rectMode(RectMode.CORNER);
-        if (keyboard().K2.held()) rectMode(RectMode.CORNERS);
-        if (keyboard().K3.held()) rectMode(RectMode.CENTER);
-        if (keyboard().K4.held()) rectMode(RectMode.RADIUS);
-        
+    
+        if (keyboard().held(Keyboard.Key.F1)) textAlign(TextAlign.TOP_LEFT);
+        if (keyboard().held(Keyboard.Key.F2)) textAlign(TextAlign.TOP);
+        if (keyboard().held(Keyboard.Key.F3)) textAlign(TextAlign.TOP_RIGHT);
+        if (keyboard().held(Keyboard.Key.F4)) textAlign(TextAlign.LEFT);
+        if (keyboard().held(Keyboard.Key.F5)) textAlign(TextAlign.CENTER);
+        if (keyboard().held(Keyboard.Key.F6)) textAlign(TextAlign.RIGHT);
+        if (keyboard().held(Keyboard.Key.F7)) textAlign(TextAlign.BOTTOM_LEFT);
+        if (keyboard().held(Keyboard.Key.F8)) textAlign(TextAlign.BOTTOM);
+        if (keyboard().held(Keyboard.Key.F9)) textAlign(TextAlign.BOTTOM_RIGHT);
+    
+        if (keyboard().held(Keyboard.Key.K1)) rectMode(RectMode.CORNER);
+        if (keyboard().held(Keyboard.Key.K2)) rectMode(RectMode.CORNERS);
+        if (keyboard().held(Keyboard.Key.K3)) rectMode(RectMode.CENTER);
+        if (keyboard().held(Keyboard.Key.K4)) rectMode(RectMode.RADIUS);
+    
         fill(Color.DARK_GREEN);
-        
+    
         String text;
         text = "This is a String.";
         text = "This is a\nMultiline String.";
-        if (keyboard().SPACE.held())
+        if (keyboard().held(Keyboard.Key.SPACE))
         {
             rectMode(RectMode.CENTER);
             rect(0, 0, 400, 400);

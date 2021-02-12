@@ -126,7 +126,7 @@ public class Fireworks extends Engine
             timeTillNext = nextDouble();
         }
         
-        if (mouse().LEFT.held()) fireworks.add(new Firework());
+        if (mouse().held(Mouse.Button.LEFT)) fireworks.add(new Firework());
         
         for (Firework f : fireworks)
         {

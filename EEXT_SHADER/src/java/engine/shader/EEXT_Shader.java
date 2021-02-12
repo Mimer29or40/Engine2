@@ -77,7 +77,17 @@ public class EEXT_Shader extends Extension
             }
         }
     
-        if (keyboard().ESCAPE.down()) mouse().toggleCaptured();
+        if (keyboard().down(Keyboard.Key.ESCAPE))
+        {
+            if (mouse().isCaptured())
+            {
+                mouse().show();
+            }
+            else
+            {
+                mouse().capture();
+            }
+        }
     
         for (GLShader shader : this.shaders.values())
         {
@@ -90,18 +100,18 @@ public class EEXT_Shader extends Extension
                 shader.setUniform("seconds", seconds());
                 shader.setUniform("elapsedTime", elapsedTime);
             
-                shader.setUniform("mouseCaptured", mouse().captured());
-                shader.setUniform("mouseEntered", mouse().entered());
+                shader.setUniform("mouseCaptured", mouse().isCaptured());
+                shader.setUniform("mouseOver", window().hovered());
                 shader.setUniform("mousePos", mouse().x(), mouse().y());
-                shader.setUniform("mouseRel", mouse().relX(), mouse().relY());
+                shader.setUniform("mouseRel", mouse().dx(), mouse().dy());
                 shader.setUniform("mouseScroll", mouse().scrollX(), mouse().scrollY());
-                for (Mouse.Button button : mouse().inputs())
+                for (Mouse.Button button : Mouse.Button.values())
                 {
-                    shader.setUniform(button.toString().replace(".", ""), button.down(), button.up(), button.held(), button.repeat());
+                    shader.setUniform(button.toString().replace(".", ""), mouse().down(button), mouse().up(button), mouse().held(button), mouse().repeat(button));
                 }
-                for (Keyboard.Key key : keyboard().inputs())
+                for (Keyboard.Key key : Keyboard.Key.values())
                 {
-                    shader.setUniform(key.toString().replace(".", ""), key.down(), key.up(), key.held(), key.repeat());
+                    shader.setUniform(key.toString().replace(".", ""), keyboard().down(key), keyboard().up(key), keyboard().held(key), keyboard().repeat(key));
                 }
             }
         }

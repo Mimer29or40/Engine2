@@ -7,8 +7,8 @@ import org.lwjgl.system.Platform;
 import rutils.Logger;
 import rutils.group.Pair;
 
+import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -41,7 +41,7 @@ public class Mouse extends InputDevice
     
     Mouse()
     {
-        this.buttonMap = new LinkedHashMap<>();
+        this.buttonMap = new EnumMap<>(Button.class);
         for (Button button : Mouse.Button.values()) this.buttonMap.put(button, new ButtonInput());
     }
     
@@ -456,6 +456,26 @@ public class Mouse extends InputDevice
                 // if (this.rel.x != 0 || this.rel.y != 0) GLFW.EVENT_BUS.post(EventMouseButtonDragged.create(input._window, button, this.pos, this.rel, input.click)); // TODO
             }
         }
+    }
+    
+    public boolean down(Button button, Modifier... modifiers)
+    {
+        return this.buttonMap.get(button).state == GLFW_PRESS && Modifier.test(modifiers);
+    }
+    
+    public boolean up(Button button, Modifier... modifiers)
+    {
+        return this.buttonMap.get(button).state == GLFW_RELEASE && Modifier.test(modifiers);
+    }
+    
+    public boolean repeat(Button button, Modifier... modifiers)
+    {
+        return this.buttonMap.get(button).state == GLFW_REPEAT && Modifier.test(modifiers);
+    }
+    
+    public boolean held(Button button, Modifier... modifiers)
+    {
+        return this.buttonMap.get(button).held && Modifier.test(modifiers);
     }
     
     static final class ButtonInput extends Input

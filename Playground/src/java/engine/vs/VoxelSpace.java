@@ -1,6 +1,8 @@
 package engine.vs;
 
 import engine.Engine;
+import engine.Keyboard;
+import engine.Mouse;
 import engine.color.Color;
 import engine.color.Colorc;
 import engine.render.Texture;
@@ -180,28 +182,38 @@ public class VoxelSpace extends Engine
     public void draw(double elapsedTime)
     {
         // DEBUG
-        if (keyboard().F1.down())
+        if (keyboard().down(Keyboard.Key.F1))
         {
             sampleHeight = !sampleHeight;
             notification("Sample Height: " + (sampleHeight ? "On" : "Off"));
         }
-        if (keyboard().F2.down())
+        if (keyboard().down(Keyboard.Key.F2))
         {
             sampleColor = !sampleColor;
             notification("Sample Color: " + (sampleColor ? "On" : "Off"));
         }
-        
-        if (mouse().LEFT.down()) mouse().toggleCaptured();
-        if (keyboard().ESCAPE.down()) mouse().captured(false);
-        
+    
+        if (mouse().down(Mouse.Button.LEFT))
+        {
+            if (mouse().isCaptured())
+            {
+                mouse().show();
+            }
+            else
+            {
+                mouse().capture();
+            }
+        }
+        if (keyboard().down(Keyboard.Key.ESCAPE)) mouse().show();
+    
         // Change Map
-        if (keyboard().PAGE_UP.down())
+        if (keyboard().down(Keyboard.Key.PAGE_UP))
         {
             selectedMap++;
             if (selectedMap >= maps.size()) selectedMap = 0;
             loadMap(maps.get(selectedMap));
         }
-        if (keyboard().PAGE_DN.down())
+        if (keyboard().down(Keyboard.Key.PAGE_DOWN))
         {
             selectedMap--;
             if (selectedMap < 0) selectedMap = maps.size() - 1;
@@ -216,12 +228,12 @@ public class VoxelSpace extends Engine
         
         boolean  moved = false;
         Vector3d temp  = new Vector3d();
-        
-        if (mouse().captured())
+    
+        if (mouse().isCaptured())
         {
-            if (mouse().relX() != 0)
+            if (mouse().dx() != 0)
             {
-                double angle = mouse().relX() * -0.1 * sensitivity * elapsedTime;
+                double angle = mouse().dx() * -0.1 * sensitivity * elapsedTime;
                 camera.x.rotateAxis(angle, camera.up.x(), camera.up.y(), camera.up.z());
                 camera.y.rotateAxis(angle, camera.up.x(), camera.up.y(), camera.up.z());
                 camera.z.rotateAxis(angle, camera.up.x(), camera.up.y(), camera.up.z());
@@ -230,9 +242,9 @@ public class VoxelSpace extends Engine
                 camera.front.rotateAxis(angle, camera.up.x(), camera.up.y(), camera.up.z());
                 camera.look.rotateAxis(-angle, camera.up.x(), camera.up.y(), camera.up.z());
             }
-            if (mouse().relY() != 0)
+            if (mouse().dy() != 0)
             {
-                double angle = mouse().relY() * -0.1 * sensitivity * elapsedTime;
+                double angle = mouse().dy() * -0.1 * sensitivity * elapsedTime;
                 camera.y.rotateAxis(angle, camera.x.x(), camera.x.y(), camera.x.z());
                 camera.z.rotateAxis(angle, camera.x.x(), camera.x.y(), camera.x.z());
                 // camera.up.rotateAxis(angle, camera.x.x(), camera.x.y(), camera.x.z());
@@ -242,13 +254,13 @@ public class VoxelSpace extends Engine
         }
         else
         {
-            if (keyboard().UP.held())
+            if (keyboard().held(Keyboard.Key.UP))
             {
-            
+        
             }
         }
-        
-        if (keyboard().W.held())
+    
+        if (keyboard().held(Keyboard.Key.W))
         {
             camera.acc.add(temp.set(camera.front).mul(-moveAcc));
             moved = true;
@@ -257,7 +269,7 @@ public class VoxelSpace extends Engine
         {
             camera.acc.add(temp.set(camera.front).mul(moveAcc));
         }
-        if (keyboard().S.held())
+        if (keyboard().held(Keyboard.Key.S))
         {
             camera.acc.add(temp.set(camera.front).mul(moveAcc));
             moved = true;
@@ -266,7 +278,7 @@ public class VoxelSpace extends Engine
         {
             camera.acc.add(temp.set(camera.front).mul(-moveAcc));
         }
-        if (keyboard().A.held())
+        if (keyboard().held(Keyboard.Key.A))
         {
             camera.acc.add(temp.set(camera.right).mul(-moveAcc));
             moved = true;
@@ -275,7 +287,7 @@ public class VoxelSpace extends Engine
         {
             camera.acc.add(temp.set(camera.right).mul(moveAcc));
         }
-        if (keyboard().D.held())
+        if (keyboard().held(Keyboard.Key.D))
         {
             camera.acc.add(temp.set(camera.right).mul(moveAcc));
             moved = true;
@@ -284,13 +296,13 @@ public class VoxelSpace extends Engine
         {
             camera.acc.add(temp.set(camera.right).mul(-moveAcc));
         }
-        
-        if (keyboard().F.down()) camera.flying = !camera.flying;
+    
+        if (keyboard().down(Keyboard.Key.F)) camera.flying = !camera.flying;
         if (!camera.flying)
         {
             if (camera.onGround)
             {
-                if (keyboard().SPACE.down())
+                if (keyboard().down(Keyboard.Key.SPACE))
                 {
                     camera.acc.add(temp.set(camera.up).mul(1000000));
                     moved = true;
@@ -304,7 +316,7 @@ public class VoxelSpace extends Engine
         }
         else
         {
-            if (keyboard().SPACE.held())
+            if (keyboard().held(Keyboard.Key.SPACE))
             {
                 camera.acc.add(temp.set(camera.up).mul(moveAcc));
                 moved = true;
@@ -313,7 +325,7 @@ public class VoxelSpace extends Engine
             {
                 camera.acc.add(temp.set(camera.up).mul(-moveAcc));
             }
-            if (keyboard().L_SHIFT.held())
+            if (keyboard().held(Keyboard.Key.L_SHIFT))
             {
                 camera.acc.add(temp.set(camera.up).mul(-moveAcc));
                 moved = true;

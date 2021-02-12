@@ -1,6 +1,7 @@
 package engine.ct;
 
 import engine.Engine;
+import engine.Keyboard;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
@@ -91,17 +92,17 @@ public class CT003_Snake extends Engine
     @Override
     public void draw(double elapsedTime)
     {
-        if (keyboard().UP.down()) snake.dir.set(0, -1);
-        if (keyboard().DOWN.down()) snake.dir.set(0, 1);
-        if (keyboard().LEFT.down()) snake.dir.set(-1, 0);
-        if (keyboard().RIGHT.down()) snake.dir.set(1, 0);
-        
+        if (keyboard().down(Keyboard.Key.UP)) snake.dir.set(0, -1);
+        if (keyboard().down(Keyboard.Key.DOWN)) snake.dir.set(0, 1);
+        if (keyboard().down(Keyboard.Key.LEFT)) snake.dir.set(-1, 0);
+        if (keyboard().down(Keyboard.Key.RIGHT)) snake.dir.set(1, 0);
+    
         clear();
-        
+    
         if (snake.eat(food)) pickLocation();
-        
+    
         weight(2);
-        
+    
         snake.death();
         snake.update();
         snake.show();

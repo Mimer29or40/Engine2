@@ -21,6 +21,7 @@ import org.joml.*;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWGamepadState;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.system.APIUtil;
 import org.lwjgl.system.Callback;
 import org.lwjgl.system.MemoryStack;
@@ -30,6 +31,7 @@ import rutils.Logger;
 import rutils.group.Pair;
 import rutils.group.Triple;
 import rutils.profiler.Profiler;
+import rutils.profiler.Section;
 import rutils.profiler.SectionData;
 
 import java.lang.Math;
@@ -69,6 +71,8 @@ public class Engine
     
     protected static final Vector2i screenSize = new Vector2i();
     protected static final Vector2i pixelSize  = new Vector2i();
+    protected static final Vector2i viewPos    = new Vector2i();
+    protected static final Vector2i viewSize   = new Vector2i();
     
     protected static Random random;
     
@@ -288,7 +292,7 @@ public class Engine
                     try
                     {
                         Engine.window.makeCurrent();
-                        org.lwjgl.opengl.GL.createCapabilities();
+                        GL.createCapabilities();
                         
                         long t, dt;
                         long lastFrame   = nanoseconds();
@@ -314,116 +318,114 @@ public class Engine
                                 
                                 Engine.profiler.startFrame();
                                 {
-                                    Engine.profiler.startSection("Events");
+                                    try (Section events = Engine.profiler.startSection("Events"))
                                     {
                                         Events.clear();
-                                        
-                                        Engine.profiler.startSection("Mouse");
+        
+                                        try (Section mouse = Engine.profiler.startSection("Mouse"))
                                         {
                                             Engine.mouse.postEvents(t, dt);
                                         }
-                                        Engine.profiler.endSection();
-                                        
-                                        Engine.profiler.startSection("Keyboard");
+        
+                                        try (Section keyboard = Engine.profiler.startSection("Keyboard"))
                                         {
                                             Engine.keyboard.postEvents(t, dt);
                                         }
-                                        Engine.profiler.endSection();
-    
-                                        Engine.profiler.startSection("Window");
+        
+                                        try (Section joysticks = Engine.profiler.startSection("Joysticks"))
+                                        {
+                                            for (Joystick joystick : Engine.joysticks.values()) joystick.postEvents(t, dt);
+                                        }
+        
+                                        try (Section window = Engine.profiler.startSection("Window"))
                                         {
                                             Engine.window.postEvents(t, dt);
                                         }
-                                        Engine.profiler.endSection();
-    
-                                        // TODO
-                                        // Engine.profiler.startSection("Internal");
-                                        // {
-                                        //     if (Engine.keyboard.F1.down(Engine.modifier.CONTROL, Engine.modifier.ALT, Engine.modifier.SHIFT))
-                                        //     {
-                                        //         Engine.profilerData = null;
-                                        //         Engine.profiler.enabled(false);
-                                        //         Engine.profilerMode = 0;
-                                        //         notification("Profile Mode: Off");
-                                        //     }
-                                        //     if (Engine.keyboard.F2.down(Engine.modifier.CONTROL, Engine.modifier.ALT, Engine.modifier.SHIFT))
-                                        //     {
-                                        //         Engine.profiler.enabled(true);
-                                        //         Engine.profilerMode = 1;
-                                        //         notification("Profile Mode: Average");
-                                        //     }
-                                        //     if (Engine.keyboard.F3.down(Engine.modifier.CONTROL, Engine.modifier.ALT, Engine.modifier.SHIFT))
-                                        //     {
-                                        //         Engine.profiler.enabled(true);
-                                        //         Engine.profilerMode = 2;
-                                        //         notification("Profile Mode: Min");
-                                        //     }
-                                        //     if (Engine.keyboard.F4.down(Engine.modifier.CONTROL, Engine.modifier.ALT, Engine.modifier.SHIFT))
-                                        //     {
-                                        //         Engine.profiler.enabled(true);
-                                        //         Engine.profilerMode = 3;
-                                        //         notification("Profile Mode: Max");
-                                        //     }
-                                        //     if (Engine.keyboard.F5.down(Engine.modifier.CONTROL, Engine.modifier.ALT, Engine.modifier.SHIFT))
-                                        //     {
-                                        //         Engine.profiler.enabled(true);
-                                        //         Engine.profilerMode = 4;
-                                        //         notification("Profile Mode: Real-Time");
-                                        //     }
-                                        //     if (Engine.keyboard.F10.down(Engine.modifier.CONTROL, Engine.modifier.ALT, Engine.modifier.SHIFT))
-                                        //     {
-                                        //         Engine.renderer.debug(!Engine.renderer.debug());
-                                        //         notification(Engine.renderer.debug() ? "Renderer Debug Mode: On" : "Renderer Debug Mode: Off");
-                                        //     }
-                                        //     if (Engine.keyboard.F11.down(Engine.modifier.CONTROL, Engine.modifier.ALT, Engine.modifier.SHIFT))
-                                        //     {
-                                        //         Engine.debug = !Engine.debug;
-                                        //         notification(Engine.debug ? "Debug Mode: On" : "Debug Mode: Off");
-                                        //     }
-                                        //     if (Engine.keyboard.F12.down(Engine.modifier.CONTROL, Engine.modifier.ALT, Engine.modifier.SHIFT))
-                                        //     {
-                                        //         Engine.paused = !Engine.paused;
-                                        //         notification(Engine.paused ? "Engine Paused" : "Engine Unpaused");
-                                        //     }
-                                        //     if (Engine.profilerMode > 0 && Engine.profilerData != null)
-                                        //     {
-                                        //         for (int i = 1; i < 9; i++)
-                                        //         {
-                                        //             if (Engine.keyboard.get("K" + i).down() && Engine.profilerData.size() > i)
-                                        //             {
-                                        //                 String name = Engine.profilerData.get(i).name;
-                                        //                 if (name.contains(".")) name = name.substring(name.lastIndexOf(".") + 1);
-                                        //                 Engine.profilerParent = (Engine.profilerParent != null ? Engine.profilerParent + "." : "") + name;
-                                        //             }
-                                        //         }
-                                        //         if (Engine.keyboard.K0.down() && Engine.profilerParent != null)
-                                        //         {
-                                        //             if (Engine.profilerParent.contains("."))
-                                        //             {
-                                        //                 Engine.profilerParent = Engine.profilerParent.substring(0, Engine.profilerParent.lastIndexOf("."));
-                                        //             }
-                                        //             else
-                                        //             {
-                                        //                 Engine.profilerParent = null;
-                                        //             }
-                                        //         }
-                                        //     }
-                                        // }
-                                        // Engine.profiler.endSection();
+        
+                                        try (Section internal = Engine.profiler.startSection("Internal"))
+                                        {
+                                            if (Engine.keyboard.down(Keyboard.Key.F1, Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
+                                            {
+                                                Engine.profilerData = null;
+                                                Engine.profiler.enabled(false);
+                                                Engine.profilerMode = 0;
+                                                notification("Profile Mode: Off");
+                                            }
+                                            if (Engine.keyboard.down(Keyboard.Key.F2, Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
+                                            {
+                                                Engine.profiler.enabled(true);
+                                                Engine.profilerMode = 1;
+                                                notification("Profile Mode: Average");
+                                            }
+                                            if (Engine.keyboard.down(Keyboard.Key.F3, Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
+                                            {
+                                                Engine.profiler.enabled(true);
+                                                Engine.profilerMode = 2;
+                                                notification("Profile Mode: Min");
+                                            }
+                                            if (Engine.keyboard.down(Keyboard.Key.F4, Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
+                                            {
+                                                Engine.profiler.enabled(true);
+                                                Engine.profilerMode = 3;
+                                                notification("Profile Mode: Max");
+                                            }
+                                            if (Engine.keyboard.down(Keyboard.Key.F5, Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
+                                            {
+                                                Engine.profiler.enabled(true);
+                                                Engine.profilerMode = 4;
+                                                notification("Profile Mode: Real-Time");
+                                            }
+                                            if (Engine.keyboard.down(Keyboard.Key.F10, Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
+                                            {
+                                                Engine.renderer.debug(!Engine.renderer.debug());
+                                                notification(Engine.renderer.debug() ? "Renderer Debug Mode: On" : "Renderer Debug Mode: Off");
+                                            }
+                                            if (Engine.keyboard.down(Keyboard.Key.F11, Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
+                                            {
+                                                Engine.debug = !Engine.debug;
+                                                notification(Engine.debug ? "Debug Mode: On" : "Debug Mode: Off");
+                                            }
+                                            if (Engine.keyboard.down(Keyboard.Key.F12, Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
+                                            {
+                                                Engine.paused = !Engine.paused;
+                                                notification(Engine.paused ? "Engine Paused" : "Engine Unpaused");
+                                            }
+                                            if (Engine.profilerMode > 0 && Engine.profilerData != null)
+                                            {
+                                                for (int i = 1; i < 9; i++)
+                                                {
+                                                    if (Engine.keyboard.down(Keyboard.Key.get("K" + i)) && Engine.profilerData.size() > i)
+                                                    {
+                                                        String name = Engine.profilerData.get(i).name;
+                                                        if (name.contains(".")) name = name.substring(name.lastIndexOf(".") + 1);
+                                                        Engine.profilerParent = (Engine.profilerParent != null ? Engine.profilerParent + "." : "") + name;
+                                                    }
+                                                }
+                                                if (Engine.keyboard.down(Keyboard.Key.K0) && Engine.profilerParent != null)
+                                                {
+                                                    if (Engine.profilerParent.contains("."))
+                                                    {
+                                                        Engine.profilerParent = Engine.profilerParent.substring(0, Engine.profilerParent.lastIndexOf("."));
+                                                    }
+                                                    else
+                                                    {
+                                                        Engine.profilerParent = null;
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
-                                    Engine.profiler.endSection();
     
-                                    Engine.profiler.startSection("Draw");
+                                    try (Section draw = Engine.profiler.startSection("Draw"))
                                     {
                                         if (!Engine.paused)
                                         {
-                                            Engine.profiler.startSection("Start");
+                                            try (Section start = Engine.profiler.startSection("Start"))
                                             {
                                                 Engine.renderer.start();
                                             }
-                                            Engine.profiler.endSection();
-    
-                                            Engine.profiler.startSection("Extension Pre Draw");
+            
+                                            try (Section extensionPreDraw = Engine.profiler.startSection("Extension Pre Draw"))
                                             {
                                                 Engine.LOGGER.finer("Extension Pre Draw");
                                                 for (String name : Engine.extensions.keySet())
@@ -431,28 +433,25 @@ public class Engine
                                                     Extension extension = Engine.extensions.get(name);
                                                     if (extension.enabled())
                                                     {
-                                                        Engine.profiler.startSection(name);
+                                                        try (Section ext = Engine.profiler.startSection(name))
                                                         {
                                                             Engine.renderer.push();
                                                             extension.beforeDraw(dt / 1_000_000_000D);
                                                             Engine.renderer.pop();
                                                         }
-                                                        Engine.profiler.endSection();
                                                     }
                                                 }
                                             }
-                                            Engine.profiler.endSection();
-                                            
-                                            Engine.profiler.startSection("User");
+            
+                                            try (Section user = Engine.profiler.startSection("User"))
                                             {
                                                 Engine.LOGGER.finer("User Draw");
                                                 Engine.renderer.push();
                                                 Engine.logic.draw(dt / 1_000_000_000D);
                                                 Engine.renderer.pop();
                                             }
-                                            Engine.profiler.endSection();
-                                            
-                                            Engine.profiler.startSection("Extension Post Draw");
+            
+                                            try (Section extensionPostDraw = Engine.profiler.startSection("Extension Post Draw"))
                                             {
                                                 Engine.LOGGER.finer("Extension Post Draw");
                                                 for (String name : Engine.extensions.keySet())
@@ -460,36 +459,40 @@ public class Engine
                                                     Extension extension = Engine.extensions.get(name);
                                                     if (extension.enabled())
                                                     {
-                                                        Engine.profiler.startSection(name);
+                                                        try (Section ext = Engine.profiler.startSection(name))
                                                         {
                                                             Engine.renderer.push();
                                                             extension.afterDraw(dt / 1_000_000_000D);
                                                             Engine.renderer.pop();
                                                         }
-                                                        Engine.profiler.endSection();
                                                     }
                                                 }
                                             }
-                                            Engine.profiler.endSection();
-    
-                                            Engine.profiler.startSection("Finish");
+            
+                                            try (Section finish = Engine.profiler.startSection("Finish"))
                                             {
                                                 Engine.renderer.finish();
                                             }
-                                            Engine.profiler.endSection();
                                         }
-    
-                                        Engine.profiler.startSection("Update Viewport");
+        
+                                        try (Section viewport = Engine.profiler.startSection("Viewport"))
                                         {
-                                            if (Engine.window.updateViewport())
-                                            {
-                                                Engine.pixelSize.x = Math.max(Engine.window.framebufferWidth() / Engine.screenSize.x, 1);
-                                                Engine.pixelSize.y = Math.max(Engine.window.framebufferHeight() / Engine.screenSize.y, 1);
-                                            }
+                                            double aspect = (double) (Engine.screenSize.x * Engine.pixelSize.x) / (double) (Engine.screenSize.y * Engine.pixelSize.y);
+            
+                                            int frameWidth  = Engine.window.framebufferWidth();
+                                            int frameHeight = Engine.window.framebufferHeight();
+            
+                                            Engine.viewSize.set(frameWidth, (int) (frameWidth / aspect));
+                                            if (Engine.viewSize.y > frameHeight) Engine.viewSize.set((int) (frameHeight * aspect), frameHeight);
+                                            Engine.viewPos.set((frameWidth - Engine.viewSize.x) >> 1, (frameHeight - Engine.viewSize.y) >> 1);
+            
+                                            Engine.pixelSize.x = Math.max(Engine.viewSize.x / Engine.screenSize.x, 1);
+                                            Engine.pixelSize.y = Math.max(Engine.viewSize.y / Engine.screenSize.y, 1);
+            
+                                            glViewport(Engine.viewPos.x, Engine.viewPos.y, Engine.viewSize.x, Engine.viewSize.y);
                                         }
-                                        Engine.profiler.endSection();
-    
-                                        Engine.profiler.startSection("Layers");
+        
+                                        try (Section viewport = Engine.profiler.startSection("Layers"))
                                         {
                                             Engine.screenShader.bind();
                                             Engine.screenVAO.bind();
@@ -504,18 +507,16 @@ public class Engine
                                             Engine.screenShader.unbind();
                                             Engine.screenVAO.unbind();
                                         }
-                                        Engine.profiler.endSection();
                                     }
-                                    Engine.profiler.endSection();
-                                    
-                                    Engine.profiler.startSection("Debug");
+    
+                                    try (Section debug = Engine.profiler.startSection("Debug"))
                                     {
                                         dt = t - Engine.notificationTime;
                                         if (dt < Engine.notificationDuration && Engine.notification != null)
                                         {
-                                            int x = (Engine.window.framebufferWidth() - stb_easy_font_width(Engine.notification)) >> 1;
-                                            int y = (Engine.window.framebufferHeight() - stb_easy_font_height(Engine.notification)) >> 1;
-    
+                                            int x = (Engine.viewSize.x - stb_easy_font_width(Engine.notification)) >> 1;
+                                            int y = (Engine.viewSize.y - stb_easy_font_height(Engine.notification)) >> 1;
+            
                                             drawDebugText(x, y, Engine.notification);
                                         }
                                         if (Engine.debug)
@@ -524,16 +525,10 @@ public class Engine
                                         }
                                         if (Engine.profilerData != null && Engine.profilerData.size() > 0)
                                         {
-                                            // int y = Engine.window.viewH() - stb_easy_font_height(Engine.profilerOutput) - stb_easy_font_height(" ");
-                                            // for (String line : Engine.profilerOutput.split("\n"))
-                                            // {
-                                            //     drawDebugText(0, y += stb_easy_font_height(line), line);
-                                            // }
-    
                                             int nameLength = 0;
                                             for (SectionData data : Engine.profilerData) nameLength = Math.max(nameLength, data.name.length());
     
-                                            int y = Engine.window.framebufferHeight() - stb_easy_font_height(" " + "\n".repeat(Engine.profilerData.size() - 1) + " ");
+                                            int y = Engine.viewSize.y - stb_easy_font_height(" " + "\n".repeat(Engine.profilerData.size() - 1) + " ");
                                             for (int i = 0, n = Engine.profilerData.size(); i < n; i++)
                                             {
                                                 SectionData data = Engine.profilerData.get(i);
@@ -548,11 +543,11 @@ public class Engine
                                         
                                         if (Engine.debugLines.size() > 0)
                                         {
-                                            Engine.profiler.startSection("Text");
+                                            try (Section text = Engine.profiler.startSection("Text"))
                                             {
                                                 Engine.debugShader.bind();
-                                                Engine.debugShader.setUniform("pv", Engine.debugView.setOrtho(0F, Engine.window.viewW(), Engine.window.viewH(), 0F, -1F, 1F));
-    
+                                                Engine.debugShader.setUniform("pv", Engine.debugView.setOrtho(0F, Engine.viewSize.x, Engine.viewSize.y, 0F, -1F, 1F));
+        
                                                 if (!Engine.debugLines.isEmpty())
                                                 {
                                                     try (MemoryStack stack = MemoryStack.stackPush())
@@ -562,12 +557,12 @@ public class Engine
                                                         for (Triple<Integer, Integer, String> line : Engine.debugLines)
                                                         {
                                                             int quads = stb_easy_font_print(line.a + 2, line.b + 2, line.c, null, charBuffer.clear());
-    
+                    
                                                             float x1 = line.a;
                                                             float y1 = line.b;
                                                             float x2 = line.a + stb_easy_font_width(line.c) + 2;
                                                             float y2 = line.b + stb_easy_font_height(line.c);
-    
+                    
                                                             boxBuffer.put(0, x1);
                                                             boxBuffer.put(1, y1);
                                                             boxBuffer.put(2, x2);
@@ -576,10 +571,10 @@ public class Engine
                                                             boxBuffer.put(5, y2);
                                                             boxBuffer.put(6, x1);
                                                             boxBuffer.put(7, y2);
-    
+                    
                                                             Engine.debugShader.setUniform("color", Engine.debugLineBackground);
                                                             Engine.debugBoxVAO.bind().set(boxBuffer).draw(GLConst.QUADS).unbind();
-    
+                    
                                                             Engine.debugShader.setUniform("color", Engine.debugLineText);
                                                             Engine.debugTextVAO.bind().set(charBuffer).draw(GLConst.QUADS, quads * 4).unbind();
                                                         }
@@ -587,16 +582,13 @@ public class Engine
                                                     Engine.debugLines.clear();
                                                 }
                                             }
-                                            Engine.profiler.endSection();
                                         }
                                     }
-                                    Engine.profiler.endSection();
-                                    
-                                    Engine.profiler.startSection("Swap");
+    
+                                    try (Section swap = Engine.profiler.startSection("Swap"))
                                     {
                                         Engine.window.swap();
                                     }
-                                    Engine.profiler.endSection();
                                     
                                     frameTime = nanoseconds() - t;
                                     if (!Engine.paused)
@@ -646,17 +638,17 @@ public class Engine
                             if (Engine.screenshot != null)
                             {
                                 String fileName = Engine.screenshot + (!Engine.screenshot.endsWith(".png") ? ".png" : "");
-    
-                                int w = Engine.window.frameBufferWidth();
-                                int h = Engine.window.frameBufferHeight();
+        
+                                int w = Engine.viewSize.x;
+                                int h = Engine.viewSize.y;
                                 int c = 3;
-    
+        
                                 int stride = w * c;
-    
+        
                                 ByteBuffer buf = MemoryUtil.memAlloc(w * h * c);
                                 glReadBuffer(GL_FRONT);
                                 glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buf);
-    
+        
                                 byte[] tmp1 = new byte[stride], tmp2 = new byte[stride];
                                 for (int i = 0, n = h >> 1, col1, col2; i < n; i++)
                                 {
@@ -714,11 +706,11 @@ public class Engine
                     finally
                     {
                         Engine.window.unmakeCurrent();
-                        org.lwjgl.opengl.GL.destroy();
-                        org.lwjgl.opengl.GL.setCapabilities(null);
-                        
+                        GL.destroy();
+                        GL.setCapabilities(null);
+    
                         Engine.running = false;
-                        
+    
                         latch.countDown();
                     }
                 }, "render").start();
@@ -734,13 +726,13 @@ public class Engine
                             for (int jid = GLFW_JOYSTICK_1; jid < GLFW_JOYSTICK_LAST; jid++)
                             {
                                 int n;
-            
+    
                                 if (glfwJoystickPresent(jid))
                                 {
                                     FloatBuffer axes    = null;
                                     ByteBuffer  buttons = null;
                                     ByteBuffer  hats    = glfwGetJoystickHats(jid);
-                
+    
                                     if (!glfwJoystickIsGamepad(jid))
                                     {
                                         axes    = glfwGetJoystickAxes(jid);
@@ -751,7 +743,7 @@ public class Engine
                                         try (MemoryStack stack = MemoryStack.stackPush())
                                         {
                                             GLFWGamepadState state = GLFWGamepadState.mallocStack(stack);
-                        
+    
                                             if (glfwGetGamepadState(jid, state))
                                             {
                                                 axes    = state.axes();
@@ -759,7 +751,7 @@ public class Engine
                                             }
                                         }
                                     }
-                
+    
                                     if (axes != null)
                                     {
                                         n = axes.remaining();
@@ -844,6 +836,11 @@ public class Engine
             Engine.monitors.clear();
             Engine.primaryMonitor = null;
     
+            Engine.mouse    = null;
+            Engine.keyboard = null;
+    
+            Engine.joysticks.clear();
+    
             if (Engine.window != null) Engine.window.destroy();
     
             org.lwjgl.opengl.GL.destroy();
@@ -922,12 +919,12 @@ public class Engine
                     try (MemoryStack stack = MemoryStack.stackPush())
                     {
                         GLFWGamepadState state = GLFWGamepadState.mallocStack(stack);
-                    
+    
                         if (glfwGetGamepadState(jid, state))
                         {
                             FloatBuffer axes = state.axes();
                             Engine.JOYSTICK_AXIS_STATES[jid] = new float[axes.remaining()];
-                        
+    
                             ByteBuffer buttons = state.buttons();
                             Engine.JOYSTICK_BUTTON_STATES[jid] = new byte[buttons.remaining()];
                         }
@@ -942,16 +939,16 @@ public class Engine
                 {
                     FloatBuffer axes = glfwGetJoystickAxes(jid);
                     Engine.JOYSTICK_AXIS_STATES[jid] = axes != null ? new float[axes.remaining()] : new float[0];
-                
+    
                     ByteBuffer buttons = glfwGetJoystickButtons(jid);
                     Engine.JOYSTICK_BUTTON_STATES[jid] = buttons != null ? new byte[buttons.remaining()] : new byte[0];
                 }
-            
+    
                 ByteBuffer hats = glfwGetJoystickHats(jid);
                 Engine.JOYSTICK_HAT_STATES[jid] = hats != null ? new byte[hats.remaining()] : new byte[0];
             }
             // -------------------- Joystick Callback Emulation -------------------- //
-        
+    
             if (glfwJoystickPresent(jid))
             {
                 boolean isGamepad = glfwJoystickIsGamepad(jid);

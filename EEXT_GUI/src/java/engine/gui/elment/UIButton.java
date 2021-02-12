@@ -7,8 +7,6 @@ import engine.gui.util.Rectc;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
-import static engine.Engine.mouse;
-
 /**
  * A push button, a lot of the appearance of the button, including images to be displayed, is
  * setup via the theme file.
@@ -33,7 +31,7 @@ public class UIButton extends UIElement
      */
     public void press()
     {
-        onMouseButtonDown(mouse().NONE, rect().centerX(), rect().centerY());
+        onMouseButtonDown(Mouse.Button.NONE, rect().centerX(), rect().centerY());
     }
     
     /**
@@ -41,7 +39,7 @@ public class UIButton extends UIElement
      */
     public void release()
     {
-        onMouseButtonUp(mouse().NONE, rect().centerX(), rect().centerY());
+        onMouseButtonUp(Mouse.Button.NONE, rect().centerX(), rect().centerY());
     }
     
     /**
@@ -49,7 +47,7 @@ public class UIButton extends UIElement
      */
     public void click()
     {
-        onMouseButtonClicked(mouse().NONE, rect().centerX(), rect().centerY(), false);
+        onMouseButtonClicked(Mouse.Button.NONE, rect().centerX(), rect().centerY(), false);
     }
     
     /**
@@ -57,7 +55,7 @@ public class UIButton extends UIElement
      */
     public void doubleClick()
     {
-        onMouseButtonClicked(mouse().NONE, rect().centerX(), rect().centerY(), true);
+        onMouseButtonClicked(Mouse.Button.NONE, rect().centerX(), rect().centerY(), true);
     }
     
     protected boolean selected;

@@ -1,6 +1,7 @@
 package engine.util;
 
 import engine.Engine;
+import engine.Keyboard;
 import engine.color.Color;
 import engine.util.noise.Noise;
 import engine.util.noise.PerlinNoise;
@@ -54,7 +55,7 @@ public class NoiseTests extends Engine
     @Override
     public void draw(double elapsedTime)
     {
-        if (keyboard().SPACE.down()) mode = !mode;
+        if (keyboard().down(Keyboard.Key.SPACE)) mode = !mode;
         
         if (mode)
         {

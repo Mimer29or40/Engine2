@@ -71,15 +71,34 @@ public enum Modifier implements Predicate<Integer>
     }
     
     /**
+     * Checks if this modifier is active.
+     *
+     * @return {@code true} if this modifier is active, otherwise {@code false}
+     */
+    public boolean test()
+    {
+        return test(Modifier.activeMods);
+    }
+    
+    /**
      * Checks if this modifier is active in the provided bitmap.
      *
      * @param mods The modifier bitmap.
-     * @return {@code true} if this modifier is active in the bitmap, otherwise
-     * {@code false}
+     * @return {@code true} if this modifier is active in the bitmap, otherwise {@code false}
      */
     @Override
     public boolean test(Integer mods)
     {
         return this.value == -1 || (mods == 0 && this.value == 0) || (mods & this.value) == this.value;
+    }
+    
+    public static boolean test(Modifier... modifiers)
+    {
+        Predicate<Integer> predicate = null;
+        for (Modifier modifier : modifiers)
+        {
+            predicate = predicate != null ? predicate.and(modifier) : modifier;
+        }
+        return predicate != null && predicate.test(Modifier.activeMods);
     }
 }

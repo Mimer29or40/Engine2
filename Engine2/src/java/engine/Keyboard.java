@@ -3,8 +3,8 @@ package engine;
 import rutils.Logger;
 import rutils.group.Pair;
 
+import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -27,7 +27,7 @@ public class Keyboard extends InputDevice
     
     protected Keyboard()
     {
-        this.keyMap = new LinkedHashMap<>();
+        this.keyMap = new EnumMap<>(Key.class);
         for (Key key : Key.values()) this.keyMap.put(key, new Input());
     }
     
@@ -122,6 +122,26 @@ public class Keyboard extends InputDevice
                 // GLFW.EVENT_BUS.post(EventKeyboardKeyHeld.create(input._window, key)); // TODO
             }
         }
+    }
+    
+    public boolean down(Key key, Modifier... modifiers)
+    {
+        return this.keyMap.get(key).state == GLFW_PRESS && Modifier.test(modifiers);
+    }
+    
+    public boolean up(Key key, Modifier... modifiers)
+    {
+        return this.keyMap.get(key).state == GLFW_RELEASE && Modifier.test(modifiers);
+    }
+    
+    public boolean repeat(Key key, Modifier... modifiers)
+    {
+        return this.keyMap.get(key).state == GLFW_REPEAT && Modifier.test(modifiers);
+    }
+    
+    public boolean held(Key key, Modifier... modifiers)
+    {
+        return this.keyMap.get(key).held && Modifier.test(modifiers);
     }
     
     public enum Key
@@ -270,6 +290,15 @@ public class Keyboard extends InputDevice
         {
             this.ref      = ref;
             this.scancode = ref >= 0 ? glfwGetKeyScancode(ref) : -1;
+        }
+        
+        /**
+         * @return Gets the ButtonInput that corresponds to the GLFW constant.
+         */
+        public static Key get(String key)
+        {
+            for (Key k : Key.values()) if (k.name().equals(key)) return k;
+            return Key.UNKNOWN;
         }
         
         /**

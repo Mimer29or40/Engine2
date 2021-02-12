@@ -1,6 +1,7 @@
 package engine.gui;
 
 import engine.Engine;
+import engine.Keyboard;
 import engine.gui.elment.UIButton;
 import engine.gui.elment.UILabel;
 import engine.gui.elment.UIVerticalScrollBar;
@@ -47,9 +48,9 @@ public class GuiTest extends Engine
     
         circle(0, 0, 100);
     
-        if (keyboard().T.down()) button.toggleToggleable();
-        if (keyboard().V.down()) button.toggleVisibility();
-        if (keyboard().SPACE.down()) button.toggleEnabled();
+        if (keyboard().down(Keyboard.Key.T)) button.toggleToggleable();
+        if (keyboard().down(Keyboard.Key.V)) button.toggleVisibility();
+        if (keyboard().down(Keyboard.Key.SPACE)) button.toggleEnabled();
         // if (keyboard().A.down()) element.setState("active");
         // if (keyboard().S.down()) element.setState("normal");
     

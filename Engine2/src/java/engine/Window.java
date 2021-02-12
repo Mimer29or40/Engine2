@@ -5,11 +5,11 @@ import engine.event.Events;
 import engine.input.Keyboard;
 import engine.input.Modifiers;
 import engine.input.Mouse;
-import engine.util.Logger;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFWMonitorCallback;
+import rutils.Logger;
 
 import java.util.Objects;
 

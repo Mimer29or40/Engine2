@@ -9,7 +9,7 @@ import org.joml.Vector2d;
 
 import java.util.ArrayList;
 
-import static engine.util.Util.sum;
+import static rutils.NumUtil.sum;
 
 @SuppressWarnings("unused")
 public class CT002_MengerSponge extends Engine

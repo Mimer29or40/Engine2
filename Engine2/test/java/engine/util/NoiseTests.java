@@ -1,4 +1,4 @@
-package engine.noise;
+package engine.util;
 
 import engine.Engine;
 import engine.color.Color;
@@ -7,7 +7,7 @@ import engine.util.noise.PerlinNoise;
 
 import java.util.function.Function;
 
-import static engine.util.Util.map;
+import static rutils.NumUtil.map;
 
 public class NoiseTests extends Engine
 {

@@ -10,9 +10,11 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="Engine2" scope="PROVIDED" />
-    <orderEntry type="module" module-name="EEXT_GUI" scope="PROVIDED" />
-    <orderEntry type="module" module-name="EEXT_Shader" scope="PROVIDED" />
-    <orderEntry type="library" scope="PROVIDED" name="Joml" level="application" />
+    <orderEntry type="module" module-name="Engine2" />
+    <orderEntry type="module" module-name="EEXT_GUI" />
+    <orderEntry type="module" module-name="EEXT_SHADER" />
+    <orderEntry type="library" name="Joml" level="application" />
+    <orderEntry type="library" name="RyanUtils" level="application" />
+    <orderEntry type="library" name="ROMLUtils" level="application" />
   </component>
 </module>

@@ -10,7 +10,7 @@ import engine.render.Texture;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
-import static engine.util.Util.clamp;
+import static rutils.NumUtil.clamp;
 
 /**
  * A vertical scroll bar allows users to position a smaller visible area within a vertically

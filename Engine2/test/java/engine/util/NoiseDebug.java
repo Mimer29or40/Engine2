@@ -1,4 +1,4 @@
-package engine.noise;
+package engine.util;
 
 import engine.Engine;
 import engine.color.Color;
@@ -7,7 +7,7 @@ import engine.util.noise.Noise;
 import engine.util.noise.PerlinNoise;
 import engine.util.noise.ValueNoise;
 
-import static engine.util.Util.map;
+import static rutils.NumUtil.map;
 
 public class NoiseDebug extends Engine
 {

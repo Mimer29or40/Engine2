@@ -17,7 +17,7 @@ import org.joml.Vector2dc;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
-import static engine.util.Util.println;
+import static rutils.StringUtil.println;
 
 public class EEXT_GUI extends Extension
 {

@@ -1,6 +1,6 @@
 package engine.input;
 
-import engine.util.Logger;
+import rutils.Logger;
 
 import java.util.Collection;
 import java.util.HashMap;

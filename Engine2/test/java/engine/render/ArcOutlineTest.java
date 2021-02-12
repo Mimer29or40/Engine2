@@ -2,7 +2,9 @@ package engine.render;
 
 import org.joml.Vector2f;
 
-import static engine.util.Util.*;
+import static rutils.NumUtil.max;
+import static rutils.NumUtil.min;
+import static rutils.StringUtil.println;
 
 public class ArcOutlineTest
 {

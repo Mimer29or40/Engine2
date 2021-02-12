@@ -1,8 +1,7 @@
 package engine;
 
 import engine.render.Texture;
-
-import static engine.shader.EEXT_Shader.addShader;
+// import engine.shader.EEXT_Shader;
 
 public class BookOfShaders extends Engine
 {
@@ -12,7 +11,7 @@ public class BookOfShaders extends Engine
     public void setup()
     {
         size(800, 800, 1, 1);
-        addShader("shader.frag");
+        // EEXT_Shader.addShader("shader.frag");
         
         this.texture = new Texture(screenWidth(), screenHeight());
     }

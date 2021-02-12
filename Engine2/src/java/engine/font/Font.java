@@ -1,7 +1,6 @@
 package engine.font;
 
 import engine.render.Texture;
-import engine.util.Logger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.stb.STBTTAlignedQuad;
 import org.lwjgl.stb.STBTTFontinfo;
@@ -9,6 +8,7 @@ import org.lwjgl.stb.STBTTPackContext;
 import org.lwjgl.stb.STBTTPackedchar;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
+import rutils.Logger;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -16,8 +16,8 @@ import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Objects;
 
-import static engine.util.Util.resourceToByteBuffer;
 import static org.lwjgl.stb.STBTruetype.*;
+import static rutils.IOUtil.resourceToByteBuffer;
 
 @SuppressWarnings("unused")
 public class Font

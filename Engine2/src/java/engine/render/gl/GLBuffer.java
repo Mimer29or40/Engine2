@@ -1,8 +1,8 @@
 package engine.render.gl;
 
-import engine.util.Logger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL15;
+import rutils.Logger;
 
 import java.nio.*;
 import java.util.Objects;

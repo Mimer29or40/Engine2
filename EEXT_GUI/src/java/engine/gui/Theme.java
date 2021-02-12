@@ -7,7 +7,7 @@ import engine.font.Font;
 import engine.font.Weight;
 import engine.gui.util.Rect;
 import engine.render.Texture;
-import engine.util.Logger;
+import rutils.Logger;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -15,8 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-import static engine.util.Util.getPath;
-import static engine.util.Util.join;
+import static rutils.IOUtil.getPath;
+import static rutils.StringUtil.join;
 
 @SuppressWarnings("SameReturnValue")
 public class Theme

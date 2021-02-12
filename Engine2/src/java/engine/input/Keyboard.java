@@ -2,7 +2,7 @@ package engine.input;
 
 import engine.event.Event;
 import engine.event.Events;
-import engine.util.Logger;
+import rutils.Logger;
 
 import static engine.Engine.profiler;
 import static org.lwjgl.glfw.GLFW.*;

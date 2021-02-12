@@ -7,8 +7,8 @@ import engine.render.Texture;
 
 import java.util.logging.Level;
 
-import static engine.util.Util.map;
-import static engine.util.Util.println;
+import static rutils.NumUtil.map;
+import static rutils.StringUtil.println;
 
 public class EngineTest extends Engine
 {

@@ -1,6 +1,6 @@
 package engine.shader;
 
-import engine.util.Logger;
+import rutils.Logger;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-import static engine.util.Util.getPath;
+import static rutils.IOUtil.getPath;
 
 public class FileWatcher extends Thread
 {

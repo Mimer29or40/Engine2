@@ -2,7 +2,7 @@ package engine.color;
 
 import engine.Engine;
 
-import static engine.util.Util.println;
+import static rutils.StringUtil.println;
 
 public class ColorTest extends Engine
 {
@@ -41,7 +41,7 @@ public class ColorTest extends Engine
     {
         int  colorInt  = Color.WHITE.toInt();
         long colorLong = colorInt & 0x00000000FFFFFFFFL;
-        
+    
         println(colorInt, colorLong);
         // x &= 0x00000000FFFFFFFFL;
         // return set(x, x >> 8, x >> 16, x >> 24);

@@ -1,6 +1,6 @@
 package engine.render.gl;
 
-import engine.util.Logger;
+import rutils.Logger;
 
 import java.nio.*;
 import java.util.ArrayList;

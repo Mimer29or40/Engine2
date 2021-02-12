@@ -3,7 +3,7 @@ package engine.render;
 import engine.Engine;
 import org.joml.Vector2f;
 
-import static engine.util.Util.println;
+import static rutils.StringUtil.println;
 
 public class PolygonTest extends Engine
 {

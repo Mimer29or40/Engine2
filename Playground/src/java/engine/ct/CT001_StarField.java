@@ -5,7 +5,7 @@ import org.joml.Vector3d;
 
 import java.util.ArrayList;
 
-import static engine.util.Util.map;
+import static rutils.NumUtil.map;
 
 @SuppressWarnings("unused")
 public class CT001_StarField extends Engine

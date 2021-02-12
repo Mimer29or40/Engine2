@@ -6,7 +6,7 @@ import org.joml.Vector2ic;
 
 import java.util.ArrayList;
 
-import static engine.util.Util.println;
+import static rutils.StringUtil.println;
 
 @SuppressWarnings("unused")
 public class CT003_Snake extends Engine

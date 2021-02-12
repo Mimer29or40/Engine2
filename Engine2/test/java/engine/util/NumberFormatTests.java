@@ -1,6 +1,9 @@
 package engine.util;
 
-import static engine.util.Util.println;
+import rutils.NumUtil;
+import rutils.group.IPairI;
+
+import static rutils.StringUtil.println;
 
 public class NumberFormatTests
 {
@@ -9,12 +12,12 @@ public class NumberFormatTests
         double[] numbers = new double[] {
                 100, -100, 0.123, 0.1, 12345, -1.34234
         };
-        
-        Pair.I format = Util.getFormatNumbers(numbers);
+    
+        IPairI format = NumUtil.getFormatNumbers(numbers);
         
         for (double number : numbers)
         {
-            println(Util.format(number, format));
+            println(NumUtil.format(number, format));
         }
     }
 }

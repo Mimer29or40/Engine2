@@ -1,7 +1,7 @@
 package engine.util.noise;
 
-import static engine.util.Util.fastFloor;
-import static engine.util.Util.smoothstep;
+import static rutils.NumUtil.fastFloor;
+import static rutils.NumUtil.smoothstep;
 
 @SuppressWarnings("unused")
 public class PerlinNoise extends Noise

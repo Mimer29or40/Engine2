@@ -3,7 +3,7 @@ package engine.util.noise;
 import java.util.Arrays;
 import java.util.function.Function;
 
-import static engine.util.Util.fastFloor;
+import static rutils.NumUtil.fastFloor;
 
 @SuppressWarnings("unused")
 public class WorleyNoise extends Noise

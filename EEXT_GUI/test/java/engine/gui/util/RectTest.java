@@ -4,7 +4,7 @@ import engine.Engine;
 import engine.color.Color;
 import engine.render.RectMode;
 
-import static engine.util.Util.println;
+import static rutils.StringUtil.println;
 
 public class RectTest extends Engine
 {

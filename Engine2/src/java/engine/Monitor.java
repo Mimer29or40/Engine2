@@ -1,13 +1,13 @@
 package engine;
 
-import engine.util.ITuple;
-import engine.util.Tuple;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryStack;
+import rutils.group.ITripleI;
+import rutils.group.TripleI;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -22,7 +22,7 @@ public class Monitor
     private final int    index;
     private final String name;
     
-    private final Tuple.I bitTuple;
+    private final TripleI bitTuple;
     private final int     refreshRate;
     
     private final Vector2i pos  = new Vector2i();
@@ -43,7 +43,7 @@ public class Monitor
         
         GLFWVidMode videoMode = Objects.requireNonNull(glfwGetVideoMode(this.handle), "Monitor not found!");
     
-        this.bitTuple    = new Tuple.I(videoMode.redBits(), videoMode.greenBits(), videoMode.blueBits());
+        this.bitTuple    = new TripleI(videoMode.redBits(), videoMode.greenBits(), videoMode.blueBits());
         this.refreshRate = videoMode.refreshRate();
         
         try (MemoryStack stack = MemoryStack.stackPush())
@@ -98,7 +98,7 @@ public class Monitor
     /**
      * @return The number of red, green, and blue bits.
      */
-    public ITuple<Integer, Integer, Integer> bitTuple()
+    public ITripleI bitTuple()
     {
         return this.bitTuple;
     }

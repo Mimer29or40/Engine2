@@ -10,6 +10,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Annotations" level="application" />
     <orderEntry type="library" name="Joml" level="application" />
     <orderEntry type="library" name="Gson" level="application" />
     <orderEntry type="module-library">
@@ -29,6 +30,9 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="library" scope="TEST" name="JUnit5" level="application" />
+    <orderEntry type="library" name="RyanUtils" level="application" />
+    <orderEntry type="library" name="ROMLUtils" level="application" />
     <orderEntry type="library" name="lwjgl" level="application" />
     <orderEntry type="library" name="lwjgl-glfw" level="application" />
     <orderEntry type="library" name="lwjgl-opengl" level="application" />

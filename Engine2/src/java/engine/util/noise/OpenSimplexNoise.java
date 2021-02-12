@@ -1,6 +1,6 @@
 package engine.util.noise;
 
-import static engine.util.Util.fastFloor;
+import static rutils.NumUtil.fastFloor;
 
 @SuppressWarnings({"UnnecessaryLocalVariable", "unused", "UnusedAssignment", "ConstantConditions"})
 public class OpenSimplexNoise extends Noise

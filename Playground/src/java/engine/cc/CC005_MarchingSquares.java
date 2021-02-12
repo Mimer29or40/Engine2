@@ -3,7 +3,7 @@ package engine.cc;
 import engine.Engine;
 import org.joml.Vector2d;
 
-import static engine.util.Util.map;
+import static rutils.NumUtil.map;
 
 public class CC005_MarchingSquares extends Engine
 {

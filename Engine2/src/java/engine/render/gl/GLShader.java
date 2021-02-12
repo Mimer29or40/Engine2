@@ -3,9 +3,9 @@ package engine.render.gl;
 import engine.color.Color;
 import engine.color.Colorc;
 import engine.render.Texture;
-import engine.util.Logger;
 import org.joml.*;
 import org.lwjgl.system.MemoryStack;
+import rutils.Logger;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,8 +13,8 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
-import static engine.util.Util.getPath;
 import static org.lwjgl.opengl.GL20.*;
+import static rutils.IOUtil.getPath;
 
 /**
  * A shader that can be used to render things.

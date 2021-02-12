@@ -2,10 +2,10 @@ package engine.input;
 
 import engine.event.Event;
 import engine.event.Events;
-import engine.util.Logger;
-import engine.util.Vector;
 import org.joml.Vector2d;
 import org.joml.Vector2dc;
+import rutils.Logger;
+import rutils.joml.JOMLUnit;
 
 import static engine.Engine.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -202,7 +202,7 @@ public class Mouse extends Device<Mouse.Button>
         {
             this.newPos.sub(this.pos, this.rel);
             this.pos.set(this.newPos);
-            Events.post(Event.MOUSE_MOVED, this.captured ? Vector.ZERO2d : this.pos, this.rel);
+            Events.post(Event.MOUSE_MOVED, this.captured ? JOMLUnit.ZERO2d : this.pos, this.rel);
         }
         profiler().endSection();
         

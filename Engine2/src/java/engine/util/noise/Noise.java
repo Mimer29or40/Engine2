@@ -2,7 +2,7 @@ package engine.util.noise;
 
 import engine.util.Random;
 
-import static engine.util.Util.clamp;
+import static rutils.NumUtil.clamp;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public abstract class Noise

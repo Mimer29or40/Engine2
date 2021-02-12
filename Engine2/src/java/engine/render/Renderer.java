@@ -8,9 +8,9 @@ import engine.render.gl.GLBuffer;
 import engine.render.gl.GLConst;
 import engine.render.gl.GLShader;
 import engine.render.gl.GLVertexArray;
-import engine.util.Logger;
 import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryStack;
+import rutils.Logger;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -18,10 +18,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
-import static engine.util.Util.getDecimal;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL43.glPolygonMode;
+import static rutils.NumUtil.getDecimal;
 
 /**
  * Abstract Renderer to draw things to a texture.
@@ -30,17 +30,17 @@ public class Renderer
 {
     private static final Logger LOGGER = new Logger();
     
-    private static final Blend.BTuple DEFAULT_BLEND        = new Blend.BTuple(new Blend());
-    private static final Color        DEFAULT_FILL         = new Color(255);
-    private static final Color        DEFAULT_STROKE       = new Color(0);
-    private static final Color        DEFAULT_TINT         = new Color(255);
-    private static final double       DEFAULT_WEIGHT       = 5;
-    private static final RectMode     DEFAULT_RECT_MODE    = RectMode.CORNER;
-    private static final EllipseMode  DEFAULT_ELLIPSE_MODE = EllipseMode.CENTER;
-    private static final ArcMode      DEFAULT_ARC_MODE     = ArcMode.DEFAULT;
-    private static final Font         DEFAULT_TEXT_FONT    = Font.DEFAULT;
-    private static final int          DEFAULT_TEXT_SIZE    = 16;
-    private static final TextAlign    DEFAULT_TEXT_ALIGN   = TextAlign.TOP_LEFT;
+    private static final Blend.BTriple DEFAULT_BLEND        = new Blend.BTriple(new Blend());
+    private static final Color         DEFAULT_FILL         = new Color(255);
+    private static final Color         DEFAULT_STROKE       = new Color(0);
+    private static final Color         DEFAULT_TINT         = new Color(255);
+    private static final double        DEFAULT_WEIGHT       = 5;
+    private static final RectMode      DEFAULT_RECT_MODE    = RectMode.CORNER;
+    private static final EllipseMode   DEFAULT_ELLIPSE_MODE = EllipseMode.CENTER;
+    private static final ArcMode       DEFAULT_ARC_MODE     = ArcMode.DEFAULT;
+    private static final Font          DEFAULT_TEXT_FONT    = Font.DEFAULT;
+    private static final int           DEFAULT_TEXT_SIZE    = 16;
+    private static final TextAlign     DEFAULT_TEXT_ALIGN   = TextAlign.TOP_LEFT;
     
     protected static final Color CLEAR = new Color();
     
@@ -50,8 +50,8 @@ public class Renderer
     protected       Texture        target;
     protected final Stack<Texture> targets = new Stack<>();
     
-    protected final Blend               blend  = Renderer.DEFAULT_BLEND.setBlend(new Blend());
-    protected final Stack<Blend.BTuple> blends = new Stack<>();
+    protected final Blend                blend  = Renderer.DEFAULT_BLEND.setBlend(new Blend());
+    protected final Stack<Blend.BTriple> blends = new Stack<>();
     
     protected final Color          fill  = new Color(Renderer.DEFAULT_FILL);
     protected final Stack<Integer> fills = new Stack<>();
@@ -821,7 +821,7 @@ public class Renderer
         Renderer.LOGGER.finer("Pushing Renderer State");
     
         this.targets.push(this.target);
-        this.blends.push(new Blend.BTuple(this.blend));
+        this.blends.push(new Blend.BTriple(this.blend));
         this.fills.push(this.fill.toInt());
         this.strokes.push(this.stroke.toInt());
         this.tints.push(this.tint.toInt());

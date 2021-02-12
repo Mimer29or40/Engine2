@@ -5,12 +5,12 @@
 
 package lwjgl.stb;
 
-import engine.util.Util;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.stb.STBTTAlignedQuad;
 import org.lwjgl.stb.STBTTBakedChar;
 import org.lwjgl.stb.STBTTFontinfo;
 import org.lwjgl.system.MemoryStack;
+import rutils.IOUtil;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -72,7 +72,7 @@ public final class TrueType extends FontDemo
     
     public static void main(String[] args)
     {
-        String filePath = Util.getPath("demo/FiraSans.ttf").toString();
+        String filePath = IOUtil.getPath("demo/FiraSans.ttf").toString();
         // if (args.length == 0)
         // {
         //     System.out.println("Use 'ant demo -Dclass=org.lwjgl.demo.stb.TrueType -Dargs=<path>' to load a different text file (must be UTF8-encoded).\n");

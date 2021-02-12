@@ -1,7 +1,7 @@
 package engine.color;
 
-import engine.util.Logger;
-import engine.util.Tuple;
+import rutils.Logger;
+import rutils.group.Triple;
 
 import java.util.Objects;
 
@@ -194,14 +194,14 @@ public class Blend implements IBlend
         int apply(int source, int dest);
     }
     
-    public static final class BTuple extends Tuple<Func, Func, Equation>
+    public static final class BTriple extends Triple<Func, Func, Equation>
     {
         /**
          * Creates a new tuple with the blends information
          *
          * @param blend The Blend object.
          */
-        public BTuple(Blend blend)
+        public BTriple(Blend blend)
         {
             super(blend.srcFactor, blend.dstFactor, blend.equation);
         }

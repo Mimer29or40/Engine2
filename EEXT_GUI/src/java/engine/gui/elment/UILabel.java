@@ -8,9 +8,9 @@ import engine.gui.UIElement;
 import engine.gui.util.Rectc;
 import engine.render.TextAlign;
 import engine.render.Texture;
-import engine.util.Logger;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
+import rutils.Logger;
 
 import static engine.Engine.*;
 

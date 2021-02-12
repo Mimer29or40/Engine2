@@ -6,7 +6,7 @@ import engine.font.Font;
 
 import java.util.logging.Level;
 
-import static engine.util.Util.map;
+import static rutils.NumUtil.map;
 
 public class FontTests extends Engine
 {

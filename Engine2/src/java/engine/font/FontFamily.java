@@ -1,12 +1,13 @@
 package engine.font;
 
-import engine.util.Logger;
-import engine.util.Util;
+import rutils.Logger;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+
+import static rutils.IOUtil.getPath;
 
 @SuppressWarnings("unused")
 public class FontFamily
@@ -31,7 +32,7 @@ public class FontFamily
     
     private FontFamily(String path, String name)
     {
-        Path filePath = Util.getPath(path);
+        Path filePath = getPath(path);
         
         this.name = name;
         

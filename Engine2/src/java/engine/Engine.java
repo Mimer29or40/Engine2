@@ -15,10 +15,7 @@ import engine.render.*;
 import engine.render.gl.GLConst;
 import engine.render.gl.GLShader;
 import engine.render.gl.GLVertexArray;
-import engine.util.Logger;
-import engine.util.Profiler;
 import engine.util.Random;
-import engine.util.Tuple;
 import engine.util.noise.SimplexNoise;
 import engine.util.noise.*;
 import org.joml.*;
@@ -26,6 +23,10 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import org.reflections.Reflections;
+import rutils.Logger;
+import rutils.group.Triple;
+import rutils.profiler.Profiler;
+import rutils.profiler.SectionData;
 
 import java.lang.Math;
 import java.nio.ByteBuffer;
@@ -38,12 +39,12 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 
-import static engine.util.Util.getCurrentDateTimeString;
-import static engine.util.Util.getPath;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.opengl.GL43.*;
 import static org.lwjgl.stb.STBEasyFont.*;
 import static org.lwjgl.stb.STBImageWrite.stbi_write_png;
+import static rutils.IOUtil.getPath;
+import static rutils.StringUtil.getCurrentDateTimeString;
 
 @SuppressWarnings({"EmptyMethod", "unused"})
 public class Engine
@@ -92,12 +93,12 @@ public class Engine
     private static GLVertexArray debugBoxVAO;
     private static Matrix4f      debugView;
     
-    private static final Profiler profiler = new Profiler();
+    private static final Profiler profiler = Profiler.get("engine");
     
     private static final Color debugLineText       = new Color();
     private static final Color debugLineBackground = new Color();
     
-    private static final ArrayList<Tuple<Integer, Integer, String>> debugLines = new ArrayList<>();
+    private static final List<Triple<Integer, Integer, String>> debugLines = new ArrayList<>();
     
     private static long    titleFrequency;
     private static boolean debug;
@@ -105,10 +106,10 @@ public class Engine
     private static long    notificationTime;
     private static long    notificationDuration;
     
-    private static long                profilerFrequency;
-    private static int                 profilerMode;
-    private static String              profilerParent;
-    private static List<Profiler.Data> profilerData;
+    private static long              profilerFrequency;
+    private static int               profilerMode;
+    private static String            profilerParent;
+    private static List<SectionData> profilerData;
     
     private static boolean paused;
     
@@ -504,17 +505,17 @@ public class Engine
                                             // }
     
                                             int nameLength = 0;
-                                            for (Profiler.Data data : Engine.profilerData) nameLength = Math.max(nameLength, data.name.length());
+                                            for (SectionData data : Engine.profilerData) nameLength = Math.max(nameLength, data.name.length());
     
                                             int y = Engine.window.viewH() - stb_easy_font_height(" " + "\n".repeat(Engine.profilerData.size() - 1) + " ");
                                             for (int i = 0, n = Engine.profilerData.size(); i < n; i++)
                                             {
-                                                Profiler.Data data = Engine.profilerData.get(i);
-                                                String        line = String.format("%s %-20s %s", i, data.name, data.valueString());
+                                                SectionData data = Engine.profilerData.get(i);
+                                                String      line = String.format("%s %-20s %s", i, data.name, data.valueString());
                                                 drawDebugText(0, y, i + "");
                                                 drawDebugText(20, y, data.name);
                                                 drawDebugText(20 + nameLength * 8, y, data.valueString());
-    
+        
                                                 y += stb_easy_font_height(line);
                                             }
                                         }
@@ -525,14 +526,14 @@ public class Engine
                                             {
                                                 Engine.debugShader.bind();
                                                 Engine.debugShader.setUniform("pv", Engine.debugView.setOrtho(0F, Engine.window.viewW(), Engine.window.viewH(), 0F, -1F, 1F));
-        
+    
                                                 if (!Engine.debugLines.isEmpty())
                                                 {
                                                     try (MemoryStack stack = MemoryStack.stackPush())
                                                     {
                                                         ByteBuffer  charBuffer = stack.malloc(Engine.debugTextVAO.bufferSize());
                                                         FloatBuffer boxBuffer  = stack.malloc(Engine.debugBoxVAO.bufferSize()).asFloatBuffer();
-                                                        for (Tuple<Integer, Integer, String> line : Engine.debugLines)
+                                                        for (Triple<Integer, Integer, String> line : Engine.debugLines)
                                                         {
                                                             int quads = stb_easy_font_print(line.a + 2, line.b + 2, line.c, null, charBuffer.clear());
         
@@ -549,10 +550,10 @@ public class Engine
                                                             boxBuffer.put(5, y2);
                                                             boxBuffer.put(6, x1);
                                                             boxBuffer.put(7, y2);
-                    
+        
                                                             Engine.debugShader.setUniform("color", Engine.debugLineBackground);
                                                             Engine.debugBoxVAO.bind().set(boxBuffer).draw(GLConst.QUADS).unbind();
-                    
+        
                                                             Engine.debugShader.setUniform("color", Engine.debugLineText);
                                                             Engine.debugTextVAO.bind().set(charBuffer).draw(GLConst.QUADS, quads * 4).unbind();
                                                         }
@@ -1026,7 +1027,7 @@ public class Engine
      */
     public static void drawDebugText(int x, int y, String text)
     {
-        Engine.debugLines.add(new Tuple<>(x, y, text));
+        Engine.debugLines.add(new Triple<>(x, y, text));
     }
     
     public static void notification(String notification)

@@ -1,10 +1,10 @@
 package engine.color;
 
-import engine.util.Logger;
+import rutils.Logger;
 
 import java.util.Objects;
 
-import static engine.util.Util.clamp;
+import static rutils.NumUtil.clamp;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class Color implements Colorc

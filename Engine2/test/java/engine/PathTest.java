@@ -2,7 +2,7 @@ package engine;
 
 import java.nio.file.Path;
 
-import static engine.util.Util.getPath;
+import static rutils.IOUtil.getPath;
 
 public class PathTest
 {

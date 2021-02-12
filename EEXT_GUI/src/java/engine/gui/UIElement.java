@@ -10,13 +10,13 @@ import engine.input.Mouse;
 import engine.render.RectMode;
 import engine.render.TextAlign;
 import engine.render.Texture;
-import engine.util.Pair;
+import rutils.group.PairS;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-import static engine.util.Util.println;
+import static rutils.StringUtil.println;
 
 /**
  * A base class for UI elements.
@@ -383,7 +383,7 @@ public abstract class UIElement
     protected String[] elementIDs;
     protected String[] states;
     
-    private final HashMap<Pair.S, Double> stateTransitions = new HashMap<>();
+    private final HashMap<PairS, Double> stateTransitions = new HashMap<>();
     
     private int    borderWidth;
     private double tooltipDelay;
@@ -489,7 +489,7 @@ public abstract class UIElement
             
             redrawStates();
     
-            Pair.S statePair = new Pair.S(this.prevState, this.state);
+            PairS statePair = new PairS(this.prevState, this.state);
             if (this.prevState != null && this.stateTransitions.containsKey(statePair))
             {
                 this.transitionDuration   = this.stateTransitions.get(statePair);
@@ -538,7 +538,7 @@ public abstract class UIElement
                 String[] states = split[0].split("_");
                 if (split.length == 2 && states.length == 2)
                 {
-                    this.stateTransitions.put(new Pair.S(states[0], states[1]), Double.parseDouble(split[1]));
+                    this.stateTransitions.put(new PairS(states[0], states[1]), Double.parseDouble(split[1]));
                 }
             }
         }

@@ -4,9 +4,9 @@ import engine.Engine;
 import engine.color.Color;
 import engine.color.Colorc;
 import engine.render.gl.GLConst;
-import engine.util.Logger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.system.MemoryUtil;
+import rutils.Logger;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -14,10 +14,10 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
-import static engine.util.Util.getPath;
 import static org.lwjgl.opengl.GL46.*;
 import static org.lwjgl.stb.STBImage.*;
 import static org.lwjgl.stb.STBImageWrite.stbi_write_png;
+import static rutils.IOUtil.getPath;
 
 /**
  * A texture that can be drawn to or used to draw to another texture. These can only be created after a window is created.

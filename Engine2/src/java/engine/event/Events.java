@@ -1,6 +1,6 @@
 package engine.event;
 
-import engine.util.Logger;
+import rutils.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.function.Consumer;
 
-import static engine.util.Util.join;
+import static rutils.StringUtil.join;
 
 /**
  * This class handles the posting and getting of events. Events only exist during the current frame.

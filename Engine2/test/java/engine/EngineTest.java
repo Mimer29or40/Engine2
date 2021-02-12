@@ -4,6 +4,9 @@ import engine.color.Color;
 import engine.render.ArcMode;
 import engine.render.RectMode;
 import engine.render.Texture;
+import rutils.Logger;
+
+import java.util.logging.Level;
 
 import static rutils.NumUtil.map;
 import static rutils.StringUtil.println;
@@ -234,6 +237,8 @@ public class EngineTest extends Engine
     
     public static void main(String[] args)
     {
+        Logger.setLevel(Level.FINER);
+    
         start(new EngineTest());
     }
 }

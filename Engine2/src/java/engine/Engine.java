@@ -53,7 +53,7 @@ public class Engine
     protected static boolean running;
     protected static long    startTime;
     
-    protected static final HashMap<String, Extension> extensions = new HashMap<>();
+    protected static final HashMap<String, Extension> extensions = new LinkedHashMap<>();
     
     protected static long frameRate;
     protected static long frameCount;
@@ -99,7 +99,6 @@ public class Engine
     protected static GLShader      debugShader;
     protected static GLVertexArray debugTextVAO;
     protected static GLVertexArray debugBoxVAO;
-    protected static Matrix4f      debugView;
     
     protected static final Profiler profiler = Profiler.get("engine");
     
@@ -162,83 +161,86 @@ public class Engine
      * @param logic The engine instance to use.
      */
     @SafeVarargs
-    protected static void start(@NotNull Engine logic, Class<? extends Extension>... extensions)
+    protected static void start(@NotNull Engine logic, @NotNull Class<? extends Extension>... extensions)
     {
-        Engine.LOGGER.info("Engine Started");
-    
-        if (Engine.logic != null) throw new RuntimeException("start can only be called once");
-    
-        Engine.logic     = logic;
-        Engine.running   = true;
-        Engine.startTime = System.nanoTime();
-    
-        Engine.layerCount = Config.LAYER_COUNT.get();
-        Engine.debugLineText.fromHex(Config.DEBUG_TEXT_COLOR.get());
-        Engine.debugLineBackground.fromHex(Config.DEBUG_BACKGROUND_COLOR.get());
-        Engine.notificationDuration = (long) (1_000_000_000L * Config.NOTIFICATION_DURATION.get());
-        Engine.profilerFrequency    = 1_000_000_000L / Config.PROFILER_FREQUENCY.get();
-        Engine.titleFrequency       = 1_000_000_000L / Config.TITLE_FREQUENCY.get();
-    
-        Engine.LOGGER.finest("GLFW: Init");
-        if (!glfwInit()) throw new IllegalStateException("Unable to initialize GLFW");
-    
-        EventBus.start();
-        EventBus.register(Engine.logic);
-    
-        glfwSetErrorCallback(Engine::errorCallback);
-        glfwSetMonitorCallback(Engine::monitorCallback);
-        glfwSetJoystickCallback(Engine::joystickCallback);
-        
-        PointerBuffer monitors = Objects.requireNonNull(glfwGetMonitors(), "No monitors found.");
-        for (int i = 0, n = monitors.remaining(); i < n; i++)
-        {
-            long handle = monitors.get();
-            Engine.monitors.put(handle, new Monitor(handle, i));
-        }
-        Engine.primaryMonitor = Engine.monitors.get(glfwGetPrimaryMonitor());
-        
-        Engine.LOGGER.fine("Looking for Extensions");
-        for (Class<? extends Extension> ext : extensions)
-        {
-            try
-            {
-                String    name = ext.getSimpleName();
-                Extension extInstance;
-                try
-                {
-                    extInstance = (Extension) ext.getField("INSTANCE").get(ext);
-                    Engine.LOGGER.fine("Using %s.INSTANCE", name);
-                }
-                catch (NoSuchFieldException ignored)
-                {
-                    Engine.LOGGER.fine("Extension instance created for %s", name);
-                    extInstance = ext.getConstructor().newInstance();
-                }
-                Engine.extensions.put(name, extInstance);
-                Engine.LOGGER.info("Loaded: %s", name);
-            }
-            catch (ReflectiveOperationException ignored) { }
-        }
-        
-        Engine.random = new Random();
-        
-        Engine.valueNoise       = new ValueNoise();
-        Engine.perlinNoise      = new PerlinNoise();
-        Engine.simplexNoise     = new SimplexNoise();
-        Engine.openSimplexNoise = new OpenSimplexNoise();
-        Engine.worleyNoise      = new WorleyNoise();
-        
-        Engine.noise = Engine.perlinNoise;
-        
         try
         {
+            Engine.LOGGER.info("Engine Started");
+        
+            if (Engine.logic != null) throw new RuntimeException("start can only be called once");
+        
+            Engine.logic     = logic;
+            Engine.running   = true;
+            Engine.startTime = System.nanoTime();
+        
+            Engine.LOGGER.finest("Loading Config Values");
+            Engine.layerCount = Config.LAYER_COUNT.get();
+            Engine.debugLineText.fromHex(Config.DEBUG_TEXT_COLOR.get());
+            Engine.debugLineBackground.fromHex(Config.DEBUG_BACKGROUND_COLOR.get());
+            Engine.notificationDuration = (long) (1_000_000_000L * Config.NOTIFICATION_DURATION.get());
+            Engine.profilerFrequency    = 1_000_000_000L / Config.PROFILER_FREQUENCY.get();
+            Engine.titleFrequency       = 1_000_000_000L / Config.TITLE_FREQUENCY.get();
+        
+            Engine.LOGGER.finer("[GLFW] Init");
+            if (!glfwInit()) throw new IllegalStateException("Unable to initialize GLFW");
+        
+            EventBus.start();
+            EventBus.register(Engine.logic);
+        
+            Engine.LOGGER.finest("[GLFW] Setting Callbacks");
+            glfwSetErrorCallback(Engine::errorCallback);
+            glfwSetMonitorCallback(Engine::monitorCallback);
+            glfwSetJoystickCallback(Engine::joystickCallback);
+        
+            Engine.LOGGER.finest("[GLFW] Building Monitor Objects");
+            PointerBuffer monitors = Objects.requireNonNull(glfwGetMonitors(), "No monitors found.");
+            for (int i = 0, n = monitors.remaining(); i < n; i++)
+            {
+                long handle = monitors.get();
+                Engine.monitors.put(handle, new Monitor(handle, i));
+            }
+            Engine.primaryMonitor = Engine.monitors.get(glfwGetPrimaryMonitor());
+        
+            Engine.LOGGER.info("Loading Extensions");
+            for (Class<? extends Extension> ext : extensions)
+            {
+                try
+                {
+                    String    name = ext.getSimpleName();
+                    Extension extInstance;
+                    try
+                    {
+                        extInstance = (Extension) ext.getField("INSTANCE").get(ext);
+                        Engine.LOGGER.fine("Using %s.INSTANCE", name);
+                    }
+                    catch (NoSuchFieldException ignored)
+                    {
+                        Engine.LOGGER.fine("Extension instance created for %s", name);
+                        extInstance = ext.getConstructor().newInstance();
+                    }
+                    Engine.extensions.put(name, extInstance);
+                    Engine.LOGGER.info("Loaded: %s", name);
+                }
+                catch (ReflectiveOperationException ignored) { }
+            }
+        
+            Engine.random = new Random();
+        
+            Engine.valueNoise       = new ValueNoise();
+            Engine.perlinNoise      = new PerlinNoise();
+            Engine.simplexNoise     = new SimplexNoise();
+            Engine.openSimplexNoise = new OpenSimplexNoise();
+            Engine.worleyNoise      = new WorleyNoise();
+        
+            Engine.noise = Engine.perlinNoise;
+        
             Engine.LOGGER.fine("Extension Pre Setup");
             for (String name : Engine.extensions.keySet())
             {
                 Engine.LOGGER.finer("Extension:", name);
                 Engine.extensions.get(name).beforeSetup();
             }
-            
+        
             Engine.LOGGER.fine("User Initialization");
             Engine.logic.setup();
             
@@ -251,9 +253,7 @@ public class Engine
                     Engine.extensions.get(name).afterSetup();
                 }
                 
-                Engine.LOGGER.finest("Preparing Context for Thread Swap");
                 Engine.window.unmakeCurrent();
-                org.lwjgl.opengl.GL.setCapabilities(null);
                 
                 final CountDownLatch latch = new CountDownLatch(1);
                 
@@ -514,8 +514,9 @@ public class Engine
                                             try (Section text = Engine.profiler.startSection("Text"))
                                             {
                                                 Engine.debugShader.bind();
-                                                Engine.debugShader.setUniform("pv", Engine.debugView.setOrtho(0F, Engine.viewSize.x, Engine.viewSize.y, 0F, -1F, 1F));
-                                                
+    
+                                                Engine.debugShader.setUniform("pv", Engine.window.viewMatrix());
+    
                                                 if (!Engine.debugLines.isEmpty())
                                                 {
                                                     try (MemoryStack stack = MemoryStack.stackPush())
@@ -787,19 +788,21 @@ public class Engine
             }
             
             EventBus.shutdown();
-            
+    
+            Engine.LOGGER.fine("[GLFW] Object Cleanup");
             Engine.monitors.clear();
             Engine.primaryMonitor = null;
-            
+    
             Engine.mouse    = null;
             Engine.keyboard = null;
-            
+    
             Engine.joysticks.clear();
-            
+    
             if (Engine.window != null) Engine.window.destroy();
-            
+    
             org.lwjgl.opengl.GL.destroy();
     
+            Engine.LOGGER.finest("[GLFW] Callback Cleanup");
             Callback callback;
             if ((callback = glfwSetErrorCallback(null)) != null) callback.free();
             if ((callback = glfwSetMonitorCallback(null)) != null) callback.free();
@@ -807,11 +810,8 @@ public class Engine
     
             runTasks();
     
+            Engine.LOGGER.finest("[GLFW] Termination");
             glfwTerminate();
-    
-            // Engine.LOGGER.finer("Saving/Closing Config");
-            // Engine.config.save(); // TODO
-            // Engine.config.close();
         }
         
         Engine.LOGGER.info("Engine Finished");
@@ -838,19 +838,20 @@ public class Engine
     public static void size(int screenW, int screenH, int pixelW, int pixelH)
     {
         Engine.screenSize.set(screenW, screenH);
-        Engine.LOGGER.finest("Screen Size %s", Engine.screenSize);
-        
+        if (Engine.screenSize.x <= 0 || Engine.screenSize.y <= 0) throw new RuntimeException("Screen dimension must be > 0");
+        Engine.LOGGER.fine("Screen Size:", Engine.screenSize);
+    
         Engine.pixelSize.set(pixelW, pixelH);
-        Engine.LOGGER.finest("Pixel Dimensions %s", Engine.pixelSize);
-        
-        if (Engine.screenSize.lengthSquared() == 0) throw new RuntimeException("Screen dimension must be > 0");
-        if (Engine.pixelSize.lengthSquared() == 0) throw new RuntimeException("Pixel dimension must be > 0");
-        
+        if (Engine.pixelSize.x <= 0 || Engine.pixelSize.y <= 0) throw new RuntimeException("Pixel dimension must be > 0");
+        Engine.LOGGER.fine("Pixel Size:", Engine.pixelSize);
+    
+        Engine.LOGGER.finer("Window Creation");
         Engine.window = new Window();
-        
+    
+        Engine.LOGGER.finer("Input Device Creation");
         Engine.mouse    = new Mouse();
         Engine.keyboard = new Keyboard();
-        
+    
         for (int jid = GLFW_JOYSTICK_1; jid < GLFW_JOYSTICK_LAST; jid++)
         {
             // -------------------- Joystick Callback Emulation -------------------- //
@@ -896,7 +897,8 @@ public class Engine
                 Engine.joysticks.put(jid, isGamepad ? new Gamepad(jid) : new Joystick(jid, false));
             }
         }
-        
+    
+        Engine.LOGGER.finer("[GLFW] Attaching Window Callbacks");
         glfwSetWindowCloseCallback(Engine.window.handle, Engine::windowCloseCallback);
         glfwSetWindowFocusCallback(Engine.window.handle, Engine::windowFocusCallback);
         glfwSetWindowIconifyCallback(Engine.window.handle, Engine::windowIconifyCallback);
@@ -915,7 +917,8 @@ public class Engine
         
         glfwSetKeyCallback(Engine.window.handle, Engine::keyCallback);
         glfwSetCharCallback(Engine.window.handle, Engine::charCallback);
-        
+    
+        Engine.LOGGER.finer("Initializing OpenGL Context");
         Engine.window.makeCurrent();
         
         glEnable(GL_TEXTURE_2D);
@@ -935,7 +938,6 @@ public class Engine
         Engine.debugShader  = new GLShader().loadFile("shaders/debug.vert").loadFile("shaders/debug.frag").validate().unbind();
         Engine.debugTextVAO = new GLVertexArray().bind().add((Float.BYTES * 3 + Byte.BYTES * 4) * 1024, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 3, GLConst.UNSIGNED_BYTE, 4).unbind();
         Engine.debugBoxVAO  = new GLVertexArray().bind().add((Float.BYTES * 2) * 8, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 2).unbind();
-        Engine.debugView    = new Matrix4f().setOrtho(0F, Engine.window.framebufferWidth(), Engine.window.framebufferHeight(), 0F, -1F, 1F);
     }
     
     /**

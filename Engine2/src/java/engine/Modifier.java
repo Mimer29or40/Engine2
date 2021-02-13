@@ -1,12 +1,10 @@
 package engine;
 
-import java.util.function.Predicate;
-
 import static org.lwjgl.glfw.GLFW.*;
+import static rutils.StringUtil.println;
 
-public enum Modifier implements Predicate<Integer>
+public enum Modifier
 {
-    NONE(0x00000000),
     SHIFT(GLFW_MOD_SHIFT),
     CONTROL(GLFW_MOD_CONTROL),
     ALT(GLFW_MOD_ALT),
@@ -77,26 +75,91 @@ public enum Modifier implements Predicate<Integer>
      */
     public boolean test()
     {
-        return test(Modifier.activeMods);
+        return (Modifier.activeMods & this.value) > 0;
     }
     
     /**
-     * Checks if this modifier is active in the provided bitmap.
+     * Checks to see if the provided modifiers are set.
+     * <p>
+     * If {@link Modifier#ANY ANY} is present among any combination of
+     * Modifiers, then it will take precedent over the other Modifiers, i.e.
+     * returning {@code true} if any modifiers are currently active.
+     * <p>
+     * If no modifiers are provided, then it will return {@code true} if and
+     * only if no modifiers are currently active.
      *
-     * @param mods The modifier bitmap.
-     * @return {@code true} if this modifier is active in the bitmap, otherwise {@code false}
+     * @param modifiers The modifiers to query.
+     * @return {@code true} if and only if the provided modifiers are active.
      */
-    @Override
-    public boolean test(Integer mods)
-    {
-        return this.value == -1 || (mods == 0 && this.value == 0) || (mods & this.value) == this.value;
-    }
-    
-    public static boolean test(Modifier... modifiers)
+    public static boolean testInclusive(Modifier... modifiers)
     {
         if (modifiers.length == 0) return Modifier.activeMods == 0;
-        Predicate<Integer> predicate = null;
-        for (Modifier modifier : modifiers) predicate = predicate != null ? predicate.and(modifier) : modifier;
-        return predicate.test(Modifier.activeMods);
+        int query = 0;
+        for (Modifier modifier : modifiers)
+        {
+            if (modifier == Modifier.ANY) return Modifier.activeMods > 0;
+            query |= modifier.value;
+        }
+        return (Modifier.activeMods & query) == query;
+    }
+    
+    /**
+     * Checks to see if and only if the provided modifiers are set.
+     * <p>
+     * If {@link Modifier#ANY ANY} is present among any combination of
+     * Modifiers, then it will take precedent over the other Modifiers, i.e.
+     * returning {@code true} if any modifiers are currently active.
+     * <p>
+     * If no modifiers are provided, then it will return {@code true} if and
+     * only if no modifiers are currently active.
+     *
+     * @param modifiers The modifiers to query.
+     * @return {@code true} if and only if the provided modifiers are active.
+     */
+    public static boolean testExclusive(Modifier... modifiers)
+    {
+        if (modifiers.length == 0) return Modifier.activeMods == 0;
+        int query = 0;
+        for (Modifier modifier : modifiers)
+        {
+            if (modifier == Modifier.ANY) return Modifier.activeMods > 0;
+            query |= modifier.value;
+        }
+        return Modifier.activeMods == query;
+    }
+    
+    private static String toStr(boolean value)
+    {
+        return value ? "1" : "0";
+    }
+    
+    public static void main(String[] args)
+    {
+        for (int i = 0; i < 64; i++)
+        {
+            Modifier.activeMods = i;
+            println("EX 0b%8s: NONE(%s) SHIFT(%s) CONTROL(%s) ALT(%s) SUPER(%s) CAPS_LOCK(%s) NUM_LOCK(%s) ANY(%s) CONTROL+SHIFT(%s)",
+                    Integer.toBinaryString(i),
+                    toStr(testExclusive()),
+                    toStr(testExclusive(Modifier.SHIFT)),
+                    toStr(testExclusive(Modifier.CONTROL)),
+                    toStr(testExclusive(Modifier.ALT)),
+                    toStr(testExclusive(Modifier.SUPER)),
+                    toStr(testExclusive(Modifier.CAPS_LOCK)),
+                    toStr(testExclusive(Modifier.NUM_LOCK)),
+                    toStr(testExclusive(Modifier.ANY)),
+                    toStr(testExclusive(Modifier.CONTROL, Modifier.SHIFT)));
+            println("IN 0b%8s: NONE(%s) SHIFT(%s) CONTROL(%s) ALT(%s) SUPER(%s) CAPS_LOCK(%s) NUM_LOCK(%s) ANY(%s) CONTROL+SHIFT(%s)",
+                    Integer.toBinaryString(i),
+                    toStr(testInclusive()),
+                    toStr(testInclusive(Modifier.SHIFT)),
+                    toStr(testInclusive(Modifier.CONTROL)),
+                    toStr(testInclusive(Modifier.ALT)),
+                    toStr(testInclusive(Modifier.SUPER)),
+                    toStr(testInclusive(Modifier.CAPS_LOCK)),
+                    toStr(testInclusive(Modifier.NUM_LOCK)),
+                    toStr(testInclusive(Modifier.ANY)),
+                    toStr(testInclusive(Modifier.CONTROL, Modifier.SHIFT)));
+        }
     }
 }

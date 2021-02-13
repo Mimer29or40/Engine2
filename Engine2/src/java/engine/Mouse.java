@@ -461,22 +461,22 @@ public class Mouse extends InputDevice
     
     public boolean down(Button button, Modifier... modifiers)
     {
-        return this.buttonMap.get(button).state == GLFW_PRESS && Modifier.test(modifiers);
+        return this.buttonMap.get(button).state == GLFW_PRESS && Modifier.testExclusive(modifiers);
     }
     
     public boolean up(Button button, Modifier... modifiers)
     {
-        return this.buttonMap.get(button).state == GLFW_RELEASE && Modifier.test(modifiers);
+        return this.buttonMap.get(button).state == GLFW_RELEASE && Modifier.testExclusive(modifiers);
     }
     
     public boolean repeat(Button button, Modifier... modifiers)
     {
-        return this.buttonMap.get(button).state == GLFW_REPEAT && Modifier.test(modifiers);
+        return this.buttonMap.get(button).state == GLFW_REPEAT && Modifier.testExclusive(modifiers);
     }
     
     public boolean held(Button button, Modifier... modifiers)
     {
-        return this.buttonMap.get(button).held && Modifier.test(modifiers);
+        return this.buttonMap.get(button).held && Modifier.testExclusive(modifiers);
     }
     
     static final class ButtonInput extends Input

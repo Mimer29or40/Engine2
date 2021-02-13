@@ -125,24 +125,24 @@ public class Keyboard extends InputDevice
         }
     }
     
-    public boolean down(Key key, Modifier... modifiers)
+    public boolean down(Key key)
     {
-        return this.keyMap.get(key).state == GLFW_PRESS && Modifier.test(modifiers);
+        return this.keyMap.get(key).state == GLFW_PRESS;
     }
     
     public boolean up(Key key, Modifier... modifiers)
     {
-        return this.keyMap.get(key).state == GLFW_RELEASE && Modifier.test(modifiers);
+        return this.keyMap.get(key).state == GLFW_RELEASE && Modifier.testExclusive(modifiers);
     }
     
     public boolean repeat(Key key, Modifier... modifiers)
     {
-        return this.keyMap.get(key).state == GLFW_REPEAT && Modifier.test(modifiers);
+        return this.keyMap.get(key).state == GLFW_REPEAT && Modifier.testExclusive(modifiers);
     }
     
     public boolean held(Key key, Modifier... modifiers)
     {
-        return this.keyMap.get(key).held && Modifier.test(modifiers);
+        return this.keyMap.get(key).held && Modifier.testExclusive(modifiers);
     }
     
     public enum Key

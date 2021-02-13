@@ -171,10 +171,10 @@ public class EngineTest extends Engine
                 line(-10, 0, 10, 0);
             }
             case 8 -> {
-                if (keyboard().held(Keyboard.Key.K1, Modifier.NONE)) arcMode(ArcMode.DEFAULT);
-                if (keyboard().held(Keyboard.Key.K2, Modifier.NONE)) arcMode(ArcMode.OPEN);
-                if (keyboard().held(Keyboard.Key.K3, Modifier.NONE)) arcMode(ArcMode.CHORD);
-                if (keyboard().held(Keyboard.Key.K4, Modifier.NONE)) arcMode(ArcMode.PIE);
+                if (keyboard().held(Keyboard.Key.K1)) arcMode(ArcMode.DEFAULT);
+                if (keyboard().held(Keyboard.Key.K2)) arcMode(ArcMode.OPEN);
+                if (keyboard().held(Keyboard.Key.K3)) arcMode(ArcMode.CHORD);
+                if (keyboard().held(Keyboard.Key.K4)) arcMode(ArcMode.PIE);
                 weight(10);
                 translate(screenWidth() / 2., screenHeight() / 2.);
                 translate(50 * Math.cos(seconds()), 50 * Math.sin(seconds()));
@@ -207,24 +207,24 @@ public class EngineTest extends Engine
         // fill(Color.GREEN);
         // textSize(30);
         // text("Frame: " + frameCount(), 0, 0);
-        if (keyboard().down(Keyboard.Key.K1, Modifier.CONTROL)) println("Modifier Tests");
+        if (keyboard().down(Keyboard.Key.K1) && Modifier.testExclusive(Modifier.CONTROL)) println("Modifier Tests");
         if (keyboard().down(Keyboard.Key.S)) screenShot();
         if (keyboard().down(Keyboard.Key.D)) rendererDebug(!rendererDebug());
         if (keyboard().down(Keyboard.Key.F)) window().windowed(!window().windowed());
         if (keyboard().down(Keyboard.Key.V)) window().vsync(!window().vsync());
     
-        if (keyboard().down(Keyboard.Key.F1, Modifier.NONE)) state = 1;
-        if (keyboard().down(Keyboard.Key.F2, Modifier.NONE)) state = 2;
-        if (keyboard().down(Keyboard.Key.F3, Modifier.NONE)) state = 3;
-        if (keyboard().down(Keyboard.Key.F4, Modifier.NONE)) state = 4;
-        if (keyboard().down(Keyboard.Key.F5, Modifier.NONE)) state = 5;
-        if (keyboard().down(Keyboard.Key.F6, Modifier.NONE)) state = 6;
-        if (keyboard().down(Keyboard.Key.F7, Modifier.NONE)) state = 7;
-        if (keyboard().down(Keyboard.Key.F8, Modifier.NONE)) state = 8;
-        if (keyboard().down(Keyboard.Key.F9, Modifier.NONE)) state = 9;
-        if (keyboard().down(Keyboard.Key.F10, Modifier.NONE)) state = 10;
-        if (keyboard().down(Keyboard.Key.F11, Modifier.NONE)) state = 11;
-        if (keyboard().down(Keyboard.Key.F12, Modifier.NONE)) state = 12;
+        if (keyboard().down(Keyboard.Key.F1) && Modifier.testExclusive()) state = 1;
+        if (keyboard().down(Keyboard.Key.F2) && Modifier.testExclusive()) state = 2;
+        if (keyboard().down(Keyboard.Key.F3) && Modifier.testExclusive()) state = 3;
+        if (keyboard().down(Keyboard.Key.F4) && Modifier.testExclusive()) state = 4;
+        if (keyboard().down(Keyboard.Key.F5) && Modifier.testExclusive()) state = 5;
+        if (keyboard().down(Keyboard.Key.F6) && Modifier.testExclusive()) state = 6;
+        if (keyboard().down(Keyboard.Key.F7) && Modifier.testExclusive()) state = 7;
+        if (keyboard().down(Keyboard.Key.F8) && Modifier.testExclusive()) state = 8;
+        if (keyboard().down(Keyboard.Key.F9) && Modifier.testExclusive()) state = 9;
+        if (keyboard().down(Keyboard.Key.F10) && Modifier.testExclusive()) state = 10;
+        if (keyboard().down(Keyboard.Key.F11) && Modifier.testExclusive()) state = 11;
+        if (keyboard().down(Keyboard.Key.F12) && Modifier.testExclusive()) state = 12;
     
         if (keyboard().down(Keyboard.Key.ESCAPE)) stop();
     }
@@ -237,7 +237,7 @@ public class EngineTest extends Engine
     
     public static void main(String[] args)
     {
-        Logger.setLevel(Level.FINER);
+        Logger.setLevel(Level.FINE);
     
         start(new EngineTest());
     }

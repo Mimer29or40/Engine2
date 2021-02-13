@@ -99,6 +99,7 @@ public class Engine
     protected static GLShader      debugShader;
     protected static GLVertexArray debugTextVAO;
     protected static GLVertexArray debugBoxVAO;
+    protected static Matrix4d      debugView;
     
     protected static final Profiler profiler = Profiler.get("engine");
     
@@ -311,48 +312,48 @@ public class Engine
                                         
                                         try (Section internal = Engine.profiler.startSection("Internal"))
                                         {
-                                            if (Engine.keyboard.down(Keyboard.Key.F1, Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
+                                            if (Engine.keyboard.down(Keyboard.Key.F1) && Modifier.testExclusive(Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
                                             {
                                                 Engine.profilerData = null;
                                                 Engine.profiler.enabled(false);
                                                 Engine.profilerMode = 0;
                                                 notification("Profile Mode: Off");
                                             }
-                                            if (Engine.keyboard.down(Keyboard.Key.F2, Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
+                                            if (Engine.keyboard.down(Keyboard.Key.F2) && Modifier.testExclusive(Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
                                             {
                                                 Engine.profiler.enabled(true);
                                                 Engine.profilerMode = 1;
                                                 notification("Profile Mode: Average");
                                             }
-                                            if (Engine.keyboard.down(Keyboard.Key.F3, Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
+                                            if (Engine.keyboard.down(Keyboard.Key.F3) && Modifier.testExclusive(Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
                                             {
                                                 Engine.profiler.enabled(true);
                                                 Engine.profilerMode = 2;
                                                 notification("Profile Mode: Min");
                                             }
-                                            if (Engine.keyboard.down(Keyboard.Key.F4, Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
+                                            if (Engine.keyboard.down(Keyboard.Key.F4) && Modifier.testExclusive(Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
                                             {
                                                 Engine.profiler.enabled(true);
                                                 Engine.profilerMode = 3;
                                                 notification("Profile Mode: Max");
                                             }
-                                            if (Engine.keyboard.down(Keyboard.Key.F5, Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
+                                            if (Engine.keyboard.down(Keyboard.Key.F5) && Modifier.testExclusive(Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
                                             {
                                                 Engine.profiler.enabled(true);
                                                 Engine.profilerMode = 4;
                                                 notification("Profile Mode: Real-Time");
                                             }
-                                            if (Engine.keyboard.down(Keyboard.Key.F10, Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
+                                            if (Engine.keyboard.down(Keyboard.Key.F10) && Modifier.testExclusive(Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
                                             {
                                                 Engine.renderer.debug(!Engine.renderer.debug());
                                                 notification(Engine.renderer.debug() ? "Renderer Debug Mode: On" : "Renderer Debug Mode: Off");
                                             }
-                                            if (Engine.keyboard.down(Keyboard.Key.F11, Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
+                                            if (Engine.keyboard.down(Keyboard.Key.F11) && Modifier.testExclusive(Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
                                             {
                                                 Engine.debug = !Engine.debug;
                                                 notification(Engine.debug ? "Debug Mode: On" : "Debug Mode: Off");
                                             }
-                                            if (Engine.keyboard.down(Keyboard.Key.F12, Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
+                                            if (Engine.keyboard.down(Keyboard.Key.F12) && Modifier.testExclusive(Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT))
                                             {
                                                 Engine.paused = !Engine.paused;
                                                 notification(Engine.paused ? "Engine Paused" : "Engine Unpaused");
@@ -515,7 +516,8 @@ public class Engine
                                             {
                                                 Engine.debugShader.bind();
     
-                                                Engine.debugShader.setUniform("pv", Engine.window.viewMatrix());
+                                                // Engine.debugShader.setUniform("pv", Engine.debugView.setOrtho(0, this.fbSize.x, this.fbSize.y, 0, -1F, 1F));
+                                                // Engine.window().viewMatrix()
     
                                                 if (!Engine.debugLines.isEmpty())
                                                 {
@@ -934,10 +936,11 @@ public class Engine
         
         Engine.screenShader = new GLShader().loadFile("shaders/pixel.vert").loadFile("shaders/pixel.frag").validate().unbind();
         Engine.screenVAO    = new GLVertexArray().bind().add(new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, GLConst.DYNAMIC_DRAW, 2);
-        
+    
         Engine.debugShader  = new GLShader().loadFile("shaders/debug.vert").loadFile("shaders/debug.frag").validate().unbind();
         Engine.debugTextVAO = new GLVertexArray().bind().add((Float.BYTES * 3 + Byte.BYTES * 4) * 1024, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 3, GLConst.UNSIGNED_BYTE, 4).unbind();
         Engine.debugBoxVAO  = new GLVertexArray().bind().add((Float.BYTES * 2) * 8, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 2).unbind();
+        Engine.debugView    = new Matrix4d();
     }
     
     /**

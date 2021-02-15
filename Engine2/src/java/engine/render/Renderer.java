@@ -939,8 +939,6 @@ public class Renderer
         this.pointShader.setUniform("thickness", this.weight);
     
         this.pointVAO.bind().set((float) x, (float) y).draw(GL.POINTS).unbind();
-    
-        this.target.markGPUDirty();
     }
     
     /**
@@ -988,8 +986,6 @@ public class Renderer
     
         this.lineVAO.bind().set((float) x1, (float) y1,
                                 (float) x2, (float) y2).draw(GL.LINES).unbind();
-    
-        this.target.markGPUDirty();
     }
     
     /**
@@ -1078,8 +1074,6 @@ public class Renderer
         }
     
         this.bezier4VAO.bind().set(array).resize().draw(GL.LINES_ADJACENCY).unbind();
-        
-        this.target.markGPUDirty();
     }
     
     /**
@@ -1129,8 +1123,6 @@ public class Renderer
         this.triangleLinesVAO.bind().set((float) x3, (float) y3, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3,
                                          (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x1, (float) y1,
                                          (float) x2, (float) y2, (float) x3, (float) y3, (float) x1, (float) y1, (float) x2, (float) y2).draw(GL.LINES_ADJACENCY).unbind();
-    
-        this.target.markGPUDirty();
     }
     
     /**
@@ -1160,8 +1152,6 @@ public class Renderer
         this.triangleVAO.bind().set((float) x1, (float) y1,
                                     (float) x2, (float) y2,
                                     (float) x3, (float) y3).draw(GL.TRIANGLES).unbind();
-    
-        this.target.markGPUDirty();
     }
     
     /**
@@ -1371,8 +1361,6 @@ public class Renderer
                                      (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4,
                                      (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4, (float) x1, (float) y1,
                                      (float) x3, (float) y3, (float) x4, (float) y4, (float) x1, (float) y1, (float) x2, (float) y2).draw(GL.LINES_ADJACENCY).unbind();
-    
-        this.target.markGPUDirty();
     }
     
     /**
@@ -1407,8 +1395,6 @@ public class Renderer
                                 (float) x2, (float) y2,
                                 (float) x3, (float) y3,
                                 (float) x4, (float) y4).draw(GL.QUADS).unbind();
-    
-        this.target.markGPUDirty();
     }
     
     /**
@@ -1484,8 +1470,6 @@ public class Renderer
         }
     
         this.polygonLinesVAO.bind().set(array).resize().draw(GL.LINES_ADJACENCY).unbind();
-    
-        this.target.markGPUDirty();
     }
     
     /**
@@ -1515,8 +1499,6 @@ public class Renderer
         for (int i = 0, n = points.length; i < n; i++) array[i] = (float) points[i];
         this.polygonSSBO.bind().set(array).unbind();
         this.polygonVAO.bind().draw(GL.POINTS).unbind();
-    
-        this.target.markGPUDirty();
     }
     
     /**
@@ -1642,8 +1624,6 @@ public class Renderer
         this.ellipseOutlineShader.setUniform("thickness", (float) this.weight);
     
         this.ellipseOutlineVAO.bind().set((float) x, (float) y).draw(GL.POINTS).unbind();
-    
-        this.target.markGPUDirty();
     }
     
     /**
@@ -1670,8 +1650,6 @@ public class Renderer
         this.ellipseShader.setUniform("radius", (float) rx, (float) ry);
     
         this.ellipseVAO.bind().set((float) x, (float) y).draw(GL.POINTS).unbind();
-    
-        this.target.markGPUDirty();
     }
     
     /**
@@ -1751,8 +1729,6 @@ public class Renderer
         this.arcOutlineShader.setUniform("mode", this.arcMode.ordinal());
     
         this.arcOutlineVAO.bind().set((float) x, (float) y).draw(GL.POINTS).unbind();
-    
-        this.target.markGPUDirty();
     }
     
     /**
@@ -1783,8 +1759,6 @@ public class Renderer
         this.arcShader.setUniform("mode", this.arcMode.ordinal());
     
         this.arcVAO.bind().set((float) x, (float) y).draw(GL.POINTS).unbind();
-    
-        this.target.markGPUDirty();
     }
     
     /**
@@ -1880,14 +1854,12 @@ public class Renderer
         this.textureShader.setUniform("tex1", 0);
         this.textureShader.setUniform("tex2", 0);
     
-        texture.bindTexture(0);
+        texture.bind(0);
     
         this.textureVAO.bind().set((float) x1, (float) y1, (float) u1, (float) v1,
                                    (float) x1, (float) y2, (float) u1, (float) v2,
                                    (float) x2, (float) y2, (float) u2, (float) v2,
                                    (float) x2, (float) y1, (float) u2, (float) v1).draw(GL.QUADS).unbind();
-    
-        this.target.markGPUDirty();
     }
     
     /**
@@ -2005,15 +1977,13 @@ public class Renderer
         this.textureShader.setUniform("tex1", 0);
         this.textureShader.setUniform("tex2", 1);
     
-        texture1.bindTexture(0);
-        texture2.bindTexture(1);
+        texture1.bind(0);
+        texture2.bind(1);
     
         this.textureVAO.bind().set((float) x1, (float) y1, (float) u1, (float) v1,
                                    (float) x1, (float) y2, (float) u1, (float) v2,
                                    (float) x2, (float) y2, (float) u2, (float) v2,
                                    (float) x2, (float) y1, (float) u2, (float) v1).draw(GL.QUADS).unbind();
-    
-        this.target.markGPUDirty();
     }
     
     /**
@@ -2135,7 +2105,7 @@ public class Renderer
         this.textShader.setUniform("tint", this.tint);
         this.textShader.setUniform("tex", 0);
     
-        this.textFont.texture(this.textSize).bindTexture(0);
+        this.textFont.texture(this.textSize).bind(0);
     
         int lineLength = text.length();
     
@@ -2198,8 +2168,6 @@ public class Renderer
     
         // this.textVAO.bind().set(data).resize().draw(GL.QUADS).unbind();
         this.textVAO.bind().set(data).resize().draw(GL.QUADS).unbind();
-    
-        this.target.markGPUDirty();
     }
     
     /**
@@ -2347,8 +2315,11 @@ public class Renderer
     public int[] loadPixels()
     {
         Renderer.LOGGER.finer("Loading Pixels");
-        
-        this.pixels = this.target.bindTexture().sync().toArray();
+    
+        int size = this.target.width() * this.target.height() * this.target.channels();
+        if (this.pixels == null || this.pixels.length != size) this.pixels = new int[size];
+    
+        this.target.bind().get(this.pixels);
         return this.pixels;
     }
     
@@ -2361,7 +2332,7 @@ public class Renderer
     {
         Renderer.LOGGER.finer("Updating Pixels");
     
-        this.target.fromArray(this.pixels).bindTexture().sync();
+        this.target.bind().set(this.pixels);
     }
     
     private void updateViewMatrix()

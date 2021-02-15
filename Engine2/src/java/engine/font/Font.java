@@ -526,8 +526,8 @@ public class Font
                 
                 textureSize <<= 1;
             }
-            
-            this.texture = Texture.loadFromBuffer(width, height, 1, buffer);
+    
+            this.texture = new Texture(width, height, 1, buffer);
         }
         
         @Override

@@ -4,6 +4,7 @@ import engine.Engine;
 import engine.color.Color;
 import engine.render.Texture;
 
+import static rutils.NumUtil.clamp;
 import static rutils.NumUtil.map;
 
 public class NoiseDebug extends Engine
@@ -22,28 +23,34 @@ public class NoiseDebug extends Engine
     public void setup()
     {
         size(800, 800, 1, 1);
-        
+    
         noise = new ValueNoise();
         noise = new PerlinNoise();
         noise.setSeed(1337);
-        
+    
         int w = screenWidth();
         int h = screenHeight();
-        
+    
         noiseTexture = new Texture(w, h);
-        
+    
         Color color = new Color(0, 255);
-        for (int j = 0; j < h; j++)
+        int[] data  = noiseTexture.get();
+        for (int j = 0, idx = 0; j < h; j++)
         {
             double y = map(j, 0, h, yMin, yMax);
             for (int i = 0; i < w; i++)
             {
                 double x = map(i, 0, w, xMin, xMax);
-                
-                noiseTexture.setPixel(i, j, color.set(noise.noise(x, y) * 0.5 + 0.5));
+            
+                double value = noise.noise(x, y) * 0.5 + 0.5;
+            
+                data[idx++] = clamp((int) (value * 255), 0, 255);
+                data[idx++] = clamp((int) (value * 255), 0, 255);
+                data[idx++] = clamp((int) (value * 255), 0, 255);
+                data[idx++] = 255;
             }
         }
-        noiseTexture.bindTexture().upload();
+        noiseTexture.bind().set(data);
     }
     
     @Override

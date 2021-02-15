@@ -24,31 +24,41 @@ public class EngineTest extends Engine
         // size(100, 100, 8, 8);
         // size(800, 800, 1, 1);
         size(400, 400, 2, 2);
-        
+    
         // println(Color.RED.toHex());
         // stop();
-        
+    
         Color c = new Color();
-        
+    
         texture1 = new Texture(30, 30);
-        for (int j = 0; j < texture1.height(); j++)
+    
+        int[] texture1Data = texture1.get();
+        for (int j = 0, idx = 0; j < texture1.height(); j++)
         {
             for (int i = 0; i < texture1.width(); i++)
             {
-                texture1.setPixel(i, j, c.set((double) i / (double) texture1.width(), (double) j / (double) texture1.height(), 255, 255));
+                texture1Data[idx++] = (int) ((double) i / (double) texture1.width() * 255);
+                texture1Data[idx++] = (int) ((double) j / (double) texture1.height() * 255);
+                texture1Data[idx++] = 255;
+                texture1Data[idx++] = 255;
             }
         }
-        texture1.bindTexture().upload().unbindTexture();
-        
+        texture1.bind().set(texture1Data).unbind();
+    
         texture2 = new Texture(30, 30);
-        for (int j = 0; j < texture2.height(); j++)
+    
+        int[] texture2Data = texture2.get();
+        for (int j = 0, idx = 0; j < texture2.height(); j++)
         {
             for (int i = 0; i < texture2.width(); i++)
             {
-                texture2.setPixel(i, j, c.set((double) i / (double) texture1.width(), (double) j / (double) texture1.height(), 0, 255));
+                texture2Data[idx++] = (int) ((double) i / (double) texture2.width() * 255);
+                texture2Data[idx++] = (int) ((double) j / (double) texture2.height() * 255);
+                texture2Data[idx++] = 0;
+                texture2Data[idx++] = 255;
             }
         }
-        texture2.bindTexture().upload().unbindTexture();
+        texture2.bind().set(texture2Data).unbind();
         
         // Texture texture3 = texture1.subTexture(10, 10, 10, 10);
         // texture1.saveImage("texture1");

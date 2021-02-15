@@ -79,30 +79,98 @@ public class VoxelSpace extends Engine
     
     static class TextureHeightMap extends HeightMap
     {
+        static final Color TEMP = new Color();
+    
         Texture colorTexture;
         Texture heightTexture;
+    
+        int[] colorTextureData;
+        int[] heightTextureData;
+    
+        static Colorc getPixel(Texture texture, int[] data, int x, int y)
+        {
+            int r, g = 0, b = 0, a = 255;
+            r = data[y * (texture.width() * texture.channels()) + x * (texture.channels())];
+            if (texture.channels() > 1) g = data[y * (texture.width() * texture.channels()) + x * (texture.channels()) + 1];
+            if (texture.channels() > 2) b = data[y * (texture.width() * texture.channels()) + x * (texture.channels()) + 2];
+            if (texture.channels() > 3) a = data[y * (texture.width() * texture.channels()) + x * (texture.channels()) + 3];
+            return TEMP.set(r, g, b, a);
+        }
+    
+        static Colorc sample(Texture texture, int[] data, double u, double v)
+        {
+            int sx = Math.max(0, (Math.min((int) (u * (double) texture.width()), texture.width() - 1)));
+            int sy = Math.max(0, (Math.min((int) (v * (double) texture.height()), texture.height() - 1)));
         
+            return getPixel(texture, data, sx, sy);
+        }
+    
+        static Colorc sampleBL(Texture texture, int[] data, double u, double v)
+        {
+            u = u * texture.width() - 0.5F;
+            v = v * texture.height() - 0.5F;
+        
+            int x = (int) Math.floor(u);
+            int y = (int) Math.floor(v);
+        
+            double uRat = u - x;
+            double vRat = v - y;
+            double uOpp = 1 - uRat;
+            double vOpp = 1 - vRat;
+        
+            Colorc c;
+        
+            c = getPixel(texture, data, Math.max(x, 0), Math.max(y, 0));
+            int r1 = c.r();
+            int g1 = c.g();
+            int b1 = c.b();
+            int a1 = c.a();
+        
+            c = getPixel(texture, data, Math.min(x + 1, texture.width() - 1), Math.max(y, 0));
+            int r2 = c.r();
+            int g2 = c.g();
+            int b2 = c.b();
+            int a2 = c.a();
+        
+            c = getPixel(texture, data, Math.max(x, 0), Math.min(y + 1, texture.height() - 1));
+            int r3 = c.r();
+            int g3 = c.g();
+            int b3 = c.b();
+            int a3 = c.a();
+        
+            c = getPixel(texture, data, Math.min(x + 1, texture.width() - 1), Math.min(y + 1, texture.height() - 1));
+            int r4 = c.r();
+            int g4 = c.g();
+            int b4 = c.b();
+            int a4 = c.a();
+        
+            return TEMP.set((int) ((r1 * uOpp + r2 * uRat) * vOpp + (r3 * uOpp + r4 * uRat) * vRat),
+                            (int) ((g1 * uOpp + g2 * uRat) * vOpp + (g3 * uOpp + g4 * uRat) * vRat),
+                            (int) ((b1 * uOpp + b2 * uRat) * vOpp + (b3 * uOpp + b4 * uRat) * vRat),
+                            (int) ((a1 * uOpp + a2 * uRat) * vOpp + (a3 * uOpp + a4 * uRat) * vRat));
+        }
+    
         double getHeight(double x, double z)
         {
             double u = x / size;
             double v = z / size;
-            return heightTexture.sampleBL(u - Math.floor(u), v - Math.floor(v)).r();
+            return sampleBL(heightTexture, heightTextureData, u - Math.floor(u), v - Math.floor(v)).r();
         }
-        
+    
         double getHeightFast(double x, double z)
         {
             int u = (int) Math.floor(x) % size;
             int v = (int) Math.floor(z) % size;
             if (u < 0) u += size;
             if (v < 0) v += size;
-            return heightTexture.getPixel(u, v).r();
+            return getPixel(heightTexture, heightTextureData, u, v).r();
         }
         
         Colorc getColor(double x, double z)
         {
             double u = x / size;
             double v = z / size;
-            return colorTexture.sampleBL(u - Math.floor(u), v - Math.floor(v));
+            return sampleBL(colorTexture, colorTextureData, u - Math.floor(u), v - Math.floor(v));
         }
         
         Colorc getColorFast(double x, double z)
@@ -111,7 +179,7 @@ public class VoxelSpace extends Engine
             int v = ((int) Math.floor(z)) % size;
             if (u < 0) u += size;
             if (v < 0) v += size;
-            return colorTexture.getPixel(u, v);
+            return getPixel(colorTexture, colorTextureData, u, v);
         }
     }
     
@@ -257,7 +325,7 @@ public class VoxelSpace extends Engine
         {
             if (keyboard().held(Keyboard.Key.UP))
             {
-        
+    
             }
         }
     

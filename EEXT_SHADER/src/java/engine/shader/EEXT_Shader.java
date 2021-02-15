@@ -190,6 +190,5 @@ public class EEXT_Shader extends Extension
         target.bindFramebuffer();
         shader.bind();
         EEXT_Shader.INSTANCE.vao.bind().draw(GL.QUADS).unbind();
-        target.markGPUDirty();
     }
 }

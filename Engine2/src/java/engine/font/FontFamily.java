@@ -105,9 +105,9 @@ public class FontFamily
         for (int i = 0, n = values.length; i < n; i++)
         {
             Weight weight = values[i];
-            
-            getFont(weight, false).texture(size).bindTexture(i);
-            getFont(weight, true).texture(size).bindTexture(i + n);
+    
+            getFont(weight, false).texture(size).bind(i);
+            getFont(weight, true).texture(size).bind(i + n);
         }
     }
     
@@ -120,8 +120,8 @@ public class FontFamily
     {
         for (Weight weight : Weight.values())
         {
-            getFont(weight, false).texture(size).unbindTexture();
-            getFont(weight, true).texture(size).unbindTexture();
+            getFont(weight, false).texture(size).unbind();
+            getFont(weight, true).texture(size).unbind();
         }
     }
     

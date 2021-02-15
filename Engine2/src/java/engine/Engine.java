@@ -466,7 +466,7 @@ public class Engine
                                             {
                                                 if (Engine.activeLayers[i])
                                                 {
-                                                    Engine.layers[i].bindTexture();
+                                                    Engine.layers[i].bind();
                                                     Engine.screenVAO.draw(GL.QUADS);
                                                 }
                                             }

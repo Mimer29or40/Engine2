@@ -49,6 +49,16 @@ public interface Colorc
     float af();
     
     /**
+     * @return 32-bit integer representation of the color
+     */
+    int toInt();
+    
+    /**
+     * @return The Hex String representation of the color.
+     */
+    String toHex();
+    
+    /**
      * Get the value of the specified component of this color.
      *
      * @param component the component, within <code>[0..3]</code>
@@ -109,16 +119,6 @@ public interface Colorc
     }
     
     /**
-     * @return 32-bit integer representation of the color
-     */
-    int toInt();
-    
-    /**
-     * @return The Hex String representation of the color.
-     */
-    String toHex();
-    
-    /**
      * @return the hue of the color [0..359]
      */
     int hue();
@@ -134,11 +134,11 @@ public interface Colorc
     int brightness();
     
     /**
-     * Determine the component with the biggest absolute value.
+     * Determine the component with the smallest (towards zero) absolute value.
      *
      * @return the component, within <code>[0..255]</code>
      */
-    int maxComponent();
+    int minComponent();
     
     /**
      * Determine the component with the middle (towards zero) absolute value.
@@ -148,32 +148,11 @@ public interface Colorc
     int midComponent();
     
     /**
-     * Determine the component with the smallest (towards zero) absolute value.
+     * Determine the component with the biggest absolute value.
      *
      * @return the component, within <code>[0..255]</code>
      */
-    int minComponent();
-    
-    /**
-     * Determine the component with the biggest absolute value.
-     *
-     * @return the component index, within <code>[0..2]</code>
-     */
-    int maxComponentIndex();
-    
-    /**
-     * Determine the component with the middle (towards zero) absolute value.
-     *
-     * @return the component index, within <code>[0..2]</code>
-     */
-    int midComponentIndex();
-    
-    /**
-     * Determine the component with the smallest (towards zero) absolute value.
-     *
-     * @return the component index, within <code>[0..2]</code>
-     */
-    int minComponentIndex();
+    int maxComponent();
     
     /**
      * Negate this color and store the result in <code>dest</code>.
@@ -186,59 +165,59 @@ public interface Colorc
     /**
      * Scales this color and stores the result in <code>result</code>.
      *
-     * @param x      scale
-     * @param result will hold the result
-     * @return result
+     * @param x    scale
+     * @param dest will hold the result
+     * @return dest
      */
-    default Color scale(double x, Color result)
+    default Color scale(double x, Color dest)
     {
-        return scale(x, false, result);
+        return scale(x, false, dest);
     }
     
     /**
      * Scales this color and stores the result in <code>result</code>.
      *
-     * @param x      scale
-     * @param alpha  flag to scale the alpha (default: false)
-     * @param result will hold the result
-     * @return result
+     * @param x     scale
+     * @param alpha flag to scale the alpha (default: false)
+     * @param dest  will hold the result
+     * @return dest
      */
-    Color scale(double x, boolean alpha, Color result);
+    Color scale(double x, boolean alpha, Color dest);
     
     /**
      * Returns a color that is brighter than this by a factor.
      *
      * @param factor the factor
-     * @param result the result
-     * @return result
+     * @param dest   will hold the result
+     * @return dest
      */
-    Color brighter(double factor, Color result);
+    Color brighter(double factor, Color dest);
     
     /**
      * Returns a color that is darker than this by a factor.
      *
      * @param factor the factor
-     * @param result the result
-     * @return result
+     * @param dest   will hold the result
+     * @return dest
      */
-    Color darker(double factor, Color result);
+    Color darker(double factor, Color dest);
     
     /**
      * Returns a color that is tinted by the color.
      *
-     * @param tint   the tint
-     * @param result the result
-     * @return result
+     * @param tint the tint
+     * @param dest will hold the result
+     * @return dest
      */
-    Color tint(Colorc tint, Color result);
+    Color tint(Colorc tint, Color dest);
     
     /**
      * Returns a color that is interpolated between this color and other.
      *
      * @param other  the other color
      * @param amount the amount to interpolate
-     * @param result the result
-     * @return result
+     * @param dest   will hold the result
+     * @return dest
      */
-    Color interpolate(Colorc other, double amount, Color result);
+    Color interpolate(Colorc other, double amount, Color dest);
 }

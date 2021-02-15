@@ -29,16 +29,18 @@ public class Renderer
 {
     private static final Logger LOGGER = new Logger();
     
-    private static final Color         DEFAULT_FILL         = new Color(255);
-    private static final Color         DEFAULT_STROKE       = new Color(0);
-    private static final Color         DEFAULT_TINT         = new Color(255);
-    private static final double        DEFAULT_WEIGHT       = 5;
-    private static final RectMode      DEFAULT_RECT_MODE    = RectMode.CORNER;
-    private static final EllipseMode   DEFAULT_ELLIPSE_MODE = EllipseMode.CENTER;
-    private static final ArcMode       DEFAULT_ARC_MODE     = ArcMode.DEFAULT;
-    private static final Font          DEFAULT_TEXT_FONT    = Font.DEFAULT;
-    private static final int           DEFAULT_TEXT_SIZE    = 16;
-    private static final TextAlign     DEFAULT_TEXT_ALIGN   = TextAlign.TOP_LEFT;
+    private static final Colorc BACKGROUND_GREY = new Color(51, 51, 51);
+    
+    private static final Color       DEFAULT_FILL         = new Color(255);
+    private static final Color       DEFAULT_STROKE       = new Color(0);
+    private static final Color       DEFAULT_TINT         = new Color(255);
+    private static final double      DEFAULT_WEIGHT       = 5;
+    private static final RectMode    DEFAULT_RECT_MODE    = RectMode.CORNER;
+    private static final EllipseMode DEFAULT_ELLIPSE_MODE = EllipseMode.CENTER;
+    private static final ArcMode     DEFAULT_ARC_MODE     = ArcMode.DEFAULT;
+    private static final Font        DEFAULT_TEXT_FONT    = Font.DEFAULT;
+    private static final int         DEFAULT_TEXT_SIZE    = 16;
+    private static final TextAlign   DEFAULT_TEXT_ALIGN   = TextAlign.TOP_LEFT;
     
     protected static final Color CLEAR = new Color();
     
@@ -896,7 +898,7 @@ public class Renderer
      */
     public void clear()
     {
-        clear(Color.BACKGROUND_GREY);
+        clear(Renderer.BACKGROUND_GREY);
     }
     
     /**

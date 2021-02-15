@@ -17,8 +17,6 @@ public class Color implements Colorc
     public static final Colorc DARK_GREY  = new Color(63, 63, 63);
     public static final Colorc BLACK      = new Color(0, 0, 0);
     
-    public static final Colorc BACKGROUND_GREY = new Color(51, 51, 51);
-    
     public static final Colorc LIGHTEST_RED = new Color(255, 191, 191);
     public static final Colorc LIGHTER_RED  = new Color(255, 127, 127);
     public static final Colorc LIGHT_RED    = new Color(255, 63, 63);
@@ -75,9 +73,15 @@ public class Color implements Colorc
     
     private int r, g, b, a;
     
+    private int minInd, midInd, maxInd;
+    
     public Color(Number r, Number g, Number b, Number a)
     {
-        r(r).g(g).b(b).a(a);
+        this.r = toColorInt(r);
+        this.g = toColorInt(g);
+        this.b = toColorInt(b);
+        this.a = toColorInt(a);
+        computeIndices();
     }
     
     public Color(Number r, Number g, Number b)
@@ -110,9 +114,86 @@ public class Color implements Colorc
         this(0, 0, 0, 255);
     }
     
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (!(o instanceof Colorc)) return false;
+        Colorc color = (Colorc) o;
+        return equals(color.r(), color.g(), color.b(), color.a());
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(this.r, this.g, this.b, this.a);
+    }
+    
+    @Override
+    public String toString()
+    {
+        return "Color{r=" + this.r + ", g=" + this.g + ", b=" + this.b + ", a=" + this.a + "}";
+    }
+    
     private Color thisOrNew()
     {
         return this;
+    }
+    
+    private void computeIndices()
+    {
+        if (this.r >= this.g)
+        {
+            if (this.r >= this.b)
+            {
+                if (this.g >= this.b)
+                {
+                    // Case 3 r >= g >= b
+                    this.minInd = 2;
+                    this.midInd = 1;
+                }
+                else
+                {
+                    // Case 2 r >= b > g
+                    this.minInd = 1;
+                    this.midInd = 2;
+                }
+                this.maxInd = 0;
+            }
+            else
+            {
+                // Case 4 b > r >= g
+                this.minInd = 1;
+                this.midInd = 0;
+                this.maxInd = 2;
+            }
+        }
+        else
+        {
+            if (this.r >= this.b)
+            {
+                // Case 1 g > r >= b
+                this.minInd = 2;
+                this.midInd = 0;
+                this.maxInd = 1;
+            }
+            else
+            {
+                this.minInd = 0;
+                if (this.g >= this.b)
+                {
+                    // Case 5 g >= b > r
+                    this.midInd = 2;
+                    this.maxInd = 1;
+                }
+                else
+                {
+                    // Case 0 b > g > r
+                    this.midInd = 1;
+                    this.maxInd = 2;
+                }
+            }
+        }
     }
     
     /**
@@ -130,13 +211,13 @@ public class Color implements Colorc
     @Override
     public float rf()
     {
-        return (float) r() / 255F;
+        return r() / 255F;
     }
     
-    public Color r(Number r)
+    public void r(Number r)
     {
         this.r = toColorInt(r);
-        return this;
+        computeIndices();
     }
     
     /**
@@ -154,13 +235,13 @@ public class Color implements Colorc
     @Override
     public float gf()
     {
-        return (float) g() / 255F;
+        return g() / 255F;
     }
     
-    public Color g(Number g)
+    public void g(Number g)
     {
         this.g = toColorInt(g);
-        return this;
+        computeIndices();
     }
     
     /**
@@ -178,13 +259,13 @@ public class Color implements Colorc
     @Override
     public float bf()
     {
-        return (float) b() / 255F;
+        return b() / 255F;
     }
     
-    public Color b(Number b)
+    public void b(Number b)
     {
         this.b = toColorInt(b);
-        return this;
+        computeIndices();
     }
     
     /**
@@ -202,18 +283,23 @@ public class Color implements Colorc
     @Override
     public float af()
     {
-        return (float) a() / 255F;
+        return a() / 255F;
     }
     
-    public Color a(Number a)
+    public void a(Number a)
     {
         this.a = toColorInt(a);
-        return this;
     }
     
     public Color set(Number r, Number g, Number b, Number a)
     {
-        return r(r).g(g).b(b).a(a);
+        this.r = toColorInt(r);
+        this.g = toColorInt(g);
+        this.b = toColorInt(b);
+        this.a = toColorInt(a);
+        computeIndices();
+    
+        return this;
     }
     
     public Color set(Number r, Number g, Number b)
@@ -236,28 +322,108 @@ public class Color implements Colorc
         return set(p.r(), p.g(), p.b(), p.a());
     }
     
+    /**
+     * @return 32-bit integer representation (argb) of the color
+     */
+    @Override
+    public int toInt()
+    {
+        return (this.a << 24) | (this.r << 16) | (this.g << 8) | this.b;
+    }
+    
+    /**
+     * Sets this color to the value described by a 32-bit integer (argb).
+     *
+     * @param x the 32-bit integer
+     * @return this
+     */
+    public Color fromInt(int x)
+    {
+        return set((x >>> 16) & 0xFF, (x >>> 8) & 0xFF, x & 0xFF, (x >>> 24) & 0xFF);
+    }
+    
+    /**
+     * @return The Hex String representation of the color.
+     */
+    @Override
+    public String toHex()
+    {
+        return String.format("#%02X%02X%02X%02X", this.r, this.g, this.b, this.a);
+    }
+    
+    /**
+     * Sets this color to the value described by a hex string (#AARRGGBB or #RRGGBB).
+     *
+     * @param hex the hex string
+     * @return this
+     */
+    public Color fromHex(String hex)
+    {
+        if (!hex.startsWith("#")) throw new RuntimeException("Invalid Hex Color String: " + hex);
+        if (hex.length() == 7)
+        {
+            return set(Integer.parseInt(hex.substring(1, 3), 16),
+                       Integer.parseInt(hex.substring(3, 5), 16),
+                       Integer.parseInt(hex.substring(5, 7), 16),
+                       255);
+        }
+        else if (hex.length() == 9)
+        {
+            return set(Integer.parseInt(hex.substring(1, 3), 16),
+                       Integer.parseInt(hex.substring(3, 5), 16),
+                       Integer.parseInt(hex.substring(5, 7), 16),
+                       Integer.parseInt(hex.substring(7, 9), 16));
+        }
+        throw new RuntimeException("Invalid Hex Color String: " + hex);
+    }
+    
     public Color fromHSB(int h, int s, int b)
     {
         if (s == 0) return set(b, b, b);
-    
+        
         h = h * 255 / 359;
-    
+        
         int region    = h / 43;
         int remainder = (h - (region * 43)) * 6;
-    
+        
         int p = (b * (255 - s)) >> 8;
         int q = (b * (255 - ((s * remainder) >> 8))) >> 8;
         int t = (b * (255 - ((s * (255 - remainder)) >> 8))) >> 8;
-    
-        return switch (region)
-                {
-                    case 0 -> set(b, t, p);
-                    case 1 -> set(q, b, p);
-                    case 2 -> set(p, b, t);
-                    case 3 -> set(p, q, b);
-                    case 4 -> set(t, p, b);
-                    default -> set(b, p, q);
-                };
+        
+        switch (region)
+        {
+            case 0 -> {
+                this.r = b;
+                this.g = t;
+                this.b = p;
+            }
+            case 1 -> {
+                this.r = q;
+                this.g = b;
+                this.b = p;
+            }
+            case 2 -> {
+                this.r = p;
+                this.g = b;
+                this.b = t;
+            }
+            case 3 -> {
+                this.r = p;
+                this.g = q;
+                this.b = b;
+            }
+            case 4 -> {
+                this.r = t;
+                this.g = p;
+                this.b = b;
+            }
+            default -> {
+                this.r = b;
+                this.g = p;
+                this.b = q;
+            }
+        }
+        return this;
     }
     
     /**
@@ -282,35 +448,16 @@ public class Color implements Colorc
     
     public Color setComponent(int component, Number value) throws IllegalArgumentException
     {
-        return switch (component)
-                {
-                    case 0 -> r(value);
-                    case 1 -> g(value);
-                    case 2 -> b(value);
-                    case 3 -> a(value);
-                    default -> throw new IllegalArgumentException();
-                };
-    }
-    
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o) return true;
-        if (!(o instanceof Colorc)) return false;
-        Colorc color = (Colorc) o;
-        return equals(color.r(), color.g(), color.b(), color.a());
-    }
-    
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(this.r, this.g, this.b, this.a);
-    }
-    
-    @Override
-    public String toString()
-    {
-        return "Color{r=" + this.r + ", g=" + this.g + ", b=" + this.b + ", a=" + this.a + "}";
+        switch (component)
+        {
+            case 0 -> this.r = toColorInt(value);
+            case 1 -> this.g = toColorInt(value);
+            case 2 -> this.b = toColorInt(value);
+            case 3 -> this.a = toColorInt(value);
+            default -> throw new IllegalArgumentException();
+        }
+        computeIndices();
+        return this;
     }
     
     /**
@@ -326,30 +473,13 @@ public class Color implements Colorc
     @Override
     public boolean equals(int r, int g, int b, int a)
     {
-        return r() == r && g() == g && b() == b && a() == a;
-    }
-    
-    /**
-     * @return 32-bit integer representation of the color
-     */
-    @Override
-    public int toInt()
-    {
-        return r() | (g() << 8) | (b() << 16) | (a() << 24);
-    }
-    
-    /**
-     * @return The Hex String representation of the color.
-     */
-    @Override
-    public String toHex()
-    {
-        return String.format("#%02X%02X%02X%02X", r(), g(), b(), a());
+        return this.r == r && this.g == g && this.b == b && this.a == a;
     }
     
     /**
      * @return the hue of the color [0..359]
      */
+    @Override
     public int hue()
     {
         int max = maxComponent();
@@ -357,14 +487,14 @@ public class Color implements Colorc
     
         if (max == 0 || max - min == 0) return 0;
     
-        int h = switch (maxComponentIndex())
+        int h = switch (this.maxInd)
                 {
                     // Red is Max
-                    case 0 -> 43 * (g() - b()) / (max - min);
+                    case 0 -> 43 * (this.g - this.b) / (max - min);
                     // Green is Max
-                    case 1 -> 85 + 43 * (b() - r()) / (max - min);
+                    case 1 -> 85 + 43 * (this.b - this.r) / (max - min);
                     // Blue is Max
-                    case 2 -> 171 + 43 * (r() - g()) / (max - min);
+                    case 2 -> 171 + 43 * (this.r - this.g) / (max - min);
                     default -> 0;
                 };
         return h * 359 / 255;
@@ -373,6 +503,7 @@ public class Color implements Colorc
     /**
      * @return the saturation of the color [0..255]
      */
+    @Override
     public int saturation()
     {
         int max = maxComponent();
@@ -393,27 +524,6 @@ public class Color implements Colorc
     }
     
     /**
-     * Determine the component with the biggest absolute value.
-     *
-     * @return the component, within <code>[0..255]</code>
-     */
-    @Override
-    public int maxComponent()
-    {
-        return getComponent(maxComponentIndex());
-    }
-    
-    /**
-     * Determine the component with the middle (towards zero) absolute value.
-     *
-     * @return the component, within <code>[0..255]</code>
-     */
-    public int midComponent()
-    {
-        return getComponent(midComponentIndex());
-    }
-    
-    /**
      * Determine the component with the smallest (towards zero) absolute value.
      *
      * @return the component, within <code>[0..255]</code>
@@ -421,50 +531,29 @@ public class Color implements Colorc
     @Override
     public int minComponent()
     {
-        return getComponent(minComponentIndex());
-    }
-    
-    /**
-     * Determine the component with the biggest absolute value.
-     *
-     * @return the component index, within <code>[0..2]</code>
-     */
-    @Override
-    public int maxComponentIndex()
-    {
-        if (r() >= g() && r() >= b()) return 0;
-        if (g() >= r() && g() >= b()) return 1;
-        if (b() >= r() && b() >= g()) return 2;
-        return 0;
+        return getComponent(this.minInd);
     }
     
     /**
      * Determine the component with the middle (towards zero) absolute value.
      *
-     * @return the component index, within <code>[0..2]</code>
+     * @return the component, within <code>[0..255]</code>
      */
-    public int midComponentIndex()
+    @Override
+    public int midComponent()
     {
-        int min = minComponentIndex();
-        int max = maxComponentIndex();
-        if (min == 0) return max == 1 ? 2 : 1;
-        if (min == 1) return max == 0 ? 2 : 0;
-        if (min == 2) return max == 0 ? 1 : 0;
-        return 0;
+        return getComponent(this.midInd);
     }
     
     /**
-     * Determine the component with the smallest (towards zero) absolute value.
+     * Determine the component with the biggest absolute value.
      *
-     * @return the component index, within <code>[0..2]</code>
+     * @return the component, within <code>[0..255]</code>
      */
     @Override
-    public int minComponentIndex()
+    public int maxComponent()
     {
-        if (r() <= g() && r() <= b()) return 0;
-        if (g() <= r() && g() <= b()) return 1;
-        if (b() <= r() && b() <= g()) return 2;
-        return 0;
+        return getComponent(this.maxInd);
     }
     
     /**
@@ -486,9 +575,12 @@ public class Color implements Colorc
     @Override
     public Color negate(Color dest)
     {
-        dest.r(255 - r());
-        dest.g(255 - g());
-        dest.b(255 - b());
+        dest.r = 255 - this.r;
+        dest.g = 255 - this.g;
+        dest.b = 255 - this.b;
+    
+        dest.computeIndices();
+    
         return dest;
     }
     
@@ -518,18 +610,21 @@ public class Color implements Colorc
     /**
      * Scales this color and stores the result in <code>dest</code>.
      *
-     * @param x      scale
-     * @param alpha  flag to scale the alpha (default: false)
-     * @param result will hold the result
+     * @param x     scale
+     * @param alpha flag to scale the alpha (default: false)
+     * @param dest  will hold the result
      * @return dest
      */
-    public Color scale(double x, boolean alpha, Color result)
+    public Color scale(double x, boolean alpha, Color dest)
     {
-        result.r((int) (r() * x));
-        result.g((int) (g() * x));
-        result.b((int) (b() * x));
-        if (alpha) result.a((int) (a() * x));
-        return result;
+        dest.r = toColorInt(rf() * x);
+        dest.g = toColorInt(gf() * x);
+        dest.b = toColorInt(bf() * x);
+        if (alpha) dest.a = toColorInt(af() * x);
+        
+        dest.computeIndices();
+        
+        return dest;
     }
     
     /**
@@ -547,24 +642,37 @@ public class Color implements Colorc
      * Returns a color that is brighter than this by a factor.
      *
      * @param factor the factor
-     * @param result the dest
+     * @param dest   will hold the result
      * @return dest
      */
-    public Color brighter(double factor, Color result)
+    public Color brighter(double factor, Color dest)
     {
-        int r = r();
-        int g = g();
-        int b = b();
-        int a = a();
-        
         int i = (int) (1.0 / (1.0 - factor));
-        if (r == 0 && g == 0 && b == 0) return result.set(i, i, i, a);
+        if (this.r == 0 && this.g == 0 && this.b == 0)
+        {
+            dest.r = i;
+            dest.g = i;
+            dest.b = i;
+        }
+        else
+        {
+            int r = this.r;
+            int g = this.g;
+            int b = this.b;
+            
+            if (0 < this.r && this.r < i) r = i;
+            if (0 < this.g && this.g < i) g = i;
+            if (0 < this.b && this.b < i) b = i;
+            
+            dest.r = Math.min((int) (r / factor), 255);
+            dest.g = Math.min((int) (g / factor), 255);
+            dest.b = Math.min((int) (b / factor), 255);
+        }
+        dest.a = this.a;
         
-        if (0 < r && r < i) r = i;
-        if (0 < g && g < i) g = i;
-        if (0 < b && b < i) b = i;
+        dest.computeIndices();
         
-        return result.set(Math.min((int) (r / factor), 255), Math.min((int) (g / factor), 255), Math.min((int) (b / factor), 255), a);
+        return dest;
     }
     
     /**
@@ -582,29 +690,39 @@ public class Color implements Colorc
      * Returns a color that is darker than this by a factor.
      *
      * @param factor the factor
-     * @param result the dest
+     * @param dest   will hold the result
      * @return dest
      */
-    public Color darker(double factor, Color result)
+    public Color darker(double factor, Color dest)
     {
-        return result.set(Math.max((int) (r() * factor), 0), Math.max((int) (g() * factor), 0), Math.max((int) (b() * factor), 0), a());
+        dest.r = Math.max((int) (this.r * factor), 0);
+        dest.g = Math.max((int) (this.g * factor), 0);
+        dest.b = Math.max((int) (this.b * factor), 0);
+        dest.a = this.a;
+        
+        dest.computeIndices();
+        
+        return dest;
     }
     
     /**
      * Returns a color that is tinted by the color.
      *
-     * @param tint   the tint
-     * @param result the result
-     * @return result
+     * @param tint the tint
+     * @param dest will hold the result
+     * @return dest
      */
     @Override
-    public Color tint(Colorc tint, Color result)
+    public Color tint(Colorc tint, Color dest)
     {
-        if (tint.r() < 255) result.r(r() * tint.r() / 255);
-        if (tint.g() < 255) result.g(g() * tint.g() / 255);
-        if (tint.b() < 255) result.b(b() * tint.b() / 255);
-        if (tint.a() < 255) result.a(a() * tint.a() / 255);
-        return result;
+        if (tint.r() < 255) dest.r = this.r * tint.r() / 255;
+        if (tint.g() < 255) dest.g = this.g * tint.g() / 255;
+        if (tint.b() < 255) dest.b = this.b * tint.b() / 255;
+        if (tint.a() < 255) dest.a = this.a * tint.a() / 255;
+        
+        dest.computeIndices();
+        
+        return dest;
     }
     
     /**
@@ -623,19 +741,37 @@ public class Color implements Colorc
      *
      * @param other  the other color
      * @param amount the amount to interpolate
-     * @param result the result
-     * @return result
+     * @param dest   will hold the result
+     * @return dest
      */
     @Override
-    public Color interpolate(Colorc other, double amount, Color result)
+    public Color interpolate(Colorc other, double amount, Color dest)
     {
-        if (amount <= 0) return result.set(this);
-        if (1 <= amount) return result.set(other);
-        double inverse = 1 - amount;
-        return result.r((int) (inverse * r() + amount * other.r()))
-                     .g((int) (inverse * g() + amount * other.g()))
-                     .b((int) (inverse * b() + amount * other.b()))
-                     .a((int) (inverse * a() + amount * other.a()));
+        if (amount <= 0)
+        {
+            dest.r = this.r;
+            dest.g = this.g;
+            dest.b = this.b;
+            dest.a = this.a;
+        }
+        else if (1 <= amount)
+        {
+            dest.r = other.r();
+            dest.g = other.g();
+            dest.b = other.b();
+            dest.a = other.a();
+        }
+        else
+        {
+            double inverse = 1.0 - amount;
+            dest.r = toColorInt(inverse * rf() + amount * other.rf());
+            dest.g = toColorInt(inverse * gf() + amount * other.gf());
+            dest.b = toColorInt(inverse * bf() + amount * other.bf());
+            dest.a = toColorInt(inverse * af() + amount * other.af());
+        }
+        dest.computeIndices();
+        
+        return dest;
     }
     
     /**
@@ -650,47 +786,14 @@ public class Color implements Colorc
         return interpolate(other, amount, thisOrNew());
     }
     
-    /**
-     * Sets this color to the value described by a 32-bit integer.
-     *
-     * @param x the 32-bit integer
-     * @return this
-     */
-    public Color fromInt(int x)
-    {
-        long l = x & 0x00000000FFFFFFFFL;
-        return set(l & 0xFF, l >> 8 & 0xFF, l >> 16 & 0xFF, l >> 24 & 0xFF);
-    }
-    
-    public Color fromHex(String hex)
-    {
-        if (!hex.startsWith("#")) throw new RuntimeException("Invalid Hex Color String: " + hex);
-        if (hex.length() == 7)
-        {
-            a(255);
-            r(Integer.parseInt(hex.substring(1, 3), 16));
-            g(Integer.parseInt(hex.substring(3, 5), 16));
-            b(Integer.parseInt(hex.substring(5, 7), 16));
-            return this;
-        }
-        else if (hex.length() == 9)
-        {
-            a(Integer.parseInt(hex.substring(1, 3), 16));
-            r(Integer.parseInt(hex.substring(3, 5), 16));
-            g(Integer.parseInt(hex.substring(5, 7), 16));
-            b(Integer.parseInt(hex.substring(7, 9), 16));
-            return this;
-        }
-        throw new RuntimeException("Invalid Hex Color String: " + hex);
-    }
-    
     private static int toColorInt(Number x)
     {
-        return clamp(x instanceof Float ? (int) ((float) x * 255) :
-                     x instanceof Double ? (int) ((double) x * 255) :
-                     x instanceof Long ? (int) (long) x :
-                     x instanceof Short ? (short) x :
-                     x instanceof Byte ? (byte) x :
-                     (int) x, 0, 255);
+        if (x instanceof Integer) return clamp((int) x, 0, 255);
+        if (x instanceof Double) return clamp((int) ((double) x * 255), 0, 255);
+        if (x instanceof Float) return clamp((int) ((float) x * 255), 0, 255);
+        if (x instanceof Long) return clamp((int) ((long) x), 0, 255);
+        if (x instanceof Short) return clamp((short) x, 0, 255);
+        if (x instanceof Byte) return clamp((byte) x, 0, 255);
+        throw new RuntimeException("Invalid number type: " + x.getClass());
     }
 }

@@ -5,9 +5,6 @@ import engine.color.Colorc;
 import engine.event.*;
 import engine.font.Font;
 import engine.render.*;
-import engine.render.gl.GLConst;
-import engine.render.gl.GLShader;
-import engine.render.gl.GLVertexArray;
 import engine.util.Random;
 import engine.util.SimplexNoise;
 import engine.util.*;
@@ -16,7 +13,6 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.*;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFWGamepadState;
-import org.lwjgl.opengl.GL;
 import org.lwjgl.system.APIUtil;
 import org.lwjgl.system.Callback;
 import org.lwjgl.system.MemoryStack;
@@ -261,7 +257,7 @@ public class Engine
                     try
                     {
                         Engine.window.makeCurrent();
-                        GL.createCapabilities();
+                        org.lwjgl.opengl.GL.createCapabilities();
                         
                         long t, dt;
                         long lastFrame   = nanoseconds();
@@ -471,7 +467,7 @@ public class Engine
                                                 if (Engine.activeLayers[i])
                                                 {
                                                     Engine.layers[i].bindTexture();
-                                                    Engine.screenVAO.draw(GLConst.QUADS);
+                                                    Engine.screenVAO.draw(GL.QUADS);
                                                 }
                                             }
                                             Engine.screenShader.unbind();
@@ -541,12 +537,12 @@ public class Engine
                                                             boxBuffer.put(5, y2);
                                                             boxBuffer.put(6, x1);
                                                             boxBuffer.put(7, y2);
-                                                            
+    
                                                             Engine.debugShader.setUniform("color", Engine.debugLineBackground);
-                                                            Engine.debugBoxVAO.bind().set(boxBuffer).draw(GLConst.QUADS).unbind();
-                                                            
+                                                            Engine.debugBoxVAO.bind().set(boxBuffer).draw(GL.QUADS).unbind();
+    
                                                             Engine.debugShader.setUniform("color", Engine.debugLineText);
-                                                            Engine.debugTextVAO.bind().set(charBuffer).draw(GLConst.QUADS, quads * 4).unbind();
+                                                            Engine.debugTextVAO.bind().set(charBuffer).draw(GL.QUADS, quads * 4).unbind();
                                                         }
                                                     }
                                                     Engine.debugLines.clear();
@@ -651,11 +647,11 @@ public class Engine
                     finally
                     {
                         Engine.window.unmakeCurrent();
-                        GL.destroy();
-                        GL.setCapabilities(null);
-                        
+                        org.lwjgl.opengl.GL.destroy();
+                        org.lwjgl.opengl.GL.setCapabilities(null);
+    
                         Engine.running = false;
-                        
+    
                         latch.countDown();
                     }
                 }, "render").start();
@@ -916,19 +912,19 @@ public class Engine
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glBlendEquation(GL_FUNC_ADD);
-        
+    
         Engine.layers       = new Texture[Engine.layerCount];
         Engine.activeLayers = new boolean[Engine.layerCount];
-        
+    
         Engine.renderer        = new Renderer(Engine.layers[0] = new Texture(screenW, screenH));
         Engine.activeLayers[0] = true;
-        
-        Engine.screenShader = new GLShader().loadFile("shaders/pixel.vert").loadFile("shaders/pixel.frag").validate().unbind();
-        Engine.screenVAO    = new GLVertexArray().bind().add(new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, GLConst.DYNAMIC_DRAW, 2);
     
-        Engine.debugShader  = new GLShader().loadFile("shaders/debug.vert").loadFile("shaders/debug.frag").validate().unbind();
-        Engine.debugTextVAO = new GLVertexArray().bind().add((Float.BYTES * 3 + Byte.BYTES * 4) * 1024, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 3, GLConst.UNSIGNED_BYTE, 4).unbind();
-        Engine.debugBoxVAO  = new GLVertexArray().bind().add((Float.BYTES * 2) * 8, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 2).unbind();
+        Engine.screenShader = new GLShader().loadFile("shaders/pixel.vert").loadFile("shaders/pixel.frag").validate();
+        Engine.screenVAO    = new GLVertexArray().bind().add(new float[] {-1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, 1.0F, 1.0F}, GL.STATIC_DRAW, 2).unbind();
+    
+        Engine.debugShader  = new GLShader().loadFile("shaders/debug.vert").loadFile("shaders/debug.frag").validate();
+        Engine.debugTextVAO = new GLVertexArray().bind().add((Float.BYTES * 3 + Byte.BYTES * 4) * 1024, GL.DYNAMIC_DRAW, GL.FLOAT, 3, GL.UNSIGNED_BYTE, 4).unbind();
+        Engine.debugBoxVAO  = new GLVertexArray().bind().add((Float.BYTES * 2) * 8, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
         Engine.debugView    = new Matrix4d();
     }
     
@@ -2326,7 +2322,7 @@ public class Engine
     }
     
     /**
-     * See {@link Renderer#blend()}
+     * See {@link Renderer#debug()}
      */
     public static boolean rendererDebug()
     {

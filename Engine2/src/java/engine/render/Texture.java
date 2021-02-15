@@ -2,7 +2,6 @@ package engine.render;
 
 import engine.color.Color;
 import engine.color.Colorc;
-import engine.render.gl.GLConst;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.system.MemoryUtil;
 import rutils.Logger;
@@ -33,16 +32,16 @@ public class Texture
     protected final int height;
     protected final int channels;
     
-    protected final GLConst format;
+    protected final GL format;
     
     protected final ByteBuffer data;
     
     protected int[] array;
     
-    protected GLConst wrapS     = GLConst.CLAMP_TO_EDGE;
-    protected GLConst wrapT     = GLConst.CLAMP_TO_EDGE;
-    protected GLConst minFilter = GLConst.NEAREST;
-    protected GLConst magFilter = GLConst.NEAREST;
+    protected GL wrapS     = GL.CLAMP_TO_EDGE;
+    protected GL wrapT     = GL.CLAMP_TO_EDGE;
+    protected GL minFilter = GL.NEAREST;
+    protected GL magFilter = GL.NEAREST;
     
     protected final int fbo;
     
@@ -225,7 +224,7 @@ public class Texture
      * @param wrapT The new wrapT mode.
      * @return This instance for call chaining.
      */
-    public Texture wrapMode(GLConst wrapS, GLConst wrapT)
+    public Texture wrapMode(GL wrapS, GL wrapT)
     {
         this.wrapS = wrapS;
         this.wrapT = wrapT;
@@ -243,7 +242,7 @@ public class Texture
      * @param magFilter The new magFilter mode.
      * @return This instance for call chaining.
      */
-    public Texture filterMode(GLConst minFilter, GLConst magFilter)
+    public Texture filterMode(GL minFilter, GL magFilter)
     {
         this.minFilter = minFilter;
         this.magFilter = magFilter;
@@ -794,14 +793,14 @@ public class Texture
         return new Texture(width, height, channels, data, null);
     }
     
-    private static GLConst getFormat(int channels)
+    private static GL getFormat(int channels)
     {
         return switch (channels)
                 {
-                    case 1 -> GLConst.RED;
-                    case 2 -> GLConst.RG;
-                    case 3 -> GLConst.RGB;
-                    default -> GLConst.RGBA;
+                    case 1 -> GL.RED;
+                    case 2 -> GL.RG;
+                    case 3 -> GL.RGB;
+                    default -> GL.RGBA;
                 };
     }
 }

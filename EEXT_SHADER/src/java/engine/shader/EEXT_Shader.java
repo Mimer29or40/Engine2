@@ -5,11 +5,7 @@ import engine.Extension;
 import engine.Keyboard;
 import engine.Mouse;
 import engine.color.Color;
-import engine.render.TextAlign;
-import engine.render.Texture;
-import engine.render.gl.GLConst;
-import engine.render.gl.GLShader;
-import engine.render.gl.GLVertexArray;
+import engine.render.*;
 
 import java.util.HashMap;
 
@@ -52,7 +48,7 @@ public class EEXT_Shader extends Extension
     public void afterSetup()
     {
         this.texture = new Texture(screenWidth(), screenHeight());
-        this.vao     = new GLVertexArray().bind().add(new float[] {-1f, -1f, 1f, -1f, 1f, 1f, -1f, 1f}, GLConst.STATIC_DRAW, 2).unbind();
+        this.vao     = new GLVertexArray().bind().add(new float[] {-1f, -1f, 1f, -1f, 1f, 1f, -1f, 1f}, GL.STATIC_DRAW, 2).unbind();
     }
     
     /**
@@ -131,7 +127,7 @@ public class EEXT_Shader extends Extension
             // this.texture.bindFramebuffer();
     
             // this.shader.bind();
-            // this.vao.bind().draw(GLConst.QUADS).unbind();
+            // this.vao.bind().draw(GL.QUADS).unbind();
     
             // this.texture.markGPUDirty();
     
@@ -174,7 +170,7 @@ public class EEXT_Shader extends Extension
         EEXT_Shader.INSTANCE.shaders.put(shaderFile, null);
         EEXT_Shader.INSTANCE.fileWatcher.addFile(shaderFile);
         // EEXT_Shader.INSTANCE.texture = new Texture(screenWidth(), screenHeight());
-        // EEXT_Shader.INSTANCE.vao     = new GLVertexArray().bind().add(new float[] {-1f, -1f, 1f, -1f, 1f, 1f, -1f, 1f}, GLConst.STATIC_DRAW, 2);
+        // EEXT_Shader.INSTANCE.vao     = new GLVertexArray().bind().add(new float[] {-1f, -1f, 1f, -1f, 1f, 1f, -1f, 1f}, GL.STATIC_DRAW, 2);
     
         return shaderFile;
     }
@@ -193,7 +189,7 @@ public class EEXT_Shader extends Extension
     {
         target.bindFramebuffer();
         shader.bind();
-        EEXT_Shader.INSTANCE.vao.bind().draw(GLConst.QUADS).unbind();
+        EEXT_Shader.INSTANCE.vao.bind().draw(GL.QUADS).unbind();
         target.markGPUDirty();
     }
 }

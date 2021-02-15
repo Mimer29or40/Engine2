@@ -3,10 +3,6 @@ package engine.render;
 import engine.color.Color;
 import engine.color.Colorc;
 import engine.font.Font;
-import engine.render.gl.GLBuffer;
-import engine.render.gl.GLConst;
-import engine.render.gl.GLShader;
-import engine.render.gl.GLVertexArray;
 import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryStack;
 import rutils.Logger;
@@ -135,51 +131,51 @@ public class Renderer
     public Renderer(Texture target)
     {
         this.defaultTarget = this.target = target;
-        
-        this.viewBuffer       = new GLBuffer(GLConst.UNIFORM_BUFFER).bind().base(0).set(Float.BYTES * 16).unbind();
+    
+        this.viewBuffer       = new GLBuffer(GL.UNIFORM_BUFFER).bind().base(0).set(Float.BYTES * 16).unbind();
         this.updateViewBuffer = true;
-        
+    
         this.pointShader = new GLShader().loadFile("shaders/shared.vert").loadFile("shaders/point.geom").loadFile("shaders/shared.frag").validate();
-        this.pointVAO    = new GLVertexArray().bind().add(Float.BYTES * 2, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 2).unbind();
-        
+        this.pointVAO    = new GLVertexArray().bind().add(Float.BYTES * 2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+    
         this.lineShader = new GLShader().loadFile("shaders/shared.vert").loadFile("shaders/line.geom").loadFile("shaders/shared.frag").validate();
-        this.lineVAO    = new GLVertexArray().bind().add((Float.BYTES * 2) * 2, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 2).unbind();
-        
+        this.lineVAO    = new GLVertexArray().bind().add((Float.BYTES * 2) * 2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+    
         this.linesShader = new GLShader().loadFile("shaders/shared.vert").loadFile("shaders/lines.geom").loadFile("shaders/shared.frag").validate();
-        
-        this.bezier3VAO = new GLVertexArray().bind().add((Float.BYTES * 2) * 3, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 2).unbind();
-        this.bezier4VAO = new GLVertexArray().bind().add((Float.BYTES * 2) * 4, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 2).unbind();
-        
-        this.triangleLinesVAO = new GLVertexArray().bind().add((Float.BYTES * 2) * 24, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 2).unbind();
+    
+        this.bezier3VAO = new GLVertexArray().bind().add((Float.BYTES * 2) * 3, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+        this.bezier4VAO = new GLVertexArray().bind().add((Float.BYTES * 2) * 4, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+    
+        this.triangleLinesVAO = new GLVertexArray().bind().add((Float.BYTES * 2) * 24, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
         this.triangleShader   = new GLShader().loadFile("shaders/shared.vert").loadFile("shaders/shared.frag").validate();
-        this.triangleVAO      = new GLVertexArray().bind().add((Float.BYTES * 2) * 6, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 2).unbind();
-        
-        this.quadLinesVAO = new GLVertexArray().bind().add((Float.BYTES * 2) * 32, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 2).unbind();
+        this.triangleVAO      = new GLVertexArray().bind().add((Float.BYTES * 2) * 6, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+    
+        this.quadLinesVAO = new GLVertexArray().bind().add((Float.BYTES * 2) * 32, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
         this.quadShader   = new GLShader().loadFile("shaders/shared.vert").loadFile("shaders/shared.frag").validate();
-        this.quadVAO      = new GLVertexArray().bind().add((Float.BYTES * 2) * 8, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 2).unbind();
-        
-        this.polygonLinesVAO = new GLVertexArray().bind().add(new GLBuffer(GLConst.ARRAY_BUFFER).usage(GLConst.DYNAMIC_DRAW), GLConst.FLOAT, 2).unbind();
+        this.quadVAO      = new GLVertexArray().bind().add((Float.BYTES * 2) * 8, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+    
+        this.polygonLinesVAO = new GLVertexArray().bind().add(new GLBuffer(GL.ARRAY_BUFFER).usage(GL.DYNAMIC_DRAW), GL.FLOAT, 2).unbind();
         this.polygonShader   = new GLShader().loadFile("shaders/shared.vert").loadFile("shaders/poly.geom").loadFile("shaders/shared.frag").validate();
-        this.polygonVAO      = new GLVertexArray().bind().add(Float.BYTES * 2, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 2).unbind();
-        this.polygonSSBO     = new GLBuffer(GLConst.SHADER_STORAGE_BUFFER).usage(GLConst.STREAM_DRAW).bind().base(1).unbind();
-        
+        this.polygonVAO      = new GLVertexArray().bind().add(Float.BYTES * 2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+        this.polygonSSBO     = new GLBuffer(GL.SHADER_STORAGE_BUFFER).usage(GL.STREAM_DRAW).bind().base(1).unbind();
+    
         this.ellipseOutlineShader = new GLShader().loadFile("shaders/shared.vert").loadFile("shaders/ellipseOutline.geom").loadFile("shaders/shared.frag").validate();
-        this.ellipseOutlineVAO    = new GLVertexArray().bind().add(Float.BYTES * 2, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 2).unbind();
-        
+        this.ellipseOutlineVAO    = new GLVertexArray().bind().add(Float.BYTES * 2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+    
         this.ellipseShader = new GLShader().loadFile("shaders/shared.vert").loadFile("shaders/ellipse.geom").loadFile("shaders/shared.frag").validate();
-        this.ellipseVAO    = new GLVertexArray().bind().add(Float.BYTES * 2, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 2).unbind();
-        
+        this.ellipseVAO    = new GLVertexArray().bind().add(Float.BYTES * 2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+    
         this.arcOutlineShader = new GLShader().loadFile("shaders/shared.vert").loadFile("shaders/arcOutline.geom").loadFile("shaders/shared.frag").validate();
-        this.arcOutlineVAO    = new GLVertexArray().bind().add(Float.BYTES * 2, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 2).unbind();
-        
+        this.arcOutlineVAO    = new GLVertexArray().bind().add(Float.BYTES * 2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+    
         this.arcShader = new GLShader().loadFile("shaders/shared.vert").loadFile("shaders/arc.geom").loadFile("shaders/shared.frag").validate();
-        this.arcVAO    = new GLVertexArray().bind().add(Float.BYTES * 2, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 2).unbind();
-        
+        this.arcVAO    = new GLVertexArray().bind().add(Float.BYTES * 2, GL.DYNAMIC_DRAW, GL.FLOAT, 2).unbind();
+    
         this.textureShader = new GLShader().loadFile("shaders/texture.vert").loadFile("shaders/texture.frag").validate();
-        this.textureVAO    = new GLVertexArray().bind().add((Float.BYTES * 2 + Float.BYTES * 2) * 16, GLConst.DYNAMIC_DRAW, GLConst.FLOAT, 2, GLConst.FLOAT, 2).unbind();
-        
+        this.textureVAO    = new GLVertexArray().bind().add((Float.BYTES * 2 + Float.BYTES * 2) * 16, GL.DYNAMIC_DRAW, GL.FLOAT, 2, GL.FLOAT, 2).unbind();
+    
         this.textShader = new GLShader().loadFile("shaders/texture.vert").loadFile("shaders/text.frag").validate();
-        this.textVAO    = new GLVertexArray().bind().add(new GLBuffer(GLConst.ARRAY_BUFFER).usage(GLConst.DYNAMIC_DRAW), GLConst.FLOAT, 2, GLConst.FLOAT, 2).unbind();
+        this.textVAO    = new GLVertexArray().bind().add(new GLBuffer(GL.ARRAY_BUFFER).usage(GL.DYNAMIC_DRAW), GL.FLOAT, 2, GL.FLOAT, 2).unbind();
     }
     
     // ----------------
@@ -778,7 +774,7 @@ public class Renderer
     
         this.target.bindFramebuffer();
     
-        if (this.debug) glPolygonMode(GLConst.FRONT_AND_BACK.ref(), GLConst.LINE.ref());
+        if (this.debug) glPolygonMode(GL.FRONT_AND_BACK.ref(), GL.LINE.ref());
     }
     
     /**
@@ -796,7 +792,7 @@ public class Renderer
         
         this.target.unbindFramebuffer();
     
-        glPolygonMode(GLConst.FRONT_AND_BACK.ref(), GLConst.FILL.ref());
+        glPolygonMode(GL.FRONT_AND_BACK.ref(), GL.FILL.ref());
     }
     
     /**
@@ -913,7 +909,7 @@ public class Renderer
         this.target.bindFramebuffer();
     
         glClearColor(color.rf(), color.gf(), color.bf(), color.af());
-        glClear(GLConst.COLOR_BUFFER_BIT.ref());
+        glClear(GL.COLOR_BUFFER_BIT.ref());
     }
     
     // -------------------
@@ -942,7 +938,7 @@ public class Renderer
         this.pointShader.setUniform("viewport", this.target.width(), this.target.height());
         this.pointShader.setUniform("thickness", this.weight);
     
-        this.pointVAO.bind().set((float) x, (float) y).draw(GLConst.POINTS).unbind();
+        this.pointVAO.bind().set((float) x, (float) y).draw(GL.POINTS).unbind();
     
         this.target.markGPUDirty();
     }
@@ -991,7 +987,7 @@ public class Renderer
         this.lineShader.setUniform("thickness", this.weight);
     
         this.lineVAO.bind().set((float) x1, (float) y1,
-                                (float) x2, (float) y2).draw(GLConst.LINES).unbind();
+                                (float) x2, (float) y2).draw(GL.LINES).unbind();
     
         this.target.markGPUDirty();
     }
@@ -1081,7 +1077,7 @@ public class Renderer
             array[index++] = (float) newPoints[(2 * p3) + 1];
         }
     
-        this.bezier4VAO.bind().set(array).resize().draw(GLConst.LINES_ADJACENCY).unbind();
+        this.bezier4VAO.bind().set(array).resize().draw(GL.LINES_ADJACENCY).unbind();
         
         this.target.markGPUDirty();
     }
@@ -1132,7 +1128,7 @@ public class Renderer
     
         this.triangleLinesVAO.bind().set((float) x3, (float) y3, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3,
                                          (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x1, (float) y1,
-                                         (float) x2, (float) y2, (float) x3, (float) y3, (float) x1, (float) y1, (float) x2, (float) y2).draw(GLConst.LINES_ADJACENCY).unbind();
+                                         (float) x2, (float) y2, (float) x3, (float) y3, (float) x1, (float) y1, (float) x2, (float) y2).draw(GL.LINES_ADJACENCY).unbind();
     
         this.target.markGPUDirty();
     }
@@ -1163,7 +1159,7 @@ public class Renderer
     
         this.triangleVAO.bind().set((float) x1, (float) y1,
                                     (float) x2, (float) y2,
-                                    (float) x3, (float) y3).draw(GLConst.TRIANGLES).unbind();
+                                    (float) x3, (float) y3).draw(GL.TRIANGLES).unbind();
     
         this.target.markGPUDirty();
     }
@@ -1374,7 +1370,7 @@ public class Renderer
         this.quadLinesVAO.bind().set((float) x4, (float) y4, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3,
                                      (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4,
                                      (float) x2, (float) y2, (float) x3, (float) y3, (float) x4, (float) y4, (float) x1, (float) y1,
-                                     (float) x3, (float) y3, (float) x4, (float) y4, (float) x1, (float) y1, (float) x2, (float) y2).draw(GLConst.LINES_ADJACENCY).unbind();
+                                     (float) x3, (float) y3, (float) x4, (float) y4, (float) x1, (float) y1, (float) x2, (float) y2).draw(GL.LINES_ADJACENCY).unbind();
     
         this.target.markGPUDirty();
     }
@@ -1410,7 +1406,7 @@ public class Renderer
         this.quadVAO.bind().set((float) x1, (float) y1,
                                 (float) x2, (float) y2,
                                 (float) x3, (float) y3,
-                                (float) x4, (float) y4).draw(GLConst.QUADS).unbind();
+                                (float) x4, (float) y4).draw(GL.QUADS).unbind();
     
         this.target.markGPUDirty();
     }
@@ -1487,7 +1483,7 @@ public class Renderer
             array[index++] = (float) points[(2 * p3) + 1];
         }
     
-        this.polygonLinesVAO.bind().set(array).resize().draw(GLConst.LINES_ADJACENCY).unbind();
+        this.polygonLinesVAO.bind().set(array).resize().draw(GL.LINES_ADJACENCY).unbind();
     
         this.target.markGPUDirty();
     }
@@ -1518,7 +1514,7 @@ public class Renderer
         float[] array = new float[points.length];
         for (int i = 0, n = points.length; i < n; i++) array[i] = (float) points[i];
         this.polygonSSBO.bind().set(array).unbind();
-        this.polygonVAO.bind().draw(GLConst.POINTS).unbind();
+        this.polygonVAO.bind().draw(GL.POINTS).unbind();
     
         this.target.markGPUDirty();
     }
@@ -1645,7 +1641,7 @@ public class Renderer
         this.ellipseOutlineShader.setUniform("viewport", this.target.width(), this.target.height());
         this.ellipseOutlineShader.setUniform("thickness", (float) this.weight);
     
-        this.ellipseOutlineVAO.bind().set((float) x, (float) y).draw(GLConst.POINTS).unbind();
+        this.ellipseOutlineVAO.bind().set((float) x, (float) y).draw(GL.POINTS).unbind();
     
         this.target.markGPUDirty();
     }
@@ -1673,7 +1669,7 @@ public class Renderer
         this.ellipseShader.setUniform("tint", this.tint);
         this.ellipseShader.setUniform("radius", (float) rx, (float) ry);
     
-        this.ellipseVAO.bind().set((float) x, (float) y).draw(GLConst.POINTS).unbind();
+        this.ellipseVAO.bind().set((float) x, (float) y).draw(GL.POINTS).unbind();
     
         this.target.markGPUDirty();
     }
@@ -1754,7 +1750,7 @@ public class Renderer
         this.arcOutlineShader.setUniform("bounds", start, stop);
         this.arcOutlineShader.setUniform("mode", this.arcMode.ordinal());
     
-        this.arcOutlineVAO.bind().set((float) x, (float) y).draw(GLConst.POINTS).unbind();
+        this.arcOutlineVAO.bind().set((float) x, (float) y).draw(GL.POINTS).unbind();
     
         this.target.markGPUDirty();
     }
@@ -1786,7 +1782,7 @@ public class Renderer
         this.arcShader.setUniform("bounds", (float) start, (float) stop);
         this.arcShader.setUniform("mode", this.arcMode.ordinal());
     
-        this.arcVAO.bind().set((float) x, (float) y).draw(GLConst.POINTS).unbind();
+        this.arcVAO.bind().set((float) x, (float) y).draw(GL.POINTS).unbind();
     
         this.target.markGPUDirty();
     }
@@ -1881,13 +1877,15 @@ public class Renderer
         this.textureShader.bind();
         this.textureShader.setUniform("tint", this.tint);
         this.textureShader.setUniform("interpolate", -1f);
-        this.textureShader.setUniform("tex1", texture, 0);
-        this.textureShader.setUniform("tex2", texture, 0);
+        this.textureShader.setUniform("tex1", 0);
+        this.textureShader.setUniform("tex2", 0);
+    
+        texture.bindTexture(0);
     
         this.textureVAO.bind().set((float) x1, (float) y1, (float) u1, (float) v1,
                                    (float) x1, (float) y2, (float) u1, (float) v2,
                                    (float) x2, (float) y2, (float) u2, (float) v2,
-                                   (float) x2, (float) y1, (float) u2, (float) v1).draw(GLConst.QUADS).unbind();
+                                   (float) x2, (float) y1, (float) u2, (float) v1).draw(GL.QUADS).unbind();
     
         this.target.markGPUDirty();
     }
@@ -2004,13 +2002,16 @@ public class Renderer
         this.textureShader.bind();
         this.textureShader.setUniform("tint", this.tint);
         this.textureShader.setUniform("interpolate", (float) amount);
-        this.textureShader.setUniform("tex1", texture1, 0);
-        this.textureShader.setUniform("tex2", texture2, 1);
+        this.textureShader.setUniform("tex1", 0);
+        this.textureShader.setUniform("tex2", 1);
+    
+        texture1.bindTexture(0);
+        texture2.bindTexture(1);
     
         this.textureVAO.bind().set((float) x1, (float) y1, (float) u1, (float) v1,
                                    (float) x1, (float) y2, (float) u1, (float) v2,
                                    (float) x2, (float) y2, (float) u2, (float) v2,
-                                   (float) x2, (float) y1, (float) u2, (float) v1).draw(GLConst.QUADS).unbind();
+                                   (float) x2, (float) y1, (float) u2, (float) v1).draw(GL.QUADS).unbind();
     
         this.target.markGPUDirty();
     }
@@ -2132,7 +2133,9 @@ public class Renderer
         this.textShader.bind();
         this.textShader.setUniform("color", this.fill);
         this.textShader.setUniform("tint", this.tint);
-        this.textShader.setUniform("tex", this.textFont.texture(this.textSize), 0);
+        this.textShader.setUniform("tex", 0);
+    
+        this.textFont.texture(this.textSize).bindTexture(0);
     
         int lineLength = text.length();
     
@@ -2186,15 +2189,15 @@ public class Renderer
                 data[index++] = y0;
                 data[index++] = u1;
                 data[index++] = v0;
-            
+    
                 x += currChar.advanceWidthUnscaled * sizeData.scale;
-            
+    
                 prevChar = currChar;
             }
         }
     
-        // this.textVAO.bind().set(data).resize().draw(GLConst.QUADS).unbind();
-        this.textVAO.bind().set(data).resize().draw(GLConst.QUADS).unbind();
+        // this.textVAO.bind().set(data).resize().draw(GL.QUADS).unbind();
+        this.textVAO.bind().set(data).resize().draw(GL.QUADS).unbind();
     
         this.target.markGPUDirty();
     }

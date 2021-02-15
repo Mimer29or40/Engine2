@@ -1,13 +1,21 @@
-package engine.render.gl;
+package engine.render;
 
+import org.lwjgl.system.MemoryUtil;
+import rutils.Logger;
+
+import java.util.HashMap;
+
+import static org.lwjgl.opengl.GL43.glDebugMessageCallback;
 import static org.lwjgl.opengl.GL46.*;
 
 /**
  * All GL constants so I can treat them differently than int in methods.
  */
 @SuppressWarnings({"SpellCheckingInspection", "unused"})
-public enum GLConst
+public enum GL
 {
+    NULL(-1),
+    
     // ---------- GL11 ---------- //
     ACCUM(GL_ACCUM),
     LOAD(GL_LOAD),
@@ -1821,10 +1829,19 @@ public enum GLConst
     
     ;
     
+    private static final Logger LOGGER = new Logger();
+    
+    private static final HashMap<Long, GL> LOOKUP_MAP = new HashMap<>();
+    
+    static
+    {
+        for (GL gl : GL.values()) GL.LOOKUP_MAP.put(gl.ref, gl);
+    }
+    
     private final long   ref;
     private final String glName;
     
-    GLConst(long ref)
+    GL(long ref)
     {
         this.ref = ref;
         
@@ -1847,5 +1864,40 @@ public enum GLConst
     public String toString()
     {
         return this.glName;
+    }
+    
+    public static GL get(long gl)
+    {
+        return GL.LOOKUP_MAP.getOrDefault(gl, GL.NULL);
+    }
+    
+    static
+    {
+        glEnable(GL_DEBUG_OUTPUT);
+        glDebugMessageCallback((sourceInt, typeInt, idInt, severityInt, length, messagePointer, userParam) -> {
+            GL source   = GL.get(sourceInt);
+            GL type     = GL.get(typeInt);
+            GL id       = GL.get(idInt);
+            GL severity = GL.get(severityInt);
+            
+            String header  = "OpenGL Error Message\n\tID: %s\n\tSource: %s\n\tType: %s\n\tSeverity: %s\n\tMessage: %s\n";
+            String message = MemoryUtil.memUTF8(messagePointer);
+            
+            switch (type)
+            {
+                case DEBUG_TYPE_ERROR -> {
+                    switch (severity)
+                    {
+                        case DEBUG_SEVERITY_HIGH -> GL.LOGGER.severe(header, id, source, type, severity, message);
+                        case DEBUG_SEVERITY_MEDIUM -> GL.LOGGER.warning(header, id, source, type, severity, message);
+                        case DEBUG_SEVERITY_LOW -> GL.LOGGER.info(header, id, source, type, severity, message);
+                        case DEBUG_SEVERITY_NOTIFICATION -> GL.LOGGER.finer(header, id, source, type, severity, message);
+                    }
+                }
+                case DEBUG_TYPE_DEPRECATED_BEHAVIOR, DEBUG_TYPE_UNDEFINED_BEHAVIOR -> GL.LOGGER.warning(header, id, source, type, severity, message);
+                case DEBUG_TYPE_PORTABILITY -> GL.LOGGER.info(header, id, source, type, severity, message);
+                default -> GL.LOGGER.finer(header, id, source, type, severity, message);
+            }
+        }, 0);
     }
 }

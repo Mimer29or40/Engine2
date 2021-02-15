@@ -1,6 +1,5 @@
 package engine;
 
-import engine.color.Blend;
 import engine.color.Color;
 import engine.color.Colorc;
 import engine.event.*;
@@ -2324,14 +2323,6 @@ public class Engine
         Engine.profiler.startSection("target");
         Engine.renderer.target(target);
         Engine.profiler.endSection();
-    }
-    
-    /**
-     * See {@link Renderer#blend()}
-     */
-    public static @NotNull Blend blend()
-    {
-        return Engine.renderer.blend();
     }
     
     /**

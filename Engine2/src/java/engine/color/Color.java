@@ -330,24 +330,6 @@ public class Color implements Colorc
     }
     
     /**
-     * Blends the supplied <code>(r, g, b, a)</code> (source) with <code>this</code> (backdrop) according
-     * to the blend function and stores these values in <code>dest</code>.
-     *
-     * @param r      the r component of source
-     * @param g      the g component of source
-     * @param b      the b component of source
-     * @param a      the a component of source
-     * @param func   the function to blend the colors
-     * @param result will hold the result
-     * @return dest
-     */
-    @Override
-    public Color blend(int r, int g, int b, int a, IBlend func, Color result)
-    {
-        return func.blend(this, r, g, b, a, result);
-    }
-    
-    /**
      * @return 32-bit integer representation of the color
      */
     @Override
@@ -548,42 +530,6 @@ public class Color implements Colorc
         result.b((int) (b() * x));
         if (alpha) result.a((int) (a() * x));
         return result;
-    }
-    
-    /**
-     * Blend this color with another color in place
-     *
-     * @param other the other color
-     * @return this
-     */
-    public Color blend(Color other)
-    {
-        return blend(other, thisOrNew());
-    }
-    
-    /**
-     * Negate this color and store the result in <code>dest</code>.
-     *
-     * @param other the other color
-     * @param func  the function that will blend the two colors
-     * @return this
-     */
-    public Color blend(Color other, IBlend func)
-    {
-        return blend(other, func, thisOrNew());
-    }
-    
-    /**
-     * Negate this color and store the result in <code>dest</code>.
-     *
-     * @param other  the other color
-     * @param func   the function that will blend the two colors
-     * @param result will hold the result
-     * @return result
-     */
-    public Color blend(Color other, IBlend func, Color result)
-    {
-        return func.blend(this, other, result);
     }
     
     /**

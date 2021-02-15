@@ -1,6 +1,5 @@
 package engine.render;
 
-import engine.color.Blend;
 import engine.color.Color;
 import engine.color.Colorc;
 import engine.font.Font;
@@ -30,7 +29,6 @@ public class Renderer
 {
     private static final Logger LOGGER = new Logger();
     
-    private static final Blend.BTriple DEFAULT_BLEND        = new Blend.BTriple(new Blend());
     private static final Color         DEFAULT_FILL         = new Color(255);
     private static final Color         DEFAULT_STROKE       = new Color(0);
     private static final Color         DEFAULT_TINT         = new Color(255);
@@ -49,9 +47,6 @@ public class Renderer
     protected final Texture        defaultTarget;
     protected       Texture        target;
     protected final Stack<Texture> targets = new Stack<>();
-    
-    protected final Blend                blend  = Renderer.DEFAULT_BLEND.setBlend(new Blend());
-    protected final Stack<Blend.BTriple> blends = new Stack<>();
     
     protected final Color          fill  = new Color(Renderer.DEFAULT_FILL);
     protected final Stack<Integer> fills = new Stack<>();
@@ -237,14 +232,6 @@ public class Renderer
         identity();
         
         Renderer.LOGGER.finest("Setting Render Target:", target);
-    }
-    
-    /**
-     * @return If blend is enabled for the renderer.
-     */
-    public Blend blend()
-    {
-        return this.blend;
     }
     
     /**
@@ -754,9 +741,6 @@ public class Renderer
         this.target = this.defaultTarget;
         this.targets.clear();
         
-        Renderer.DEFAULT_BLEND.setBlend(this.blend);
-        this.blends.clear();
-        
         this.fill.set(Renderer.DEFAULT_FILL);
         this.fills.clear();
         
@@ -821,7 +805,6 @@ public class Renderer
         Renderer.LOGGER.finer("Pushing Renderer State");
     
         this.targets.push(this.target);
-        this.blends.push(new Blend.BTriple(this.blend));
         this.fills.push(this.fill.toInt());
         this.strokes.push(this.stroke.toInt());
         this.tints.push(this.tint.toInt());
@@ -843,7 +826,6 @@ public class Renderer
         Renderer.LOGGER.finer("Popping Renderer State");
     
         this.target = this.targets.pop();
-        this.blends.pop().setBlend(this.blend);
         this.fill.fromInt(this.fills.pop());
         this.stroke.fromInt(this.strokes.pop());
         this.tint.fromInt(this.tints.pop());

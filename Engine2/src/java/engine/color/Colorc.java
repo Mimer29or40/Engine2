@@ -1,7 +1,5 @@
 package engine.color;
 
-import engine.Engine;
-
 /**
  * Interface to a read-only view of a Color.
  *
@@ -111,82 +109,6 @@ public interface Colorc
     }
     
     /**
-     * Blends the supplied <code>(r, g, b, a)</code> (source) with <code>this</code> (backdrop) according
-     * to the blend function and stores these values in <code>result</code>.
-     *
-     * @param r      the r component of source
-     * @param g      the g component of source
-     * @param b      the b component of source
-     * @param a      the a component of source
-     * @param func   the function to blend the colors
-     * @param result will hold the result
-     * @return result
-     */
-    Color blend(int r, int g, int b, int a, IBlend func, Color result);
-    
-    /**
-     * Blends the supplied <code>(r, g, b, 255)</code> (source) with <code>this</code> (backdrop) according
-     * to the blend function and stores these values in <code>result</code>. Source a is assumed to
-     * be 255.
-     *
-     * @param r      the r component of source
-     * @param g      the g component of source
-     * @param b      the b component of source
-     * @param func   the function to blend the colors
-     * @param result will hold the result
-     * @return result
-     */
-    default Color blend(int r, int g, int b, IBlend func, Color result)
-    {
-        return blend(r, g, b, 255, func, result);
-    }
-    
-    /**
-     * Blends the supplied <code>(g, g, g, a)</code> (source) with <code>this</code> (backdrop)
-     * according to the blend function and stores these values in <code>result</code>. Source a is assumed to
-     * be 255.
-     *
-     * @param grey   the r, g, and b component of source
-     * @param a      the a component of source
-     * @param func   the function to blend the colors
-     * @param result will hold the result
-     * @return result
-     */
-    default Color blend(int grey, int a, IBlend func, Color result)
-    {
-        return blend(grey, grey, grey, a, func, result);
-    }
-    
-    /**
-     * Blends the supplied <code>(g, g, g, 255)</code> (source) with <code>this</code> (backdrop)
-     * according to the blend function and stores these values in <code>result</code>. Source a is assumed to
-     * be 255.
-     *
-     * @param grey   the r, g, and b component of source
-     * @param func   the function to blend the colors
-     * @param result will hold the result
-     * @return result
-     */
-    default Color blend(int grey, IBlend func, Color result)
-    {
-        return blend(grey, grey, grey, 255, func, result);
-    }
-    
-    /**
-     * Blends the supplied color (source) with <code>this</code> (backdrop) according to the blend
-     * function and stores these values in <code>result</code>.
-     *
-     * @param source the source color
-     * @param func   the function to blend the colors
-     * @param result will hold the result
-     * @return result
-     */
-    default Color blend(Colorc source, IBlend func, Color result)
-    {
-        return blend(source.r(), source.g(), source.b(), source.a(), func, result);
-    }
-    
-    /**
      * @return 32-bit integer representation of the color
      */
     int toInt();
@@ -282,28 +204,6 @@ public interface Colorc
      * @return result
      */
     Color scale(double x, boolean alpha, Color result);
-    
-    /**
-     * Blend this color with another color and store the result in <code>result</code>.
-     *
-     * @param other  the other color
-     * @param result the result
-     * @return result
-     */
-    default Color blend(Color other, Color result)
-    {
-        return blend(other, Engine.blend(), result);
-    }
-    
-    /**
-     * Negate this color and store the result in <code>result</code>.
-     *
-     * @param other  the other color
-     * @param func   the function that will blend the two colors
-     * @param result the result
-     * @return result
-     */
-    Color blend(Color other, IBlend func, Color result);
     
     /**
      * Returns a color that is brighter than this by a factor.

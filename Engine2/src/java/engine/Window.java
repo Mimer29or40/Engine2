@@ -116,7 +116,7 @@ public class Window
             this.fbSize.set(this._fbSize.set(x.get(0), y.get(0)));
         }
         
-        this.minSize.set(GLFW_DONT_CARE);
+        this.minSize.set(Engine.screenSize.x, Engine.screenSize.y);
         this.maxSize.set(GLFW_DONT_CARE);
         
         glfwSetWindowSizeLimits(handle, this.minSize.x, this.minSize.y, this.maxSize.x, this.maxSize.y);

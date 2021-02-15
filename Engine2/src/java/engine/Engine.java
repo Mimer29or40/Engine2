@@ -167,13 +167,13 @@ public class Engine
         try
         {
             Engine.LOGGER.info("Engine Started");
-        
+    
             if (Engine.logic != null) throw new RuntimeException("start can only be called once");
-        
+    
             Engine.logic     = logic;
             Engine.running   = true;
             Engine.startTime = System.nanoTime();
-        
+    
             Engine.LOGGER.finest("Loading Config Values");
             Engine.layerCount = Config.LAYER_COUNT.get();
             Engine.debugLineText.fromHex(Config.DEBUG_TEXT_COLOR.get());
@@ -181,18 +181,18 @@ public class Engine
             Engine.notificationDuration = (long) (1_000_000_000L * Config.NOTIFICATION_DURATION.get());
             Engine.profilerFrequency    = 1_000_000_000L / Config.PROFILER_FREQUENCY.get();
             Engine.titleFrequency       = 1_000_000_000L / Config.TITLE_FREQUENCY.get();
-        
+    
             Engine.LOGGER.finer("[GLFW] Init");
             if (!glfwInit()) throw new IllegalStateException("Unable to initialize GLFW");
-        
+    
             EventBus.start();
             EventBus.register(Engine.logic);
-        
+    
             Engine.LOGGER.finest("[GLFW] Setting Callbacks");
             glfwSetErrorCallback(Engine::errorCallback);
             glfwSetMonitorCallback(Engine::monitorCallback);
             glfwSetJoystickCallback(Engine::joystickCallback);
-        
+    
             Engine.LOGGER.finest("[GLFW] Building Monitor Objects");
             PointerBuffer monitors = Objects.requireNonNull(glfwGetMonitors(), "No monitors found.");
             for (int i = 0, n = monitors.remaining(); i < n; i++)
@@ -201,7 +201,7 @@ public class Engine
                 Engine.monitors.put(handle, new Monitor(handle, i));
             }
             Engine.primaryMonitor = Engine.monitors.get(glfwGetPrimaryMonitor());
-        
+    
             Engine.LOGGER.info("Loading Extensions");
             for (Class<? extends Extension> ext : extensions)
             {
@@ -224,24 +224,24 @@ public class Engine
                 }
                 catch (ReflectiveOperationException ignored) { }
             }
-        
+    
             Engine.random = new Random();
-        
+    
             Engine.valueNoise       = new ValueNoise();
             Engine.perlinNoise      = new PerlinNoise();
             Engine.simplexNoise     = new SimplexNoise();
             Engine.openSimplexNoise = new OpenSimplexNoise();
             Engine.worleyNoise      = new WorleyNoise();
-        
+    
             Engine.noise = Engine.perlinNoise;
-        
+    
             Engine.LOGGER.fine("Extension Pre Setup");
             for (String name : Engine.extensions.keySet())
             {
                 Engine.LOGGER.finer("Extension:", name);
                 Engine.extensions.get(name).beforeSetup();
             }
-        
+    
             Engine.LOGGER.fine("User Initialization");
             Engine.logic.setup();
             
@@ -445,20 +445,22 @@ public class Engine
                                         
                                         try (Section viewport = Engine.profiler.startSection("Viewport"))
                                         {
-                                            // TODO - Flickering when Maximizes
                                             double aspect = (double) (Engine.screenSize.x * Engine.pixelSize.x) / (double) (Engine.screenSize.y * Engine.pixelSize.y);
                                             
                                             int frameWidth  = Engine.window.framebufferWidth();
                                             int frameHeight = Engine.window.framebufferHeight();
-                                            
+    
                                             Engine.viewSize.set(frameWidth, (int) (frameWidth / aspect));
                                             if (Engine.viewSize.y > frameHeight) Engine.viewSize.set((int) (frameHeight * aspect), frameHeight);
                                             Engine.viewPos.set((frameWidth - Engine.viewSize.x) >> 1, (frameHeight - Engine.viewSize.y) >> 1);
-                                            
+    
                                             Engine.pixelSize.x = Math.max(Engine.viewSize.x / Engine.screenSize.x, 1);
                                             Engine.pixelSize.y = Math.max(Engine.viewSize.y / Engine.screenSize.y, 1);
-                                            
+    
                                             glViewport(Engine.viewPos.x, Engine.viewPos.y, Engine.viewSize.x, Engine.viewSize.y);
+                                            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                                            glClearColor(0F, 0F, 0F, 1F);
+                                            glClear(GL_COLOR_BUFFER_BIT);
                                         }
                                         
                                         try (Section viewport = Engine.profiler.startSection("Layers"))
@@ -469,7 +471,7 @@ public class Engine
                                             {
                                                 if (Engine.activeLayers[i])
                                                 {
-                                                    Engine.layers[i].bindTexture().unbindFramebuffer();
+                                                    Engine.layers[i].bindTexture();
                                                     Engine.screenVAO.draw(GLConst.QUADS);
                                                 }
                                             }
@@ -515,9 +517,7 @@ public class Engine
                                             try (Section text = Engine.profiler.startSection("Text"))
                                             {
                                                 Engine.debugShader.bind();
-    
-                                                // Engine.debugShader.setUniform("pv", Engine.debugView.setOrtho(0, this.fbSize.x, this.fbSize.y, 0, -1F, 1F));
-                                                // Engine.window().viewMatrix()
+                                                Engine.debugShader.setUniform("pv", Engine.debugView.setOrtho(0, Engine.viewSize.x, Engine.viewSize.y, 0, -1, 1));
     
                                                 if (!Engine.debugLines.isEmpty())
                                                 {
@@ -620,21 +620,6 @@ public class Engine
                                 Engine.screenshot = null;
                             }
                             
-                            dt = t - lastProfile;
-                            if ((Engine.profilerMode == 4 || dt >= Engine.profilerFrequency) && !Engine.paused)
-                            {
-                                lastProfile = t;
-                                
-                                switch (Engine.profilerMode)
-                                {
-                                    case 0 -> Engine.profilerData = null;
-                                    case 1 -> Engine.profilerData = Engine.profiler.getAverageData(Engine.profilerParent);
-                                    case 2, 4 -> Engine.profilerData = Engine.profiler.getMinData(Engine.profilerParent);
-                                    case 3 -> Engine.profilerData = Engine.profiler.getMaxData(Engine.profilerParent);
-                                }
-                                Engine.profiler.clear();
-                            }
-                            
                             dt = t - lastTitle;
                             if (dt >= Engine.titleFrequency && totalFrames > 0 && !Engine.paused)
                             {
@@ -642,9 +627,14 @@ public class Engine
     
                                 totalTime /= totalFrames;
     
-                                String format = "Engine - %s - FPS(%s) SPF(Avg: %s us, Min: %s us, Max: %s us)";
+                                String title = String.format("Engine - %s - FPS(%s) SPF(Avg: %s us, Min: %s us, Max: %s us)",
+                                                             Engine.logic.name,
+                                                             (int) (1_000_000_000D / totalTime),
+                                                             totalTime / 1000D,
+                                                             minTime / 1000D,
+                                                             maxTime / 1000D);
     
-                                Engine.window.title(String.format(format, Engine.logic.name, totalFrames, totalTime / 1000D, minTime / 1000D, maxTime / 1000D));
+                                Engine.window.title(title);
     
                                 totalTime = 0;
     

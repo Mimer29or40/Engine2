@@ -22,7 +22,7 @@ public interface EventJoystickAxis extends EventJoystick
         private _EventJoystickAxis(Joystick joystick, int axis, double value, double delta)
         {
             super(joystick);
-        
+    
             this.axis  = axis;
             this.value = value;
             this.delta = delta;

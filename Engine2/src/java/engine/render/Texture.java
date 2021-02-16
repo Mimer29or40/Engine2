@@ -197,11 +197,11 @@ public class Texture extends GLTexture
             IntBuffer width    = stack.mallocInt(1);
             IntBuffer height   = stack.mallocInt(1);
             IntBuffer channels = stack.mallocInt(1);
-        
+    
             if (stbi_info(actualPath, width, height, channels))
             {
                 ByteBuffer data = stbi_load(actualPath, width, height, channels, 0);
-            
+    
                 return new Texture(width.get(), height.get(), channels.get(), data);
             }
             else

@@ -1462,7 +1462,7 @@ public class Renderer
             int p0 = (p1 - 1 + n) % n;
             int p2 = (p1 + 1 + n) % n;
             int p3 = (p1 + 2 + n) % n;
-        
+    
             array[index++] = (float) points[(2 * p0)];
             array[index++] = (float) points[(2 * p0) + 1];
             array[index++] = (float) points[(2 * p1)];
@@ -2123,11 +2123,11 @@ public class Renderer
         {
             FloatBuffer xBuf = stack.mallocFloat(1);
             FloatBuffer yBuf = stack.mallocFloat(1);
-        
+    
             FloatBuffer quad = stack.mallocFloat(8);
-        
+    
             float x0, y0, x1, y1, u0, v0, u1, v1;
-        
+    
             for (int i = 0, index = 0; i < lineLength; i++)
             {
                 char character = text.charAt(i);

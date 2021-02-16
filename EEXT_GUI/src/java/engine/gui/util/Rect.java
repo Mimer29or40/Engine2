@@ -963,7 +963,7 @@ public class Rect implements Rectc
     {
         double aspect = (double) Math.abs(width()) / (double) Math.abs(height());
         
-        int otherWidth = Math.abs(other.width());
+        int otherWidth  = Math.abs(other.width());
         int otherHeight = Math.abs(other.height());
         
         result.size(otherWidth, (int) (otherWidth / aspect));

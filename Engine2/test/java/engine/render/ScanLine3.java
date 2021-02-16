@@ -169,7 +169,7 @@ public class ScanLine3
                 if (o1.slope > o2.slope) return 1;
                 return Integer.compare(o1.xMax, o2.xMax);
             });
-        
+    
             minX = Integer.MAX_VALUE;
             minY = Integer.MAX_VALUE;
             maxY = Integer.MIN_VALUE;
@@ -192,7 +192,7 @@ public class ScanLine3
                     minX = Integer.MAX_VALUE;
                 }
             }
-        
+    
             scanLine++;
             for (int i = 0; i < activeList.size(); i++)
             {

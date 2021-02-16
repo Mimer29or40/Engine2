@@ -12,7 +12,7 @@ public interface EventWindowFocused extends EventWindow
         private _EventWindowFocused(boolean focused)
         {
             super();
-        
+    
             this.focused = focused;
         }
     

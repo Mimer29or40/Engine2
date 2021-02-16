@@ -18,7 +18,7 @@ public interface EventJoystickHat extends EventJoystick
         private _EventJoystickHat(Joystick joystick, int hat, Joystick.Hat state)
         {
             super(joystick);
-        
+    
             this.hat   = hat;
             this.state = state;
         }

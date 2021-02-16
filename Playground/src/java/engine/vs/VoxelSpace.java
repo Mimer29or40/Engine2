@@ -101,7 +101,7 @@ public class VoxelSpace extends Engine
         {
             int sx = Math.max(0, (Math.min((int) (u * (double) texture.width()), texture.width() - 1)));
             int sy = Math.max(0, (Math.min((int) (v * (double) texture.height()), texture.height() - 1)));
-        
+    
             return getPixel(texture, data, sx, sy);
         }
     
@@ -109,41 +109,41 @@ public class VoxelSpace extends Engine
         {
             u = u * texture.width() - 0.5F;
             v = v * texture.height() - 0.5F;
-        
+    
             int x = (int) Math.floor(u);
             int y = (int) Math.floor(v);
-        
+    
             double uRat = u - x;
             double vRat = v - y;
             double uOpp = 1 - uRat;
             double vOpp = 1 - vRat;
-        
+    
             Colorc c;
-        
+    
             c = getPixel(texture, data, Math.max(x, 0), Math.max(y, 0));
             int r1 = c.r();
             int g1 = c.g();
             int b1 = c.b();
             int a1 = c.a();
-        
+    
             c = getPixel(texture, data, Math.min(x + 1, texture.width() - 1), Math.max(y, 0));
             int r2 = c.r();
             int g2 = c.g();
             int b2 = c.b();
             int a2 = c.a();
-        
+    
             c = getPixel(texture, data, Math.max(x, 0), Math.min(y + 1, texture.height() - 1));
             int r3 = c.r();
             int g3 = c.g();
             int b3 = c.b();
             int a3 = c.a();
-        
+    
             c = getPixel(texture, data, Math.min(x + 1, texture.width() - 1), Math.min(y + 1, texture.height() - 1));
             int r4 = c.r();
             int g4 = c.g();
             int b4 = c.b();
             int a4 = c.a();
-        
+    
             return TEMP.set((int) ((r1 * uOpp + r2 * uRat) * vOpp + (r3 * uOpp + r4 * uRat) * vRat),
                             (int) ((g1 * uOpp + g2 * uRat) * vOpp + (g3 * uOpp + g4 * uRat) * vRat),
                             (int) ((b1 * uOpp + b2 * uRat) * vOpp + (b3 * uOpp + b4 * uRat) * vRat),

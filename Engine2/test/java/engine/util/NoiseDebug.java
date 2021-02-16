@@ -41,9 +41,9 @@ public class NoiseDebug extends Engine
             for (int i = 0; i < w; i++)
             {
                 double x = map(i, 0, w, xMin, xMax);
-            
+    
                 double value = noise.noise(x, y) * 0.5 + 0.5;
-            
+    
                 data[idx++] = clamp((int) (value * 255), 0, 255);
                 data[idx++] = clamp((int) (value * 255), 0, 255);
                 data[idx++] = clamp((int) (value * 255), 0, 255);

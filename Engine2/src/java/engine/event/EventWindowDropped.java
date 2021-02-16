@@ -14,7 +14,7 @@ public interface EventWindowDropped extends EventWindow
         private _EventWindowDropped(Path[] paths)
         {
             super();
-        
+    
             this.paths = paths;
         }
     

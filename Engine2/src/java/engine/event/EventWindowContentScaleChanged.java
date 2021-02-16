@@ -39,7 +39,7 @@ public interface EventWindowContentScaleChanged extends EventWindow
         private _EventWindowContentScaleChanged(Vector2d scale, Vector2d rel)
         {
             super();
-        
+    
             this.scale = new Vector2d(scale);
             this.rel   = new Vector2d(rel);
         }

@@ -18,9 +18,9 @@ public interface EventWindowMonitorChanged extends EventWindow
         private _EventWindowMonitorChanged(Monitor from, Monitor to)
         {
             super();
-        
+    
             this.from = from;
-            this.to = to;
+            this.to   = to;
         }
     
         @Override

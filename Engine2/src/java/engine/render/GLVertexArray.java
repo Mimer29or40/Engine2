@@ -459,13 +459,13 @@ public class GLVertexArray
             if (currVal instanceof GL) format = (GL) currVal;
             if (currVal instanceof Integer) count = (int) currVal;
             if (currVal instanceof Boolean) normalized = (boolean) currVal;
-        
+    
             if (i + 1 >= n || formats[i + 1] instanceof GL)
             {
                 Attribute attribute = getAttribute(format, count, normalized);
                 bufferAttributes.add(attribute);
                 stride += attribute.size;
-            
+    
                 format     = null;
                 count      = null;
                 normalized = null;

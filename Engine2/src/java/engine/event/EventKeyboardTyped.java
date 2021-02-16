@@ -12,7 +12,7 @@ public interface EventKeyboardTyped extends EventKeyboard
         private _EventKeyboardTyped(String typed)
         {
             super();
-        
+    
             this.typed = typed;
         }
     

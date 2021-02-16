@@ -193,17 +193,17 @@ public class GLBuffer
         if (dataLength > this.bufferSize)
         {
             this.bufferSize = this.dataSize = dataLength;
-        
+    
             GLBuffer.LOGGER.finer("%s: Setting from short array", this);
-        
+    
             glBufferData(this.type.ref(), data, this.usage.ref());
         }
         else
         {
             this.dataSize = dataLength;
-        
+    
             GLBuffer.LOGGER.finer("%s: Filling from short array", this);
-        
+    
             glBufferSubData(this.type.ref(), 0, data);
         }
         
@@ -225,17 +225,17 @@ public class GLBuffer
         if (dataLength > this.bufferSize)
         {
             this.bufferSize = this.dataSize = dataLength;
-        
+    
             GLBuffer.LOGGER.finer("%s: Setting from int array", this);
-        
+    
             glBufferData(this.type.ref(), data, this.usage.ref());
         }
         else
         {
             this.dataSize = dataLength;
-        
+    
             GLBuffer.LOGGER.finer("%s: Filling from int array", this);
-        
+    
             glBufferSubData(this.type.ref(), 0, data);
         }
         
@@ -257,17 +257,17 @@ public class GLBuffer
         if (dataLength > this.bufferSize)
         {
             this.bufferSize = this.dataSize = dataLength;
-        
+    
             GLBuffer.LOGGER.finer("%s: Setting from long array", this);
-        
+    
             glBufferData(this.type.ref(), data, this.usage.ref());
         }
         else
         {
             this.dataSize = dataLength;
-        
+    
             GLBuffer.LOGGER.finer("%s: Filling from long array", this);
-        
+    
             glBufferSubData(this.type.ref(), 0, data);
         }
         
@@ -289,17 +289,17 @@ public class GLBuffer
         if (dataLength > this.bufferSize)
         {
             this.bufferSize = this.dataSize = dataLength;
-        
+    
             GLBuffer.LOGGER.finer("%s: Setting from float array", this);
-        
+    
             glBufferData(this.type.ref(), data, this.usage.ref());
         }
         else
         {
             this.dataSize = dataLength;
-        
+    
             GLBuffer.LOGGER.finer("%s: Filling from float array", this);
-        
+    
             glBufferSubData(this.type.ref(), 0, data);
         }
         
@@ -321,17 +321,17 @@ public class GLBuffer
         if (dataLength > this.bufferSize)
         {
             this.bufferSize = this.dataSize = dataLength;
-        
+    
             GLBuffer.LOGGER.finer("%s: Setting from double array", this);
-        
+    
             glBufferData(this.type.ref(), data, this.usage.ref());
         }
         else
         {
             this.dataSize = dataLength;
-        
+    
             GLBuffer.LOGGER.finer("%s: Filling from double array", this);
-        
+    
             glBufferSubData(this.type.ref(), 0, data);
         }
         
@@ -353,17 +353,17 @@ public class GLBuffer
         if (dataLength > this.bufferSize)
         {
             this.bufferSize = this.dataSize = dataLength;
-        
+    
             GLBuffer.LOGGER.finer("%s: Setting from ByteBuffer", this);
-        
+    
             glBufferData(this.type.ref(), data, this.usage.ref());
         }
         else
         {
             this.dataSize = dataLength;
-        
+    
             GLBuffer.LOGGER.finer("%s: Filling from ByteBuffer", this);
-        
+    
             glBufferSubData(this.type.ref(), 0, data);
         }
         
@@ -385,17 +385,17 @@ public class GLBuffer
         if (dataLength > this.bufferSize)
         {
             this.bufferSize = this.dataSize = dataLength;
-        
+    
             GLBuffer.LOGGER.finer("%s: Setting from ShortBuffer", this);
-        
+    
             glBufferData(this.type.ref(), data, this.usage.ref());
         }
         else
         {
             this.dataSize = dataLength;
-        
+    
             GLBuffer.LOGGER.finer("%s: Filling from ShortBuffer", this);
-        
+    
             glBufferSubData(this.type.ref(), 0, data);
         }
         
@@ -417,17 +417,17 @@ public class GLBuffer
         if (dataLength > this.bufferSize)
         {
             this.bufferSize = this.dataSize = dataLength;
-        
+    
             GLBuffer.LOGGER.finer("%s: Setting from IntBuffer", this);
-        
+    
             glBufferData(this.type.ref(), data, this.usage.ref());
         }
         else
         {
             this.dataSize = dataLength;
-        
+    
             GLBuffer.LOGGER.finer("%s: Filling from IntBuffer", this);
-        
+    
             glBufferSubData(this.type.ref(), 0, data);
         }
         
@@ -449,17 +449,17 @@ public class GLBuffer
         if (dataLength > this.bufferSize)
         {
             this.bufferSize = this.dataSize = dataLength;
-        
+    
             GLBuffer.LOGGER.finer("%s: Setting from LongBuffer", this);
-        
+    
             glBufferData(this.type.ref(), data, this.usage.ref());
         }
         else
         {
             this.dataSize = dataLength;
-        
+    
             GLBuffer.LOGGER.finer("%s: Filling from LongBuffer", this);
-        
+    
             glBufferSubData(this.type.ref(), 0, data);
         }
         
@@ -481,17 +481,17 @@ public class GLBuffer
         if (dataLength > this.bufferSize)
         {
             this.bufferSize = this.dataSize = dataLength;
-        
+    
             GLBuffer.LOGGER.finer("%s: Setting from FloatBuffer", this);
-        
+    
             glBufferData(this.type.ref(), data, this.usage.ref());
         }
         else
         {
             this.dataSize = dataLength;
-        
+    
             GLBuffer.LOGGER.finer("%s: Filling from FloatBuffer", this);
-        
+    
             glBufferSubData(this.type.ref(), 0, data);
         }
         
@@ -513,17 +513,17 @@ public class GLBuffer
         if (dataLength > this.bufferSize)
         {
             this.bufferSize = this.dataSize = dataLength;
-        
+    
             GLBuffer.LOGGER.finer("%s: Setting from DoubleBuffer", this);
-        
+    
             glBufferData(this.type.ref(), data, this.usage.ref());
         }
         else
         {
             this.dataSize = dataLength;
-        
+    
             GLBuffer.LOGGER.finer("%s: Filling from DoubleBuffer", this);
-        
+    
             glBufferSubData(this.type.ref(), 0, data);
         }
     

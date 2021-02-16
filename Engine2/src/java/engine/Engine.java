@@ -907,7 +907,7 @@ public class Engine
     
         Engine.LOGGER.finer("Initializing OpenGL Context");
         Engine.window.makeCurrent();
-        
+    
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -915,6 +915,8 @@ public class Engine
     
         Engine.layers       = new Texture[Engine.layerCount];
         Engine.activeLayers = new boolean[Engine.layerCount];
+    
+        Renderer.init();
     
         Engine.renderer        = new Renderer(Engine.layers[0] = new Texture(screenW, screenH));
         Engine.activeLayers[0] = true;

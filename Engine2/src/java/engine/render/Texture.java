@@ -59,8 +59,6 @@ public class Texture extends GLTexture
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) Texture.LOGGER.severe("Could not create FrameBuffer");
         
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        
-        Texture.LOGGER.fine("Generated:", this);
     }
     
     public Texture(int width, int height, Colorc initial)

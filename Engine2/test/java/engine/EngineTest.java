@@ -30,7 +30,7 @@ public class EngineTest extends Engine
     
         Color c = new Color();
     
-        texture1 = new Texture(30, 30);
+        texture1 = new Texture(30, 30, Color.GREEN);
     
         int[] texture1Data = texture1.get();
         for (int j = 0, idx = 0; j < texture1.height(); j++)
@@ -247,7 +247,7 @@ public class EngineTest extends Engine
     
     public static void main(String[] args)
     {
-        Logger.setLevel(Level.FINER);
+        Logger.setLevel(Level.FINE);
     
         start(new EngineTest());
     }
